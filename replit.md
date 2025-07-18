@@ -15,10 +15,11 @@ Preferred communication style: Simple, everyday language.
 - **Data Persistence**: All data now persists across code changes and deployments
 - **Database Schema**: Full schema deployed with users, events, wines, votes tables
 - **Connection Verified**: PostgreSQL 17.4 on EU Central region for optimal performance
-- **Data Transfer**: 11 users and 1 event successfully migrated to Supabase
+- **Data Transfer**: 2 users and 1 event successfully migrated to Supabase
 - **DatabaseStorage**: Complete implementation replacing MemStorage with Supabase queries
 - **Auto-initialization**: Database creates Admin user automatically on first run
 - **Scalable Architecture**: Production-ready with connection pooling and shared data access
+- **Render Integration**: Environment variables configured with npx build commands
 
 ### Session Management & Security
 - **Single Device Access**: Implemented session control to prevent simultaneous access from multiple devices
@@ -138,7 +139,7 @@ Preferred communication style: Simple, everyday language.
 - **Start**: npm start (server production)
 - **Ambiente**: NODE_ENV=production, PORT=10000
 - **Regione**: Oregon (US West)
-- **Status**: ⚠️ DEPLOY PENDING - Environment variables needed
+- **Status**: 🔄 DEPLOY IN PROGRESS - Fixed build command and environment variables
 - **URL**: https://diagonale.onrender.com
 - **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
 - **Database**: Migrazione da in-memory a Supabase completata
