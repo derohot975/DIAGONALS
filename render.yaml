@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: diagonale-wine-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /
+    autoDeploy: true
+    preDeployCommand: npm install
+    disk:
+      name: diagonale-wine-disk
+      mountPath: /opt/render/project/dist
+      sizeGB: 1

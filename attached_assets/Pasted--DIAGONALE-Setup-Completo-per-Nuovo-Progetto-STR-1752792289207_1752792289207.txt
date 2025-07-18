@@ -1,0 +1,655 @@
+🍷 DIAGONALE - Setup Completo per Nuovo Progetto
+==============================================
+
+STRUTTURA CARTELLE:
+==================
+project-root/
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   └── screens/
+│   │   ├── hooks/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   └── index.css
+│   └── index.html
+├── server/
+│   ├── index.ts
+│   ├── routes.ts
+│   ├── storage.ts
+│   └── vite.ts
+├── shared/
+│   └── schema.ts
+├── package.json
+├── vite.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── replit.md
+
+CONFIGURAZIONE BASE:
+==================
+
+1. package.json
+--------------
+{
+  "name": "diagonale-wine-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development tsx server/index.ts",
+    "build": "vite build && esbuild server/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.js --external:express --external:ws",
+    "start": "NODE_ENV=production node dist/index.js",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "express": "^4.18.2",
+    "ws": "^8.14.2",
+    "drizzle-orm": "^0.28.6",
+    "@neondatabase/serverless": "^0.6.0",
+    "lucide-react": "^0.279.0",
+    "wouter": "^2.11.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/express": "^4.17.0",
+    "@types/ws": "^8.5.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tsx": "^3.12.0",
+    "esbuild": "^0.19.0"
+  }
+}
+
+2. vite.config.ts
+-----------------
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(import.meta.dirname, "client", "src"),
+      "@shared": path.resolve(import.meta.dirname, "shared"),
+    },
+  },
+  root: path.resolve(import.meta.dirname, "client"),
+  build: {
+    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    emptyOutDir: true,
+  },
+  server: {
+    fs: {
+      strict: true,
+      deny: ["**/.*"],
+    },
+  },
+});
+
+3. tailwind.config.ts
+--------------------
+import type { Config } from "tailwindcss";
+
+export default {
+  content: ["./client/src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;
+
+4. tsconfig.json
+---------------
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["client/src/*"],
+      "@shared/*": ["shared/*"]
+    }
+  },
+  "include": ["client/src", "shared", "server"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+
+5. client/index.html
+-------------------
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>🍷 DIAGONALE - Degustazioni alla Cieca</title>
+    <meta name="description" content="App mobile per degustazioni di vino alla cieca con modalità CIECA e CIECONA" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+6. client/src/index.css
+-----------------------
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(240, 50%, 70%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    backdrop-filter: blur(10px) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .wine-card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .wine-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+7. client/src/main.tsx
+---------------------
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(<App />);
+
+8. shared/schema.ts
+------------------
+import { z } from 'zod';
+
+export const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  isAdmin: z.boolean().default(false),
+});
+
+export const wineEventSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  date: z.string(),
+  mode: z.enum(['CIECA', 'CIECONA']),
+  status: z.enum(['active', 'completed']).default('active'),
+  createdBy: z.string(),
+});
+
+export const wineSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  userId: z.string(),
+  name: z.string(),
+  price: z.number(),
+  isRevealed: z.boolean().default(false),
+});
+
+export const voteSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  wineId: z.string(),
+  userId: z.string(),
+  score: z.number().min(1).max(10),
+  hasLode: z.boolean().default(false),
+});
+
+export type User = z.infer<typeof userSchema>;
+export type WineEvent = z.infer<typeof wineEventSchema>;
+export type Wine = z.infer<typeof wineSchema>;
+export type Vote = z.infer<typeof voteSchema>;
+
+9. client/src/types/wine.ts
+--------------------------
+export interface User {
+  id: string;
+  name: string;
+  isAdmin: boolean;
+}
+
+export interface WineEvent {
+  id: string;
+  name: string;
+  date: string;
+  mode: 'CIECA' | 'CIECONA';
+  status: 'active' | 'completed';
+  createdBy: string;
+}
+
+export interface Wine {
+  id: string;
+  eventId: string;
+  userId: string;
+  name: string;
+  price: number;
+  isRevealed: boolean;
+}
+
+export interface Vote {
+  id: string;
+  eventId: string;
+  wineId: string;
+  userId: string;
+  score: number;
+  hasLode: boolean;
+}
+
+10. client/src/hooks/useLocalStorage.ts
+--------------------------------------
+import { useState, useEffect } from 'react';
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(storedValue));
+    } catch (error) {
+      console.error(`Error updating localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue]);
+
+  return [storedValue, setValue] as const;
+}
+
+11. client/src/utils/helpers.ts
+------------------------------
+export function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('it-IT', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+
+export function calculateWineResults(wines: Wine[], votes: Vote[]) {
+  return wines.map(wine => {
+    const wineVotes = votes.filter(vote => vote.wineId === wine.id);
+    const totalScore = wineVotes.reduce((sum, vote) => sum + vote.score, 0);
+    const averageScore = wineVotes.length > 0 ? totalScore / wineVotes.length : 0;
+    const lodeCount = wineVotes.filter(vote => vote.hasLode).length;
+    
+    return {
+      ...wine,
+      averageScore: Math.round(averageScore * 100) / 100,
+      totalVotes: wineVotes.length,
+      lodeCount
+    };
+  }).sort((a, b) => b.averageScore - a.averageScore);
+}
+
+12. client/src/components/screens/HomeScreen.tsx
+-----------------------------------------------
+import { Users, Shield } from 'lucide-react';
+import { User } from '../../types/wine';
+
+interface HomeScreenProps {
+  users: User[];
+  onUserSelect: (user: User) => void;
+  onAdminAccess: () => void;
+}
+
+export default function HomeScreen({ users, onUserSelect, onAdminAccess }: HomeScreenProps) {
+  return (
+    <div className="flex-1 flex items-center justify-center p-4">
+      <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#764ba2] mb-2">🍷 DIAGONALE</h1>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Utenti Registrati:</h3>
+          
+          {users.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">
+              Nessun utente registrato. Aggiungi il primo utente per iniziare!
+            </p>
+          ) : (
+            users.map(user => (
+              <button
+                key={user.id}
+                onClick={() => onUserSelect(user)}
+                className={`w-full p-4 rounded-xl font-medium flex items-center justify-between wine-card-hover transition-all ${
+                  user.isAdmin 
+                    ? 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white' 
+                    : 'bg-white hover:bg-gray-50 text-gray-800 border-2 border-[#667eea]/20'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <Users className="w-5 h-5" />
+                  <span>{user.name}</span>
+                </div>
+                <span className={`text-sm px-2 py-1 rounded-full ${
+                  user.isAdmin 
+                    ? 'bg-white/20 text-white' 
+                    : 'text-[#667eea]'
+                }`}>
+                  {user.isAdmin ? 'Admin' : 'Utente'}
+                </span>
+              </button>
+            ))
+          )}
+        </div>
+
+        <div className="mt-8 pt-4 border-t border-gray-200">
+          <button
+            onClick={onAdminAccess}
+            className="w-full p-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium flex items-center justify-center space-x-2 transition-all"
+          >
+            <Shield className="w-5 h-5" />
+            <span>Accesso Admin</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+13. client/src/App.tsx (Base Structure)
+--------------------------------------
+import { useState } from 'react';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { User, WineEvent, Wine, Vote } from './types/wine';
+import { generateId } from './utils/helpers';
+import HomeScreen from './components/screens/HomeScreen';
+
+type Screen = 'home' | 'admin' | 'user' | 'events';
+
+function App() {
+  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentEvent, setCurrentEvent] = useState<WineEvent | null>(null);
+
+  const [users, setUsers] = useLocalStorage<User[]>('diagonale_users', []);
+  const [events, setEvents] = useLocalStorage<WineEvent[]>('diagonale_events', []);
+  const [wines, setWines] = useLocalStorage<Wine[]>('diagonale_wines', []);
+  const [votes, setVotes] = useLocalStorage<Vote[]>('diagonale_votes', []);
+
+  const handleUserSelect = (user: User) => {
+    setCurrentUser(user);
+    setCurrentScreen('events');
+  };
+
+  const handleAdminAccess = () => {
+    let adminUser = users.find(user => user.isAdmin);
+    if (!adminUser) {
+      adminUser = {
+        id: generateId(),
+        name: 'Admin',
+        isAdmin: true
+      };
+      setUsers([...users, adminUser]);
+    }
+    setCurrentUser(adminUser);
+    setCurrentScreen('admin');
+  };
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'home':
+        return (
+          <HomeScreen
+            users={users}
+            onUserSelect={handleUserSelect}
+            onAdminAccess={handleAdminAccess}
+          />
+        );
+      default:
+        return <div>Schermata in sviluppo</div>;
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {renderScreen()}
+    </div>
+  );
+}
+
+export default App;
+
+14. server/index.ts
+------------------
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
+
+// Serve static files from dist/public in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(join(__dirname, 'public')));
+  
+  app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, 'public', 'index.html'));
+  });
+} else {
+  // In development, use Vite dev server
+  const { createServer } = await import('./vite.ts');
+  const viteServer = await createServer();
+  app.use(viteServer.middlewares);
+}
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+15. server/vite.ts
+-----------------
+import { createServer as createViteServer } from 'vite';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export async function createServer() {
+  const vite = await createViteServer({
+    configFile: resolve(__dirname, '..', 'vite.config.ts'),
+    server: { middlewareMode: true },
+    appType: 'spa'
+  });
+
+  return vite;
+}
+
+COMANDI PER SETUP:
+=================
+
+1. Inizializzare progetto:
+npm init -y
+npm install react react-dom express ws drizzle-orm @neondatabase/serverless lucide-react wouter zod
+
+2. Installare dev dependencies:
+npm install -D @types/react @types/react-dom @types/express @types/ws @vitejs/plugin-react typescript vite tailwindcss autoprefixer postcss tsx esbuild
+
+3. Avviare development:
+npm run dev
+
+4. Build per produzione:
+npm run build
+
+5. Avviare produzione:
+npm start
+
+CARATTERISTICHE PRINCIPALI:
+==========================
+
+✅ Design mobile-first ottimizzato per smartphone
+✅ Effetto glass perfettamente funzionante
+✅ Layout responsive con container centrato
+✅ Gestione utenti con ruoli admin/user
+✅ Sistema di eventi per degustazioni
+✅ Modalità CIECA e CIECONA
+✅ Votazione 1-10 con "lode"
+✅ Calcolo risultati in tempo reale
+✅ Storage locale per offline-first
+✅ Pronto per deploy su Render/Vercel
+
+NOTES:
+- Tutto in italiano
+- Ottimizzato per dispositivi mobili
+- Layout glass effect garantito
+- Struttura modulare espandibile
+- Pronto per database PostgreSQL

@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(240, 50%, 70%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Wine-specific colors */
+  --wine-primary: hsl(270, 50%, 65%);
+  --wine-secondary: hsl(229, 73%, 69%);
+  --wine-accent: hsl(0, 84.2%, 60.2%);
+  --wine-gold: hsl(43, 96%, 56%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, hsl(229, 73%, 69%) 0%, hsl(270, 50%, 65%) 100%) !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    backdrop-filter: blur(10px) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .wine-card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .wine-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+  }
+
+  .wine-gradient {
+    background: linear-gradient(135deg, hsl(229, 73%, 69%) 0%, hsl(270, 50%, 65%) 100%);
+  }
+
+  .wine-gradient-hover:hover {
+    background: linear-gradient(135deg, hsl(229, 73%, 60%) 0%, hsl(270, 50%, 55%) 100%);
+  }
+
+  .score-button {
+    transition: all 0.2s ease;
+  }
+
+  .score-button:hover {
+    transform: scale(1.05);
+  }
+
+  .score-button.active {
+    background: linear-gradient(135deg, hsl(0, 84.2%, 60.2%) 0%, hsl(0, 84.2%, 50%) 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  }
+
+  .floating-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .logo-filter {
+    filter: none;
+    transition: all 0.3s ease;
+  }
+
+  .logo-filter:hover {
+    filter: none;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

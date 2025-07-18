@@ -1,0 +1,111 @@
+import { Download, Crown, Star, Award, Users } from 'lucide-react';
+import { WineEvent, WineResult } from '@shared/schema';
+import { formatPrice } from '../../utils/helpers';
+
+interface EventResultsScreenProps {
+  event: WineEvent | null;
+  results: WineResult[];
+}
+
+export default function EventResultsScreen({ event, results }: EventResultsScreenProps) {
+  if (!event) return null;
+
+  const totalParticipants = results.length > 0 ? results[0].totalVotes : 0;
+  const averageScore = results.length > 0 
+    ? results.reduce((sum, result) => sum + result.averageScore, 0) / results.length 
+    : 0;
+  const totalLodes = results.reduce((sum, result) => sum + result.lodeCount, 0);
+
+  return (
+    <div className="flex-1 p-4">
+      <div className="max-w-4xl mx-auto space-y-4">
+        <div className="glass-effect rounded-2xl shadow-2xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)]">Risultati Finali</h2>
+              <p className="text-gray-600">{event.name} - {event.date}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="bg-gray-400 text-white px-3 py-1 rounded-full text-sm font-medium">COMPLETATO</span>
+              <button className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors">
+                <Download className="w-4 h-4" />
+                <span>Esporta</span>
+              </button>
+            </div>
+          </div>
+          
+          {results.length === 0 ? (
+            <div className="text-center py-12">
+              <Star className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">Nessun risultato disponibile</p>
+              <p className="text-gray-400 text-sm">Non ci sono ancora voti per questo evento</p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {results.map((result, index) => (
+                  <div key={result.id} className={`bg-white rounded-xl p-4 border-2 wine-card-hover relative ${
+                    index === 0 ? 'border-[hsl(43,96%,56%)]/30' : 'border-gray-300'
+                  }`}>
+                    <div className={`absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                      index === 0 ? 'bg-[hsl(43,96%,56%)] text-white' : 'bg-gray-400 text-white'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div className="ml-12">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <h3 className="font-semibold text-lg text-gray-800">{result.name}</h3>
+                          {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="bg-[hsl(43,96%,56%)] text-white px-2 py-1 rounded-full text-xs">
+                            {formatPrice(result.price)}
+                          </span>
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
+                            <span className="font-bold text-lg">{result.averageScore.toFixed(1)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-gray-600 text-sm">
+                          Portato da: <span className="font-medium">{result.contributor}</span>
+                        </p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <span className="flex items-center space-x-1">
+                            <Users className="w-4 h-4" />
+                            <span>{result.totalVotes} voti</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <Award className="w-4 h-4 text-[hsl(0,84.2%,60.2%)]" />
+                            <span>{result.lodeCount} lodi</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{totalParticipants}</div>
+                  <div className="text-sm text-gray-600">Partecipanti</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{averageScore.toFixed(1)}</div>
+                  <div className="text-sm text-gray-600">Punteggio Medio</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center">
+                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{totalLodes}</div>
+                  <div className="text-sm text-gray-600">Lodi Totali</div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
