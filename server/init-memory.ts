@@ -3,6 +3,8 @@ import { log } from "./vite";
 
 export async function initializeMemoryStorage() {
   try {
+    log("Initializing memory storage...");
+    
     // Verifica se l'utente Admin esiste già
     const adminUser = await storage.getUserByName("Admin");
     
@@ -14,9 +16,9 @@ export async function initializeMemoryStorage() {
         sessionId: null,
         lastActivity: null
       });
-      log("Admin user created");
+      log("✓ Admin user created");
     } else {
-      log("Admin user already exists");
+      log("✓ Admin user already exists");
     }
 
     // Crea un evento di esempio se non esiste
@@ -29,11 +31,15 @@ export async function initializeMemoryStorage() {
         status: "active",
         votingStatus: "pending"
       });
-      log("Sample event created");
+      log("✓ Sample event created");
+    } else {
+      log("✓ Sample event already exists");
     }
 
-    log("Memory storage initialized successfully");
+    log("✓ Memory storage initialized successfully");
   } catch (error) {
-    log(`Error initializing memory storage: ${error}`);
+    log(`✗ Error initializing memory storage: ${error}`);
+    console.error("Memory storage initialization failed:", error);
+    throw error;
   }
 }
