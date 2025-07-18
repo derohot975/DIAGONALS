@@ -112,10 +112,12 @@ Preferred communication style: Simple, everyday language.
 7. **Session Security**: Prevenzione accesso multiplo dispositivi
 
 ### Configurazione Database
-- **Host**: Neon Database PostgreSQL serverless
-- **Schema**: Users, Events, Wines, Votes tables
+- **Host**: Supabase PostgreSQL (EU Central) - Migrazione completata
+- **Schema**: Users, Events, Wines, Votes tables completamente operative
 - **Migrazioni**: Drizzle ORM con push automatico
 - **Inizializzazione**: Auto-creazione utente Admin
+- **Performance**: Connection pooling attivo per ottimizzazione
+- **Persistenza**: Dati condivisi tra sessioni e deploy
 
 ### Architettura Componenti
 - **HomeScreen**: Layout ottimizzato con scroll fisso, icona Shield admin
@@ -138,7 +140,8 @@ Preferred communication style: Simple, everyday language.
 - **Regione**: Oregon (US West)
 - **Status**: ✅ DEPLOYED SUCCESSFULLY
 - **URL**: https://diagonale.onrender.com
-- **Sistema**: In-memory storage (dati separati da Replit)
+- **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
+- **Database**: Migrazione da in-memory a Supabase completata
 
 ## System Architecture
 
@@ -167,11 +170,12 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Data Storage
-- **Current**: In-memory storage for testing and development
-- **Future**: Supabase integration planned for production data persistence
-- **Development**: In-memory storage implementation for quick testing
+- **Current**: Supabase PostgreSQL for production data persistence
+- **Implementation**: DatabaseStorage class with full CRUD operations
+- **Connection**: PostgreSQL 17.4 with connection pooling (EU Central)
 - **ORM**: Drizzle ORM with TypeScript schema definitions
 - **Migrations**: Schema management through Drizzle Kit
+- **Performance**: Optimized queries with indexed relations
 
 ### Authentication & Authorization
 - **User Management**: Simple user selection system without passwords
@@ -233,9 +237,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Production Configuration
 - **Server**: Node.js server serving both API and static files
-- **Database**: Neon Database with connection pooling or in-memory storage
-- **Environment Variables**: DATABASE_URL for database connection (optional)
+- **Database**: Supabase PostgreSQL with connection pooling
+- **Environment Variables**: DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY
 - **Static Files**: Express serves built React application
+- **Security**: Secure connection with SSL/TLS encryption
 
 ### Render Deployment
 - **Platform**: Render.com with GitHub integration
@@ -247,9 +252,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Development Workflow
 - **Local Development**: Hot reload with Vite middleware
-- **Database**: Can use either PostgreSQL or in-memory storage
+- **Database**: Supabase PostgreSQL with shared persistent storage
 - **API Testing**: RESTful endpoints with comprehensive error handling
 - **Real-time Updates**: React Query provides optimistic updates
 - **GitHub Actions**: Automated testing and deployment pipeline
+- **Data Consistency**: Shared database ensures consistent state across environments
 
 The application is designed for easy deployment on Render with GitHub integration. The monorepo structure keeps frontend and backend code organized while sharing common types and schemas. Complete Italian documentation provided for deployment process.
