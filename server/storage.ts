@@ -1,7 +1,4 @@
 import { User, InsertUser, WineEvent, InsertWineEvent, Wine, InsertWine, Vote, InsertVote } from "@shared/schema";
-import { users, wineEvents, wines, votes } from "@shared/schema";
-import { db } from "./db";
-import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -38,202 +35,218 @@ export interface IStorage {
   getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private users: User[] = [];
+  private wineEvents: WineEvent[] = [];
+  private wines: Wine[] = [];
+  private votes: Vote[] = [];
+  private nextUserId = 1;
+  private nextEventId = 1;
+  private nextWineId = 1;
+  private nextVoteId = 1;
+
+  // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return this.users.find(user => user.id === id);
   }
 
   async getUserByName(name: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.name, name));
-    return user || undefined;
+    return this.users.find(user => user.name === name);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
+    const user: User = {
+      id: this.nextUserId++,
+      name: insertUser.name,
+      isAdmin: insertUser.isAdmin || false,
+      sessionId: insertUser.sessionId || null,
+      lastActivity: insertUser.lastActivity || null,
+    };
+    this.users.push(user);
     return user;
   }
 
   async updateUserSession(userId: number, sessionId: string): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ sessionId, lastActivity: new Date() })
-      .where(eq(users.id, userId))
-      .returning();
+    const user = this.users.find(u => u.id === userId);
+    if (user) {
+      user.sessionId = sessionId;
+      user.lastActivity = new Date();
+    }
     return user;
   }
 
   async checkUserSession(userId: number): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
-    return user;
+    return this.users.find(user => user.id === userId);
   }
 
   async clearUserSession(userId: number): Promise<void> {
-    await db
-      .update(users)
-      .set({ sessionId: null, lastActivity: null })
-      .where(eq(users.id, userId));
+    const user = this.users.find(u => u.id === userId);
+    if (user) {
+      user.sessionId = null;
+      user.lastActivity = null;
+    }
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users);
+    return [...this.users];
   }
 
   async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set(updates)
-      .where(eq(users.id, id))
-      .returning();
-    return user || undefined;
+    const user = this.users.find(u => u.id === id);
+    if (user) {
+      Object.assign(user, updates);
+    }
+    return user;
   }
 
   async deleteUser(id: number): Promise<boolean> {
-    const result = await db.delete(users).where(eq(users.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const index = this.users.findIndex(u => u.id === id);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 
   // Wine Event operations
   async getWineEvent(id: number): Promise<WineEvent | undefined> {
-    const [event] = await db.select().from(wineEvents).where(eq(wineEvents.id, id));
-    return event || undefined;
+    return this.wineEvents.find(event => event.id === id);
   }
 
   async createWineEvent(insertEvent: InsertWineEvent): Promise<WineEvent> {
-    const [event] = await db
-      .insert(wineEvents)
-      .values(insertEvent)
-      .returning();
+    const event: WineEvent = {
+      id: this.nextEventId++,
+      name: insertEvent.name,
+      date: insertEvent.date,
+      mode: insertEvent.mode,
+      status: insertEvent.status || 'active',
+      votingStatus: insertEvent.votingStatus || 'pending',
+    };
+    this.wineEvents.push(event);
     return event;
   }
 
   async getAllWineEvents(): Promise<WineEvent[]> {
-    return await db.select().from(wineEvents);
+    return [...this.wineEvents];
   }
 
   async updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined> {
-    const [event] = await db
-      .update(wineEvents)
-      .set({ status })
-      .where(eq(wineEvents.id, id))
-      .returning();
-    return event || undefined;
+    const event = this.wineEvents.find(e => e.id === id);
+    if (event) {
+      event.status = status;
+    }
+    return event;
+  }
+
+  async updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined> {
+    const event = this.wineEvents.find(e => e.id === id);
+    if (event) {
+      event.votingStatus = votingStatus;
+    }
+    return event;
   }
 
   // Wine operations
   async getWine(id: number): Promise<Wine | undefined> {
-    const [wine] = await db.select().from(wines).where(eq(wines.id, id));
-    return wine || undefined;
+    return this.wines.find(wine => wine.id === id);
+  }
+
+  async getWineById(id: number): Promise<Wine | undefined> {
+    return this.wines.find(wine => wine.id === id);
   }
 
   async createWine(insertWine: InsertWine): Promise<Wine> {
-    const [wine] = await db
-      .insert(wines)
-      .values(insertWine)
-      .returning();
+    const wine: Wine = {
+      id: this.nextWineId++,
+      eventId: insertWine.eventId,
+      userId: insertWine.userId,
+      type: insertWine.type,
+      name: insertWine.name,
+      producer: insertWine.producer,
+      grape: insertWine.grape,
+      year: insertWine.year,
+      origin: insertWine.origin,
+      price: insertWine.price,
+      isRevealed: insertWine.isRevealed || false,
+      votingStatus: insertWine.votingStatus || 'pending',
+    };
+    this.wines.push(wine);
     return wine;
   }
 
   async getWinesByEventId(eventId: number): Promise<Wine[]> {
-    return await db.select().from(wines).where(eq(wines.eventId, eventId));
+    return this.wines.filter(wine => wine.eventId === eventId);
   }
 
   async updateWineRevealed(id: number, isRevealed: boolean): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ isRevealed })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
+    const wine = this.wines.find(w => w.id === id);
+    if (wine) {
+      wine.isRevealed = isRevealed;
+    }
+    return wine;
+  }
+
+  async updateWineRevealStatus(id: number, isRevealed: boolean): Promise<Wine | undefined> {
+    const wine = this.wines.find(w => w.id === id);
+    if (wine) {
+      wine.isRevealed = isRevealed;
+    }
+    return wine;
+  }
+
+  async updateWineVotingStatus(id: number, votingStatus: string): Promise<Wine | undefined> {
+    const wine = this.wines.find(w => w.id === id);
+    if (wine) {
+      wine.votingStatus = votingStatus;
+    }
+    return wine;
   }
 
   // Vote operations
   async getVote(id: number): Promise<Vote | undefined> {
-    const [vote] = await db.select().from(votes).where(eq(votes.id, id));
-    return vote || undefined;
+    return this.votes.find(vote => vote.id === id);
   }
 
   async createVote(insertVote: InsertVote): Promise<Vote> {
-    const [vote] = await db
-      .insert(votes)
-      .values(insertVote)
-      .returning();
+    const vote: Vote = {
+      id: this.nextVoteId++,
+      eventId: insertVote.eventId,
+      wineId: insertVote.wineId,
+      userId: insertVote.userId,
+      score: insertVote.score,
+      hasLode: insertVote.hasLode || false,
+    };
+    this.votes.push(vote);
     return vote;
   }
 
   async updateVote(id: number, score: number, hasLode: boolean): Promise<Vote | undefined> {
-    const [vote] = await db
-      .update(votes)
-      .set({ score })
-      .where(eq(votes.id, id))
-      .returning();
-    return vote || undefined;
+    const vote = this.votes.find(v => v.id === id);
+    if (vote) {
+      vote.score = score;
+      vote.hasLode = hasLode;
+    }
+    return vote;
   }
 
   async getVotesByEventId(eventId: number): Promise<Vote[]> {
-    return await db.select().from(votes).where(eq(votes.eventId, eventId));
+    return this.votes.filter(vote => vote.eventId === eventId);
   }
 
   async getVotesByWineId(wineId: number): Promise<Vote[]> {
-    return await db.select().from(votes).where(eq(votes.wineId, wineId));
+    return this.votes.filter(vote => vote.wineId === wineId);
   }
 
   async getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined> {
-    const [vote] = await db
-      .select()
-      .from(votes)
-      .where(and(eq(votes.userId, userId), eq(votes.wineId, wineId)));
-    return vote || undefined;
+    return this.votes.find(vote => vote.userId === userId && vote.wineId === wineId);
   }
 
-  // Nuove funzioni per gestione votazioni avanzate
+  // Advanced functions for voting management
   async getUsersByEventId(eventId: number): Promise<User[]> {
-    const eventWines = await db.select().from(wines).where(eq(wines.eventId, eventId));
+    const eventWines = this.wines.filter(wine => wine.eventId === eventId);
     const userIds = [...new Set(eventWines.map(wine => wine.userId))];
-    if (userIds.length === 0) return [];
-    
-    // Get all users who have registered wines in this event
-    const allUsers = await db.select().from(users);
-    return allUsers.filter(user => userIds.includes(user.id));
-  }
-
-  async updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined> {
-    const [event] = await db
-      .update(wineEvents)
-      .set({ votingStatus })
-      .where(eq(wineEvents.id, id))
-      .returning();
-    return event || undefined;
-  }
-
-  async getWineById(id: number): Promise<Wine | undefined> {
-    const [wine] = await db.select().from(wines).where(eq(wines.id, id));
-    return wine || undefined;
-  }
-
-  async updateWineRevealStatus(id: number, isRevealed: boolean): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ isRevealed })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
-  }
-
-  async updateWineVotingStatus(id: number, votingStatus: string): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ votingStatus })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
+    return this.users.filter(user => userIds.includes(user.id));
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
