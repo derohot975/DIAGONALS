@@ -5,13 +5,25 @@ import * as schema from "../shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-// Supabase connection string format:
-// postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
-const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres.lmggvdulobhxlgdpbpom:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:6543/postgres';
+// Supabase connection string - build from environment variables
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-if (!databaseUrl || databaseUrl.includes('[YOUR-PASSWORD]')) {
+// For Supabase, we need the direct PostgreSQL connection string
+// Format: postgresql://postgres.{project-ref}:{password}@{hostname}:5432/postgres
+let databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl && supabaseUrl) {
+  // Extract project ref from Supabase URL
+  const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
+  // Note: You'll need to add the actual database password as DATABASE_URL secret
+  console.log('Supabase project detected:', projectRef);
+  console.log('Please add DATABASE_URL secret with your Supabase PostgreSQL connection string');
+}
+
+if (!databaseUrl) {
   throw new Error(
-    "DATABASE_URL must be set with valid Supabase connection string. Please check your environment variables.",
+    "DATABASE_URL must be set. Please add your Supabase PostgreSQL connection string to Replit Secrets.",
   );
 }
 
