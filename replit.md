@@ -138,7 +138,7 @@ Preferred communication style: Simple, everyday language.
 - **Start**: npm start (server production)
 - **Ambiente**: NODE_ENV=production, PORT=10000
 - **Regione**: Oregon (US West)
-- **Status**: ✅ DEPLOYED SUCCESSFULLY
+- **Status**: ⚠️ DEPLOY PENDING - Environment variables needed
 - **URL**: https://diagonale.onrender.com
 - **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
 - **Database**: Migrazione da in-memory a Supabase completata
