@@ -8,7 +8,7 @@ DIAGONALE is a mobile-first web application for blind wine tasting events. The a
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 18, 2025 - Updated 14:55)
+## Recent Changes (July 18, 2025 - Updated 15:55)
 
 ### Database & Core System
 - **Database Migration Completed**: Migrated from in-memory storage to PostgreSQL database
@@ -133,7 +133,10 @@ Preferred communication style: Simple, everyday language.
 - **Build**: npm run build (frontend + backend)
 - **Start**: npm start (server production)
 - **Ambiente**: NODE_ENV=production, PORT=10000
-- **Regione**: Frankfurt (EU Central)
+- **Regione**: Oregon (US West)
+- **Status**: ✅ DEPLOYED SUCCESSFULLY
+- **URL**: https://diagonale.onrender.com
+- **Sistema**: In-memory storage (dati separati da Replit)
 
 ## System Architecture
 
