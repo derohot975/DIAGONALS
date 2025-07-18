@@ -1,7 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { initializeMemoryStorage } from "./init-memory";
+import { initializeDatabase } from "./init-db";
 
 const app = express();
 app.use(express.json());
@@ -38,8 +38,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Inizializza il sistema di storage in memoria
-  await initializeMemoryStorage();
+  // Inizializza il database Supabase
+  await initializeDatabase();
   
   const server = await registerRoutes(app);
 
