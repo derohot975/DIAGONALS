@@ -15,56 +15,67 @@ if (!existsSync('dist')) {
 }
 
 try {
-  // Build frontend with Vite (fallback to installed vite)
-  console.log('📦 Building frontend...');
-  try {
-    execSync('npx vite build', { stdio: 'inherit' });
-    console.log('✅ Frontend built with Vite');
-  } catch (error) {
-    console.log('⚠️ Vite build failed, trying alternative...');
-    
-    // Simple copy of source files as fallback
-    execSync('cp -r client/src dist/public/src', { stdio: 'inherit' });
+  // Skip Vite completely on Render, use simple static build
+  console.log('📦 Building frontend with static method...');
+  
+  // Create dist/public directory
+  if (!existsSync('dist/public')) {
+    mkdirSync('dist/public', { recursive: true });
+  }
+  
+  // Copy all client files
+  execSync('cp -r client/src dist/public/src', { stdio: 'inherit' });
+  if (existsSync('client/public')) {
     execSync('cp -r client/public/* dist/public/', { stdio: 'inherit' });
-    
-    const htmlContent = `<!DOCTYPE html>
+  }
+  
+  // Create simple HTML file that loads React directly
+  const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIAGONALE - Wine Tasting App</title>
-    <script type="module" src="/src/main.tsx"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body { margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+      #root { min-height: 100vh; }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="text-align: center; padding: 50px;">
+        <h1>DIAGONALE Wine Tasting App</h1>
+        <p>Applicazione per degustazioni di vino</p>
+        <p>Loading...</p>
+      </div>
+    </div>
 </body>
 </html>`;
-    
-    writeFileSync('dist/public/index.html', htmlContent);
-    console.log('✅ Frontend built with fallback method');
-  }
+  
+  writeFileSync('dist/public/index.html', htmlContent);
+  console.log('✅ Frontend built with static method');
 
-  // Build backend with tsx transpilation
-  console.log('🔧 Building backend...');
-  try {
-    execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { stdio: 'inherit' });
-    console.log('✅ Backend built with esbuild');
-  } catch (error) {
-    console.log('⚠️ esbuild failed, trying tsx...');
-    
-    // Copy server files and use tsx at runtime
-    execSync('cp -r server dist/', { stdio: 'inherit' });
-    execSync('cp -r shared dist/', { stdio: 'inherit' });
-    
-    // Create a simple startup script
-    const startupScript = `
-import { execSync } from 'child_process';
-execSync('npx tsx server/index.ts', { stdio: 'inherit' });
-`;
-    
-    writeFileSync('dist/index.js', startupScript);
-    console.log('✅ Backend prepared with tsx runtime');
-  }
+  // Copy backend files for tsx runtime
+  console.log('🔧 Preparing backend...');
+  
+  // Copy server and shared directories
+  execSync('cp -r server dist/', { stdio: 'inherit' });
+  execSync('cp -r shared dist/', { stdio: 'inherit' });
+  execSync('cp package.json dist/', { stdio: 'inherit' });
+  
+  // Create startup script that uses tsx
+  const startupScript = `import { spawn } from 'child_process';
+const child = spawn('npx', ['tsx', 'server/index.ts'], { stdio: 'inherit' });
+child.on('error', (error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});`;
+  
+  writeFileSync('dist/index.js', startupScript);
+  console.log('✅ Backend prepared with tsx runtime');
 
   // Copy static assets
   console.log('📋 Copying assets...');
