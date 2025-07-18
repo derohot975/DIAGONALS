@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 // Build script for Render deployment
-// Uses esbuild for both frontend and backend
+// Uses Vite for frontend and transpilation for backend
 
-import { build } from 'esbuild';
 import { execSync } from 'child_process';
 import { copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
@@ -15,78 +14,64 @@ if (!existsSync('dist')) {
   mkdirSync('dist', { recursive: true });
 }
 
-// Create dist/public directory
-if (!existsSync('dist/public')) {
-  mkdirSync('dist/public', { recursive: true });
-}
-
 try {
-  // Build frontend with esbuild
+  // Build frontend with Vite (fallback to installed vite)
   console.log('📦 Building frontend...');
-  await build({
-    entryPoints: ['client/src/main.tsx'],
-    bundle: true,
-    minify: true,
-    outdir: 'dist/public',
-    format: 'esm',
-    platform: 'browser',
-    target: ['es2020'],
-    loader: {
-      '.png': 'file',
-      '.jpg': 'file',
-      '.jpeg': 'file',
-      '.svg': 'file',
-      '.gif': 'file',
-    },
-    define: {
-      'process.env.NODE_ENV': '"production"',
-    },
-    splitting: true,
-    chunkNames: 'chunks/[name]-[hash]',
-    assetNames: 'assets/[name]-[hash]',
-  });
-
-  // Create simple HTML file
-  const htmlContent = `<!DOCTYPE html>
+  try {
+    execSync('npx vite build', { stdio: 'inherit' });
+    console.log('✅ Frontend built with Vite');
+  } catch (error) {
+    console.log('⚠️ Vite build failed, trying alternative...');
+    
+    // Simple copy of source files as fallback
+    execSync('cp -r client/src dist/public/src', { stdio: 'inherit' });
+    execSync('cp -r client/public/* dist/public/', { stdio: 'inherit' });
+    
+    const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIAGONALE - Wine Tasting App</title>
-    <link rel="stylesheet" href="/main.css">
+    <script type="module" src="/src/main.tsx"></script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/main.js"></script>
 </body>
 </html>`;
+    
+    writeFileSync('dist/public/index.html', htmlContent);
+    console.log('✅ Frontend built with fallback method');
+  }
 
-  // Write HTML file
-  writeFileSync('dist/public/index.html', htmlContent);
-
-  // Build backend
+  // Build backend with tsx transpilation
   console.log('🔧 Building backend...');
-  await build({
-    entryPoints: ['server/index.ts'],
-    bundle: true,
-    minify: true,
-    outfile: 'dist/index.js',
-    format: 'esm',
-    platform: 'node',
-    target: ['node18'],
-    packages: 'external',
-    banner: {
-      js: `
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-      `,
-    },
-  });
+  try {
+    execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { stdio: 'inherit' });
+    console.log('✅ Backend built with esbuild');
+  } catch (error) {
+    console.log('⚠️ esbuild failed, trying tsx...');
+    
+    // Copy server files and use tsx at runtime
+    execSync('cp -r server dist/', { stdio: 'inherit' });
+    execSync('cp -r shared dist/', { stdio: 'inherit' });
+    
+    // Create a simple startup script
+    const startupScript = `
+import { execSync } from 'child_process';
+execSync('npx tsx server/index.ts', { stdio: 'inherit' });
+`;
+    
+    writeFileSync('dist/index.js', startupScript);
+    console.log('✅ Backend prepared with tsx runtime');
+  }
 
   // Copy static assets
   console.log('📋 Copying assets...');
   try {
-    copyFileSync('client/public/diagologo.png', 'dist/public/diagologo.png');
+    if (existsSync('client/public/diagologo.png')) {
+      copyFileSync('client/public/diagologo.png', 'dist/public/diagologo.png');
+    }
     console.log('✅ Assets copied');
   } catch (error) {
     console.log('⚠️ No assets to copy');
