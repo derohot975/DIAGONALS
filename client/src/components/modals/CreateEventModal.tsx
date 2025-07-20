@@ -4,21 +4,19 @@ import { useState } from 'react';
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateEvent: (name: string, date: string, mode: 'CIECA' | 'CIECONA') => void;
+  onCreateEvent: (name: string, date: string, mode: string) => void;
 }
 
 export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: CreateEventModalProps) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
-  const [mode, setMode] = useState<'CIECA' | 'CIECONA'>('CIECA');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && date) {
-      onCreateEvent(name.trim(), date, mode);
+      onCreateEvent(name.trim(), date, 'DIAGONALE');
       setName('');
       setDate('');
-      setMode('CIECA');
       onClose();
     }
   };
@@ -59,17 +57,7 @@ export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: Cre
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Modalità</label>
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value as 'CIECA' | 'CIECONA')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
-            >
-              <option value="CIECA">CIECA - Degustazione completamente alla cieca</option>
-              <option value="CIECONA">CIECONA - Degustazione semi-alla cieca</option>
-            </select>
-          </div>
+
           
           <div className="flex space-x-2">
             <button

@@ -55,7 +55,7 @@ export default function AdminEventManagementScreen({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-lg text-gray-800">{event.name}</h4>
-                      <p className="text-sm text-gray-600">{formatDate(event.date)} • {event.mode}</p>
+                      <p className="text-sm text-gray-600">{formatDate(event.date)} • DIAGONALE</p>
                       <p className="text-xs text-gray-500">Creato da: {getCreatorName(event.createdBy)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -96,7 +96,7 @@ export default function AdminEventManagementScreen({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-lg text-gray-700">{event.name}</h4>
-                      <p className="text-sm text-gray-600">{formatDate(event.date)} • {event.mode}</p>
+                      <p className="text-sm text-gray-600">{formatDate(event.date)} • DIAGONALE</p>
                       <p className="text-xs text-gray-500">Creato da: {getCreatorName(event.createdBy)}</p>
                     </div>
                     <div className="flex items-center space-x-2">

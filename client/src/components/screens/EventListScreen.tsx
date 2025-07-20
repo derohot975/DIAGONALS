@@ -63,7 +63,7 @@ export default function EventListScreen({
                 {/* Mode - Terza riga centrata */}
                 <div className="text-center mb-8">
                   <span className="text-lg font-medium text-gray-700">
-                    {event.mode === 'CIECA' ? 'Degustazione alla Cieca' : 'Degustazione alla Ciecona'}
+                    Degustazione alla Cieca
                   </span>
                 </div>
 
@@ -108,12 +108,8 @@ export default function EventListScreen({
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold text-lg text-gray-700">{event.name}</h3>
                   <div className="flex items-center space-x-2">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      event.mode === 'CIECA' 
-                        ? 'bg-gray-300 text-gray-700' 
-                        : 'bg-gray-400 text-white'
-                    }`}>
-                      {event.mode}
+                    <span className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm font-medium">
+                      DIAGONALE
                     </span>
 
                   </div>

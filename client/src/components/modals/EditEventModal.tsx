@@ -5,27 +5,25 @@ import { WineEvent } from '@shared/schema';
 interface EditEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpdateEvent: (id: number, name: string, date: string, mode: 'CIECA' | 'CIECONA') => void;
+  onUpdateEvent: (id: number, name: string, date: string, mode: string) => void;
   event: WineEvent | null;
 }
 
 export default function EditEventModal({ isOpen, onClose, onUpdateEvent, event }: EditEventModalProps) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
-  const [mode, setMode] = useState<'CIECA' | 'CIECONA'>('CIECA');
 
   useEffect(() => {
     if (event) {
       setName(event.name);
       setDate(event.date);
-      setMode(event.mode as 'CIECA' | 'CIECONA');
     }
   }, [event]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && date && event) {
-      onUpdateEvent(event.id, name.trim(), date, mode);
+      onUpdateEvent(event.id, name.trim(), date, 'DIAGONALE');
       onClose();
     }
   };
@@ -66,17 +64,7 @@ export default function EditEventModal({ isOpen, onClose, onUpdateEvent, event }
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Modalità</label>
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value as 'CIECA' | 'CIECONA')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
-            >
-              <option value="CIECA">CIECA - Degustazione completamente alla cieca</option>
-              <option value="CIECONA">CIECONA - Degustazione semi-alla cieca</option>
-            </select>
-          </div>
+
           
           <div className="flex space-x-2">
             <button
