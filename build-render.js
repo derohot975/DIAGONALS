@@ -1,37 +1,52 @@
 #!/usr/bin/env node
 
-// Simplified build script for Render - uses standard Vite build
+// Universal build script - works for Render, Netlify, Vercel
 import { execSync } from 'child_process';
-import { copyFileSync, mkdirSync, existsSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
 
-console.log('🚀 Starting Render build process...');
+console.log('🚀 Starting production build...');
 
 try {
   // Create directories
-  if (!existsSync('dist')) {
-    mkdirSync('dist', { recursive: true });
-  }
+  mkdirSync('dist', { recursive: true });
+  mkdirSync('dist/public', { recursive: true });
 
-  // Frontend build with Vite (standard)
-  console.log('📦 Building frontend with Vite...');
-  execSync('npx vite build', { stdio: 'inherit' });
-  console.log('✅ Frontend built successfully');
+  console.log('📦 Building frontend...');
+  
+  // Set production environment
+  process.env.NODE_ENV = 'production';
+  
+  // Build frontend with working directory and config
+  execSync('npx vite build --config client/vite.config.ts', { 
+    stdio: 'inherit',
+    env: { ...process.env, NODE_ENV: 'production' }
+  });
+  
+  console.log('✅ Frontend built');
 
-  // Backend build with esbuild  
   console.log('🔧 Building backend...');
-  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { stdio: 'inherit' });
-  console.log('✅ Backend built successfully');
+  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --define:process.env.NODE_ENV="production"', { 
+    stdio: 'inherit' 
+  });
+  
+  console.log('✅ Backend built');
 
-  // Copy assets
-  console.log('📋 Copying assets...');
-  if (existsSync('client/public/diagologo.png')) {
-    copyFileSync('client/public/diagologo.png', 'dist/public/diagologo.png');
-    console.log('✅ Logo copied');
-  }
+  // Create simple package.json for production
+  const prodPackage = {
+    "name": "diagonale-production",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+      "start": "node index.js"
+    }
+  };
+  
+  writeFileSync('dist/package.json', JSON.stringify(prodPackage, null, 2));
 
   console.log('✅ Build completed successfully!');
 
 } catch (error) {
   console.error('❌ Build failed:', error);
+  console.error('Error details:', error.message);
   process.exit(1);
 }
