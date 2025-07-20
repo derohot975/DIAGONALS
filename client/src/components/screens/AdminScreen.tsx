@@ -102,21 +102,21 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
       </div>
 
       {/* Pulsanti sotto il modale */}
-      <div className="flex justify-between w-full max-w-md mt-4">
+      <div className="flex justify-between w-full max-w-md mt-4 space-x-4">
         <button
           onClick={onGoBack}
-          className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
+          className="p-3 glass-effect rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/30"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5 text-[hsl(270,50%,65%)]" />
         </button>
         
         <button
           onClick={onGoBack}
-          className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
+          className="flex items-center space-x-2 px-4 py-3 glass-effect rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/30"
           title="Torna alla Home"
         >
-          <Home className="w-4 h-4" />
-          <span>Home</span>
+          <Home className="w-5 h-5 text-[hsl(270,50%,65%)]" />
+          <span className="text-gray-800 font-medium">Home</span>
         </button>
       </div>
     </div>
