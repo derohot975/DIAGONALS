@@ -1,4 +1,4 @@
-import { Wine, Users, Calendar, Clock, ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { Wine, Users, Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
 
@@ -11,8 +11,7 @@ interface EventListScreenProps {
   onGoBack: () => void;
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
-  onEditEvent?: (event: WineEvent) => void;
-  onDeleteEvent?: (eventId: number) => void;
+
 }
 
 export default function EventListScreen({ 
@@ -23,9 +22,7 @@ export default function EventListScreen({
   onShowEventResults,
   onGoBack,
   onRegisterWine,
-  onParticipateEvent,
-  onEditEvent,
-  onDeleteEvent
+  onParticipateEvent
 }: EventListScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -48,25 +45,7 @@ export default function EventListScreen({
             
             {activeEvents.map(event => (
               <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
-                {/* Admin controls - Top right */}
-                {currentUser?.isAdmin && onEditEvent && onDeleteEvent && (
-                  <div className="flex justify-end space-x-2 mb-4">
-                    <button
-                      onClick={() => onEditEvent(event)}
-                      className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-                      title="Modifica evento"
-                    >
-                      <Edit className="w-4 h-4 text-gray-600" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteEvent(event.id)}
-                      className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                      title="Elimina evento"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-600" />
-                    </button>
-                  </div>
-                )}
+
 
                 {/* Event Name - Prima riga */}
                 <div className="text-center mb-6">
@@ -136,24 +115,7 @@ export default function EventListScreen({
                     }`}>
                       {event.mode}
                     </span>
-                    {currentUser?.isAdmin && onEditEvent && onDeleteEvent && (
-                      <div className="flex space-x-1">
-                        <button
-                          onClick={() => onEditEvent(event)}
-                          className="p-1 rounded-full hover:bg-gray-200 transition-colors"
-                          title="Modifica evento"
-                        >
-                          <Edit className="w-3 h-3 text-gray-600" />
-                        </button>
-                        <button
-                          onClick={() => onDeleteEvent(event.id)}
-                          className="p-1 rounded-full hover:bg-red-100 transition-colors"
-                          title="Elimina evento"
-                        >
-                          <Trash2 className="w-3 h-3 text-red-600" />
-                        </button>
-                      </div>
-                    )}
+
                   </div>
                 </div>
                 

@@ -9,6 +9,7 @@ import { apiRequest } from './lib/queryClient';
 import HomeScreen from './components/screens/HomeScreen';
 import AdminScreen from './components/screens/AdminScreen';
 import EventListScreen from './components/screens/EventListScreen';
+import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
 import AdminVotingScreen from './components/screens/AdminVotingScreen';
@@ -19,7 +20,7 @@ import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import FloatingNavigation from './components/FloatingNavigation';
 
-type Screen = 'home' | 'admin' | 'events' | 'eventDetails' | 'eventResults' | 'adminVoting';
+type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'adminVoting';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -403,7 +404,7 @@ function App() {
             users={users}
             onShowAddUserModal={() => setShowAddUserModal(true)}
             onShowCreateEventModal={() => setShowCreateEventModal(true)}
-            onShowEventList={() => setCurrentScreen('events')}
+            onShowEventList={() => setCurrentScreen('adminEvents')}
             onShowVotingManager={() => setCurrentScreen('adminVoting')}
             onShowEditUserModal={handleShowEditUserModal}
             onDeleteUser={handleDeleteUser}
@@ -421,6 +422,14 @@ function App() {
             onGoBack={() => setCurrentScreen('home')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
+          />
+        );
+      case 'adminEvents':
+        return (
+          <AdminEventManagementScreen
+            events={events}
+            users={users}
+            onGoBack={() => setCurrentScreen('admin')}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
           />
