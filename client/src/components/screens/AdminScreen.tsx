@@ -15,17 +15,10 @@ interface AdminScreenProps {
 export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowVotingManager, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
   return (
     <div className="flex-1 flex items-center justify-center p-4">
-      <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
-        <div className="flex items-center mb-6">
-          <button
-            onClick={onGoBack}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors mr-3"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </button>
-          <div className="text-center flex-1">
-            <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
-          </div>
+      <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in relative">
+        {/* Titolo centrato */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
         </div>
 
         <div className="space-y-4">
@@ -106,6 +99,15 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             </button>
           </div>
         </div>
+
+        {/* Pulsante Home in basso a sinistra */}
+        <button
+          onClick={onGoBack}
+          className="absolute bottom-4 left-4 p-3 bg-white/20 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+          title="Torna alla Home"
+        >
+          <ArrowLeft className="w-5 h-5 text-[hsl(270,50%,65%)]" />
+        </button>
       </div>
     </div>
   );
