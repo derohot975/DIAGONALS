@@ -8,7 +8,7 @@ DIAGONALE is a mobile-first web application for blind wine tasting events. The a
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 21, 2025 - Updated 01:18)
+## Recent Changes (July 21, 2025 - Updated 01:31)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -35,7 +35,8 @@ Preferred communication style: Simple, everyday language.
 - **Event Display**: Name (first row), Date (second row), Mode description (third row), Status centered
 - **Dual Action Buttons**: Separated into "REGISTRA IL TUO VINO" and "PARTECIPA ALLA DIAGONALE"
 - **Enhanced Styling**: Magical gradient effects on participation button with smooth transitions
-- **Navigation**: Added back arrow button for intuitive navigation between screens
+- **Navigation Standardization**: All back arrow and home buttons use consistent circular blue style
+- **Fixed Bottom Positioning**: All navigation buttons positioned at bottom of pages for better UX
 - **Clean Interface**: Removed redundant elements like home button from event pages
 
 ### Home Page Optimization (18 Luglio 2025 - 14:55)

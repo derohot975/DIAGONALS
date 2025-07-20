@@ -107,15 +107,18 @@ export default function AdminVotingScreen({ onBack }: AdminVotingScreenProps) {
     return (
       <div className="flex-1 p-4 max-w-2xl mx-auto">
         <div className="mb-6">
+          <h1 className="text-2xl font-bold mb-2">Seleziona Evento</h1>
+          <p className="text-muted-foreground">Scegli l'evento per cui gestire le votazioni</p>
+        </div>
+        
+        {/* Pulsante Back fisso in fondo per selezione evento */}
+        <div className="fixed bottom-4 left-4 z-50">
           <button
             onClick={onBack}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all mb-4"
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          
-          <h1 className="text-2xl font-bold mb-2">Seleziona Evento</h1>
-          <p className="text-muted-foreground">Scegli l'evento per cui gestire le votazioni</p>
         </div>
 
         <div className="space-y-4">
@@ -161,15 +164,18 @@ export default function AdminVotingScreen({ onBack }: AdminVotingScreenProps) {
   return (
     <div className="flex-1 p-4 max-w-2xl mx-auto">
       <div className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">Gestione Votazioni</h1>
+        <p className="text-muted-foreground">{selectedEvent?.name}</p>
+      </div>
+      
+      {/* Pulsante Back fisso in fondo */}
+      <div className="fixed bottom-4 left-4 z-50">
         <button
           onClick={onBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all mb-4"
+          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        
-        <h1 className="text-2xl font-bold mb-2">Gestione Votazioni</h1>
-        <p className="text-muted-foreground">{selectedEvent?.name}</p>
       </div>
 
       {/* Phase Control */}

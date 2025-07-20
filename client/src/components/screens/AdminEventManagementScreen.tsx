@@ -127,8 +127,8 @@ export default function AdminEventManagementScreen({
         </div>
       </div>
 
-      {/* Pulsante Back sotto il modale */}
-      <div className="flex justify-start w-full max-w-2xl mt-4">
+      {/* Pulsante Back fisso in fondo */}
+      <div className="fixed bottom-4 left-4 z-50">
         <button
           onClick={onGoBack}
           className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
