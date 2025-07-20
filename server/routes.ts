@@ -182,6 +182,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const eventData = insertWineEventSchema.partial().parse(req.body);
+      const event = await storage.updateWineEvent(id, eventData);
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      res.json(event);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid event data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update event" });
+      }
+    }
+  });
+
+  app.delete("/api/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteWineEvent(id);
+      if (!success) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      res.json({ message: "Event deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete event" });
+    }
+  });
+
   app.patch("/api/events/:id/status", async (req, res) => {
     try {
       const id = parseInt(req.params.id);

@@ -15,6 +15,7 @@ import AdminVotingScreen from './components/screens/AdminVotingScreen';
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
 import CreateEventModal from './components/modals/CreateEventModal';
+import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import FloatingNavigation from './components/FloatingNavigation';
 
@@ -32,6 +33,8 @@ function App() {
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [showEditEventModal, setShowEditEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<WineEvent | null>(null);
   const [showWineRegistrationModal, setShowWineRegistrationModal] = useState(false);
 
   const { toast } = useToast();
@@ -115,6 +118,34 @@ function App() {
     },
     onError: () => {
       toast({ title: 'Errore nella creazione dell\'evento', variant: 'destructive' });
+    },
+  });
+
+  const updateEventMutation = useMutation({
+    mutationFn: async ({ id, eventData }: { id: number; eventData: { name: string; date: string; mode: 'CIECA' | 'CIECONA' } }) => {
+      const response = await apiRequest('PATCH', `/api/events/${id}`, eventData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ title: 'Evento aggiornato con successo!' });
+    },
+    onError: () => {
+      toast({ title: 'Errore nell\'aggiornamento dell\'evento', variant: 'destructive' });
+    },
+  });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('DELETE', `/api/events/${eventId}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ title: 'Evento eliminato con successo!' });
+    },
+    onError: () => {
+      toast({ title: 'Errore nell\'eliminazione dell\'evento', variant: 'destructive' });
     },
   });
 
@@ -253,6 +284,21 @@ function App() {
     createEventMutation.mutate({ name, date, mode, createdBy: currentUser.id });
   };
 
+  const handleUpdateEvent = (id: number, name: string, date: string, mode: 'CIECA' | 'CIECONA') => {
+    updateEventMutation.mutate({ id, eventData: { name, date, mode } });
+  };
+
+  const handleEditEvent = (event: WineEvent) => {
+    setEditingEvent(event);
+    setShowEditEventModal(true);
+  };
+
+  const handleDeleteEvent = (eventId: number) => {
+    if (confirm('Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.')) {
+      deleteEventMutation.mutate(eventId);
+    }
+  };
+
   const handleRegisterWine = (wineData: {
     type: string;
     name: string;
@@ -369,11 +415,14 @@ function App() {
           <EventListScreen
             events={events}
             users={users}
+            currentUser={currentUser}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
             onGoBack={() => setCurrentScreen('home')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
+            onEditEvent={handleEditEvent}
+            onDeleteEvent={handleDeleteEvent}
           />
         );
       case 'eventDetails':
@@ -446,6 +495,16 @@ function App() {
         onCreateEvent={handleCreateEvent}
       />
       
+      <EditEventModal
+        isOpen={showEditEventModal}
+        onClose={() => {
+          setShowEditEventModal(false);
+          setEditingEvent(null);
+        }}
+        onUpdateEvent={handleUpdateEvent}
+        event={editingEvent}
+      />
+
       <WineRegistrationModal
         isOpen={showWineRegistrationModal}
         onClose={() => setShowWineRegistrationModal(false)}

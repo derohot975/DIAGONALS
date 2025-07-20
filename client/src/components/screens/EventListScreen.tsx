@@ -1,25 +1,31 @@
-import { Wine, Users, Calendar, Clock, ArrowLeft } from 'lucide-react';
+import { Wine, Users, Calendar, Clock, ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
 
 interface EventListScreenProps {
   events: WineEvent[];
   users: User[];
+  currentUser: User | null;
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
   onGoBack: () => void;
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
+  onEditEvent?: (event: WineEvent) => void;
+  onDeleteEvent?: (eventId: number) => void;
 }
 
 export default function EventListScreen({ 
   events, 
   users, 
+  currentUser,
   onShowEventDetails, 
   onShowEventResults,
   onGoBack,
   onRegisterWine,
-  onParticipateEvent 
+  onParticipateEvent,
+  onEditEvent,
+  onDeleteEvent
 }: EventListScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -42,6 +48,26 @@ export default function EventListScreen({
             
             {activeEvents.map(event => (
               <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
+                {/* Admin controls - Top right */}
+                {currentUser?.isAdmin && onEditEvent && onDeleteEvent && (
+                  <div className="flex justify-end space-x-2 mb-4">
+                    <button
+                      onClick={() => onEditEvent(event)}
+                      className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                      title="Modifica evento"
+                    >
+                      <Edit className="w-4 h-4 text-gray-600" />
+                    </button>
+                    <button
+                      onClick={() => onDeleteEvent(event.id)}
+                      className="p-2 rounded-full hover:bg-red-100 transition-colors"
+                      title="Elimina evento"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </button>
+                  </div>
+                )}
+
                 {/* Event Name - Prima riga */}
                 <div className="text-center mb-6">
                   <h3 className="text-3xl font-bold text-gray-800 mb-2">
@@ -102,13 +128,33 @@ export default function EventListScreen({
               <div key={event.id} className="bg-white rounded-xl p-4 border-2 border-gray-200 opacity-80">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold text-lg text-gray-700">{event.name}</h3>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    event.mode === 'CIECA' 
-                      ? 'bg-gray-300 text-gray-700' 
-                      : 'bg-gray-400 text-white'
-                  }`}>
-                    {event.mode}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      event.mode === 'CIECA' 
+                        ? 'bg-gray-300 text-gray-700' 
+                        : 'bg-gray-400 text-white'
+                    }`}>
+                      {event.mode}
+                    </span>
+                    {currentUser?.isAdmin && onEditEvent && onDeleteEvent && (
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => onEditEvent(event)}
+                          className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                          title="Modifica evento"
+                        >
+                          <Edit className="w-3 h-3 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => onDeleteEvent(event.id)}
+                          className="p-1 rounded-full hover:bg-red-100 transition-colors"
+                          title="Elimina evento"
+                        >
+                          <Trash2 className="w-3 h-3 text-red-600" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="flex items-center justify-between">

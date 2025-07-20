@@ -22,6 +22,8 @@ export interface IStorage {
   getWineEvent(id: number): Promise<WineEvent | undefined>;
   createWineEvent(event: InsertWineEvent): Promise<WineEvent>;
   getAllWineEvents(): Promise<WineEvent[]>;
+  updateWineEvent(id: number, updates: Partial<InsertWineEvent>): Promise<WineEvent | undefined>;
+  deleteWineEvent(id: number): Promise<boolean>;
   updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined>;
   updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined>;
   
@@ -132,6 +134,20 @@ export class DatabaseStorage implements IStorage {
     return event || undefined;
   }
 
+  async updateWineEvent(id: number, updates: Partial<InsertWineEvent>): Promise<WineEvent | undefined> {
+    const [event] = await db
+      .update(wineEvents)
+      .set(updates)
+      .where(eq(wineEvents.id, id))
+      .returning();
+    return event || undefined;
+  }
+
+  async deleteWineEvent(id: number): Promise<boolean> {
+    const result = await db.delete(wineEvents).where(eq(wineEvents.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   async updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined> {
     const [event] = await db
       .update(wineEvents)
@@ -208,7 +224,7 @@ export class DatabaseStorage implements IStorage {
   async updateVote(id: number, score: number, hasLode: boolean): Promise<Vote | undefined> {
     const [vote] = await db
       .update(votes)
-      .set({ score })
+      .set({ score: score.toString() })
       .where(eq(votes.id, id))
       .returning();
     return vote || undefined;
@@ -233,7 +249,7 @@ export class DatabaseStorage implements IStorage {
   // Advanced functions for voting management
   async getUsersByEventId(eventId: number): Promise<User[]> {
     const eventWines = await db.select().from(wines).where(eq(wines.eventId, eventId));
-    const userIds = [...new Set(eventWines.map(wine => wine.userId))];
+    const userIds = Array.from(new Set(eventWines.map(wine => wine.userId)));
     if (userIds.length === 0) return [];
     
     // Get all users who have registered wines in this event
