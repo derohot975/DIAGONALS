@@ -231,6 +231,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Wine routes
+  app.get("/api/wines", async (req, res) => {
+    try {
+      const eventId = req.query.eventId ? parseInt(req.query.eventId as string) : null;
+      if (eventId) {
+        const wines = await storage.getWinesByEventId(eventId);
+        res.json(wines);
+      } else {
+        res.status(400).json({ message: "eventId query parameter is required" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch wines" });
+    }
+  });
+
   app.get("/api/events/:eventId/wines", async (req, res) => {
     try {
       const eventId = parseInt(req.params.eventId);
@@ -271,6 +285,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Vote routes
+  app.get("/api/votes", async (req, res) => {
+    try {
+      const eventId = req.query.eventId ? parseInt(req.query.eventId as string) : null;
+      if (eventId) {
+        const votes = await storage.getVotesByEventId(eventId);
+        res.json(votes);
+      } else {
+        res.status(400).json({ message: "eventId query parameter is required" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch votes" });
+    }
+  });
+
   app.get("/api/events/:eventId/votes", async (req, res) => {
     try {
       const eventId = parseInt(req.params.eventId);

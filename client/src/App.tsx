@@ -51,17 +51,17 @@ function App() {
   });
 
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ['/api/events', selectedEventId, 'wines'],
+    queryKey: ['/api/wines?eventId=' + selectedEventId],
     enabled: !!selectedEventId,
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({
-    queryKey: ['/api/events', selectedEventId, 'votes'],
+    queryKey: ['/api/votes?eventId=' + selectedEventId],
     enabled: !!selectedEventId,
   });
 
   const { data: results = [] } = useQuery<WineResult[]>({
-    queryKey: ['/api/events', selectedEventId, 'results'],
+    queryKey: ['/api/events/' + selectedEventId + '/results'],
     enabled: !!selectedEventId && currentScreen === 'eventResults',
   });
 
@@ -166,7 +166,7 @@ function App() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events', selectedEventId, 'wines'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/wines?eventId=' + selectedEventId] });
       toast({ title: 'Vino registrato con successo!' });
     },
     onError: () => {
@@ -180,7 +180,7 @@ function App() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events', selectedEventId, 'votes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/votes?eventId=' + selectedEventId] });
       toast({ title: 'Voto registrato!' });
     },
     onError: () => {
@@ -195,6 +195,9 @@ function App() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      if (selectedEventId) {
+        queryClient.invalidateQueries({ queryKey: ['/api/events/' + selectedEventId + '/results'] });
+      }
       toast({ title: 'Evento completato!' });
     },
     onError: () => {
