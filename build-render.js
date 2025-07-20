@@ -1,62 +1,35 @@
 #!/usr/bin/env node
 
-// RENDER PRODUCTION BUILD - SIMPLIFIED VERSION
+// RENDER BUILD SCRIPT - GENERATES FILES IN ROOT FOR SIMPLE START
 import { execSync } from 'child_process';
 import { mkdirSync, writeFileSync, copyFileSync, existsSync } from 'fs';
 
-console.log('🚀 Starting Render production build...');
+console.log('🚀 Starting Render build...');
 
 try {
-  // Install dependencies first (crucial for Render)
   console.log('📦 Installing dependencies...');
   execSync('npm install', { stdio: 'inherit' });
 
-  // Create output directories
-  mkdirSync('dist', { recursive: true });
-  mkdirSync('dist/public', { recursive: true });
-
   console.log('🎨 Building frontend...');
-  
-  // Install client dependencies specifically
   execSync('cd client && npm install', { stdio: 'inherit' });
-  
-  // Build frontend from client directory
-  execSync('cd client && npx vite build --outDir ../dist/public', { 
+  execSync('cd client && npx vite build --outDir ../public', { 
     stdio: 'inherit',
     env: { ...process.env, NODE_ENV: 'production' }
   });
   
-  console.log('✅ Frontend built successfully');
-
   console.log('⚡ Building backend...');
-  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { 
+  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=server-prod.js', { 
     stdio: 'inherit' 
   });
   
-  console.log('✅ Backend built successfully');
+  console.log('✅ Build completed successfully!');
+  console.log('📁 Frontend files: ./public/');
+  console.log('🚀 Backend file: ./server-prod.js');
+  console.log('▶️ Start with: NODE_ENV=production node server-prod.js');
 
-  // Create production package.json
-  const prodPackage = {
-    "name": "diagonale-production",
-    "version": "1.0.0",
-    "type": "module",
-    "main": "index.js",
-    "scripts": {
-      "start": "node index.js"
-    },
-    "dependencies": {
-      "express": "^4.18.2",
-      "@neondatabase/serverless": "^0.9.0",
-      "drizzle-orm": "^0.33.0"
-    }
-  };
-  
-  writeFileSync('dist/package.json', JSON.stringify(prodPackage, null, 2));
-
-  console.log('🎉 Build completed successfully for Render!');
+  console.log('🎉 Build completed - files in root directory!');
 
 } catch (error) {
   console.error('❌ Build failed:', error);
-  console.error('Stack:', error.stack);
   process.exit(1);
 }
