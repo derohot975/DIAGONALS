@@ -17,8 +17,11 @@ try {
 
   console.log('🎨 Building frontend...');
   
-  // Build frontend from client directory with all dependencies available
-  execSync('cd client && npm run build', { 
+  // Install client dependencies specifically
+  execSync('cd client && npm install', { stdio: 'inherit' });
+  
+  // Build frontend from client directory
+  execSync('cd client && npx vite build --outDir ../dist/public', { 
     stdio: 'inherit',
     env: { ...process.env, NODE_ENV: 'production' }
   });
