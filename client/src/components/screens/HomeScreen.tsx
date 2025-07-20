@@ -50,12 +50,12 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
               Nessun iscritto registrato. Aggiungi il primo utente per iniziare!
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {regularUsers.map(user => (
                 <button
                   key={user.id}
                   onClick={() => onUserSelect(user)}
-                  className="w-1/2 mx-auto p-3 rounded-xl font-medium flex items-center justify-center wine-card-hover transition-all bg-white hover:bg-gray-50 text-gray-800 border-2 border-[hsl(229,73%,69%)]/20 text-sm shadow-lg hover:shadow-xl"
+                  className="w-full block p-4 rounded-xl font-medium text-center wine-card-hover transition-all glass-effect hover:bg-white/80 text-gray-800 border border-white/30 shadow-lg hover:shadow-xl"
                 >
                   <span>{user.name}</span>
                 </button>

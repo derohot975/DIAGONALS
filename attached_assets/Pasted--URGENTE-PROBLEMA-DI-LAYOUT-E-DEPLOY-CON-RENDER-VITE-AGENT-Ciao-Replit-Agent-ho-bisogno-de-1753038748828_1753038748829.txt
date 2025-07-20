@@ -1,0 +1,59 @@
+📣 URGENTE - PROBLEMA DI LAYOUT E DEPLOY CON RENDER / VITE / AGENT
+
+Ciao Replit Agent, ho bisogno del tuo aiuto per ripristinare correttamente la mia app React + Express (con Supabase), che:
+
+- funzionava perfettamente su Replit
+- è stata modificata automaticamente dopo il tuo intervento per supportare il deploy su Render
+- ma ora ha layout sballato, Vite non trova i file, e il deploy fallisce
+
+------------------------------------------------------------
+⚠️ PROBLEMI RISCONTRATI
+
+1. Il layout è completamente sballato
+   - L’interfaccia utente non è più centrata, il contenuto è orizzontale, l’effetto glass è scomparso
+   - La Home mobile non è più responsive: tutti i pulsanti utente sono in un’unica riga
+   - Prima funzionava perfettamente (UI semplice, mobile-first, bottone per ogni utente, centrati in una griglia fluida)
+
+2. L’app crasha in locale con Vite
+   Errore:
+   [vite] Pre-transform error: Failed to load url /main.tsx (resolved id: /main.tsx)
+
+3. Il deploy su Render fallisce
+   - L'errore durante la build è:
+     cp: cannot create directory 'dist/public/src': No such file or directory
+
+4. Commits automatici dell’Agent hanno modificato il layout e la build
+   - Sono stati introdotti commit come:
+     > Refactors the build process by switching from esbuild to Vite
+     Questi commit hanno rotto il layout e introdotto errori nel processo di build.
+   - Lo script build-render.js tenta di copiare cartelle che non esistono, senza fallback corretti.
+
+------------------------------------------------------------
+✅ COSA SERVE RIPRISTINARE
+
+🔁 Frontend
+- Ripristinare il layout originale centrato, ottimizzato per smartphone
+- Eliminare modifiche CSS o componenti che hanno deformato la UI
+
+🛠️ Server + Build
+- Garantire che vite non sia richiesto in produzione oppure incluso correttamente
+- Correggere vite.config.ts e package.json per gestire bene il percorso client/ → dist/public
+- Eliminare o sistemare build-render.js (il cp fallisce)
+- Verificare che la root finale contenga:
+  /dist/public/index.html, /dist/public/assets, ecc.
+
+------------------------------------------------------------
+📦 Dipendenze
+Attualmente vite è solo in devDependencies, ma il server lo usa in runtime per servire statici in dev → va incluso in dependencies o rimosso dal server in prod.
+
+------------------------------------------------------------
+✅ OBIETTIVO
+
+1. Ripristinare il layout UI originale funzionante su Replit (effetto glass, centrato, responsive mobile)
+2. Far funzionare la build sia in sviluppo (Replit) che in produzione (Render)
+3. Evitare modifiche automatiche che rompono struttura e layout
+4. Mantenere compatibilità con Supabase (già funzionante)
+
+
+
+Grazie in anticipo!
