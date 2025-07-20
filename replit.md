@@ -8,7 +8,7 @@ DIAGONALE is a mobile-first web application for blind wine tasting events. The a
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 18, 2025 - Updated 17:52)
+## Recent Changes (July 21, 2025 - Updated 01:18)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -57,15 +57,18 @@ Preferred communication style: Simple, everyday language.
 
 ### User Management
 - **Full CRUD Operations**: Complete user management in admin panel
-- **Security Enhancement**: Removed admin checkbox from new user creation for security
+- **Security Enhancement**: Removed admin checkbox from all user creation/editing for security
 - **Admin Interface**: Clean separation between admin functions and participant views
 - **User Flow**: Simplified navigation from home to events via user selection
+- **Participant Only**: All registered users are always regular participants, never admin
 
-### Event Management
+### Event Management  
+- **Vista Separata Admin/Utenti**: Implementata AdminEventManagementScreen per gestione vs EventListScreen per partecipazione
+- **Modalità Unica**: Rimossa selezione CIECA/CIECONA, ora solo modalità DIAGONALE unica
 - **Active/Historic Separation**: Events clearly separated between active and completed
 - **Event Status**: Visual indicators for active events with animated pulse effect
-- **Event Modes**: Clear display of CIECA vs CIECONA with proper Italian terminology
 - **Layout Optimization**: Almost full-page design for single event display
+- **Partecipanti Solo Utenti**: Tutti i partecipanti sono sempre utenti normali, mai admin
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing

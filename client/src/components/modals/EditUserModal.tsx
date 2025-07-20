@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, User, Shield } from 'lucide-react';
+import { X } from 'lucide-react';
 import { User as UserType } from '@shared/schema';
 
 interface EditUserModalProps {
@@ -11,19 +11,17 @@ interface EditUserModalProps {
 
 export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: EditUserModalProps) {
   const [name, setName] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (user) {
       setName(user.name);
-      setIsAdmin(user.isAdmin);
     }
   }, [user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && user) {
-      onUpdateUser(user.id, name.trim(), isAdmin);
+      onUpdateUser(user.id, name.trim(), false); // Always false - only regular users
       onClose();
     }
   };
@@ -58,41 +56,7 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: E
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tipo Utente
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="user"
-                  checked={!isAdmin}
-                  onChange={() => setIsAdmin(false)}
-                  className="text-[hsl(270,50%,65%)]"
-                />
-                <div className="flex items-center space-x-2">
-                  <User className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">Utente Normale</span>
-                </div>
-              </label>
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="admin"
-                  checked={isAdmin}
-                  onChange={() => setIsAdmin(true)}
-                  className="text-[hsl(270,50%,65%)]"
-                />
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-4 h-4 text-[hsl(270,50%,65%)]" />
-                  <span className="text-sm text-gray-700">Amministratore</span>
-                </div>
-              </label>
-            </div>
-          </div>
+
 
           <div className="flex space-x-3 pt-4">
             <button
