@@ -24,8 +24,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           <div className="text-center flex-1">
-            <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">🛠️ Admin Panel</h1>
-            <p className="text-gray-600 text-sm">Gestione Sistema</p>
+            <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
           </div>
         </div>
 
