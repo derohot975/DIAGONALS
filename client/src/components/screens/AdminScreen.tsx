@@ -38,35 +38,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
         </div>
 
-        {/* Toggle Controllo Accesso Unico */}
-        <div className="mb-4 bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-orange-800 mb-1">Accesso Unico</h3>
-              <p className="text-xs text-orange-600">Un utente per dispositivo</p>
-            </div>
-            <button
-              onClick={toggleUniqueSession}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                uniqueSessionEnabled 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {uniqueSessionEnabled ? (
-                <>
-                  <ToggleRight className="w-5 h-5" />
-                  <span className="text-sm font-medium">ON</span>
-                </>
-              ) : (
-                <>
-                  <ToggleLeft className="w-5 h-5" />
-                  <span className="text-sm font-medium">OFF</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+
 
         <div className="space-y-4">
           <div className="bg-white/50 rounded-xl p-4 border border-gray-200">
@@ -143,6 +115,36 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             >
               <Settings className="w-4 h-4" />
               <span>Gestisci Votazioni</span>
+            </button>
+          </div>
+        </div>
+        
+        {/* Toggle Controllo Accesso Unico - In fondo */}
+        <div className="mt-4 bg-orange-50 rounded-xl p-4 border border-orange-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-orange-800 mb-1">Accesso Unico</h3>
+              <p className="text-xs text-orange-600">Un utente per dispositivo</p>
+            </div>
+            <button
+              onClick={toggleUniqueSession}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                uniqueSessionEnabled 
+                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {uniqueSessionEnabled ? (
+                <>
+                  <ToggleRight className="w-5 h-5" />
+                  <span className="text-sm font-medium">ON</span>
+                </>
+              ) : (
+                <>
+                  <ToggleLeft className="w-5 h-5" />
+                  <span className="text-sm font-medium">OFF</span>
+                </>
+              )}
             </button>
           </div>
         </div>
