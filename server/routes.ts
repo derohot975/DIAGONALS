@@ -55,8 +55,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      // Check if user is already logged in from another device
-      if (user.sessionId) {
+      // Check unique session setting from header (passed from frontend)
+      const uniqueSessionEnabled = req.headers['x-unique-session-enabled'] !== 'false';
+      
+      // Check if user is already logged in from another device (only if enabled)
+      if (uniqueSessionEnabled && user.sessionId) {
         // Check if session is still active (less than 5 minutes of inactivity)
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
         if (user.lastActivity && user.lastActivity > fiveMinutesAgo) {

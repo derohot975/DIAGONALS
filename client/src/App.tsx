@@ -208,7 +208,26 @@ function App() {
   // Session management mutations
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
-      const response = await apiRequest('POST', `/api/users/${userId}/login`, {});
+      // Get unique session setting from localStorage
+      const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') !== 'false';
+      
+      const response = await fetch(`/api/users/${userId}/login`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Unique-Session-Enabled': uniqueSessionEnabled.toString()
+        },
+        body: JSON.stringify({}),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const text = await response.text();
+        const error = new Error(`${response.status}: ${text}`);
+        (error as any).status = response.status;
+        throw error;
+      }
+      
       return response.json();
     },
     onSuccess: (data) => {

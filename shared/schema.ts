@@ -47,6 +47,8 @@ export const votes = pgTable("votes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -67,6 +69,8 @@ export const insertVoteSchema = createInsertSchema(votes).omit({
   id: true,
   createdAt: true,
 });
+
+
 
 // Types
 export type User = typeof users.$inferSelect;

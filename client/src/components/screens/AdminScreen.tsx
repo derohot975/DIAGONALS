@@ -1,5 +1,6 @@
-import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home } from 'lucide-react';
+import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight } from 'lucide-react';
 import { User } from '@shared/schema';
+import { useState, useEffect } from 'react';
 
 interface AdminScreenProps {
   users: User[];
@@ -13,12 +14,58 @@ interface AdminScreenProps {
 }
 
 export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowVotingManager, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
+  const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('diagonale_unique_session_enabled');
+    if (saved !== null) {
+      setUniqueSessionEnabled(saved === 'true');
+    }
+  }, []);
+
+  const toggleUniqueSession = () => {
+    const newValue = !uniqueSessionEnabled;
+    setUniqueSessionEnabled(newValue);
+    localStorage.setItem('diagonale_unique_session_enabled', newValue.toString());
+    localStorage.setItem('diagonale_unique_session_changed', Date.now().toString());
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
         {/* Titolo centrato */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
+        </div>
+
+        {/* Toggle Controllo Accesso Unico */}
+        <div className="mb-4 bg-orange-50 rounded-xl p-4 border border-orange-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-orange-800 mb-1">Accesso Unico</h3>
+              <p className="text-xs text-orange-600">Un utente per dispositivo</p>
+            </div>
+            <button
+              onClick={toggleUniqueSession}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                uniqueSessionEnabled 
+                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {uniqueSessionEnabled ? (
+                <>
+                  <ToggleRight className="w-5 h-5" />
+                  <span className="text-sm font-medium">ON</span>
+                </>
+              ) : (
+                <>
+                  <ToggleLeft className="w-5 h-5" />
+                  <span className="text-sm font-medium">OFF</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">
