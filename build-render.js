@@ -1,52 +1,59 @@
 #!/usr/bin/env node
 
-// Universal build script - works for Render, Netlify, Vercel
+// RENDER PRODUCTION BUILD - SIMPLIFIED VERSION
 import { execSync } from 'child_process';
-import { copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync, copyFileSync, existsSync } from 'fs';
 
-console.log('🚀 Starting production build...');
+console.log('🚀 Starting Render production build...');
 
 try {
-  // Create directories
+  // Install dependencies first (crucial for Render)
+  console.log('📦 Installing dependencies...');
+  execSync('npm install', { stdio: 'inherit' });
+
+  // Create output directories
   mkdirSync('dist', { recursive: true });
   mkdirSync('dist/public', { recursive: true });
 
-  console.log('📦 Building frontend...');
+  console.log('🎨 Building frontend...');
   
-  // Set production environment
-  process.env.NODE_ENV = 'production';
-  
-  // Build frontend with working directory and config
-  execSync('npx vite build --config client/vite.config.ts', { 
+  // Build frontend from client directory with all dependencies available
+  execSync('cd client && npm run build', { 
     stdio: 'inherit',
     env: { ...process.env, NODE_ENV: 'production' }
   });
   
-  console.log('✅ Frontend built');
+  console.log('✅ Frontend built successfully');
 
-  console.log('🔧 Building backend...');
-  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --define:process.env.NODE_ENV="production"', { 
+  console.log('⚡ Building backend...');
+  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { 
     stdio: 'inherit' 
   });
   
-  console.log('✅ Backend built');
+  console.log('✅ Backend built successfully');
 
-  // Create simple package.json for production
+  // Create production package.json
   const prodPackage = {
     "name": "diagonale-production",
     "version": "1.0.0",
     "type": "module",
+    "main": "index.js",
     "scripts": {
       "start": "node index.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "@neondatabase/serverless": "^0.9.0",
+      "drizzle-orm": "^0.33.0"
     }
   };
   
   writeFileSync('dist/package.json', JSON.stringify(prodPackage, null, 2));
 
-  console.log('✅ Build completed successfully!');
+  console.log('🎉 Build completed successfully for Render!');
 
 } catch (error) {
   console.error('❌ Build failed:', error);
-  console.error('Error details:', error.message);
+  console.error('Stack:', error.stack);
   process.exit(1);
 }
