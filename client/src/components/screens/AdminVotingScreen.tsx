@@ -109,10 +109,9 @@ export default function AdminVotingScreen({ onBack }: AdminVotingScreenProps) {
         <div className="mb-6">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4"
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all mb-4"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Indietro
+            <ArrowLeft className="w-5 h-5" />
           </button>
           
           <h1 className="text-2xl font-bold mb-2">Seleziona Evento</h1>
@@ -164,10 +163,9 @@ export default function AdminVotingScreen({ onBack }: AdminVotingScreenProps) {
       <div className="mb-6">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4"
+          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all mb-4"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Indietro
+          <ArrowLeft className="w-5 h-5" />
         </button>
         
         <h1 className="text-2xl font-bold mb-2">Gestione Votazioni</h1>
