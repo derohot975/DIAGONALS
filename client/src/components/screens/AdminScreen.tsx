@@ -1,4 +1,4 @@
-import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings } from 'lucide-react';
+import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home } from 'lucide-react';
 import { User } from '@shared/schema';
 
 interface AdminScreenProps {
@@ -101,14 +101,22 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
         </div>
       </div>
 
-      {/* Pulsante Home sotto il modale */}
-      <div className="flex justify-start w-full max-w-md mt-4">
+      {/* Pulsanti sotto il modale */}
+      <div className="flex justify-between w-full max-w-md mt-4">
         <button
           onClick={onGoBack}
-          className="p-3 bg-white/20 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+          className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+        
+        <button
+          onClick={onGoBack}
+          className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
           title="Torna alla Home"
         >
-          <ArrowLeft className="w-5 h-5 text-[hsl(270,50%,65%)]" />
+          <Home className="w-4 h-4" />
+          <span>Home</span>
         </button>
       </div>
     </div>
