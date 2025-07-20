@@ -521,7 +521,7 @@ function App() {
       />
 
       {/* Floating Navigation - Hide HOME button when on home screen */}
-      {currentScreen !== 'home' && (
+      {currentScreen !== 'home' && currentScreen !== 'admin' && (
         <FloatingNavigation
           onShowHome={() => setCurrentScreen('home')}
         />
