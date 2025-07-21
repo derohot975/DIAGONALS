@@ -72,29 +72,33 @@ export default function EventDetailsScreen({
             </div>
             <div className="flex items-center space-x-2">
               <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">ATTIVO</span>
-              {!userHasRegisteredWine ? (
-                <button
-                  onClick={onShowWineRegistrationModal}
-                  className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>REGISTRA IL TUO VINO</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => votingIsActive ? onShowResults(event.id) : null}
-                  disabled={!votingIsActive}
-                  className={`px-4 py-2 rounded-xl flex items-center space-x-2 transition-all ${
-                    votingIsActive 
-                      ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(229,73%,69%)] hover:from-[hsl(270,60%,70%)] hover:to-[hsl(229,83%,74%)] text-white shadow-lg' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>{votingIsActive ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}</span>
-                </button>
-              )}
             </div>
+          </div>
+
+          {/* LOGICA PULSANTI CONDIZIONALI - SEZIONE SEPARATA */}
+          <div className="mt-6 space-y-3">
+            {!userHasRegisteredWine ? (
+              <button
+                onClick={onShowWineRegistrationModal}
+                className="w-full bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
+              >
+                <Plus className="w-5 h-5" />
+                <span>REGISTRA IL TUO VINO</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => votingIsActive ? onShowResults(event.id) : null}
+                disabled={!votingIsActive}
+                className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
+                  votingIsActive 
+                    ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(229,73%,69%)] hover:from-[hsl(270,60%,70%)] hover:to-[hsl(229,83%,74%)] text-white shadow-lg' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                <Eye className="w-5 h-5" />
+                <span>{votingIsActive ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}</span>
+              </button>
+            )}
           </div>
           
           {wines.length === 0 ? (
