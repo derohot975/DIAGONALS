@@ -106,11 +106,13 @@
   .logo-filter {
     filter: none;
     transition: all 0.3s ease;
+    drop-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 
   .logo-filter:hover {
     filter: none;
     transform: scale(1.05);
+    drop-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
   }
 }
 
