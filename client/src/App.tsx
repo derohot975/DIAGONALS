@@ -593,6 +593,7 @@ function App() {
           <AdminEventManagementScreen
             events={events}
             users={users}
+            wines={wines}
             onGoBack={() => setCurrentScreen('admin')}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}

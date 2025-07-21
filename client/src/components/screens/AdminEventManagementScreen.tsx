@@ -6,6 +6,7 @@ import diagoLogo from '@assets/diagologo.png';
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
   users: User[];
+  wines: any[];
   onGoBack: () => void;
   onEditEvent: (event: WineEvent) => void;
   onDeleteEvent: (eventId: number) => void;
@@ -16,6 +17,7 @@ interface AdminEventManagementScreenProps {
 export default function AdminEventManagementScreen({ 
   events, 
   users,
+  wines,
   onGoBack,
   onEditEvent,
   onDeleteEvent,
@@ -25,6 +27,14 @@ export default function AdminEventManagementScreen({
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
     return user?.name || 'Unknown';
+  };
+
+  // Calcola il numero di partecipanti per evento (utenti che hanno registrato vini)
+  const getParticipantsCount = (eventId: number) => {
+    if (!wines || !Array.isArray(wines)) return 0;
+    const eventWines = wines.filter(wine => wine.eventId === eventId);
+    const uniqueUsers = new Set(eventWines.map(wine => wine.userId));
+    return uniqueUsers.size;
   };
 
   const activeEvents = events.filter(event => event.status === 'active');
@@ -68,7 +78,7 @@ export default function AdminEventManagementScreen({
 
                     {/* Participants Count */}
                     <div className="text-center mb-8">
-                      <p className="text-lg text-gray-600">⭐ <span className="font-bold">12 partecipanti</span> ⭐</p>
+                      <p className="text-lg text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
                     </div>
 
                     {/* Primary Action - Voting Control */}

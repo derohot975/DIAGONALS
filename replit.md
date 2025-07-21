@@ -75,6 +75,8 @@ Preferred communication style: Simple, everyday language.
 - **Flusso Registrazione-Votazione**: Implementato con logica pulsanti condizionali esclusivi
 - **Messaggio Successo**: Aggiunto "REGISTRATO CON SUCCESSO!" con stelline animate gialle
 - **Layout Eventi**: Rimosso "Degustazione alla Cieca" e status "ATTIVO" per design più pulito
+- **Conteggio Partecipanti**: Numero dinamico basato su utenti che hanno registrato vini per evento specifico
+- **VotingScreen Separata**: Pagina votazione dedicata per utenti, separata da sezione admin
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing
