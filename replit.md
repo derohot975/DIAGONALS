@@ -71,6 +71,7 @@ Preferred communication style: Simple, everyday language.
 - **Layout Optimization**: Almost full-page design for single event display
 - **Partecipanti Solo Utenti**: Tutti i partecipanti sono sempre utenti normali, mai admin
 - **Aggiornamento Eventi**: Database constraint rimosso, modifica eventi funzionante
+- **Creazione Eventi**: Sistema riparato, funziona con messaggio di conferma migliorato
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing
