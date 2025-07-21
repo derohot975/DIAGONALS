@@ -50,7 +50,6 @@ export default function AdminEventManagementScreen({
             <div className="space-y-6">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-white mb-2">Gestione Eventi</h2>
-                <p className="text-white/80">Amministra e controlla i tuoi eventi attivi</p>
               </div>
               
               {activeEvents.map(event => (
@@ -60,22 +59,22 @@ export default function AdminEventManagementScreen({
                     
                     {/* Event Header */}
                     <div className="flex items-start justify-between mb-6">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
+                      <div className="flex-1 text-center">
+                        <div className="flex items-center justify-center space-x-3 mb-2">
                           <div className={`w-3 h-3 rounded-full ${event.votingStatus === 'voting' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
                           <span className={`text-sm font-medium ${event.votingStatus === 'voting' ? 'text-green-600' : 'text-gray-500'}`}>
                             {event.votingStatus === 'voting' ? 'VOTAZIONI ATTIVE' : 'VOTAZIONI SOSPESE'}
                           </span>
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-800 mb-2">{event.name}</h3>
-                        <p className="text-lg text-gray-600 flex items-center">
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
+                        <p className="text-lg text-gray-600 flex items-center justify-center">
                           <Calendar className="w-5 h-5 mr-2" />
                           {formatDate(event.date)}
                         </p>
                       </div>
                       
                       {/* Action Menu */}
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 absolute top-6 right-6">
                         <button
                           onClick={() => onEditEvent(event)}
                           className="p-3 bg-white/50 hover:bg-white/70 rounded-xl border border-gray-200 transition-all duration-200 hover:scale-105"
@@ -133,38 +132,24 @@ export default function AdminEventManagementScreen({
                     </div>
 
                     {/* Primary Action - Voting Control */}
-                    <div className="bg-white/60 rounded-2xl p-6 border border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="p-3 bg-gray-100 rounded-xl">
-                            <Settings className="w-6 h-6 text-gray-600" />
-                          </div>
-                          <div>
-                            <h4 className="text-lg font-semibold text-gray-800">Controllo Votazioni</h4>
-                            <p className="text-sm text-gray-600">Gestisci lo stato delle votazioni per questo evento</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-3">
-                          {event.votingStatus === 'voting' ? (
-                            <button
-                              onClick={() => onDeactivateVoting(event.id)}
-                              className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-lg rounded-xl transition-all duration-200 hover:scale-105 shadow-xl"
-                            >
-                              <Square className="w-6 h-6" />
-                              <span>SOSPENDI VOTAZIONI</span>
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => onActivateVoting(event.id)}
-                              className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg rounded-xl transition-all duration-200 hover:scale-105 shadow-xl"
-                            >
-                              <Play className="w-6 h-6" />
-                              <span>AVVIA VOTAZIONI</span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                    <div className="mt-8">
+                      {event.votingStatus === 'voting' ? (
+                        <button
+                          onClick={() => onDeactivateVoting(event.id)}
+                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                        >
+                          <Square className="w-6 h-6" />
+                          <span>SOSPENDI VOTAZIONI</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => onActivateVoting(event.id)}
+                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                        >
+                          <Play className="w-6 h-6" />
+                          <span>AVVIA VOTAZIONI</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
