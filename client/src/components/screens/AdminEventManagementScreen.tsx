@@ -1,35 +1,26 @@
 import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings } from 'lucide-react';
-import { WineEvent, User, Wine as WineType } from '@shared/schema';
+import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
-import { AdminWineSelector } from '../AdminWineSelector';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
   users: User[];
-  wines: WineType[];
   onGoBack: () => void;
   onEditEvent: (event: WineEvent) => void;
   onDeleteEvent: (eventId: number) => void;
   onActivateVoting: (eventId: number) => void;
   onDeactivateVoting: (eventId: number) => void;
-  onSelectCurrentWine: (eventId: number, wineId: number) => void;
-  onNextWine: (eventId: number) => void;
-  onStopVoting: (eventId: number) => void;
 }
 
 export default function AdminEventManagementScreen({ 
   events, 
   users,
-  wines,
   onGoBack,
   onEditEvent,
   onDeleteEvent,
   onActivateVoting,
-  onDeactivateVoting,
-  onSelectCurrentWine,
-  onNextWine,
-  onStopVoting
+  onDeactivateVoting
 }: AdminEventManagementScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -80,38 +71,25 @@ export default function AdminEventManagementScreen({
                       <p className="text-lg text-gray-600">⭐ <span className="font-bold">12 partecipanti</span> ⭐</p>
                     </div>
 
-                    {/* Wine Management Section */}
-                    <div className="mt-8 space-y-6">
-                      {/* Wine Selector for Sequential Voting */}
-                      <AdminWineSelector
-                        wines={wines.filter(w => w.eventId === event.id)}
-                        users={users}
-                        currentVotingWineId={event.currentVotingWineId}
-                        onSelectWine={(wineId) => onSelectCurrentWine(event.id, wineId)}
-                        onNextWine={() => onNextWine(event.id)}
-                        onStopVoting={() => onStopVoting(event.id)}
-                      />
-
-                      {/* Primary Action - Voting Control */}
-                      <div>
-                        {event.votingStatus === 'voting' ? (
-                          <button
-                            onClick={() => onDeactivateVoting(event.id)}
-                            className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
-                          >
-                            <Square className="w-6 h-6" />
-                            <span>SOSPENDI VOTAZIONI</span>
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => onActivateVoting(event.id)}
-                            className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
-                          >
-                            <Play className="w-6 h-6" />
-                            <span>AVVIA VOTAZIONI</span>
-                          </button>
-                        )}
-                      </div>
+                    {/* Primary Action - Voting Control */}
+                    <div className="mt-8">
+                      {event.votingStatus === 'voting' ? (
+                        <button
+                          onClick={() => onDeactivateVoting(event.id)}
+                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                        >
+                          <Square className="w-6 h-6" />
+                          <span>SOSPENDI VOTAZIONI</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => onActivateVoting(event.id)}
+                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                        >
+                          <Play className="w-6 h-6" />
+                          <span>AVVIA VOTAZIONI</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 

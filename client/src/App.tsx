@@ -12,6 +12,7 @@ import EventListScreen from './components/screens/EventListScreen';
 import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
+import VotingScreen from './components/screens/VotingScreen';
 
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
@@ -21,7 +22,7 @@ import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import InstallPrompt from './components/InstallPrompt';
 import FloatingNavigation from './components/FloatingNavigation';
 
-type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults';
+type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -504,7 +505,7 @@ function App() {
 
   const handleParticipateEvent = (eventId: number) => {
     setSelectedEventId(eventId);
-    setCurrentScreen('eventDetails');
+    setCurrentScreen('voting');
   };
 
   const handleCompleteEvent = (eventId: number) => {
@@ -592,15 +593,23 @@ function App() {
           <AdminEventManagementScreen
             events={events}
             users={users}
-            wines={wines}
             onGoBack={() => setCurrentScreen('admin')}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
             onActivateVoting={handleActivateVoting}
             onDeactivateVoting={handleDeactivateVoting}
-            onSelectCurrentWine={handleSelectCurrentWine}
-            onNextWine={handleNextWine}
-            onStopVoting={handleStopVoting}
+          />
+        );
+      case 'voting':
+        return (
+          <VotingScreen
+            event={currentEvent}
+            wines={wines}
+            votes={votes}
+            users={users}
+            currentUser={currentUser}
+            onGoBack={() => setCurrentScreen('events')}
+            onVoteForWine={handleVoteForWine}
           />
         );
       case 'eventDetails':

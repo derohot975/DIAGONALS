@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { Wine, Users, Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { WineEvent, User, Wine as WineType, Vote } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
-import { VotingModal } from '../VotingModal';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventListScreenProps {
@@ -32,8 +30,6 @@ export default function EventListScreen({
   onParticipateEvent,
   onVoteForWine
 }: EventListScreenProps) {
-  const [isVotingModalOpen, setIsVotingModalOpen] = useState(false);
-
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
     return user?.name || 'Unknown';
@@ -43,30 +39,6 @@ export default function EventListScreen({
   const userHasRegisteredWineForEvent = (eventId: number) => {
     if (!currentUser || !wines || !Array.isArray(wines)) return false;
     return wines.some(wine => wine.eventId === eventId && wine.userId === currentUser.id);
-  };
-
-  // Ottieni il vino corrente in votazione per un evento
-  const getCurrentVotingWine = (event: WineEvent) => {
-    if (!event.currentVotingWineId) return null;
-    return wines.find(wine => wine.id === event.currentVotingWineId) || null;
-  };
-
-  // Ottieni il contributore di un vino
-  const getWineContributor = (wine: WineType) => {
-    return users.find(user => user.id === wine.userId) || null;
-  };
-
-  // Ottieni il voto dell'utente per un vino specifico
-  const getUserVoteForWine = (wineId: number) => {
-    if (!currentUser) return undefined;
-    return votes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
-  };
-
-  // Ottieni label del vino (A, B, C, etc.)
-  const getWineLabel = (event: WineEvent, wine: WineType) => {
-    const eventWines = wines.filter(w => w.eventId === event.id);
-    const index = eventWines.findIndex(w => w.id === wine.id);
-    return `Vino ${String.fromCharCode(65 + index)}`;
   };
 
   const activeEvents = events.filter(event => event.status === 'active');
@@ -140,24 +112,10 @@ export default function EventListScreen({
                       </div>
                       
                       <button
-                        onClick={() => {
-                          if (event.votingStatus === 'voting' && event.currentVotingWineId) {
-                            setIsVotingModalOpen(true);
-                          }
-                        }}
-                        disabled={event.votingStatus !== 'voting' || !event.currentVotingWineId}
-                        className={`w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl ${
-                          event.votingStatus === 'voting' && event.currentVotingWineId
-                            ? 'bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                        onClick={() => onParticipateEvent(event.id)}
+                        className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white"
                       >
-                        {event.votingStatus === 'voting' && event.currentVotingWineId 
-                          ? 'PARTECIPA ALLA DIAGONALE' 
-                          : event.votingStatus === 'voting' 
-                            ? 'ATTENDI SELEZIONE VINO'
-                            : 'ATTENDI ATTIVAZIONE VOTAZIONI'
-                        }
+                        PARTECIPA ALLA DIAGONALE
                       </button>
                     </div>
                   )}
@@ -223,31 +181,6 @@ export default function EventListScreen({
         </div>
         
       </div>
-
-      {/* Voting Modal */}
-      {activeEvents.map(event => {
-        const currentWine = getCurrentVotingWine(event);
-        const wineContributor = currentWine ? getWineContributor(currentWine) : null;
-        const userVote = currentWine ? getUserVoteForWine(currentWine.id) : undefined;
-        const wineLabel = currentWine ? getWineLabel(event, currentWine) : '';
-        
-        return (
-          <VotingModal
-            key={`voting-${event.id}`}
-            isOpen={isVotingModalOpen && event.votingStatus === 'voting' && !!event.currentVotingWineId}
-            onClose={() => setIsVotingModalOpen(false)}
-            currentWine={currentWine}
-            wineContributor={wineContributor}
-            userVote={userVote}
-            onVote={(score) => {
-              if (currentWine) {
-                onVoteForWine(currentWine.id, score);
-              }
-            }}
-            wineLabel={wineLabel}
-          />
-        );
-      })}
     </div>
     </div>
   );
