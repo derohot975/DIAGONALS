@@ -2,7 +2,7 @@
 
 ## Overview
 
-DIAGONALE is a mobile-first web application for blind wine tasting events. The app supports two tasting modes: "CIECA" (blind) and "CIECONA" (blind with enhanced features). Users can create tasting events, register wines, vote on wines, and view comprehensive results. The application follows a modern full-stack architecture with React frontend and Express backend.
+DIAGONALE is a mobile-only web application for blind wine tasting events, optimized exclusively for smartphones. The app supports two tasting modes: "CIECA" (blind) and "CIECONA" (blind with enhanced features). Users can create tasting events, register wines, vote on wines, and view comprehensive results. The application follows a modern full-stack architecture with React frontend and Express backend.
 
 ## User Preferences
 
@@ -135,7 +135,7 @@ Preferred communication style: Simple, everyday language.
 - **Colori**: Palette HSL con sfumature viola/blu professionale
 - **Tipografia**: Font system con dimensioni responsive
 - **Animazioni**: Transizioni fluide e hover effects
-- **Layout**: Design mobile-first con adattamento desktop
+- **Layout**: Design mobile-only ottimizzato per smartphone
 
 ### Deployment Configuration
 - **Piattaforma**: Replit Deployment (gratuito)
