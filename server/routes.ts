@@ -188,6 +188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      console.log('Updating event:', id, 'with data:', req.body);
       const eventData = insertWineEventSchema.partial().parse(req.body);
       const event = await storage.updateWineEvent(id, eventData);
       if (!event) {
@@ -196,10 +197,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(event);
     } catch (error) {
+      console.error('Event update error:', error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid event data", errors: error.errors });
       } else {
-        res.status(500).json({ message: "Failed to update event" });
+        res.status(500).json({ message: "Failed to update event", error: error.message });
       }
     }
   });

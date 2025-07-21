@@ -70,6 +70,7 @@ Preferred communication style: Simple, everyday language.
 - **Event Status**: Visual indicators for active events with animated pulse effect
 - **Layout Optimization**: Almost full-page design for single event display
 - **Partecipanti Solo Utenti**: Tutti i partecipanti sono sempre utenti normali, mai admin
+- **Aggiornamento Eventi**: Database constraint rimosso, modifica eventi funzionante
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing
