@@ -94,7 +94,7 @@ export default function AdminEventManagementScreen({
                   </div>
 
                   {/* Action Menu - Below Modal */}
-                  <div className="flex justify-start space-x-3 mt-4">
+                  <div className="flex justify-end space-x-3 mt-4">
                     <button
                       onClick={() => onEditEvent(event)}
                       className="p-3 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-all duration-200 border border-gray-300 shadow-sm"
