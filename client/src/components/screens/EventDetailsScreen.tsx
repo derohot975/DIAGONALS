@@ -1,6 +1,7 @@
 import { Plus, EyeOff, Star, Award, Eye } from 'lucide-react';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
 import { formatPrice, calculateProgress } from '../../utils/helpers';
+import diagoLogo from '@assets/diagologo.png';
 
 interface EventDetailsScreenProps {
   event: WineEvent | null;
@@ -68,8 +69,19 @@ export default function EventDetailsScreen({
   );
 
   return (
-    <div className="flex-1 p-4">
-      <div className="max-w-4xl mx-auto space-y-4">
+    <div className="flex-1 flex flex-col">
+      {/* Logo Header */}
+      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
+        <img 
+          src={diagoLogo} 
+          alt="DIAGO Logo" 
+          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
+        />
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -243,6 +255,7 @@ export default function EventDetailsScreen({
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

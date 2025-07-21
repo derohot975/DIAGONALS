@@ -155,10 +155,10 @@ export default function AdminEventManagementScreen({
       </div>
 
       {/* Fixed Back Button */}
-      <div className="flex-shrink-0 flex justify-center pb-8 pt-4">
+      <div className="fixed bottom-4 left-4 z-50">
         <button
           onClick={onGoBack}
-          className="w-12 h-12 bg-[hsl(230,70%,60%)] text-white rounded-full shadow-lg hover:bg-[hsl(230,70%,50%)] transition-all duration-200 flex items-center justify-center hover:scale-105"
+          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>

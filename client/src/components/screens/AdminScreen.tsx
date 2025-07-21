@@ -2,6 +2,7 @@ import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Setti
 // CACHE BREAKER v2.1
 import { User } from '@shared/schema';
 import { useState, useEffect } from 'react';
+import diagoLogo from '@assets/diagologo.png';
 
 interface AdminScreenProps {
   users: User[];
@@ -31,12 +32,23 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
-        {/* ADMIN HEADER - FINAL VERSION */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
-        </div>
+    <div className="flex-1 flex flex-col">
+      {/* Logo Header */}
+      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
+        <img 
+          src={diagoLogo} 
+          alt="DIAGO Logo" 
+          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
+        />
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="w-full max-w-md mx-auto">
+          {/* ADMIN HEADER - FINAL VERSION */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-white mb-1">ADMIN</h1>
+          </div>
 
 
 
@@ -143,6 +155,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           </div>
         </div>
       </div>
+    </div>
 
       {/* Pulsanti fissi in fondo alla pagina */}
       <div className="fixed bottom-4 left-4 z-50">
