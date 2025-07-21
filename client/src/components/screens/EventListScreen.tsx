@@ -58,14 +58,10 @@ export default function EventListScreen({
         {/* Active Events */}
         {activeEvents.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white text-center mb-6">
-              Eventi Attivi
-            </h2>
-            
             {/* User Name Display */}
             {currentUser && (
               <div className="text-center mb-6">
-                <h3 className="text-3xl font-bold text-yellow-400">
+                <h3 className="text-5xl font-bold text-yellow-400">
                   {currentUser.name}
                 </h3>
               </div>
@@ -82,9 +78,11 @@ export default function EventListScreen({
                   </h3>
                 </div>
 
-                {/* Date - Seconda riga centrata */}
+                {/* Date - Seconda riga centrata ed evidenziata */}
                 <div className="text-center mb-6">
-                  <span className="text-xl font-medium text-gray-600">{formatDate(event.date)}</span>
+                  <div className="inline-block bg-gradient-to-r from-[hsl(270,50%,75%)] to-[hsl(280,45%,70%)] px-6 py-3 rounded-2xl shadow-lg">
+                    <span className="text-xl font-bold text-white">{formatDate(event.date)}</span>
+                  </div>
                 </div>
 
 
