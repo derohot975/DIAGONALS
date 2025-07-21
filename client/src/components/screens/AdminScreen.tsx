@@ -8,13 +8,12 @@ interface AdminScreenProps {
   onShowAddUserModal: () => void;
   onShowCreateEventModal: () => void;
   onShowEventList: () => void;
-  onShowVotingManager: () => void;
   onShowEditUserModal: (user: User) => void;
   onDeleteUser: (userId: number) => void;
   onGoBack: () => void;
 }
 
-export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowVotingManager, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
+export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
   const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(true);
 
   useEffect(() => {
@@ -110,13 +109,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
               <span>Gestisci Eventi</span>
             </button>
             
-            <button
-              onClick={onShowVotingManager}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Gestisci Votazioni</span>
-            </button>
+
           </div>
         </div>
         

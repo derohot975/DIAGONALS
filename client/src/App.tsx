@@ -12,7 +12,7 @@ import EventListScreen from './components/screens/EventListScreen';
 import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
-import AdminVotingScreen from './components/screens/AdminVotingScreen';
+
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
 import CreateEventModal from './components/modals/CreateEventModal';
@@ -21,7 +21,7 @@ import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import InstallPrompt from './components/InstallPrompt';
 import FloatingNavigation from './components/FloatingNavigation';
 
-type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'adminVoting';
+type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -477,7 +477,6 @@ function App() {
             onShowAddUserModal={() => setShowAddUserModal(true)}
             onShowCreateEventModal={() => setShowCreateEventModal(true)}
             onShowEventList={() => setCurrentScreen('adminEvents')}
-            onShowVotingManager={() => setCurrentScreen('adminVoting')}
             onShowEditUserModal={handleShowEditUserModal}
             onDeleteUser={handleDeleteUser}
             onGoBack={() => setCurrentScreen('home')}
@@ -529,12 +528,7 @@ function App() {
             results={results}
           />
         );
-      case 'adminVoting':
-        return (
-          <AdminVotingScreen
-            onBack={() => setCurrentScreen('admin')}
-          />
-        );
+
       default:
         return null;
     }
