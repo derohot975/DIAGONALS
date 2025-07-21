@@ -143,7 +143,7 @@ Preferred communication style: Simple, everyday language.
 - **PWA**: Configurazione completa con icone appdiago.png
 - **Ambiente**: NODE_ENV=production
 - **Status**: ✅ DEPLOY COMPLETATO - PWA con icone appdiago funzionanti
-- **Preview Issue**: Replit Preview mostra versione obsoleta, deploy corretto
+- **Preview Risolto**: Cache Replit Preview pulita, ora funziona correttamente
 - **URL**: TBD (.replit.app domain)
 - **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
 - **Icone PWA**: 96x96, 144x144, 192x192, 512x512 px configurate

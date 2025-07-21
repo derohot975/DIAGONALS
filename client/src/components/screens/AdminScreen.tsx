@@ -1,4 +1,5 @@
 import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight } from 'lucide-react';
+// CACHE BREAKER v2.1
 import { User } from '@shared/schema';
 import { useState, useEffect } from 'react';
 
@@ -33,7 +34,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
-        {/* Header Admin - Force Cache Refresh */}
+        {/* ADMIN HEADER - FINAL VERSION */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">ADMIN</h1>
         </div>
