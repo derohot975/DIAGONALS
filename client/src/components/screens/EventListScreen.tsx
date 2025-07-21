@@ -85,7 +85,7 @@ export default function EventListScreen({
                         <div className="flex items-center justify-center space-x-2">
                           <span className="text-2xl animate-bounce">⭐</span>
                           <span className="text-gray-800 font-bold text-lg">REGISTRATO CON SUCCESSO!</span>
-                          <span className="text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>✨</span>
+                          <span className="text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
                         </div>
                       </div>
                       
