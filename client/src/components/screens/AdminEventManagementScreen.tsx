@@ -34,17 +34,12 @@ export default function AdminEventManagementScreen({
       <div className="w-full max-w-2xl glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">📋 Gestione Eventi</h1>
-          <p className="text-gray-600 text-sm">Amministrazione Eventi</p>
         </div>
 
         <div className="space-y-6">
           {/* Active Events */}
           {activeEvents.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Eventi Attivi ({activeEvents.length})
-              </h3>
               
               {activeEvents.map(event => (
                 <div key={event.id} className="bg-white/70 rounded-xl p-4 border border-gray-200">
@@ -105,8 +100,8 @@ export default function AdminEventManagementScreen({
 
           {/* Completed Events */}
           {completedEvents.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+            <div className="space-y-4 mt-8">
+              <h3 className="text-lg font-semibold text-gray-600 flex items-center">
                 <Calendar className="w-5 h-5 mr-2" />
                 Eventi Completati ({completedEvents.length})
               </h3>
