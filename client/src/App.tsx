@@ -180,7 +180,10 @@ function App() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/wines?eventId=' + selectedEventId] });
-      toast({ title: 'Vino registrato con successo!' });
+      toast({ 
+        title: '🍷 Vino registrato con successo!', 
+        description: 'Partecipazione all\'evento confermata! Ora puoi partecipare alla DIAGONALE.'
+      });
     },
     onError: () => {
       toast({ title: 'Errore nella registrazione del vino', variant: 'destructive' });
@@ -215,6 +218,23 @@ function App() {
     },
     onError: () => {
       toast({ title: 'Errore nell\'aggiornamento dell\'evento', variant: 'destructive' });
+    },
+  });
+
+  const activateVotingMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('PATCH', `/api/events/${eventId}`, { votingStatus: 'voting' });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '🗳️ Votazioni attivate!', 
+        description: 'I partecipanti possono ora votare i vini registrati.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nell\'attivazione delle votazioni', variant: 'destructive' });
     },
   });
 
@@ -398,6 +418,10 @@ function App() {
     updateEventStatusMutation.mutate({ eventId, status: 'completed' });
   };
 
+  const handleActivateVoting = (eventId: number) => {
+    activateVotingMutation.mutate(eventId);
+  };
+
   const handleShowResults = (eventId: number) => {
     setSelectedEventId(eventId);
     setCurrentScreen('eventResults');
@@ -472,6 +496,7 @@ function App() {
             onGoBack={() => setCurrentScreen('admin')}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
+            onActivateVoting={handleActivateVoting}
           />
         );
       case 'eventDetails':

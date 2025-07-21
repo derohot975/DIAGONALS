@@ -35,6 +35,12 @@ export default function EventDetailsScreen({
     return users.find(u => u.id === userId)?.name || 'Unknown';
   };
 
+  // Controlla se l'utente ha già registrato un vino per questo evento
+  const userHasRegisteredWine = wines.some(wine => wine.userId === currentUser.id);
+  
+  // Controlla se le votazioni sono attive
+  const votingIsActive = event.votingStatus === 'voting';
+
   const progress = calculateProgress(wines, votes);
 
   const ScoreButton = ({ score, wineId, currentScore, onScore }: { 
@@ -66,13 +72,28 @@ export default function EventDetailsScreen({
             </div>
             <div className="flex items-center space-x-2">
               <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">ATTIVO</span>
-              <button
-                onClick={onShowWineRegistrationModal}
-                className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Registra Vino</span>
-              </button>
+              {!userHasRegisteredWine ? (
+                <button
+                  onClick={onShowWineRegistrationModal}
+                  className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>REGISTRA IL TUO VINO</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => votingIsActive ? onShowResults(event.id) : null}
+                  disabled={!votingIsActive}
+                  className={`px-4 py-2 rounded-xl flex items-center space-x-2 transition-all ${
+                    votingIsActive 
+                      ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(229,73%,69%)] hover:from-[hsl(270,60%,70%)] hover:to-[hsl(229,83%,74%)] text-white shadow-lg' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>{votingIsActive ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}</span>
+                </button>
+              )}
             </div>
           </div>
           
