@@ -61,7 +61,7 @@ export default function EventListScreen({
             {/* User Name Display */}
             {currentUser && (
               <div className="text-center mb-6">
-                <h3 className="text-5xl font-bold text-yellow-400">
+                <h3 className="text-4xl font-bold text-yellow-400">
                   {currentUser.name}
                 </h3>
               </div>
