@@ -62,6 +62,15 @@ export default function EventListScreen({
               Eventi Attivi
             </h2>
             
+            {/* User Name Display */}
+            {currentUser && (
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-semibold text-white/90">
+                  {currentUser.name}
+                </h3>
+              </div>
+            )}
+            
             {activeEvents.map(event => (
               <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
 
