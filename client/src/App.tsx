@@ -313,7 +313,12 @@ function App() {
   };
 
   const handleCreateEvent = (name: string, date: string, mode: string) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      console.error('No current user found');
+      toast({ title: 'Errore: nessun utente selezionato', variant: 'destructive' });
+      return;
+    }
+    console.log('Current user:', currentUser);
     createEventMutation.mutate({ name, date, mode, createdBy: currentUser.id });
   };
 

@@ -162,6 +162,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Creating event with data:', req.body);
       const eventData = insertWineEventSchema.parse(req.body);
       console.log('Parsed event data:', eventData);
+      
+      // Verify user exists before creating event
+      const user = await storage.getUser(eventData.createdBy);
+      if (!user) {
+        res.status(400).json({ message: `User with ID ${eventData.createdBy} not found` });
+        return;
+      }
       const event = await storage.createWineEvent(eventData);
       console.log('Created event:', event);
       res.status(201).json(event);
