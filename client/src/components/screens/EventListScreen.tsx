@@ -80,16 +80,13 @@ export default function EventListScreen({
                     </button>
                   ) : (
                     <div className="space-y-4">
-                      {/* MESSAGGIO SUCCESSO SEMPLIFICATO */}
-                      <div className="text-center py-3 px-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 rounded-xl shadow-lg relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
-                        <div className="relative flex items-center justify-center space-x-2">
+                      {/* MESSAGGIO SUCCESSO SENZA CONTAINER */}
+                      <div className="text-center py-3">
+                        <div className="flex items-center justify-center space-x-2">
                           <span className="text-2xl animate-bounce">⭐</span>
                           <span className="text-gray-800 font-bold text-lg">REGISTRATO CON SUCCESSO!</span>
                           <span className="text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>✨</span>
                         </div>
-                        <div className="absolute -top-1 left-4 text-yellow-500 animate-ping">⭐</div>
-                        <div className="absolute -top-1 right-4 text-yellow-400 animate-ping" style={{ animationDelay: '0.7s' }}>✨</div>
                       </div>
                       
                       <button
