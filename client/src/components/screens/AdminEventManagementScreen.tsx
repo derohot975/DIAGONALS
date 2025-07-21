@@ -54,23 +54,33 @@ export default function AdminEventManagementScreen({
                       <p className="text-sm text-gray-600">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {event.votingStatus === 'voting' ? (
-                        <button
-                          onClick={() => onDeactivateVoting(event.id)}
-                          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors"
-                          title="Disattiva votazioni"
-                        >
-                          VOTAZIONI ATTIVE
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => onActivateVoting(event.id)}
-                          className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium hover:bg-green-200 transition-colors"
-                          title="Attiva votazioni"
-                        >
-                          REGISTRAZIONE
-                        </button>
-                      )}
+                      <div className="flex flex-col items-center gap-1">
+                        {event.votingStatus === 'voting' ? (
+                          <>
+                            <button
+                              onClick={() => onDeactivateVoting(event.id)}
+                              className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                              title="Disattiva votazioni"
+                            >
+                              <Pause className="w-4 h-4" />
+                              DISATTIVA VOTAZIONI
+                            </button>
+                            <span className="text-xs text-green-600 font-medium">Attive</span>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => onActivateVoting(event.id)}
+                              className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium hover:bg-green-200 transition-colors flex items-center gap-2"
+                              title="Attiva votazioni"
+                            >
+                              <Play className="w-4 h-4" />
+                              ATTIVA VOTAZIONI
+                            </button>
+                            <span className="text-xs text-gray-500 font-medium">Disattivate</span>
+                          </>
+                        )}
+                      </div>
                       
                       <button
                         onClick={() => onEditEvent(event)}
