@@ -57,48 +57,36 @@ export default function AdminEventManagementScreen({
                   {/* Main Event Card */}
                   <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 animate-fade-in">
                     
+                    {/* Action Menu */}
+                    <div className="flex justify-end space-x-2 mb-4">
+                      <button
+                        onClick={() => onEditEvent(event)}
+                        className="p-3 bg-white/50 hover:bg-white/70 rounded-xl border border-gray-200 transition-all duration-200 hover:scale-105"
+                        title="Modifica evento"
+                      >
+                        <Edit className="w-5 h-5 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => onDeleteEvent(event.id)}
+                        className="p-3 bg-red-50/50 hover:bg-red-100/70 rounded-xl border border-red-200 transition-all duration-200 hover:scale-105"
+                        title="Elimina evento"
+                      >
+                        <Trash2 className="w-5 h-5 text-red-600" />
+                      </button>
+                    </div>
+
                     {/* Event Header */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex-1 text-center">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
-                        <p className="text-lg text-gray-600 flex items-center justify-center">
-                          <Calendar className="w-5 h-5 mr-2" />
-                          {formatDate(event.date)}
-                        </p>
-                      </div>
-                      
-                      {/* Action Menu */}
-                      <div className="flex items-center space-x-2 absolute top-6 right-6">
-                        <button
-                          onClick={() => onEditEvent(event)}
-                          className="p-3 bg-white/50 hover:bg-white/70 rounded-xl border border-gray-200 transition-all duration-200 hover:scale-105"
-                          title="Modifica evento"
-                        >
-                          <Edit className="w-5 h-5 text-gray-600" />
-                        </button>
-                        <button
-                          onClick={() => onDeleteEvent(event.id)}
-                          className="p-3 bg-red-50/50 hover:bg-red-100/70 rounded-xl border border-red-200 transition-all duration-200 hover:scale-105"
-                          title="Elimina evento"
-                        >
-                          <Trash2 className="w-5 h-5 text-red-600" />
-                        </button>
-                      </div>
+                    <div className="text-center mb-6">
+                      <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
+                      <p className="text-lg text-gray-600 flex items-center justify-center">
+                        <Calendar className="w-5 h-5 mr-2" />
+                        {formatDate(event.date)}
+                      </p>
                     </div>
 
                     {/* Participants Count */}
-                    <div className="flex justify-center mb-8">
-                      <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-4 border border-blue-200">
-                        <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-blue-500 rounded-lg">
-                            <Users className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Partecipanti</p>
-                            <p className="text-xl font-bold text-gray-800">12</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="text-center mb-8">
+                      <p className="text-lg text-gray-600">12 partecipanti</p>
                     </div>
 
                     {/* Primary Action - Voting Control */}
