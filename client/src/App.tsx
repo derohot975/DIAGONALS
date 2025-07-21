@@ -111,14 +111,23 @@ function App() {
 
   const createEventMutation = useMutation({
     mutationFn: async (eventData: { name: string; date: string; mode: string; createdBy: number }) => {
+      console.log('Creating event with:', eventData);
       const response = await apiRequest('POST', '/api/events', eventData);
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Error response:', errorData);
+        throw new Error(errorData);
+      }
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Event created successfully:', data);
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({ title: 'Evento creato con successo!' });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Event creation error:', error);
       toast({ title: 'Errore nella creazione dell\'evento', variant: 'destructive' });
     },
   });
