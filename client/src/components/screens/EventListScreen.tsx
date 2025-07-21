@@ -92,17 +92,31 @@ export default function EventListScreen({
                       REGISTRA IL TUO VINO
                     </button>
                   ) : (
-                    <button
-                      onClick={() => event.votingStatus === 'voting' ? onParticipateEvent(event.id) : null}
-                      disabled={event.votingStatus !== 'voting'}
-                      className={`w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl ${
-                        event.votingStatus === 'voting'
-                          ? 'bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      {event.votingStatus === 'voting' ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}
-                    </button>
+                    <div className="space-y-4">
+                      {/* MESSAGGIO SUCCESSO CON STELLINE MAGICHE */}
+                      <div className="text-center py-3 px-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 rounded-xl shadow-lg relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                        <div className="relative flex items-center justify-center space-x-2">
+                          <span className="text-2xl animate-bounce">⭐</span>
+                          <span className="text-gray-800 font-bold text-lg">REGISTRATO CON SUCCESSO!</span>
+                          <span className="text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>✨</span>
+                        </div>
+                        <div className="absolute -top-1 left-4 text-yellow-500 animate-ping">⭐</div>
+                        <div className="absolute -top-1 right-4 text-yellow-400 animate-ping" style={{ animationDelay: '0.7s' }}>✨</div>
+                      </div>
+                      
+                      <button
+                        onClick={() => event.votingStatus === 'voting' ? onParticipateEvent(event.id) : null}
+                        disabled={event.votingStatus !== 'voting'}
+                        className={`w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl ${
+                          event.votingStatus === 'voting'
+                            ? 'bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        {event.votingStatus === 'voting' ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
