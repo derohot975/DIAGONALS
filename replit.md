@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 21, 2025 - Updated 01:31)
+## Recent Changes (July 21, 2025 - Updated 02:37)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -143,6 +143,7 @@ Preferred communication style: Simple, everyday language.
 - **PWA**: Configurazione completa con icone appdiago.png
 - **Ambiente**: NODE_ENV=production
 - **Status**: ✅ DEPLOY COMPLETATO - PWA con icone appdiago funzionanti
+- **Preview Issue**: Replit Preview mostra versione obsoleta, deploy corretto
 - **URL**: TBD (.replit.app domain)
 - **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
 - **Icone PWA**: 96x96, 144x144, 192x192, 512x512 px configurate
