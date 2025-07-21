@@ -18,6 +18,7 @@ export const wineEvents = pgTable("wine_events", {
   mode: text("mode").notNull(), // Modalità unica
   status: text("status").default('active').notNull(), // 'active', 'voting', 'completed'
   votingStatus: text("voting_status").default('registration').notNull(), // 'registration', 'voting', 'completed'
+  currentVotingWineId: integer("current_voting_wine_id").references(() => wines.id),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

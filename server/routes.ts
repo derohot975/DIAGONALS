@@ -247,6 +247,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Set current voting wine for sequential voting
+  app.patch("/api/events/:id/current-wine", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { wineId } = req.body;
+      const event = await storage.setCurrentVotingWine(id, wineId);
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to set current voting wine" });
+    }
+  });
+
   // Wine routes
   app.get("/api/wines", async (req, res) => {
     try {

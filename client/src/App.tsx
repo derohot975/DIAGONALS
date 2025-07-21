@@ -259,6 +259,58 @@ function App() {
     },
   });
 
+  // Sequential voting mutations
+  const setCurrentWineMutation = useMutation({
+    mutationFn: async ({ eventId, wineId }: { eventId: number; wineId: number }) => {
+      const response = await apiRequest('PATCH', `/api/events/${eventId}/current-wine`, { wineId });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '🍷 Vino selezionato per votazione!', 
+        description: 'I partecipanti possono ora votare questo vino.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nella selezione del vino', variant: 'destructive' });
+    },
+  });
+
+  const nextWineMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('POST', `/api/events/${eventId}/next-wine`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '➡️ Passato al vino successivo!', 
+        description: 'Votazione per il vino precedente completata.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nel passaggio al vino successivo', variant: 'destructive' });
+    },
+  });
+
+  const stopVotingMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('PATCH', `/api/events/${eventId}/current-wine`, { wineId: null });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '⏹️ Votazione interrotta!', 
+        description: 'Nessun vino è attualmente in votazione.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nell\'interruzione della votazione', variant: 'destructive' });
+    },
+  });
+
   // Session management mutations
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -408,15 +460,31 @@ function App() {
     });
   };
 
-  const handleVoteForWine = (wineId: number, score: number, hasLode: boolean) => {
-    if (!currentUser || !selectedEventId) return;
+  const handleVoteForWine = (wineId: number, score: number) => {
+    if (!currentUser) return;
+    // Find event for this wine
+    const wine = wines.find(w => w.id === wineId);
+    if (!wine) return;
+    
     voteMutation.mutate({
-      eventId: selectedEventId,
+      eventId: wine.eventId,
       wineId,
       userId: currentUser.id,
       score,
-      hasLode,
+      hasLode: false, // Remove lode system for now
     });
+  };
+
+  const handleSelectCurrentWine = (eventId: number, wineId: number) => {
+    setCurrentWineMutation.mutate({ eventId, wineId });
+  };
+
+  const handleNextWine = (eventId: number) => {
+    nextWineMutation.mutate(eventId);
+  };
+
+  const handleStopVoting = (eventId: number) => {
+    stopVotingMutation.mutate(eventId);
   };
 
   const handleShowEventDetails = (eventId: number) => {
@@ -510,11 +578,13 @@ function App() {
             users={users}
             currentUser={currentUser}
             wines={wines}
+            votes={votes}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
             onGoBack={() => setCurrentScreen('home')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
+            onVoteForWine={handleVoteForWine}
           />
         );
       case 'adminEvents':
@@ -522,11 +592,15 @@ function App() {
           <AdminEventManagementScreen
             events={events}
             users={users}
+            wines={wines}
             onGoBack={() => setCurrentScreen('admin')}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
             onActivateVoting={handleActivateVoting}
             onDeactivateVoting={handleDeactivateVoting}
+            onSelectCurrentWine={handleSelectCurrentWine}
+            onNextWine={handleNextWine}
+            onStopVoting={handleStopVoting}
           />
         );
       case 'eventDetails':

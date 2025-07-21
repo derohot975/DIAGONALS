@@ -26,6 +26,7 @@ export interface IStorage {
   deleteWineEvent(id: number): Promise<boolean>;
   updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined>;
   updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined>;
+  setCurrentVotingWine(eventId: number, wineId: number | null): Promise<WineEvent | undefined>;
   
   // Wine operations
   getWine(id: number): Promise<Wine | undefined>;
@@ -154,6 +155,15 @@ export class DatabaseStorage implements IStorage {
       .update(wineEvents)
       .set({ votingStatus })
       .where(eq(wineEvents.id, id))
+      .returning();
+    return event || undefined;
+  }
+
+  async setCurrentVotingWine(eventId: number, wineId: number | null): Promise<WineEvent | undefined> {
+    const [event] = await db
+      .update(wineEvents)
+      .set({ currentVotingWineId: wineId })
+      .where(eq(wineEvents.id, eventId))
       .returning();
     return event || undefined;
   }
