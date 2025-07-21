@@ -182,7 +182,8 @@ function App() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/wines?eventId=' + selectedEventId] });
+      // INVALIDA TUTTE LE QUERY WINES PER AGGIORNARE LA CACHE
+      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
       toast({ 
         title: '🍷 Vino registrato con successo!', 
         description: 'Partecipazione all\'evento confermata! Ora puoi partecipare alla DIAGONALE.'
@@ -271,6 +272,10 @@ function App() {
       setSessionId(data.sessionId);
       setSessionError(null);
       setCurrentScreen('events');
+      
+      // FORZA REFRESH CACHE WINES QUANDO CAMBIA UTENTE
+      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
+      
       toast({ title: 'Accesso effettuato con successo!' });
     },
     onError: (error: any) => {
