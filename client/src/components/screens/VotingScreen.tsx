@@ -110,71 +110,92 @@ export default function VotingScreen({
 
               {/* Voting Section */}
               {event.votingStatus === 'voting' && !userVote ? (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   
-                  {/* Score Display */}
-                  <div className="text-center">
-                    <div className="inline-block bg-gradient-to-r from-purple-500 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-lg">
-                      <span className="text-4xl font-bold">{selectedScore.toFixed(1)}</span>
-                    </div>
-                  </div>
-
-                  {/* Number Grid 1-10 with 0.5 steps */}
-                  <div className="grid grid-cols-5 gap-3 mb-6">
-                    {Array.from({ length: 19 }, (_, i) => {
-                      const score = 1 + (i * 0.5);
-                      return (
-                        <button
-                          key={score}
-                          onClick={() => setSelectedScore(score)}
-                          className={`p-3 rounded-lg font-bold text-lg transition-all ${
-                            selectedScore === score
-                              ? 'bg-purple-600 text-white shadow-lg scale-105'
-                              : 'bg-white text-gray-700 hover:bg-purple-100 shadow-md'
-                          }`}
-                        >
-                          {score.toFixed(1)}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Plus/Minus Controls */}
-                  <div className="flex items-center justify-center space-x-4 mb-6">
-                    <button
-                      onClick={() => handleScoreChange(false)}
-                      disabled={selectedScore <= 1}
-                      className={`p-4 rounded-full ${
-                        selectedScore <= 1 
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-red-500 hover:bg-red-600 text-white shadow-lg'
-                      } transition-all`}
-                    >
-                      <Minus className="w-6 h-6" />
-                    </button>
+                  {/* iPhone-style Picker */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-8">
                     
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600 mb-1">Punteggio Selezionato</p>
-                      <p className="text-2xl font-bold text-gray-800">{selectedScore.toFixed(1)}</p>
+                    {/* Title */}
+                    <div className="text-center mb-6">
+                      <h4 className="text-xl font-semibold text-gray-700 mb-2">Seleziona il tuo voto</h4>
+                      <div className="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-3 rounded-2xl shadow-lg">
+                        <span className="text-3xl font-bold">{selectedScore.toFixed(1)}</span>
+                      </div>
                     </div>
-                    
-                    <button
-                      onClick={() => handleScoreChange(true)}
-                      disabled={selectedScore >= 10}
-                      className={`p-4 rounded-full ${
-                        selectedScore >= 10 
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-green-500 hover:bg-green-600 text-white shadow-lg'
-                      } transition-all`}
-                    >
-                      <Plus className="w-6 h-6" />
-                    </button>
+
+                    {/* iPhone-style Scroll Picker */}
+                    <div className="relative mx-auto" style={{ width: '200px', height: '240px' }}>
+                      
+                      {/* Selection Highlight */}
+                      <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-12 bg-purple-100 border-2 border-purple-300 rounded-xl z-10 pointer-events-none"></div>
+                      
+                      {/* Gradient Overlays */}
+                      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent z-20 pointer-events-none rounded-t-xl"></div>
+                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none rounded-b-xl"></div>
+                      
+                      {/* Scrollable Numbers */}
+                      <div 
+                        className="h-full overflow-y-auto scrollbar-hide"
+                      >
+                        <div className="flex flex-col items-center py-24">
+                          {Array.from({ length: 19 }, (_, i) => {
+                            const score = 1 + (i * 0.5);
+                            const isSelected = selectedScore === score;
+                            
+                            return (
+                              <button
+                                key={score}
+                                onClick={() => setSelectedScore(score)}
+                                className={`w-full py-3 px-6 text-center transition-all duration-200 ${
+                                  isSelected
+                                    ? 'text-purple-700 font-bold text-2xl scale-110'
+                                    : 'text-gray-500 font-semibold text-lg hover:text-gray-700'
+                                }`}
+                                style={{
+                                  lineHeight: '48px',
+                                  minHeight: '48px'
+                                }}
+                              >
+                                {score.toFixed(1)}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fine-tune Controls */}
+                    <div className="flex items-center justify-center space-x-8 mt-6">
+                      <button
+                        onClick={() => handleScoreChange(false)}
+                        disabled={selectedScore <= 1}
+                        className={`w-12 h-12 rounded-full transition-all ${
+                          selectedScore <= 1 
+                            ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 active:scale-95'
+                        }`}
+                      >
+                        <Minus className="w-5 h-5 mx-auto" />
+                      </button>
+                      
+                      <button
+                        onClick={() => handleScoreChange(true)}
+                        disabled={selectedScore >= 10}
+                        className={`w-12 h-12 rounded-full transition-all ${
+                          selectedScore >= 10 
+                            ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 active:scale-95'
+                        }`}
+                      >
+                        <Plus className="w-5 h-5 mx-auto" />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Confirm Vote Button */}
                   <button
                     onClick={handleVoteSubmit}
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-200 hover:scale-105 shadow-xl"
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-200 active:scale-95 shadow-xl"
                   >
                     CONFERMA VOTAZIONE
                   </button>
