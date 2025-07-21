@@ -57,24 +57,6 @@ export default function AdminEventManagementScreen({
                   {/* Main Event Card */}
                   <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 animate-fade-in">
                     
-                    {/* Action Menu */}
-                    <div className="flex justify-end space-x-2 mb-4">
-                      <button
-                        onClick={() => onEditEvent(event)}
-                        className="p-3 bg-white/50 hover:bg-white/70 rounded-xl border border-gray-200 transition-all duration-200 hover:scale-105"
-                        title="Modifica evento"
-                      >
-                        <Edit className="w-5 h-5 text-gray-600" />
-                      </button>
-                      <button
-                        onClick={() => onDeleteEvent(event.id)}
-                        className="p-3 bg-red-50/50 hover:bg-red-100/70 rounded-xl border border-red-200 transition-all duration-200 hover:scale-105"
-                        title="Elimina evento"
-                      >
-                        <Trash2 className="w-5 h-5 text-red-600" />
-                      </button>
-                    </div>
-
                     {/* Event Header */}
                     <div className="text-center mb-6">
                       <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
@@ -109,6 +91,24 @@ export default function AdminEventManagementScreen({
                         </button>
                       )}
                     </div>
+                  </div>
+
+                  {/* Action Menu - Below Modal */}
+                  <div className="flex justify-start space-x-3 mt-4">
+                    <button
+                      onClick={() => onEditEvent(event)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-200 border border-gray-300 shadow-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span>Modifica</span>
+                    </button>
+                    <button
+                      onClick={() => onDeleteEvent(event.id)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg transition-all duration-200 border border-red-200 shadow-sm"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Elimina</span>
+                    </button>
                   </div>
                 </div>
               ))}
