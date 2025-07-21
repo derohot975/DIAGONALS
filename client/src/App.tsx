@@ -242,6 +242,23 @@ function App() {
     },
   });
 
+  const deactivateVotingMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('PATCH', `/api/events/${eventId}`, { votingStatus: 'registration' });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '📋 Votazioni disattivate!', 
+        description: 'Tornato alla modalità registrazione vini.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nella disattivazione delle votazioni', variant: 'destructive' });
+    },
+  });
+
   // Session management mutations
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -431,10 +448,7 @@ function App() {
   };
 
   const handleDeactivateVoting = (eventId: number) => {
-    updateEventMutation.mutate({
-      eventId,
-      eventData: { votingStatus: 'registration' }
-    });
+    deactivateVotingMutation.mutate(eventId);
   };
 
   const handleShowResults = (eventId: number) => {
