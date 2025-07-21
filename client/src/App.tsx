@@ -591,6 +591,7 @@ function App() {
       <WineRegistrationModal
         isOpen={showWineRegistrationModal}
         onClose={() => setShowWineRegistrationModal(false)}
+        currentUser={currentUser}
         onRegisterWine={handleRegisterWine}
       />
 
