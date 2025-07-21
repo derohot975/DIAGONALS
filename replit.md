@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 21, 2025 - Updated 02:37)
+## Recent Changes (July 22, 2025 - Updated 01:30)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -103,14 +103,15 @@ Preferred communication style: Simple, everyday language.
 5. **Interfaccia Ottimizzata**: Layout centrato e responsivo
 6. **Logo Integrato**: Logo PNG originale con colorazione app
 
-### Sistema Votazioni - COMPLETATO ✅
-**Nuovo Flusso Implementato**:
-- Fase 1: Registrazione vini (invisibili post-registrazione)
-- Fase 2: Admin gestisce votazioni per vino selezionato
-- Fase 3: Voti 1-10 con step 0.5, proprietario può rivelare info
-- Fase 4: Calcolo somma totale (non media)
-- Fase 5: Chiusura quando tutti hanno votato
-- Fase 6: Report finale con classifica totale
+### Sistema Votazioni Sequenziali - COMPLETATO ✅
+**Nuovo Flusso Implementato (22 Luglio 2025)**:
+- **Admin Selection**: Admin seleziona vino corrente per votazione sequenziale
+- **VotingModal**: Modal con griglia numerica 1-10 (step 0.5) per tutti gli utenti
+- **Wine Hiding**: Vini mostrati solo come "Vino A", "Vino B" per degustazione cieca
+- **Sequential Control**: Admin controlla progressione vino per vino
+- **Database Schema**: Campo currentVotingWineId per gestione stato votazione
+- **API Integration**: Endpoint /current-wine, /next-wine per controllo sequenziale
+- **Real-time Updates**: Sincronizzazione automatica tra admin e partecipanti
 
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
