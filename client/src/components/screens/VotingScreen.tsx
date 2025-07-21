@@ -118,26 +118,26 @@ export default function VotingScreen({
                     {/* Title */}
                     <div className="text-center mb-6">
                       <h4 className="text-xl font-semibold text-gray-700 mb-2">Seleziona il tuo voto</h4>
-                      <div className="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-3 rounded-2xl shadow-lg">
-                        <span className="text-3xl font-bold">{selectedScore.toFixed(1)}</span>
+                      <div className="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white px-12 py-4 rounded-2xl shadow-lg">
+                        <span className="text-4xl font-bold">{selectedScore.toFixed(1)}</span>
                       </div>
                     </div>
 
                     {/* iPhone-style Scroll Picker */}
-                    <div className="relative mx-auto" style={{ width: '200px', height: '240px' }}>
+                    <div className="relative mx-auto" style={{ width: '250px', height: '200px' }}>
                       
-                      {/* Selection Highlight */}
-                      <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-12 bg-purple-100 border-2 border-purple-300 rounded-xl z-10 pointer-events-none"></div>
+                      {/* Selection Highlight - styled like iPhone picker */}
+                      <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-10 bg-purple-100 border-t border-b border-purple-300 z-10 pointer-events-none"></div>
                       
-                      {/* Gradient Overlays */}
-                      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent z-20 pointer-events-none rounded-t-xl"></div>
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none rounded-b-xl"></div>
+                      {/* Gradient Overlays for fade effect */}
+                      <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-white via-white to-transparent z-20 pointer-events-none"></div>
+                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white via-white to-transparent z-20 pointer-events-none"></div>
                       
                       {/* Scrollable Numbers */}
                       <div 
-                        className="h-full overflow-y-auto scrollbar-hide"
+                        className="h-full overflow-y-auto scrollbar-hide relative"
                       >
-                        <div className="flex flex-col items-center py-24">
+                        <div className="flex flex-col items-center" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
                           {Array.from({ length: 19 }, (_, i) => {
                             const score = 1 + (i * 0.5);
                             const isSelected = selectedScore === score;
@@ -146,14 +146,14 @@ export default function VotingScreen({
                               <button
                                 key={score}
                                 onClick={() => setSelectedScore(score)}
-                                className={`w-full py-3 px-6 text-center transition-all duration-200 ${
+                                className={`w-full text-center transition-all duration-200 ${
                                   isSelected
-                                    ? 'text-purple-700 font-bold text-2xl scale-110'
-                                    : 'text-gray-500 font-semibold text-lg hover:text-gray-700'
+                                    ? 'text-purple-700 font-bold text-xl'
+                                    : 'text-gray-400 font-normal text-lg hover:text-gray-600'
                                 }`}
                                 style={{
-                                  lineHeight: '48px',
-                                  minHeight: '48px'
+                                  lineHeight: '40px',
+                                  height: '40px'
                                 }}
                               >
                                 {score.toFixed(1)}
