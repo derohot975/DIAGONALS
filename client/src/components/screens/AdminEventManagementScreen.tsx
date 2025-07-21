@@ -68,7 +68,7 @@ export default function AdminEventManagementScreen({
 
                     {/* Participants Count */}
                     <div className="text-center mb-8">
-                      <p className="text-lg text-gray-600">12 partecipanti</p>
+                      <p className="text-lg text-gray-600">⭐ <span className="font-bold">12 partecipanti</span> ⭐</p>
                     </div>
 
                     {/* Primary Action - Voting Control */}
@@ -97,17 +97,17 @@ export default function AdminEventManagementScreen({
                   <div className="flex justify-start space-x-3 mt-4">
                     <button
                       onClick={() => onEditEvent(event)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-200 border border-gray-300 shadow-sm"
+                      className="p-3 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-all duration-200 border border-gray-300 shadow-sm"
+                      title="Modifica evento"
                     >
-                      <Edit className="w-4 h-4" />
-                      <span>Modifica</span>
+                      <Edit className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => onDeleteEvent(event.id)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg transition-all duration-200 border border-red-200 shadow-sm"
+                      className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all duration-200 border border-red-200 shadow-sm"
+                      title="Elimina evento"
                     >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Elimina</span>
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
