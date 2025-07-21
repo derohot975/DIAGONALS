@@ -611,6 +611,7 @@ function App() {
             currentUser={currentUser}
             onGoBack={() => setCurrentScreen('events')}
             onVoteForWine={handleVoteForWine}
+            onSelectCurrentWine={handleSelectCurrentWine}
           />
         );
       case 'eventDetails':

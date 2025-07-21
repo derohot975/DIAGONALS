@@ -12,6 +12,7 @@ interface VotingScreenProps {
   currentUser: User | null;
   onGoBack: () => void;
   onVoteForWine: (wineId: number, score: number) => void;
+  onSelectCurrentWine?: (eventId: number, wineId: number) => void;
 }
 
 export default function VotingScreen({
@@ -21,7 +22,8 @@ export default function VotingScreen({
   users,
   currentUser,
   onGoBack,
-  onVoteForWine
+  onVoteForWine,
+  onSelectCurrentWine
 }: VotingScreenProps) {
   const [selectedScore, setSelectedScore] = useState<number>(5.0);
   const [currentWineIndex, setCurrentWineIndex] = useState<number>(0);
@@ -36,6 +38,9 @@ export default function VotingScreen({
 
   // Get wines for this event
   const eventWines = wines.filter(w => w.eventId === event.id);
+  
+  // Check if current user is DERO (wine selection admin)
+  const isWineAdmin = currentUser?.name === 'DERO';
   
   // Get current wine being voted on (based on admin selection or sequence)
   const currentWine = event.currentVotingWineId 
@@ -86,6 +91,50 @@ export default function VotingScreen({
             </div>
           </div>
 
+          {/* Wine Selection for DERO */}
+          {isWineAdmin && eventWines.length > 0 && (
+            <div className="glass-effect rounded-3xl shadow-2xl p-6 mb-6 animate-fade-in">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                Seleziona Vino per Votazione
+              </h3>
+              
+              <div className="space-y-3">
+                {eventWines.map(wine => {
+                  const contributor = users.find(u => u.id === wine.userId);
+                  const isSelected = event.currentVotingWineId === wine.id;
+                  
+                  return (
+                    <button
+                      key={wine.id}
+                      onClick={() => onSelectCurrentWine && onSelectCurrentWine(event.id, wine.id)}
+                      className={`w-full p-4 rounded-xl border-2 transition-all ${
+                        isSelected 
+                          ? 'border-purple-500 bg-purple-50 shadow-lg' 
+                          : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="text-left">
+                          <h4 className="font-bold text-lg text-gray-800">
+                            {getWineLabel(wine)}
+                          </h4>
+                          <p className="text-gray-600">
+                            Portato da: <span className="font-semibold">{contributor?.name}</span>
+                          </p>
+                        </div>
+                        {isSelected && (
+                          <div className="px-3 py-1 bg-purple-500 text-white rounded-full text-sm font-bold">
+                            ATTIVO
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Current Wine Display */}
           {currentWine && (
             <div className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
@@ -95,9 +144,11 @@ export default function VotingScreen({
                 <h3 className="text-3xl font-bold text-gray-800 mb-2">
                   {getWineLabel(currentWine)}
                 </h3>
-                <p className="text-lg text-gray-600">
-                  Portato da: <span className="font-bold">{wineContributor?.name || 'Sconosciuto'}</span>
-                </p>
+                {!isWineAdmin && (
+                  <p className="text-lg text-gray-600">
+                    Portato da: <span className="font-bold">{wineContributor?.name || 'Sconosciuto'}</span>
+                  </p>
+                )}
               </div>
 
               {/* Voting Section */}
@@ -167,10 +218,18 @@ export default function VotingScreen({
           )}
 
           {/* No wine selected */}
-          {!currentWine && (
+          {!currentWine && !isWineAdmin && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
               <h2 className="text-2xl font-bold text-gray-600 mb-4">Nessun Vino in Votazione</h2>
-              <p className="text-gray-500 text-lg">Attendi che l'admin selezioni un vino per iniziare</p>
+              <p className="text-gray-500 text-lg">Attendi che DERO selezioni un vino per iniziare</p>
+            </div>
+          )}
+
+          {/* DERO instructions when no wine selected */}
+          {!currentWine && isWineAdmin && eventWines.length > 0 && (
+            <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
+              <h2 className="text-2xl font-bold text-purple-600 mb-4">Seleziona un Vino</h2>
+              <p className="text-gray-600 text-lg">Scegli quale vino far votare a tutti i partecipanti</p>
             </div>
           )}
         </div>
