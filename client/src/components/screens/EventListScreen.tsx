@@ -80,7 +80,6 @@ export default function EventListScreen({
                   <h3 className="text-2xl font-bold text-gray-800 mb-2 leading-tight">
                     {event.name}
                   </h3>
-                  <div className="w-20 h-1 bg-[hsl(270,50%,65%)] rounded-full mx-auto"></div>
                 </div>
 
                 {/* Date - Seconda riga centrata */}
