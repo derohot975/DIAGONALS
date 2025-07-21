@@ -40,6 +40,21 @@ app.use((req, res, next) => {
 (async () => {
   // Inizializza il database Supabase
   await initializeDatabase();
+
+  // Serve PWA static files with correct MIME types in development
+  if (app.get("env") === "development") {
+    const path = await import("path");
+    const publicDir = path.resolve(import.meta.dirname, "..", "public");
+    app.use(express.static(publicDir, {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.png')) {
+          res.setHeader('Content-Type', 'image/png');
+        } else if (filePath.endsWith('.json')) {
+          res.setHeader('Content-Type', 'application/json');
+        }
+      }
+    }));
+  }
   
   const server = await registerRoutes(app);
 
