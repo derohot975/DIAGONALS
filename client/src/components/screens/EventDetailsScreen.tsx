@@ -81,14 +81,9 @@ export default function EventDetailsScreen({
             </div>
           </div>
 
-          {/* LOGICA PULSANTI CONDIZIONALI - SEZIONE SEPARATA */}
-          <div className="mt-6 space-y-3">
-            {/* DEBUG: Mostra stato per debug */}
-            <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
-              DEBUG: User {currentUser.id} | HasWine: {userHasRegisteredWine ? 'YES' : 'NO'} | Voting: {votingIsActive ? 'ACTIVE' : 'INACTIVE'}
-            </div>
-            
-            {!userHasRegisteredWine ? (
+          {/* PULSANTE UNICO CONDIZIONALE */}
+          <div className="mt-6">
+            {wines.filter(wine => wine.userId === currentUser.id).length === 0 ? (
               <button
                 onClick={onShowWineRegistrationModal}
                 className="w-full bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"

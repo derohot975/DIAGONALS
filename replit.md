@@ -72,6 +72,7 @@ Preferred communication style: Simple, everyday language.
 - **Partecipanti Solo Utenti**: Tutti i partecipanti sono sempre utenti normali, mai admin
 - **Aggiornamento Eventi**: Database constraint rimosso, modifica eventi funzionante
 - **Creazione Eventi**: Sistema riparato, funziona con messaggio di conferma migliorato
+- **Flusso Registrazione-Votazione**: Implementato con logica pulsanti condizionali esclusivi
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing
