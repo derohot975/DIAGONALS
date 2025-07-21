@@ -41,6 +41,12 @@ export default function EventDetailsScreen({
   // Controlla se le votazioni sono attive
   const votingIsActive = event.votingStatus === 'voting';
 
+  // DEBUG: Log per verificare la logica
+  console.log('DEBUG - User ID:', currentUser.id);
+  console.log('DEBUG - Wines:', wines.map(w => ({ id: w.id, userId: w.userId, name: w.name })));
+  console.log('DEBUG - User has registered wine:', userHasRegisteredWine);
+  console.log('DEBUG - Voting is active:', votingIsActive);
+
   const progress = calculateProgress(wines, votes);
 
   const ScoreButton = ({ score, wineId, currentScore, onScore }: { 
@@ -77,6 +83,11 @@ export default function EventDetailsScreen({
 
           {/* LOGICA PULSANTI CONDIZIONALI - SEZIONE SEPARATA */}
           <div className="mt-6 space-y-3">
+            {/* DEBUG: Mostra stato per debug */}
+            <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+              DEBUG: User {currentUser.id} | HasWine: {userHasRegisteredWine ? 'YES' : 'NO'} | Voting: {votingIsActive ? 'ACTIVE' : 'INACTIVE'}
+            </div>
+            
             {!userHasRegisteredWine ? (
               <button
                 onClick={onShowWineRegistrationModal}
