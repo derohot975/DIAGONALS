@@ -65,7 +65,7 @@ export default function EventListScreen({
             {/* User Name Display */}
             {currentUser && (
               <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-white/90">
+                <h3 className="text-3xl font-bold text-white">
                   {currentUser.name}
                 </h3>
               </div>
@@ -77,7 +77,7 @@ export default function EventListScreen({
 
                 {/* Event Name - Prima riga */}
                 <div className="text-center mb-6">
-                  <h3 className="text-3xl font-bold text-gray-800 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2 leading-tight">
                     {event.name}
                   </h3>
                   <div className="w-20 h-1 bg-[hsl(270,50%,65%)] rounded-full mx-auto"></div>
