@@ -116,50 +116,34 @@ export default function VotingScreen({
                   <div className="relative bg-white rounded-3xl shadow-2xl p-8">
                     
                     {/* Title */}
-                    <div className="text-center mb-6">
-                      <h4 className="text-xl font-semibold text-gray-700 mb-2">Seleziona il tuo voto</h4>
-                      <div className="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white px-12 py-4 rounded-2xl shadow-lg">
-                        <span className="text-4xl font-bold">{selectedScore.toFixed(1)}</span>
-                      </div>
+                    <div className="text-center mb-8">
+                      <h4 className="text-xl font-semibold text-gray-700 mb-6">Seleziona il tuo voto</h4>
                     </div>
 
-                    {/* iPhone-style Scroll Picker */}
-                    <div className="relative mx-auto" style={{ width: '250px', height: '200px' }}>
+                    {/* Scrollable Purple Box */}
+                    <div className="relative mx-auto" style={{ width: '300px', height: '120px' }}>
                       
-                      {/* Selection Highlight - styled like iPhone picker */}
-                      <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-10 bg-purple-100 border-t border-b border-purple-300 z-10 pointer-events-none"></div>
-                      
-                      {/* Gradient Overlays for fade effect */}
-                      <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-white via-white to-transparent z-20 pointer-events-none"></div>
-                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white via-white to-transparent z-20 pointer-events-none"></div>
-                      
-                      {/* Scrollable Numbers */}
+                      {/* Invisible scroll area covering the purple box */}
                       <div 
-                        className="h-full overflow-y-auto scrollbar-hide relative"
+                        className="absolute inset-0 overflow-y-auto scrollbar-hide z-30"
+                        onScroll={(e) => {
+                          const scrollTop = e.currentTarget.scrollTop;
+                          const itemHeight = 40; // Height of each virtual item
+                          const maxIndex = 18; // 19 items total (0-18)
+                          const index = Math.round(scrollTop / itemHeight);
+                          const clampedIndex = Math.max(0, Math.min(maxIndex, index));
+                          const newScore = 1 + (clampedIndex * 0.5);
+                          setSelectedScore(newScore);
+                        }}
                       >
-                        <div className="flex flex-col items-center" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
-                          {Array.from({ length: 19 }, (_, i) => {
-                            const score = 1 + (i * 0.5);
-                            const isSelected = selectedScore === score;
-                            
-                            return (
-                              <button
-                                key={score}
-                                onClick={() => setSelectedScore(score)}
-                                className={`w-full text-center transition-all duration-200 ${
-                                  isSelected
-                                    ? 'text-purple-700 font-bold text-xl'
-                                    : 'text-gray-400 font-normal text-lg hover:text-gray-600'
-                                }`}
-                                style={{
-                                  lineHeight: '40px',
-                                  height: '40px'
-                                }}
-                              >
-                                {score.toFixed(1)}
-                              </button>
-                            );
-                          })}
+                        {/* Virtual scroll content - invisible but provides scroll height */}
+                        <div style={{ height: '760px' }}></div> {/* 19 items * 40px = 760px */}
+                      </div>
+                      
+                      {/* Purple Box - displays selected value */}
+                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                        <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-16 py-6 rounded-2xl shadow-lg">
+                          <span className="text-5xl font-bold">{selectedScore.toFixed(1)}</span>
                         </div>
                       </div>
                     </div>
