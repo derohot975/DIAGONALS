@@ -74,6 +74,7 @@ Preferred communication style: Simple, everyday language.
 - **Creazione Eventi**: Sistema riparato, funziona con messaggio di conferma migliorato
 - **Flusso Registrazione-Votazione**: Implementato con logica pulsanti condizionali esclusivi
 - **Messaggio Successo**: Aggiunto "REGISTRATO CON SUCCESSO!" con stelline animate gialle
+- **Layout Eventi**: Rimosso "Degustazione alla Cieca" e status "ATTIVO" per design più pulito
 
 ### Technical Improvements
 - **Component Architecture**: Modular React components with proper prop passing

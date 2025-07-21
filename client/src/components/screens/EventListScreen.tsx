@@ -67,20 +67,7 @@ export default function EventListScreen({
                   <span className="text-xl font-medium text-gray-600">{formatDate(event.date)}</span>
                 </div>
 
-                {/* Mode - Terza riga centrata */}
-                <div className="text-center mb-8">
-                  <span className="text-lg font-medium text-gray-700">
-                    Degustazione alla Cieca
-                  </span>
-                </div>
 
-                {/* Status centrato */}
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-green-600 font-medium">ATTIVO</span>
-                  </div>
-                </div>
 
                 {/* PULSANTE UNICO CONDIZIONALE */}
                 <div>
@@ -93,7 +80,7 @@ export default function EventListScreen({
                     </button>
                   ) : (
                     <div className="space-y-4">
-                      {/* MESSAGGIO SUCCESSO CON STELLINE MAGICHE */}
+                      {/* MESSAGGIO SUCCESSO SEMPLIFICATO */}
                       <div className="text-center py-3 px-6 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 rounded-xl shadow-lg relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
                         <div className="relative flex items-center justify-center space-x-2">
