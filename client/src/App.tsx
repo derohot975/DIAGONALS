@@ -318,8 +318,11 @@ function App() {
       toast({ title: 'Errore: nessun utente selezionato', variant: 'destructive' });
       return;
     }
-    console.log('Current user:', currentUser);
-    createEventMutation.mutate({ name, date, mode, createdBy: currentUser.id });
+    
+    // Force use Admin (ID 1) for event creation if current user doesn't exist
+    const creatorId = currentUser.isAdmin ? currentUser.id : 1;
+    console.log('Creating event with admin user ID:', creatorId);
+    createEventMutation.mutate({ name, date, mode, createdBy: creatorId });
   };
 
   const handleUpdateEvent = (id: number, name: string, date: string, mode: string) => {
