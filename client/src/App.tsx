@@ -110,7 +110,7 @@ function App() {
   });
 
   const createEventMutation = useMutation({
-    mutationFn: async (eventData: { name: string; date: string; mode: 'CIECA' | 'CIECONA'; createdBy: number }) => {
+    mutationFn: async (eventData: { name: string; date: string; mode: string; createdBy: number }) => {
       const response = await apiRequest('POST', '/api/events', eventData);
       return response.json();
     },
@@ -124,7 +124,7 @@ function App() {
   });
 
   const updateEventMutation = useMutation({
-    mutationFn: async ({ id, eventData }: { id: number; eventData: { name: string; date: string; mode: 'CIECA' | 'CIECONA' } }) => {
+    mutationFn: async ({ id, eventData }: { id: number; eventData: { name: string; date: string; mode: string } }) => {
       const response = await apiRequest('PATCH', `/api/events/${id}`, eventData);
       return response.json();
     },
@@ -303,12 +303,12 @@ function App() {
     createUserMutation.mutate({ name, isAdmin });
   };
 
-  const handleCreateEvent = (name: string, date: string, mode: 'CIECA' | 'CIECONA') => {
+  const handleCreateEvent = (name: string, date: string, mode: string) => {
     if (!currentUser) return;
     createEventMutation.mutate({ name, date, mode, createdBy: currentUser.id });
   };
 
-  const handleUpdateEvent = (id: number, name: string, date: string, mode: 'CIECA' | 'CIECONA') => {
+  const handleUpdateEvent = (id: number, name: string, date: string, mode: string) => {
     updateEventMutation.mutate({ id, eventData: { name, date, mode } });
   };
 
