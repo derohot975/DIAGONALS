@@ -53,12 +53,65 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
 
 
         <div className="space-y-4">
+          {/* 1. GESTISCI EVENTI */}
+          <button
+            onClick={onShowEventList}
+            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Gestisci Eventi</span>
+          </button>
+
+          {/* 2. NUOVO EVENTO */}
+          <button
+            onClick={onShowCreateEventModal}
+            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nuovo Evento</span>
+          </button>
+
+          {/* 3. ACCESSO UNICO */}
+          <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-orange-800 mb-1">Accesso Unico</h3>
+                <p className="text-xs text-orange-600">Un utente per dispositivo</p>
+              </div>
+              <button
+                onClick={toggleUniqueSession}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  uniqueSessionEnabled 
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {uniqueSessionEnabled ? (
+                  <>
+                    <ToggleRight className="w-5 h-5" />
+                    <span className="text-sm font-medium">ON</span>
+                  </>
+                ) : (
+                  <>
+                    <ToggleLeft className="w-5 h-5" />
+                    <span className="text-sm font-medium">OFF</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* 4. AGGIUNGI UTENTE */}
+          <button
+            onClick={onShowAddUserModal}
+            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Aggiungi Utente</span>
+          </button>
+
+          {/* 5. LISTA UTENTI (senza scritta "Utenti Registrati") */}
           <div className="bg-white/50 rounded-xl p-4 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-              <Users className="w-5 h-5 mr-2" />
-              Utenti Registrati ({users.filter(user => !user.isAdmin).length})
-            </h3>
-            
             {users.filter(user => !user.isAdmin).length === 0 ? (
               <p className="text-gray-500 text-center py-4">
                 Nessun utente registrato
@@ -94,64 +147,6 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
                 ))}
               </div>
             )}
-          </div>
-
-          <div className="space-y-3">
-            <button
-              onClick={onShowAddUserModal}
-              className="w-full bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>Aggiungi Utente</span>
-            </button>
-            
-            <button
-              onClick={onShowCreateEventModal}
-              className="w-full bg-[hsl(270,50%,65%)] hover:bg-[hsl(229,73%,69%)] text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Nuovo Evento</span>
-            </button>
-            
-            <button
-              onClick={onShowEventList}
-              className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>Gestisci Eventi</span>
-            </button>
-            
-
-          </div>
-        </div>
-        
-        {/* Toggle Controllo Accesso Unico - In fondo */}
-        <div className="mt-4 bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-orange-800 mb-1">Accesso Unico</h3>
-              <p className="text-xs text-orange-600">Un utente per dispositivo</p>
-            </div>
-            <button
-              onClick={toggleUniqueSession}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                uniqueSessionEnabled 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {uniqueSessionEnabled ? (
-                <>
-                  <ToggleRight className="w-5 h-5" />
-                  <span className="text-sm font-medium">ON</span>
-                </>
-              ) : (
-                <>
-                  <ToggleLeft className="w-5 h-5" />
-                  <span className="text-sm font-medium">OFF</span>
-                </>
-              )}
-            </button>
           </div>
         </div>
       </div>
