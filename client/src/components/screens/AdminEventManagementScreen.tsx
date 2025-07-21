@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
 import diagoLogo from '@assets/diagologo.png';
@@ -43,59 +43,128 @@ export default function AdminEventManagementScreen({
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="space-y-6 max-w-2xl mx-auto">
-          {/* Active Events */}
+        <div className="space-y-8 max-w-4xl mx-auto">
+          
+          {/* Active Events - New Modern Layout */}
           {activeEvents.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-white mb-2">Gestione Eventi</h2>
+                <p className="text-white/80">Amministra e controlla i tuoi eventi attivi</p>
+              </div>
               
               {activeEvents.map(event => (
-                <div key={event.id} className="glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in border border-gray-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-lg text-gray-800">{event.name}</h4>
-                      <p className="text-sm text-gray-600">{formatDate(event.date)}</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex flex-col items-center gap-1">
-                        {event.votingStatus === 'voting' ? (
-                          <>
-                            <button
-                              onClick={() => onDeactivateVoting(event.id)}
-                              className="w-10 h-10 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-colors flex items-center justify-center"
-                              title="Disattiva votazioni"
-                            >
-                              <Square className="w-5 h-5" />
-                            </button>
-                            <span className="text-xs text-green-600 font-medium">Attive</span>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => onActivateVoting(event.id)}
-                              className="w-10 h-10 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors flex items-center justify-center"
-                              title="Attiva votazioni"
-                            >
-                              <Play className="w-5 h-5" />
-                            </button>
-                            <span className="text-xs text-gray-500 font-medium">Disattivate</span>
-                          </>
-                        )}
+                <div key={event.id} className="relative overflow-hidden">
+                  {/* Main Event Card */}
+                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 animate-fade-in">
+                    
+                    {/* Event Header */}
+                    <div className="flex items-start justify-between mb-6">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <div className={`w-3 h-3 rounded-full ${event.votingStatus === 'voting' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                          <span className={`text-sm font-medium ${event.votingStatus === 'voting' ? 'text-green-600' : 'text-gray-500'}`}>
+                            {event.votingStatus === 'voting' ? 'VOTAZIONI ATTIVE' : 'VOTAZIONI SOSPESE'}
+                          </span>
+                        </div>
+                        <h3 className="text-3xl font-bold text-gray-800 mb-2">{event.name}</h3>
+                        <p className="text-lg text-gray-600 flex items-center">
+                          <Calendar className="w-5 h-5 mr-2" />
+                          {formatDate(event.date)}
+                        </p>
                       </div>
                       
-                      <button
-                        onClick={() => onEditEvent(event)}
-                        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-                        title="Modifica evento"
-                      >
-                        <Edit className="w-4 h-4 text-gray-600" />
-                      </button>
-                      <button
-                        onClick={() => onDeleteEvent(event.id)}
-                        className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                        title="Elimina evento"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </button>
+                      {/* Action Menu */}
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => onEditEvent(event)}
+                          className="p-3 bg-white/50 hover:bg-white/70 rounded-xl border border-gray-200 transition-all duration-200 hover:scale-105"
+                          title="Modifica evento"
+                        >
+                          <Edit className="w-5 h-5 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => onDeleteEvent(event.id)}
+                          className="p-3 bg-red-50/50 hover:bg-red-100/70 rounded-xl border border-red-200 transition-all duration-200 hover:scale-105"
+                          title="Elimina evento"
+                        >
+                          <Trash2 className="w-5 h-5 text-red-600" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                      <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-4 border border-blue-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="p-2 bg-blue-500 rounded-lg">
+                            <Users className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Partecipanti</p>
+                            <p className="text-xl font-bold text-gray-800">12</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl p-4 border border-purple-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="p-2 bg-purple-500 rounded-lg">
+                            <Wine className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Vini Registrati</p>
+                            <p className="text-xl font-bold text-gray-800">8</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl p-4 border border-green-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="p-2 bg-green-500 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Voti Ricevuti</p>
+                            <p className="text-xl font-bold text-gray-800">45</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Primary Action - Voting Control */}
+                    <div className="bg-white/60 rounded-2xl p-6 border border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 bg-gray-100 rounded-xl">
+                            <Settings className="w-6 h-6 text-gray-600" />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold text-gray-800">Controllo Votazioni</h4>
+                            <p className="text-sm text-gray-600">Gestisci lo stato delle votazioni per questo evento</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3">
+                          {event.votingStatus === 'voting' ? (
+                            <button
+                              onClick={() => onDeactivateVoting(event.id)}
+                              className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-lg rounded-xl transition-all duration-200 hover:scale-105 shadow-xl"
+                            >
+                              <Square className="w-6 h-6" />
+                              <span>SOSPENDI VOTAZIONI</span>
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => onActivateVoting(event.id)}
+                              className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg rounded-xl transition-all duration-200 hover:scale-105 shadow-xl"
+                            >
+                              <Play className="w-6 h-6" />
+                              <span>AVVIA VOTAZIONI</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
