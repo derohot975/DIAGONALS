@@ -37,10 +37,7 @@ export default function AdminEventManagementScreen({
         <img 
           src={diagoLogo} 
           alt="DIAGO Logo" 
-          className="h-20 filter brightness-0 saturate-100 opacity-70"
-          style={{
-            filter: 'brightness(0) saturate(100%) invert(50%) sepia(73%) saturate(2076%) hue-rotate(260deg) brightness(95%) contrast(101%)'
-          }}
+          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
         />
       </div>
 
