@@ -9,6 +9,7 @@ interface AdminEventManagementScreenProps {
   onEditEvent: (event: WineEvent) => void;
   onDeleteEvent: (eventId: number) => void;
   onActivateVoting: (eventId: number) => void;
+  onDeactivateVoting: (eventId: number) => void;
 }
 
 export default function AdminEventManagementScreen({ 
@@ -17,7 +18,8 @@ export default function AdminEventManagementScreen({
   onGoBack,
   onEditEvent,
   onDeleteEvent,
-  onActivateVoting
+  onActivateVoting,
+  onDeactivateVoting
 }: AdminEventManagementScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -52,21 +54,21 @@ export default function AdminEventManagementScreen({
                       <p className="text-sm text-gray-600">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        event.votingStatus === 'voting' 
-                          ? 'bg-purple-100 text-purple-700' 
-                          : 'bg-green-100 text-green-700'
-                      }`}>
-                        {event.votingStatus === 'voting' ? 'VOTAZIONI ATTIVE' : 'REGISTRAZIONE'}
-                      </span>
-                      
-                      {event.votingStatus === 'registration' && (
+                      {event.votingStatus === 'voting' ? (
+                        <button
+                          onClick={() => onDeactivateVoting(event.id)}
+                          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors"
+                          title="Disattiva votazioni"
+                        >
+                          VOTAZIONI ATTIVE
+                        </button>
+                      ) : (
                         <button
                           onClick={() => onActivateVoting(event.id)}
-                          className="p-2 rounded-full hover:bg-green-100 transition-colors bg-green-50"
+                          className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium hover:bg-green-200 transition-colors"
                           title="Attiva votazioni"
                         >
-                          <Play className="w-4 h-4 text-green-600" />
+                          REGISTRAZIONE
                         </button>
                       )}
                       

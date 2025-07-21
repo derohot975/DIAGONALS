@@ -430,6 +430,13 @@ function App() {
     activateVotingMutation.mutate(eventId);
   };
 
+  const handleDeactivateVoting = (eventId: number) => {
+    updateEventMutation.mutate({
+      eventId,
+      eventData: { votingStatus: 'registration' }
+    });
+  };
+
   const handleShowResults = (eventId: number) => {
     setSelectedEventId(eventId);
     setCurrentScreen('eventResults');
@@ -505,6 +512,7 @@ function App() {
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
             onActivateVoting={handleActivateVoting}
+            onDeactivateVoting={handleDeactivateVoting}
           />
         );
       case 'eventDetails':
