@@ -60,12 +60,6 @@ export default function AdminEventManagementScreen({
                     {/* Event Header */}
                     <div className="flex items-start justify-between mb-6">
                       <div className="flex-1 text-center">
-                        <div className="flex items-center justify-center space-x-3 mb-2">
-                          <div className={`w-3 h-3 rounded-full ${event.votingStatus === 'voting' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                          <span className={`text-sm font-medium ${event.votingStatus === 'voting' ? 'text-green-600' : 'text-gray-500'}`}>
-                            {event.votingStatus === 'voting' ? 'VOTAZIONI ATTIVE' : 'VOTAZIONI SOSPESE'}
-                          </span>
-                        </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
                         <p className="text-lg text-gray-600 flex items-center justify-center">
                           <Calendar className="w-5 h-5 mr-2" />
@@ -92,8 +86,8 @@ export default function AdminEventManagementScreen({
                       </div>
                     </div>
 
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-3 gap-4 mb-8">
+                    {/* Participants Count */}
+                    <div className="flex justify-center mb-8">
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-4 border border-blue-200">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-blue-500 rounded-lg">
@@ -102,30 +96,6 @@ export default function AdminEventManagementScreen({
                           <div>
                             <p className="text-sm text-gray-600">Partecipanti</p>
                             <p className="text-xl font-bold text-gray-800">12</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl p-4 border border-purple-200">
-                        <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-purple-500 rounded-lg">
-                            <Wine className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Vini Registrati</p>
-                            <p className="text-xl font-bold text-gray-800">8</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl p-4 border border-green-200">
-                        <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-green-500 rounded-lg">
-                            <BarChart3 className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Voti Ricevuti</p>
-                            <p className="text-xl font-bold text-gray-800">45</p>
                           </div>
                         </div>
                       </div>
