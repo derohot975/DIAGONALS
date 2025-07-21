@@ -52,8 +52,11 @@ function App() {
   });
 
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ['/api/wines?eventId=' + selectedEventId],
+    queryKey: ['/api/wines', selectedEventId, currentUser?.id],
+    queryFn: () => fetch(`/api/wines?eventId=${selectedEventId}`).then(res => res.json()),
     enabled: !!selectedEventId,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({
