@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Plus, Minus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { WineEvent, User, Wine as WineType, Vote } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
 import diagoLogo from '@assets/diagologo.png';
@@ -54,14 +54,6 @@ export default function VotingScreen({
   const getWineLabel = (wine: WineType) => {
     const index = eventWines.findIndex(w => w.id === wine.id);
     return `Vino ${String.fromCharCode(65 + index)}`;
-  };
-
-  const handleScoreChange = (increment: boolean) => {
-    if (increment && selectedScore < 10) {
-      setSelectedScore(Math.min(10, selectedScore + 0.5));
-    } else if (!increment && selectedScore > 1) {
-      setSelectedScore(Math.max(1, selectedScore - 0.5));
-    }
   };
 
   const handleVoteSubmit = () => {
@@ -148,32 +140,7 @@ export default function VotingScreen({
                       </div>
                     </div>
 
-                    {/* Fine-tune Controls */}
-                    <div className="flex items-center justify-center space-x-8 mt-6">
-                      <button
-                        onClick={() => handleScoreChange(false)}
-                        disabled={selectedScore <= 1}
-                        className={`w-12 h-12 rounded-full transition-all ${
-                          selectedScore <= 1 
-                            ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 active:scale-95'
-                        }`}
-                      >
-                        <Minus className="w-5 h-5 mx-auto" />
-                      </button>
-                      
-                      <button
-                        onClick={() => handleScoreChange(true)}
-                        disabled={selectedScore >= 10}
-                        className={`w-12 h-12 rounded-full transition-all ${
-                          selectedScore >= 10 
-                            ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 active:scale-95'
-                        }`}
-                      >
-                        <Plus className="w-5 h-5 mx-auto" />
-                      </button>
-                    </div>
+
                   </div>
 
                   {/* Confirm Vote Button */}
