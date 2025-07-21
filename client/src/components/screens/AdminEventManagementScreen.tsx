@@ -1,6 +1,7 @@
 import { Calendar, ArrowLeft, Edit, Trash2, Play, Square } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
+import diagoLogo from '@assets/diagologo.png';
 
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
@@ -30,19 +31,28 @@ export default function AdminEventManagementScreen({
   const completedEvents = events.filter(event => event.status === 'completed');
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">📋 Gestione Eventi</h1>
-        </div>
+    <div className="flex-1 flex flex-col">
+      {/* Logo Header */}
+      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
+        <img 
+          src={diagoLogo} 
+          alt="DIAGO Logo" 
+          className="h-20 filter brightness-0 saturate-100 opacity-70"
+          style={{
+            filter: 'brightness(0) saturate(100%) invert(50%) sepia(73%) saturate(2076%) hue-rotate(260deg) brightness(95%) contrast(101%)'
+          }}
+        />
+      </div>
 
-        <div className="space-y-6">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="space-y-6 max-w-2xl mx-auto">
           {/* Active Events */}
           {activeEvents.length > 0 && (
             <div className="space-y-4">
               
               {activeEvents.map(event => (
-                <div key={event.id} className="bg-white/70 rounded-xl p-4 border border-gray-200">
+                <div key={event.id} className="glass-effect rounded-2xl shadow-2xl p-6 animate-fade-in border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-lg text-gray-800">{event.name}</h4>
@@ -105,7 +115,7 @@ export default function AdminEventManagementScreen({
               </h3>
               
               {completedEvents.map(event => (
-                <div key={event.id} className="bg-white/50 rounded-xl p-4 border border-gray-200 opacity-80">
+                <div key={event.id} className="glass-effect rounded-2xl shadow-xl p-6 border border-gray-200 opacity-80">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-lg text-gray-700">{event.name}</h4>
@@ -147,11 +157,11 @@ export default function AdminEventManagementScreen({
         </div>
       </div>
 
-      {/* Pulsante Back fisso in fondo */}
-      <div className="fixed bottom-4 left-4 z-50">
+      {/* Fixed Back Button */}
+      <div className="flex-shrink-0 flex justify-center pb-8 pt-4">
         <button
           onClick={onGoBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+          className="w-12 h-12 bg-[hsl(230,70%,60%)] text-white rounded-full shadow-lg hover:bg-[hsl(230,70%,50%)] transition-all duration-200 flex items-center justify-center hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
