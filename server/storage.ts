@@ -31,6 +31,7 @@ export interface IStorage {
   getWine(id: number): Promise<Wine | undefined>;
   getWineById(id: number): Promise<Wine | undefined>;
   createWine(wine: InsertWine): Promise<Wine>;
+  getAllWines(): Promise<Wine[]>;
   getWinesByEventId(eventId: number): Promise<Wine[]>;
   updateWineRevealed(id: number, isRevealed: boolean): Promise<Wine | undefined>;
   updateWineRevealStatus(id: number, isRevealed: boolean): Promise<Wine | undefined>;
@@ -174,6 +175,10 @@ export class DatabaseStorage implements IStorage {
       .values(insertWine)
       .returning();
     return wine;
+  }
+
+  async getAllWines(): Promise<Wine[]> {
+    return await db.select().from(wines);
   }
 
   async getWinesByEventId(eventId: number): Promise<Wine[]> {

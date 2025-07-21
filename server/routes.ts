@@ -255,7 +255,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const wines = await storage.getWinesByEventId(eventId);
         res.json(wines);
       } else {
-        res.status(400).json({ message: "eventId query parameter is required" });
+        // Return all wines for EventListScreen
+        const wines = await storage.getAllWines();
+        res.json(wines);
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch wines" });

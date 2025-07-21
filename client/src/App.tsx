@@ -52,11 +52,11 @@ function App() {
   });
 
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ['/api/wines', selectedEventId, currentUser?.id],
-    queryFn: () => fetch(`/api/wines?eventId=${selectedEventId}`).then(res => res.json()),
-    enabled: !!selectedEventId,
+    queryKey: ['/api/wines', currentUser?.id],
+    queryFn: () => fetch('/api/wines').then(res => res.json()),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    staleTime: 0, // Forza sempre reload
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({
