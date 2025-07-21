@@ -39,6 +39,11 @@ export default function VotingScreen({
   // Get wines for this event
   const eventWines = wines.filter(w => w.eventId === event.id);
   
+  // Get users who registered wines for this event
+  const eventParticipants = users.filter(user => 
+    eventWines.some(wine => wine.userId === user.id)
+  );
+  
   // Check if current user is DERO (wine selection admin)
   const isWineAdmin = currentUser?.name === 'DERO';
   
@@ -91,16 +96,25 @@ export default function VotingScreen({
             </div>
           </div>
 
-          {/* Wine Selection for DERO */}
+          {/* Wine Selection for DERO - Only show wine selection interface */}
           {isWineAdmin && eventWines.length > 0 && (
             <div className="glass-effect rounded-3xl shadow-2xl p-6 mb-6 animate-fade-in">
               <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
                 Seleziona Vino per Votazione
               </h3>
               
+              <div className="mb-4 p-3 bg-blue-50 rounded-xl text-center">
+                <p className="text-sm font-semibold text-gray-700">
+                  Partecipanti Registrati: <span className="text-purple-600">{eventParticipants.length}</span>
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {eventParticipants.map(p => p.name).join(', ')}
+                </p>
+              </div>
+              
               <div className="space-y-3">
                 {eventWines.map(wine => {
-                  const contributor = users.find(u => u.id === wine.userId);
+                  const contributor = eventParticipants.find(u => u.id === wine.userId);
                   const isSelected = event.currentVotingWineId === wine.id;
                   
                   return (
@@ -135,8 +149,8 @@ export default function VotingScreen({
             </div>
           )}
 
-          {/* Current Wine Display */}
-          {currentWine && (
+          {/* Current Wine Display - Only for non-admin users */}
+          {currentWine && !isWineAdmin && (
             <div className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
               
               {/* Wine Label */}
@@ -144,11 +158,9 @@ export default function VotingScreen({
                 <h3 className="text-3xl font-bold text-gray-800 mb-2">
                   {getWineLabel(currentWine)}
                 </h3>
-                {!isWineAdmin && (
-                  <p className="text-lg text-gray-600">
-                    Portato da: <span className="font-bold">{wineContributor?.name || 'Sconosciuto'}</span>
-                  </p>
-                )}
+                <p className="text-lg text-gray-600">
+                  Portato da: <span className="font-bold">{wineContributor?.name || 'Sconosciuto'}</span>
+                </p>
               </div>
 
               {/* Voting Section */}
@@ -230,6 +242,12 @@ export default function VotingScreen({
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
               <h2 className="text-2xl font-bold text-purple-600 mb-4">Seleziona un Vino</h2>
               <p className="text-gray-600 text-lg">Scegli quale vino far votare a tutti i partecipanti</p>
+              <div className="mt-6 p-4 bg-blue-50 rounded-xl">
+                <h3 className="font-semibold text-gray-700 mb-2">Partecipanti Registrati:</h3>
+                <div className="text-gray-600">
+                  {eventParticipants.map(participant => participant.name).join(', ')}
+                </div>
+              </div>
             </div>
           )}
         </div>
