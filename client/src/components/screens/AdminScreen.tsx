@@ -80,14 +80,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
                 : 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200'
             }`}
           >
-            <div className="flex items-center space-x-2">
-              {uniqueSessionEnabled ? (
-                <ToggleRight className="w-4 h-4" />
-              ) : (
-                <ToggleLeft className="w-4 h-4" />
-              )}
-              <span>Accesso Unico</span>
-            </div>
+            <span>Accesso Unico</span>
             <span className={`text-xs font-bold px-2 py-1 rounded-full ${
               uniqueSessionEnabled
                 ? 'bg-green-200 text-green-800'
