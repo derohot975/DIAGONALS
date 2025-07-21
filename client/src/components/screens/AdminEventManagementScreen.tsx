@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Pause } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { formatDate } from '../../utils/helpers';
 
@@ -54,11 +54,10 @@ export default function AdminEventManagementScreen({
                           <>
                             <button
                               onClick={() => onDeactivateVoting(event.id)}
-                              className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                              className="w-10 h-10 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-colors flex items-center justify-center"
                               title="Disattiva votazioni"
                             >
-                              <Pause className="w-4 h-4" />
-                              DISATTIVA VOTAZIONI
+                              <Square className="w-5 h-5" />
                             </button>
                             <span className="text-xs text-green-600 font-medium">Attive</span>
                           </>
@@ -66,11 +65,10 @@ export default function AdminEventManagementScreen({
                           <>
                             <button
                               onClick={() => onActivateVoting(event.id)}
-                              className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium hover:bg-green-200 transition-colors flex items-center gap-2"
+                              className="w-10 h-10 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors flex items-center justify-center"
                               title="Attiva votazioni"
                             >
-                              <Play className="w-4 h-4" />
-                              ATTIVA VOTAZIONI
+                              <Play className="w-5 h-5" />
                             </button>
                             <span className="text-xs text-gray-500 font-medium">Disattivate</span>
                           </>
