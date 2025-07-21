@@ -138,15 +138,14 @@ Preferred communication style: Simple, everyday language.
 - **Layout**: Design mobile-first con adattamento desktop
 
 ### Deployment Configuration
-- **Piattaforma**: Render.com con GitHub integration
-- **Build**: npm run build (frontend + backend)
-- **Start**: npm start (server production)
-- **Ambiente**: NODE_ENV=production, PORT=10000
-- **Regione**: Oregon (US West)
-- **Status**: ✅ BUILD VERIFIED - Waiting for Render deployment completion
-- **URL**: https://diagonale.onrender.com
+- **Piattaforma**: Replit Deployment (gratuito)
+- **Build**: Automatico con Replit
+- **PWA**: Configurazione completa con icone appdiago.png
+- **Ambiente**: NODE_ENV=production
+- **Status**: 🚀 DEPLOY IN CORSO - PWA con icone corrette
+- **URL**: TBD (.replit.app domain)
 - **Sistema**: Supabase PostgreSQL (dati persistenti condivisi)
-- **Database**: Migrazione da in-memory a Supabase completata
+- **Icone PWA**: 96x96, 144x144, 192x192, 512x512 px configurate
 
 ## System Architecture
 
