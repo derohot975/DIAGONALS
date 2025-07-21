@@ -6,18 +6,19 @@ interface EventListScreenProps {
   events: WineEvent[];
   users: User[];
   currentUser: User | null;
+  wines: any[]; // Array dei vini per controllare se utente ha già registrato
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
   onGoBack: () => void;
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
-
 }
 
 export default function EventListScreen({ 
   events, 
   users, 
   currentUser,
+  wines,
   onShowEventDetails, 
   onShowEventResults,
   onGoBack,
@@ -27,6 +28,12 @@ export default function EventListScreen({
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
     return user?.name || 'Unknown';
+  };
+
+  // Verifica se l'utente ha già registrato un vino per un evento specifico
+  const userHasRegisteredWineForEvent = (eventId: number) => {
+    if (!currentUser || !wines || !Array.isArray(wines)) return false;
+    return wines.some(wine => wine.eventId === eventId && wine.userId === currentUser.id);
   };
 
   const activeEvents = events.filter(event => event.status === 'active');
@@ -75,21 +82,28 @@ export default function EventListScreen({
                   </div>
                 </div>
 
-                {/* Due pulsanti separati */}
-                <div className="space-y-4">
-                  <button
-                    onClick={() => onRegisterWine(event.id)}
-                    className="w-full bg-gradient-to-r from-[hsl(229,73%,69%)] to-[hsl(270,50%,65%)] hover:from-[hsl(270,50%,65%)] hover:to-[hsl(229,73%,69%)] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-                  >
-                    REGISTRA IL TUO VINO
-                  </button>
-                  
-                  <button
-                    onClick={() => onParticipateEvent(event.id)}
-                    className="w-full bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl"
-                  >
-                    PARTECIPA ALLA DIAGONALE
-                  </button>
+                {/* PULSANTE UNICO CONDIZIONALE */}
+                <div>
+                  {!userHasRegisteredWineForEvent(event.id) ? (
+                    <button
+                      onClick={() => onRegisterWine(event.id)}
+                      className="w-full bg-gradient-to-r from-[hsl(229,73%,69%)] to-[hsl(270,50%,65%)] hover:from-[hsl(270,50%,65%)] hover:to-[hsl(229,73%,69%)] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                      REGISTRA IL TUO VINO
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => event.votingStatus === 'voting' ? onParticipateEvent(event.id) : null}
+                      disabled={event.votingStatus !== 'voting'}
+                      className={`w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl ${
+                        event.votingStatus === 'voting'
+                          ? 'bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {event.votingStatus === 'voting' ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

@@ -481,6 +481,7 @@ function App() {
             events={events}
             users={users}
             currentUser={currentUser}
+            wines={wines}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
             onGoBack={() => setCurrentScreen('home')}
