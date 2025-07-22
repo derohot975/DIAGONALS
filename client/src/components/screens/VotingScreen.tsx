@@ -27,6 +27,7 @@ export default function VotingScreen({
 }: VotingScreenProps) {
   const [selectedScore, setSelectedScore] = useState<number>(5.0);
   const [currentWineIndex, setCurrentWineIndex] = useState<number>(0);
+  const [showVotingModal, setShowVotingModal] = useState(false);
 
   if (!event || !currentUser) {
     return (
@@ -47,6 +48,9 @@ export default function VotingScreen({
   // Check if current user is DERO (wine selection admin)
   const isWineAdmin = currentUser?.name === 'DERO';
   
+  // Check if current user is a participant (not admin and has wine registered)
+  const isParticipant = !isWineAdmin && eventParticipants.some(p => p.id === currentUser.id);
+  
   // Get current wine being voted on (based on admin selection or sequence)
   const currentWine = event.currentVotingWineId 
     ? eventWines.find(w => w.id === event.currentVotingWineId)
@@ -66,10 +70,20 @@ export default function VotingScreen({
     return `Vino ${String.fromCharCode(65 + index)}`;
   };
 
+  // Auto-show voting modal for participants when wine is selected
+  useEffect(() => {
+    if (isParticipant && currentWine && !userVote) {
+      setShowVotingModal(true);
+    } else if (userVote || !currentWine) {
+      setShowVotingModal(false);
+    }
+  }, [currentWine, userVote, isParticipant]);
+
   const handleVoteSubmit = () => {
     if (currentWine && !userVote) {
       onVoteForWine(currentWine.id, selectedScore);
       setSelectedScore(5.0); // Reset to middle value
+      setShowVotingModal(false); // Close modal after voting
     }
   };
 
@@ -262,6 +276,86 @@ export default function VotingScreen({
           <ArrowLeft className="w-5 h-5" />
         </button>
       </div>
+
+      {/* Voting Modal for Participants */}
+      {showVotingModal && currentWine && isParticipant && !userVote && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-t-3xl text-center">
+              <h2 className="text-2xl font-bold mb-2">{getWineLabel(currentWine)}</h2>
+              <p className="text-purple-100">
+                Portato da: <span className="font-semibold">{wineContributor?.name}</span>
+              </p>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-800 text-center mb-6">
+                Seleziona il tuo voto
+              </h3>
+
+              {/* Score Picker */}
+              <div className="bg-gradient-to-b from-purple-500 to-purple-700 text-white text-4xl font-bold rounded-3xl p-8 mx-auto max-w-xs text-center shadow-xl mb-6">
+                <div
+                  style={{
+                    height: '180px',
+                    overflowY: 'scroll',
+                    scrollSnapType: 'y mandatory',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  }}
+                  className="flex flex-col items-center justify-start custom-scrollbar"
+                  onScroll={(e) => {
+                    const container = e.target as HTMLDivElement;
+                    const itemHeight = 60;
+                    const scrollTop = container.scrollTop;
+                    const index = Math.round(scrollTop / itemHeight);
+                    const score = 1.0 + (index * 0.5);
+                    if (score >= 1.0 && score <= 10.0) {
+                      setSelectedScore(score);
+                    }
+                  }}
+                >
+                  {Array.from({ length: 19 }, (_, i) => 1.0 + (i * 0.5)).map((score) => (
+                    <div
+                      key={score}
+                      style={{
+                        height: '60px',
+                        scrollSnapAlign: 'center',
+                      }}
+                      className={`flex items-center justify-center transition-all duration-300 ${
+                        Math.abs(selectedScore - score) < 0.1 
+                          ? 'text-yellow-300 scale-110' 
+                          : 'text-white opacity-60'
+                      }`}
+                    >
+                      {score.toFixed(1)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowVotingModal(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-400 transition-all"
+                >
+                  Chiudi
+                </button>
+                <button
+                  onClick={handleVoteSubmit}
+                  disabled={!selectedScore}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:transform-none"
+                >
+                  VOTA
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
