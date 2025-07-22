@@ -48,8 +48,8 @@ export default function VotingScreen({
   // Check if current user is DERO (wine selection admin)
   const isWineAdmin = currentUser?.name === 'DERO';
   
-  // Check if current user is a participant (not admin and registered for this event)
-  const isParticipant = !isWineAdmin;
+  // Check if current user is a participant (not admin and has wine registered)
+  const isParticipant = !isWineAdmin && eventParticipants.some(p => p.id === currentUser.id);
   
   // Get current wine being voted on (based on admin selection or sequence)
   const currentWine = event.currentVotingWineId 
@@ -243,11 +243,20 @@ export default function VotingScreen({
             </div>
           )}
 
-          {/* No wine selected */}
-          {!currentWine && !isWineAdmin && (
+          {/* Participant waiting message */}
+          {isParticipant && !currentWine && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
-              <h2 className="text-2xl font-bold text-gray-600 mb-4">Nessun Vino in Votazione</h2>
-              <p className="text-gray-500 text-lg">Attendi che DERO selezioni un vino per iniziare</p>
+              <h2 className="text-2xl font-bold text-gray-600 mb-4">In Attesa</h2>
+              <p className="text-gray-500 text-lg">DERO selezionerà il prossimo vino da votare</p>
+            </div>
+          )}
+
+          {/* Non-participant message */}
+          {!isWineAdmin && !isParticipant && (
+            <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
+              <h2 className="text-2xl font-bold text-gray-600 mb-4">Non Registrato</h2>
+              <p className="text-gray-500 text-lg">Non hai registrato vini per questo evento</p>
+              <p className="text-gray-400 text-sm mt-2">Solo chi ha registrato un vino può partecipare alla votazione</p>
             </div>
           )}
 
