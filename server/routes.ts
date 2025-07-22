@@ -178,7 +178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid event data", errors: error.errors });
       } else {
-        res.status(500).json({ message: "Failed to create event", error: error.message });
+        res.status(500).json({ message: "Failed to create event", error: String(error) });
       }
     }
   });
@@ -213,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid event data", errors: error.errors });
       } else {
-        res.status(500).json({ message: "Failed to update event", error: error.message });
+        res.status(500).json({ message: "Failed to update event", error: String(error) });
       }
     }
   });
