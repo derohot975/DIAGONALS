@@ -106,14 +106,15 @@ Preferred communication style: Simple, everyday language.
 6. **Logo Integrato**: Logo PNG originale con colorazione app
 
 ### Sistema Votazioni Sequenziali - COMPLETATO ✅
-**Nuovo Flusso Implementato (22 Luglio 2025)**:
-- **Admin Selection**: Admin seleziona vino corrente per votazione sequenziale
-- **VotingModal**: Modal con griglia numerica 1-10 (step 0.5) per tutti gli utenti
-- **Wine Hiding**: Vini mostrati solo come "Vino A", "Vino B" per degustazione cieca
-- **Sequential Control**: Admin controlla progressione vino per vino
-- **Database Schema**: Campo currentVotingWineId per gestione stato votazione
-- **API Integration**: Endpoint /current-wine, /next-wine per controllo sequenziale
-- **Real-time Updates**: Sincronizzazione automatica tra admin e partecipanti
+**Sistema Completo Implementato (22 Luglio 2025 - 01:00)**:
+- **DERO Admin**: DERO riconosciuto automaticamente come admin per selezione vini
+- **Modal Automatico**: Appare istantaneamente su tutti i dispositivi quando DERO seleziona vino
+- **Interfaccia Separata**: DERO vede solo selezione vini, partecipanti solo modal votazione
+- **Partecipanti Filtrati**: Solo utenti che hanno registrato vini possono votare
+- **Wine Hiding**: Vini mostrati come "Vino A", "Vino B" per degustazione cieca
+- **Scroll Voting**: Box viola scrollabile stile iPhone (1.0-10.0 step 0.5)
+- **Real-time Sync**: Sincronizzazione automatica database Supabase
+- **Auto-Close Modal**: Modal si chiude automaticamente dopo votazione
 
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
