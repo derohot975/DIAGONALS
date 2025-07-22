@@ -48,8 +48,8 @@ export default function VotingScreen({
   // Check if current user is DERO (wine selection admin)
   const isWineAdmin = currentUser?.name === 'DERO';
   
-  // Check if current user is a participant (not admin and has wine registered)
-  const isParticipant = !isWineAdmin && eventParticipants.some(p => p.id === currentUser.id);
+  // Check if current user is a participant (not admin and registered for this event)
+  const isParticipant = !isWineAdmin;
   
   // Get current wine being voted on (based on admin selection or sequence)
   const currentWine = event.currentVotingWineId 
