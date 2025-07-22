@@ -48,8 +48,8 @@ export default function VotingScreen({
   // Check if current user is DERO (wine selection admin)
   const isWineAdmin = currentUser?.name === 'DERO';
   
-  // Check if current user is a participant (not admin and has wine registered)
-  const isParticipant = !isWineAdmin && eventParticipants.some(p => p.id === currentUser.id);
+  // Check if current user is a participant (has wine registered, including DERO)
+  const isParticipant = eventParticipants.some(p => p.id === currentUser.id);
   
   // Get current wine being voted on (based on admin selection or sequence)
   const currentWine = event.currentVotingWineId 
@@ -163,8 +163,8 @@ export default function VotingScreen({
             </div>
           )}
 
-          {/* Current Wine Display - Only for non-admin users */}
-          {currentWine && !isWineAdmin && (
+          {/* Current Wine Display - For participants (including DERO) */}
+          {currentWine && isParticipant && (
             <div className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
               
               {/* Wine Label */}
@@ -243,16 +243,18 @@ export default function VotingScreen({
             </div>
           )}
 
-          {/* Participant waiting message */}
+          {/* Participant waiting message (including DERO) */}
           {isParticipant && !currentWine && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
               <h2 className="text-2xl font-bold text-gray-600 mb-4">In Attesa</h2>
-              <p className="text-gray-500 text-lg">DERO selezionerà il prossimo vino da votare</p>
+              <p className="text-gray-500 text-lg">
+                {isWineAdmin ? "Seleziona un vino dalla lista sopra per iniziare" : "DERO selezionerà il prossimo vino da votare"}
+              </p>
             </div>
           )}
 
           {/* Non-participant message */}
-          {!isWineAdmin && !isParticipant && (
+          {!isParticipant && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
               <h2 className="text-2xl font-bold text-gray-600 mb-4">Non Registrato</h2>
               <p className="text-gray-500 text-lg">Non hai registrato vini per questo evento</p>
