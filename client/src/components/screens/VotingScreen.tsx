@@ -144,10 +144,10 @@ export default function VotingScreen({
                       <div className="flex items-center justify-between">
                         <div className="text-left">
                           <h4 className="font-bold text-lg text-gray-800">
-                            {getWineLabel(wine)}
+                            Vino di {contributor?.name}
                           </h4>
                           <p className="text-gray-600">
-                            Portato da: <span className="font-semibold">{contributor?.name}</span>
+                            {wine.type} • {wine.year}
                           </p>
                         </div>
                         {isSelected && (
