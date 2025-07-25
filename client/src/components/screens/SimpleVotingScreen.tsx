@@ -154,39 +154,48 @@ export default function SimpleVotingScreen({
                       </div>
                     </div>
 
-                    {/* Right Side - Vote Badge with Scroll */}
-                    <div className="flex items-center">
-                      {/* Vote Badge - Always Present and Scrollable */}
-                      <div 
-                        className={`px-6 py-3 rounded-full font-bold text-lg text-center cursor-pointer select-none ${
-                          userVote 
-                            ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
-                            : 'bg-gray-400 text-white'
-                        }`}
-                        onWheel={(e) => {
-                          e.preventDefault();
-                          const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                          let newScore;
-                          
-                          if (e.deltaY < 0) {
-                            // Scroll up - increase score
-                            newScore = Math.min(currentScore + 0.5, 10);
-                          } else {
-                            // Scroll down - decrease score  
-                            newScore = Math.max(currentScore - 0.5, 1);
-                          }
-                          
-                          voteMutation.mutate({ wineId: wine.id, score: newScore });
-                        }}
-                        onClick={() => {
-                          // Click to set initial vote if none exists
-                          if (!userVote) {
-                            voteMutation.mutate({ wineId: wine.id, score: 1 });
-                          }
-                        }}
-                        title="Scorri per modificare il voto (1-10)"
-                      >
+                    {/* Right Side - Vote Badge and Arrow Controls */}
+                    <div className="flex items-center space-x-3">
+                      {/* Vote Badge - Always Present */}
+                      <div className={`px-6 py-3 rounded-full font-bold text-lg text-center min-w-[80px] ${
+                        userVote 
+                          ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
+                          : 'bg-gray-400 text-white'
+                      }`}>
                         {userVote ? userVote.score : '1.0'}
+                      </div>
+                      
+                      {/* Vote Controls - Touch Friendly Arrows */}
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <button
+                          onClick={() => {
+                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                            const newScore = Math.min(currentScore + 0.5, 10);
+                            voteMutation.mutate({ wineId: wine.id, score: newScore });
+                          }}
+                          disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
+                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-2 touch-manipulation"
+                          style={{ touchAction: 'manipulation' }}
+                        >
+                          <ChevronUp className="w-6 h-6" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                            if (currentScore > 1) {
+                              const newScore = Math.max(currentScore - 0.5, 1);
+                              voteMutation.mutate({ wineId: wine.id, score: newScore });
+                            } else if (!userVote) {
+                              // Initialize vote if none exists
+                              voteMutation.mutate({ wineId: wine.id, score: 1 });
+                            }
+                          }}
+                          disabled={userVote && parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
+                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-2 touch-manipulation"
+                          style={{ touchAction: 'manipulation' }}
+                        >
+                          <ChevronDown className="w-6 h-6" />
+                        </button>
                       </div>
                     </div>
 
