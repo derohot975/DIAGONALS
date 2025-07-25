@@ -49,8 +49,8 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: E
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(270,50%,65%)] focus:border-transparent"
+              onChange={(e) => setName(e.target.value.toUpperCase())}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(270,50%,65%)] focus:border-transparent uppercase"
               placeholder="Inserisci il nome"
               required
             />
