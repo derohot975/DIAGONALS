@@ -37,7 +37,7 @@ export default function AdminEventManagementScreen({
     return uniqueUsers.size;
   };
 
-  const activeEvents = events.filter(event => event.status === 'active');
+  const activeEvents = events.filter(event => event.status === 'registration' || event.status === 'active');
   const completedEvents = events.filter(event => event.status === 'completed');
 
   return (
