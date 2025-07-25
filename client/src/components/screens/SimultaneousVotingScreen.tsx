@@ -143,18 +143,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
       {/* Voting Section */}
       <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
-        <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
+        <h3 className="text-center text-lg font-semibold mb-6 text-gray-800">
           Seleziona Vino per Votazione
         </h3>
-        
-        <div className="text-center mb-6">
-          <p className="text-sm text-gray-600">
-            Partecipanti Registrati: <span className="text-purple-600 font-bold">{eventWines.length}</span>
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            {eventWines.map((wine: Wine) => getWineOwner(wine.userId)).join(", ")}
-          </p>
-        </div>
 
         {/* Wine Voting Boxes */}
         <div className="space-y-4">
