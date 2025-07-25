@@ -32,7 +32,8 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
   // Fetch existing votes
   const { data: existingVotes = [] } = useQuery<Vote[]>({
-    queryKey: ["/api/votes"]
+    queryKey: ["/api/votes", event.id],
+    queryFn: () => apiRequest(`/api/votes?eventId=${event.id}`)
   });
 
   // Fetch users to get wine owners
@@ -66,7 +67,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       }).then(res => res.json());
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/votes"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/votes", event.id] });
       toast({
         title: "Voto salvato!",
         description: "Il tuo voto è stato registrato con successo.",

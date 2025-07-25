@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 22, 2025 - Updated 01:30)
+## Recent Changes (July 25, 2025 - Updated 10:12)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -105,16 +105,16 @@ Preferred communication style: Simple, everyday language.
 5. **Interfaccia Ottimizzata**: Layout centrato e responsivo
 6. **Logo Integrato**: Logo PNG originale con colorazione app
 
-### Sistema Votazioni Sequenziali - COMPLETATO ✅
-**Sistema Completo Implementato (22 Luglio 2025 - 01:00)**:
-- **DERO Admin**: DERO riconosciuto automaticamente come admin per selezione vini
-- **Modal Automatico**: Appare istantaneamente su tutti i dispositivi quando DERO seleziona vino
-- **Interfaccia Separata**: DERO vede solo selezione vini, partecipanti solo modal votazione
-- **Partecipanti Filtrati**: Solo utenti che hanno registrato vini possono votare
-- **Wine Hiding**: Vini mostrati come "Vino A", "Vino B" per degustazione cieca
-- **Scroll Voting**: Box viola scrollabile stile iPhone (1.0-10.0 step 0.5)
-- **Real-time Sync**: Sincronizzazione automatica database Supabase
-- **Auto-Close Modal**: Modal si chiude automaticamente dopo votazione
+### Sistema Votazioni Simultanee - COMPLETATO ✅
+**Nuova Interfaccia Implementata (25 Luglio 2025 - 10:12)**:
+- **Votazione Simultanea**: Tutti i vini visibili contemporaneamente, niente più selezione sequenziale
+- **Layout Mockup**: Interfaccia esatta come da mockup fornito dall'utente
+- **Box Interattivi**: "Vino di [NOME]" + "[TIPO] • [ANNO]" per ogni partecipante
+- **Voti Touchscreen**: Scroll verticale per modificare voti (1.0-10.0 step 0.5)
+- **Selezione Visiva**: Box selezionato cambia colore con bordo evidenziato
+- **Auto-Save**: Voti salvati automaticamente durante modifica
+- **Database Semplificato**: Rimossi campi obsoleti (currentVotingWineId, votingStatus, isRevealed)
+- **API Pulite**: Eliminate route sequenziali non più necessarie
 
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
