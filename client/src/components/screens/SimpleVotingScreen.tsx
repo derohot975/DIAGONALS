@@ -253,14 +253,7 @@ export default function SimpleVotingScreen({
 
                   </div>
 
-                  {/* Active Vote Indicator */}
-                  {activeVoteWineId === wine.id && (
-                    <div className="mt-2 text-center">
-                      <p className="text-[#8d0303] text-xs font-medium animate-pulse">
-                        📱 Trascina il badge verticalmente come la sveglia iPhone
-                      </p>
-                    </div>
-                  )}
+
 
                 </div>
               );
