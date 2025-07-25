@@ -91,7 +91,7 @@ export function VotingModal({
                   className={`
                     py-2 px-3 rounded-lg text-sm font-medium transition-all
                     ${selectedScore === score 
-                      ? 'bg-[hsl(270,50%,65%)] text-white shadow-lg transform scale-105' 
+                      ? 'bg-[#8d0303] text-white shadow-lg transform scale-105' 
                       : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                     }
                   `}
@@ -113,7 +113,7 @@ export function VotingModal({
               className={`
                 w-full py-3 rounded-xl font-bold transition-all
                 ${selectedScore !== null
-                  ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(280,45%,70%)] text-white hover:shadow-lg transform hover:scale-105'
+                  ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] text-white hover:shadow-lg transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }
               `}

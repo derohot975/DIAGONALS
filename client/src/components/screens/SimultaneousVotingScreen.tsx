@@ -156,7 +156,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
               key={wine.id}
               className={`
                 bg-white border-2 rounded-2xl p-4 transition-all duration-200 cursor-pointer
-                ${selectedWineId === wine.id ? 'border-purple-400 shadow-lg' : 'border-gray-200 shadow-sm hover:border-gray-300'}
+                ${selectedWineId === wine.id ? 'border-[#8d0303] shadow-lg' : 'border-gray-200 shadow-sm hover:border-gray-300'}
               `}
               onClick={() => setSelectedWineId(wine.id)}
             >
@@ -174,9 +174,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   {/* Vote Score Box */}
                   <div
                     className={`
-                      bg-purple-500 rounded-full text-center cursor-pointer select-none transition-all duration-200
+                      bg-[#8d0303] rounded-full text-center cursor-pointer select-none transition-all duration-200
                       ${selectedWineId === wine.id 
-                        ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-purple-300' 
+                        ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-red-300' 
                         : 'px-4 py-2 min-w-[80px] shadow-lg'
                       }
                     `}
@@ -219,7 +219,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     className={`
                       flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-200 p-2 rounded-lg min-w-[48px] min-h-[48px]
                       ${selectedWineId === wine.id 
-                        ? 'opacity-100 scale-110 bg-purple-100' 
+                        ? 'opacity-100 scale-110 bg-red-100' 
                         : 'opacity-60 scale-95 bg-gray-100'
                       }
                     `}

@@ -60,7 +60,7 @@ export function AdminWineSelector({
             className={`
               flex items-center justify-between p-3 rounded-lg border transition-all
               ${wine.id === currentVotingWineId 
-                ? 'border-[hsl(270,50%,65%)] bg-[hsl(270,50%,95%)]' 
+                ? 'border-[#8d0303] bg-red-50' 
                 : 'border-gray-200 hover:border-gray-300'
               }
             `}
@@ -76,8 +76,8 @@ export function AdminWineSelector({
             
             <div className="flex items-center space-x-2">
               {wine.id === currentVotingWineId ? (
-                <div className="flex items-center text-[hsl(270,50%,65%)]">
-                  <div className="w-2 h-2 bg-[hsl(270,50%,65%)] rounded-full animate-pulse mr-2"></div>
+                <div className="flex items-center text-[#8d0303]">
+                  <div className="w-2 h-2 bg-[#8d0303] rounded-full animate-pulse mr-2"></div>
                   <span className="text-sm font-medium">In Votazione</span>
                 </div>
               ) : (
@@ -88,7 +88,7 @@ export function AdminWineSelector({
                     px-3 py-1 rounded-lg text-sm font-medium transition-all
                     ${currentVotingWineId
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-[hsl(270,50%,65%)] text-white hover:bg-[hsl(270,50%,55%)]'
+                      : 'bg-[#8d0303] text-white hover:bg-[#300505]'
                     }
                   `}
                 >
@@ -106,7 +106,7 @@ export function AdminWineSelector({
           <>
             <button
               onClick={onNextWine}
-              className="flex-1 bg-[hsl(280,45%,70%)] text-white py-2 px-4 rounded-lg font-medium hover:bg-[hsl(280,45%,60%)] transition-colors flex items-center justify-center space-x-2"
+              className="flex-1 bg-[#8d0303] text-white py-2 px-4 rounded-lg font-medium hover:bg-[#300505] transition-colors flex items-center justify-center space-x-2"
             >
               <SkipForward className="w-4 h-4" />
               <span>Prossimo Vino</span>

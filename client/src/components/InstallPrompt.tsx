@@ -79,7 +79,7 @@ export default function InstallPrompt() {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 z-40 max-w-sm mx-auto">
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl p-4 shadow-2xl animate-slide-up border border-white/20">
+      <div className="bg-gradient-to-r from-[#300505] to-[#8d0303] text-white rounded-2xl p-4 shadow-2xl animate-slide-up border border-white/20">
         <button
           onClick={handleDismiss}
           className="absolute top-2 right-2 p-1 hover:bg-white/20 rounded-full transition-colors"
@@ -113,7 +113,7 @@ export default function InstallPrompt() {
                 </p>
                 <button
                   onClick={handleInstallClick}
-                  className="bg-white text-purple-600 hover:bg-white/90 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2"
+                  className="bg-white text-[#300505] hover:bg-white/90 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
                   <span>Installa App</span>
