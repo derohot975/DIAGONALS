@@ -67,6 +67,8 @@ export const insertWineSchema = createInsertSchema(wines).omit({
 export const insertVoteSchema = createInsertSchema(votes).omit({
   id: true,
   createdAt: true,
+}).extend({
+  score: z.number().min(1).max(10)
 });
 
 

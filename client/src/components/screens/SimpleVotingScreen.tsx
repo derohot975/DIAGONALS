@@ -24,6 +24,7 @@ export default function SimpleVotingScreen({
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [activeVoteWineId, setActiveVoteWineId] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [showVotingModal, setShowVotingModal] = useState(false);
 
   // Fetch wines for this event
@@ -130,11 +131,18 @@ export default function SimpleVotingScreen({
               return (
                 <div 
                   key={wine.id} 
-                  className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in"
+                  className={`bg-white rounded-2xl shadow-lg p-4 animate-fade-in ${
+                    activeVoteWineId === wine.id ? 'touch-none' : ''
+                  }`}
+                  style={{
+                    touchAction: activeVoteWineId === wine.id ? 'none' : 'auto',
+                    overscrollBehavior: activeVoteWineId === wine.id ? 'none' : 'auto'
+                  }}
                   onWheel={(e) => {
                     // Only handle scroll if this wine is active for voting
                     if (activeVoteWineId === wine.id) {
                       e.preventDefault();
+                      e.stopPropagation();
                       const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
                       let newScore;
                       
@@ -146,8 +154,47 @@ export default function SimpleVotingScreen({
                         newScore = Math.max(currentScore - 0.5, 1);
                       }
                       
-                      voteMutation.mutate({ wineId: wine.id, score: newScore });
+                      if (newScore !== currentScore) {
+                        voteMutation.mutate({ wineId: wine.id, score: newScore });
+                      }
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    if (activeVoteWineId === wine.id && e.touches.length === 1) {
+                      e.preventDefault();
+                      setTouchStartY(e.touches[0].clientY);
+                    }
+                  }}
+                  onTouchMove={(e) => {
+                    if (activeVoteWineId === wine.id && e.touches.length === 1 && touchStartY !== null) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      
+                      const currentY = e.touches[0].clientY;
+                      const deltaY = touchStartY - currentY;
+                      const threshold = 30; // Minimum pixels to trigger vote change
+                      
+                      if (Math.abs(deltaY) > threshold) {
+                        const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                        let newScore;
+                        
+                        if (deltaY > 0) {
+                          // Swipe up - increase score
+                          newScore = Math.min(currentScore + 0.5, 10);
+                        } else {
+                          // Swipe down - decrease score
+                          newScore = Math.max(currentScore - 0.5, 1);
+                        }
+                        
+                        if (newScore !== currentScore) {
+                          voteMutation.mutate({ wineId: wine.id, score: newScore });
+                          setTouchStartY(currentY); // Reset for continuous scrolling
+                        }
+                      }
+                    }
+                  }}
+                  onTouchEnd={() => {
+                    setTouchStartY(null);
                   }}
                 >
                   
