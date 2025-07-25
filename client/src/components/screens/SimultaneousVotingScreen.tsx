@@ -147,13 +147,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
           Seleziona Vino per Votazione
         </h3>
         
-        {selectedWineId && (
-          <div className="text-center mb-4 p-2 bg-purple-100 rounded-lg">
-            <p className="text-sm text-purple-700 font-medium">
-              🔄 Scorri verticalmente sul punteggio per votare
-            </p>
-          </div>
-        )}
+
 
         {/* Wine Voting Boxes */}
         <div className="space-y-4">
