@@ -154,43 +154,39 @@ export default function SimpleVotingScreen({
                       </div>
                     </div>
 
-                    {/* Right Side - Vote Badge and Controls */}
-                    <div className="flex items-center space-x-2">
-                      {/* Vote Badge - Always Present */}
-                      <div className={`px-6 py-3 rounded-full font-bold text-lg text-center ${
-                        userVote 
-                          ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
-                          : 'bg-gray-300 text-gray-600'
-                      }`}>
-                        {userVote ? userVote.score : '--'}
-                      </div>
-                      
-                      {/* Vote Controls - Always Visible */}
-                      <div className="flex flex-col items-center justify-center">
-                        <button
-                          onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 0.5;
-                            const newScore = userVote ? Math.min(currentScore + 0.5, 10) : 1;
-                            voteMutation.mutate({ wineId: wine.id, score: newScore });
-                          }}
-                          disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-1"
-                        >
-                          <ChevronUp className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (userVote) {
-                              const currentScore = parseFloat(userVote.score.toString());
-                              const newScore = Math.max(currentScore - 0.5, 1);
-                              voteMutation.mutate({ wineId: wine.id, score: newScore });
-                            }
-                          }}
-                          disabled={!userVote || parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-1"
-                        >
-                          <ChevronDown className="w-5 h-5" />
-                        </button>
+                    {/* Right Side - Vote Badge with Scroll */}
+                    <div className="flex items-center">
+                      {/* Vote Badge - Always Present and Scrollable */}
+                      <div 
+                        className={`px-6 py-3 rounded-full font-bold text-lg text-center cursor-pointer select-none ${
+                          userVote 
+                            ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
+                            : 'bg-gray-400 text-white'
+                        }`}
+                        onWheel={(e) => {
+                          e.preventDefault();
+                          const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                          let newScore;
+                          
+                          if (e.deltaY < 0) {
+                            // Scroll up - increase score
+                            newScore = Math.min(currentScore + 0.5, 10);
+                          } else {
+                            // Scroll down - decrease score  
+                            newScore = Math.max(currentScore - 0.5, 1);
+                          }
+                          
+                          voteMutation.mutate({ wineId: wine.id, score: newScore });
+                        }}
+                        onClick={() => {
+                          // Click to set initial vote if none exists
+                          if (!userVote) {
+                            voteMutation.mutate({ wineId: wine.id, score: 1 });
+                          }
+                        }}
+                        title="Scorri per modificare il voto (1-10)"
+                      >
+                        {userVote ? userVote.score : '1.0'}
                       </div>
                     </div>
 
