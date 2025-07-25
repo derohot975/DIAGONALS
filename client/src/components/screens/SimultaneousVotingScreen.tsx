@@ -27,29 +27,49 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
   // Fetch wines for this event
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ["/api/events", event.id, "wines"]
+    queryKey: ["/api/events", event.id, "wines"],
+    queryFn: async () => {
+      const response = await fetch(`/api/events/${event.id}/wines`);
+      return response.json();
+    }
   });
 
   // Fetch existing votes
   const { data: existingVotes = [] } = useQuery<Vote[]>({
     queryKey: ["/api/votes", event.id],
-    queryFn: () => apiRequest(`/api/votes?eventId=${event.id}`)
+    queryFn: async () => {
+      const response = await fetch(`/api/votes?eventId=${event.id}`);
+      return response.json();
+    }
   });
 
   // Fetch users to get wine owners
   const { data: users = [] } = useQuery<User[]>({
-    queryKey: ["/api/users"]
+    queryKey: ["/api/users"],
+    queryFn: async () => {
+      const response = await fetch("/api/users");
+      return response.json();
+    }
   });
 
   // Initialize votes from existing data
   useEffect(() => {
-    const userVotes: Record<number, number> = {};
-    existingVotes
-      .filter((vote: Vote) => vote.userId === currentUser.id)
-      .forEach((vote: Vote) => {
-        userVotes[vote.wineId] = parseFloat(vote.score.toString());
+    if (existingVotes && existingVotes.length >= 0) {
+      const userVotes: Record<number, number> = {};
+      existingVotes
+        .filter((vote: Vote) => vote.userId === currentUser.id)
+        .forEach((vote: Vote) => {
+          userVotes[vote.wineId] = parseFloat(vote.score.toString());
+        });
+      setVotes(prevVotes => {
+        // Only update if votes have actually changed
+        const hasChanged = Object.keys(userVotes).some(
+          wineId => prevVotes[parseInt(wineId)] !== userVotes[parseInt(wineId)]
+        ) || Object.keys(prevVotes).length !== Object.keys(userVotes).length;
+        
+        return hasChanged ? userVotes : prevVotes;
       });
-    setVotes(userVotes);
+    }
   }, [existingVotes, currentUser.id]);
 
   // Submit vote mutation
