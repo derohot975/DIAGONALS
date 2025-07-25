@@ -179,7 +179,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
             </button>
             <button
               type="submit"
-              className="flex-1 bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-3 rounded-lg transition-colors font-medium"
+              className="flex-1 bg-[#8d0303] hover:bg-[#300505] text-white px-4 py-3 rounded-lg transition-colors font-medium"
             >
               Registrati
             </button>

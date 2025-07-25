@@ -77,14 +77,14 @@ export default function EventListScreen({
 
                 {/* Event Name - Prima riga */}
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2 leading-tight">
+                  <h3 className="text-2xl font-bold text-[#300505] mb-2 leading-tight">
                     {event.name}
                   </h3>
                 </div>
 
                 {/* Date - Seconda riga centrata ed evidenziata */}
                 <div className="text-center mb-6">
-                  <div className="inline-block bg-gradient-to-r from-[hsl(270,50%,75%)] to-[hsl(280,45%,70%)] px-6 py-3 rounded-2xl shadow-lg">
+                  <div className="inline-block bg-gradient-to-r from-[#300505] to-[#8d0303] px-6 py-3 rounded-2xl shadow-lg">
                     <span className="text-xl font-bold text-white">{formatDate(event.date)}</span>
                   </div>
                 </div>
@@ -96,7 +96,7 @@ export default function EventListScreen({
                   {!userHasRegisteredWineForEvent(event.id) ? (
                     <button
                       onClick={() => onRegisterWine(event.id)}
-                      className="w-full bg-gradient-to-r from-[hsl(229,73%,69%)] to-[hsl(270,50%,65%)] hover:from-[hsl(270,50%,65%)] hover:to-[hsl(229,73%,69%)] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                      className="w-full bg-gradient-to-r from-[#8d0303] to-[#300505] hover:from-[#300505] hover:to-[#8d0303] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
                     >
                       REGISTRA IL TUO VINO
                     </button>
@@ -113,7 +113,7 @@ export default function EventListScreen({
                       
                       <button
                         onClick={() => onParticipateEvent(event.id)}
-                        className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[hsl(270,60%,70%)] via-[hsl(280,55%,65%)] to-[hsl(290,50%,60%)] hover:from-[hsl(290,50%,60%)] hover:via-[hsl(280,55%,65%)] hover:to-[hsl(270,60%,70%)] text-white"
+                        className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
                       >
                         PARTECIPA ALLA DIAGONALE
                       </button>
