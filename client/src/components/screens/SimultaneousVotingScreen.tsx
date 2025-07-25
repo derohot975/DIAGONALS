@@ -170,8 +170,27 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                 
                 {/* Vote Score Box */}
                 <div
-                  className="bg-purple-500 rounded-full px-4 py-2 min-w-[80px] text-center cursor-pointer select-none"
+                  className="bg-purple-500 rounded-full px-4 py-2 min-w-[80px] text-center cursor-pointer select-none touch-pan-y"
                   onWheel={(e) => handleWheelChange(wine.id, e)}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    setSelectedWineId(wine.id);
+                    const touch = e.touches[0];
+                    e.currentTarget.dataset.startY = touch.clientY.toString();
+                  }}
+                  onTouchMove={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const touch = e.touches[0];
+                    const startY = parseFloat(e.currentTarget.dataset.startY || '0');
+                    const deltaY = startY - touch.clientY;
+                    
+                    if (Math.abs(deltaY) > 10) {
+                      const delta = deltaY > 0 ? 0.5 : -0.5;
+                      handleScoreChange(wine.id, delta);
+                      e.currentTarget.dataset.startY = touch.clientY.toString();
+                    }
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedWineId(wine.id);
