@@ -39,6 +39,7 @@ function App() {
   const [showEditEventModal, setShowEditEventModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState<WineEvent | null>(null);
   const [showWineRegistrationModal, setShowWineRegistrationModal] = useState(false);
+  const [editingWine, setEditingWine] = useState<Wine | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -223,6 +224,35 @@ function App() {
     },
     onError: () => {
       toast({ title: 'Errore nella registrazione del vino', variant: 'destructive' });
+    },
+  });
+
+  const updateWineMutation = useMutation({
+    mutationFn: async ({ id, wineData }: { 
+      id: number; 
+      wineData: { 
+        type: string; 
+        name: string; 
+        producer: string; 
+        grape: string;
+        year: number; 
+        origin: string; 
+        price: string;
+        alcohol: number;
+      }
+    }) => {
+      const response = await apiRequest('PUT', `/api/wines/${id}`, wineData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
+      toast({ 
+        title: '✏️ Vino modificato con successo!', 
+        description: 'Le informazioni del tuo vino sono state aggiornate.'
+      });
+    },
+    onError: () => {
+      toast({ title: 'Errore nella modifica del vino', variant: 'destructive' });
     },
   });
 
@@ -477,19 +507,41 @@ function App() {
     year: number;
     origin: string;
     price: number;
+    alcohol?: number;
   }) => {
     if (!currentUser || !selectedEventId) return;
-    createWineMutation.mutate({
-      type: wineData.type,
-      name: wineData.name,
-      producer: wineData.producer,
-      grape: wineData.grape,
-      year: wineData.year,
-      origin: wineData.origin,
-      price: wineData.price.toString(),
-      eventId: selectedEventId,
-      userId: currentUser.id,
-    });
+    
+    if (editingWine) {
+      // Update existing wine
+      updateWineMutation.mutate({
+        id: editingWine.id,
+        wineData: {
+          type: wineData.type,
+          name: wineData.name,
+          producer: wineData.producer,
+          grape: wineData.grape,
+          year: wineData.year,
+          origin: wineData.origin,
+          price: wineData.price.toString(),
+          alcohol: wineData.alcohol || 0,
+        }
+      });
+    } else {
+      // Create new wine
+      createWineMutation.mutate({
+        type: wineData.type,
+        name: wineData.name,
+        producer: wineData.producer,
+        grape: wineData.grape,
+        year: wineData.year,
+        origin: wineData.origin,
+        price: wineData.price.toString(),
+        eventId: selectedEventId,
+        userId: currentUser.id,
+      });
+    }
+    
+    setEditingWine(null); // Reset editing state
   };
 
   const handleVoteForWine = (wineId: number, score: number) => {
@@ -530,11 +582,17 @@ function App() {
   };
 
   const handleShowWineRegistration = (eventId: number) => {
+    setEditingWine(null); // Reset editing wine for new registration
     setSelectedEventId(eventId);
     setShowWineRegistrationModal(true);
   };
 
   const handleEditWine = (eventId: number) => {
+    // Trova il vino dell'utente corrente per questo evento
+    const userWine = wines.find(w => w.eventId === eventId && w.userId === currentUser?.id);
+    if (userWine) {
+      setEditingWine(userWine);
+    }
     setSelectedEventId(eventId);
     setShowWineRegistrationModal(true);
   };
@@ -769,9 +827,13 @@ function App() {
 
       <WineRegistrationModal
         isOpen={showWineRegistrationModal}
-        onClose={() => setShowWineRegistrationModal(false)}
+        onClose={() => {
+          setShowWineRegistrationModal(false);
+          setEditingWine(null);
+        }}
         currentUser={currentUser}
         onRegisterWine={handleRegisterWine}
+        wine={editingWine}
       />
 
       {/* Install Prompt - Only show on home screen when not logged in */}

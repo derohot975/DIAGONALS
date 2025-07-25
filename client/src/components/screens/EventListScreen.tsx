@@ -101,7 +101,7 @@ export default function EventListScreen({
                       REGISTRA IL TUO VINO
                     </button>
                   ) : (
-                    <div className="space-y-3 relative">
+                    <div className="space-y-3">
                       {/* MESSAGGIO SUCCESSO RIDOTTO */}
                       <div className="text-center py-2">
                         <div className="flex items-center justify-center space-x-2">
@@ -130,15 +130,20 @@ export default function EventListScreen({
                         </button>
                       )}
                       
-                      {/* PULSANTE MODIFICA VINO - In basso a sinistra */}
-                      <div className="absolute -bottom-2 left-0">
-                        <button
-                          onClick={() => onEditWine(event.id)}
-                          className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg transition-colors shadow-sm"
-                        >
-                          ✏️ Modifica
-                        </button>
-                      </div>
+
+                    </div>
+                  )}
+                  
+                  {/* PULSANTE MODIFICA VINO - Sotto il modal */}
+                  {userHasRegisteredWineForEvent(event.id) && (
+                    <div className="mt-3 flex justify-start">
+                      <button
+                        onClick={() => onEditWine(event.id)}
+                        className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-1"
+                      >
+                        <span>✏️</span>
+                        <span>Modifica</span>
+                      </button>
                     </div>
                   )}
                 </div>

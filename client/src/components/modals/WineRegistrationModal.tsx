@@ -1,10 +1,12 @@
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Wine } from '@shared/schema';
 
 interface WineRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentUser?: { name: string } | null;
+  wine?: Wine | null;
   onRegisterWine: (wineData: {
     type: string;
     name: string;
@@ -17,7 +19,7 @@ interface WineRegistrationModalProps {
   }) => void;
 }
 
-export default function WineRegistrationModal({ isOpen, onClose, currentUser, onRegisterWine }: WineRegistrationModalProps) {
+export default function WineRegistrationModal({ isOpen, onClose, currentUser, wine, onRegisterWine }: WineRegistrationModalProps) {
   const [type, setType] = useState('');
   const [name, setName] = useState('');
   const [producer, setProducer] = useState('');
@@ -26,6 +28,30 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
   const [origin, setOrigin] = useState('');
   const [price, setPrice] = useState('');
   const [alcohol, setAlcohol] = useState('');
+
+  // Pre-compile fields when editing existing wine
+  useEffect(() => {
+    if (wine && isOpen) {
+      setType(wine.type || '');
+      setName(wine.name || '');
+      setProducer(wine.producer || '');
+      setGrape(wine.grape || '');
+      setYear(wine.year?.toString() || '');
+      setOrigin(wine.origin || '');
+      setPrice(wine.price?.toString() || '');
+      setAlcohol(wine.alcohol?.toString() || '');
+    } else if (isOpen && !wine) {
+      // Reset all fields when opening for new registration
+      setType('');
+      setName('');
+      setProducer('');
+      setGrape('');
+      setYear('');
+      setOrigin('');
+      setPrice('');
+      setAlcohol('');
+    }
+  }, [wine, isOpen]);
 
   // Function to capitalize first letter of each word
   const capitalizeFirstLetter = (str: string) => {
@@ -74,7 +100,9 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
       
       <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-[hsl(270,50%,65%)]">🍷 Registra Vino</h3>
+          <h3 className="text-xl font-bold text-[hsl(270,50%,65%)]">
+            🍷 {wine ? 'Modifica Vino' : 'Registra Vino'}
+          </h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100">
             <X className="w-5 h-5" />
           </button>

@@ -328,6 +328,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/wines/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateWineSchema = insertWineSchema.partial().omit({ userId: true, eventId: true });
+      const wineData = updateWineSchema.parse(req.body);
+      
+      const wine = await storage.updateWine(id, wineData);
+      if (!wine) {
+        res.status(404).json({ message: "Wine not found" });
+        return;
+      }
+      res.json(wine);
+    } catch (error) {
+      console.error('Wine update error:', error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid wine data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update wine" });
+      }
+    }
+  });
+
 
 
   // Vote routes
