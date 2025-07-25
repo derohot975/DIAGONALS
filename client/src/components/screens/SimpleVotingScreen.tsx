@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import { VotingModal } from "@/components/VotingModal";
 import diagoLogo from "@assets/diagologo.png";
@@ -181,7 +181,7 @@ export default function SimpleVotingScreen({
                       
                       const currentY = e.touches[0].clientY;
                       const deltaY = touchStartY - currentY;
-                      const threshold = 30; // Minimum pixels to trigger vote change
+                      const threshold = 15; // Reduced threshold for faster response
                       
                       if (Math.abs(deltaY) > threshold) {
                         const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
@@ -232,11 +232,11 @@ export default function SimpleVotingScreen({
                       </div>
                     </div>
 
-                    {/* Right Side - Vote Badge */}
-                    <div className="flex items-center">
-                      {/* Vote Badge - Click to Activate */}
+                    {/* Right Side - Vote Controls */}
+                    <div className="flex items-center space-x-3">
+                      {/* Vote Badge - Moved Left */}
                       <div 
-                        className={`px-6 py-3 rounded-full font-bold text-lg text-center min-w-[80px] cursor-pointer select-none transition-all ${
+                        className={`px-5 py-2 rounded-full font-bold text-lg text-center min-w-[70px] cursor-pointer select-none transition-all ${
                           activeVoteWineId === wine.id
                             ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] text-white ring-2 ring-[#8d0303] ring-opacity-50' 
                             : userVote 
@@ -256,9 +256,47 @@ export default function SimpleVotingScreen({
                             }
                           }
                         }}
-                        title={activeVoteWineId === wine.id ? "Scroll per modificare il voto" : "Clicca per attivare la modifica"}
+                        title={activeVoteWineId === wine.id ? "Attivo - usa frecce per modificare" : "Clicca per attivare"}
                       >
                         {userVote ? userVote.score : '1.0'}
+                      </div>
+                      
+                      {/* Arrow Controls - Always Visible */}
+                      <div className="flex flex-col items-center space-y-1">
+                        <button
+                          onClick={() => {
+                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                            const newScore = Math.min(currentScore + 0.5, 10);
+                            voteMutation.mutate({ wineId: wine.id, score: newScore });
+                          }}
+                          disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
+                          className={`p-1 rounded transition-all ${
+                            activeVoteWineId === wine.id 
+                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50' 
+                              : 'text-gray-400'
+                          } disabled:text-gray-300`}
+                        >
+                          <ChevronUp className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                            if (currentScore > 1) {
+                              const newScore = Math.max(currentScore - 0.5, 1);
+                              voteMutation.mutate({ wineId: wine.id, score: newScore });
+                            } else if (!userVote) {
+                              voteMutation.mutate({ wineId: wine.id, score: 1 });
+                            }
+                          }}
+                          disabled={userVote && parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
+                          className={`p-1 rounded transition-all ${
+                            activeVoteWineId === wine.id 
+                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50' 
+                              : 'text-gray-400'
+                          } disabled:text-gray-300`}
+                        >
+                          <ChevronDown className="w-5 h-5" />
+                        </button>
                       </div>
                     </div>
 
@@ -266,9 +304,9 @@ export default function SimpleVotingScreen({
 
                   {/* Active Vote Indicator */}
                   {activeVoteWineId === wine.id && (
-                    <div className="mt-3 text-center">
-                      <p className="text-[#8d0303] text-sm font-medium">
-                        ⇅ Scroll per modificare il voto (1.0 - 10.0)
+                    <div className="mt-2 text-center">
+                      <p className="text-[#8d0303] text-xs font-medium animate-pulse">
+                        ⇅ Swipe verticale o usa frecce (1.0 - 10.0)
                       </p>
                     </div>
                   )}
