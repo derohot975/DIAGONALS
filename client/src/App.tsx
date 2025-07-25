@@ -523,7 +523,7 @@ function App() {
           year: wineData.year,
           origin: wineData.origin,
           price: wineData.price.toString(),
-          alcohol: wineData.alcohol || 0,
+          alcohol: wineData.alcohol?.toString() || "0",
         }
       });
     } else {
