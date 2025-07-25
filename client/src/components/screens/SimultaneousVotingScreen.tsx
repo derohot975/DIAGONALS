@@ -143,9 +143,17 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
       {/* Voting Section */}
       <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
-        <h3 className="text-center text-lg font-semibold mb-6 text-gray-800">
+        <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
           Seleziona Vino per Votazione
         </h3>
+        
+        {selectedWineId && (
+          <div className="text-center mb-4 p-2 bg-purple-100 rounded-lg">
+            <p className="text-sm text-purple-700 font-medium">
+              🔄 Scorri verticalmente sul punteggio per votare
+            </p>
+          </div>
+        )}
 
         {/* Wine Voting Boxes */}
         <div className="space-y-4">
@@ -170,7 +178,13 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                 
                 {/* Vote Score Box */}
                 <div
-                  className="bg-purple-500 rounded-full px-4 py-2 min-w-[80px] text-center cursor-pointer select-none touch-pan-y"
+                  className={`
+                    bg-purple-500 rounded-full text-center cursor-pointer select-none touch-pan-y transition-all duration-200
+                    ${selectedWineId === wine.id 
+                      ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-purple-300' 
+                      : 'px-4 py-2 min-w-[80px] shadow-lg'
+                    }
+                  `}
                   onWheel={(e) => handleWheelChange(wine.id, e)}
                   onTouchStart={(e) => {
                     e.stopPropagation();
@@ -196,7 +210,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     setSelectedWineId(wine.id);
                   }}
                 >
-                  <span className="text-lg font-bold text-white">
+                  <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
                     {(votes[wine.id] || 1.0).toFixed(1)}
                   </span>
                 </div>
