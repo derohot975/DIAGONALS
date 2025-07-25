@@ -127,7 +127,9 @@ function App() {
     },
     onSuccess: (data) => {
       console.log('Event created successfully:', data);
+      // Forza refresh di tutte le query degli eventi
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      queryClient.refetchQueries({ queryKey: ['/api/events'] });
       toast({ 
         title: '✅ Evento creato con successo!', 
         description: `"${data.name}" è stato aggiunto alla lista eventi.`
