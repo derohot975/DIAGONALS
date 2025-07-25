@@ -193,23 +193,23 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="fixed bottom-6 left-6 right-6 flex justify-between">
-        <Button
+      {/* Navigation Buttons */}
+      <div className="fixed bottom-4 left-4 z-50">
+        <button
           onClick={onBack}
-          size="lg"
-          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+          className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
         >
-          <ArrowLeft size={24} />
-        </Button>
-        
-        <Button
+          <ArrowLeft size={20} />
+        </button>
+      </div>
+      
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
           onClick={onHome}
-          size="lg"
-          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+          className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
         >
-          <Home size={24} />
-        </Button>
+          <Home size={20} />
+        </button>
       </div>
     </div>
   );
