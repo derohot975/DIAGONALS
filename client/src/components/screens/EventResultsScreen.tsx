@@ -34,13 +34,11 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)]">Risultati Finali</h2>
-              <p className="text-gray-600">{event.name} - {event.date}</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="bg-gray-400 text-white px-3 py-1 rounded-full text-sm font-medium">COMPLETATO</span>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Risultati Finali</h2>
+            <p className="text-gray-600 text-lg">{event.name}</p>
+            <p className="text-gray-600">{event.date}</p>
+            <div className="flex justify-center mt-4">
               <button className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors">
                 <Download className="w-4 h-4" />
                 <span>Esporta</span>
