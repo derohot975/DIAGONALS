@@ -156,15 +156,18 @@ export default function EventListScreen({
               
               {completedEvents.map(event => (
                 <div key={event.id} className="bg-gradient-to-r from-[#8d0303] to-[#300505] rounded-xl p-4 border-2 border-[#300505] opacity-90">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-lg text-white whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
+                  {/* Data e Nome evento centrati */}
+                  <div className="text-center mb-3">
+                    <p className="text-white text-sm font-medium mb-1">
+                      {formatDate(event.date)}
+                    </p>
+                    <h3 className="font-semibold text-lg text-white whitespace-nowrap overflow-hidden text-ellipsis">
+                      {event.name}
+                    </h3>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-white text-sm">
-                      <Calendar className="w-4 h-4" />
-                      <span>{formatDate(event.date)}</span>
-                    </div>
+                  {/* Pulsante Risultati centrato */}
+                  <div className="flex justify-center">
                     <button
                       onClick={() => onShowEventResults(event.id)}
                       className="bg-[hsl(43,96%,56%)] hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
