@@ -36,7 +36,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price) {
+    if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && alcohol) {
       onRegisterWine({
         type,
         name: name.trim(), // Nome vino già maiuscolo dal campo
@@ -45,7 +45,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
         year: parseInt(year),
         origin: origin.trim(),
         price: parseFloat(price),
-        alcohol: alcohol ? parseFloat(alcohol) : undefined
+        alcohol: parseFloat(alcohol)
       });
       setType('');
       setName('');
@@ -170,6 +170,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
                 step="0.1"
                 placeholder="13.5"
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                required
               />
             </div>
           </div>
