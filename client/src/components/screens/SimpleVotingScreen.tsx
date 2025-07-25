@@ -25,6 +25,7 @@ export default function SimpleVotingScreen({
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [activeVoteWineId, setActiveVoteWineId] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [lastVoteTime, setLastVoteTime] = useState<number>(0);
   const [showVotingModal, setShowVotingModal] = useState(false);
 
   // Fetch wines for this event
@@ -152,19 +153,24 @@ export default function SimpleVotingScreen({
                     if (activeVoteWineId === wine.id) {
                       e.preventDefault();
                       e.stopPropagation();
-                      const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                      let newScore;
                       
-                      if (e.deltaY < 0) {
-                        // Scroll up - increase score
-                        newScore = Math.min(currentScore + 0.5, 10);
-                      } else {
-                        // Scroll down - decrease score  
-                        newScore = Math.max(currentScore - 0.5, 1);
-                      }
-                      
-                      if (newScore !== currentScore) {
-                        voteMutation.mutate({ wineId: wine.id, score: newScore });
+                      const now = Date.now();
+                      if (now - lastVoteTime > 50) { // Fast wheel response
+                        const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                        let newScore;
+                        
+                        if (e.deltaY < 0) {
+                          // Scroll up - increase score
+                          newScore = Math.min(currentScore + 0.5, 10);
+                        } else {
+                          // Scroll down - decrease score  
+                          newScore = Math.max(currentScore - 0.5, 1);
+                        }
+                        
+                        if (newScore !== currentScore) {
+                          voteMutation.mutate({ wineId: wine.id, score: newScore });
+                          setLastVoteTime(now);
+                        }
                       }
                     }
                   }}
@@ -181,9 +187,11 @@ export default function SimpleVotingScreen({
                       
                       const currentY = e.touches[0].clientY;
                       const deltaY = touchStartY - currentY;
-                      const threshold = 15; // Reduced threshold for faster response
+                      const threshold = 8; // Very low threshold for instant response
+                      const now = Date.now();
                       
-                      if (Math.abs(deltaY) > threshold) {
+                      // Throttle to prevent too many requests (max every 100ms)
+                      if (Math.abs(deltaY) > threshold && now - lastVoteTime > 100) {
                         const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
                         let newScore;
                         
@@ -198,6 +206,7 @@ export default function SimpleVotingScreen({
                         if (newScore !== currentScore) {
                           voteMutation.mutate({ wineId: wine.id, score: newScore });
                           setTouchStartY(currentY); // Reset for continuous scrolling
+                          setLastVoteTime(now);
                         }
                       }
                     }
@@ -265,37 +274,46 @@ export default function SimpleVotingScreen({
                       <div className="flex flex-col items-center space-y-1">
                         <button
                           onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            const newScore = Math.min(currentScore + 0.5, 10);
-                            voteMutation.mutate({ wineId: wine.id, score: newScore });
+                            const now = Date.now();
+                            if (now - lastVoteTime > 50) {
+                              const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                              const newScore = Math.min(currentScore + 0.5, 10);
+                              voteMutation.mutate({ wineId: wine.id, score: newScore });
+                              setLastVoteTime(now);
+                            }
                           }}
                           disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
-                          className={`p-1 rounded transition-all ${
+                          className={`p-2 rounded transition-all ${
                             activeVoteWineId === wine.id 
-                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50' 
+                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50 active:bg-red-100' 
                               : 'text-gray-400'
                           } disabled:text-gray-300`}
                         >
-                          <ChevronUp className="w-5 h-5" />
+                          <ChevronUp className="w-6 h-6" />
                         </button>
                         <button
                           onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            if (currentScore > 1) {
-                              const newScore = Math.max(currentScore - 0.5, 1);
-                              voteMutation.mutate({ wineId: wine.id, score: newScore });
-                            } else if (!userVote) {
-                              voteMutation.mutate({ wineId: wine.id, score: 1 });
+                            const now = Date.now();
+                            if (now - lastVoteTime > 50) {
+                              const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                              if (currentScore > 1) {
+                                const newScore = Math.max(currentScore - 0.5, 1);
+                                voteMutation.mutate({ wineId: wine.id, score: newScore });
+                                setLastVoteTime(now);
+                              } else if (!userVote) {
+                                voteMutation.mutate({ wineId: wine.id, score: 1 });
+                                setLastVoteTime(now);
+                              }
                             }
                           }}
                           disabled={userVote && parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
-                          className={`p-1 rounded transition-all ${
+                          className={`p-2 rounded transition-all ${
                             activeVoteWineId === wine.id 
-                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50' 
+                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50 active:bg-red-100' 
                               : 'text-gray-400'
                           } disabled:text-gray-300`}
                         >
-                          <ChevronDown className="w-5 h-5" />
+                          <ChevronDown className="w-6 h-6" />
                         </button>
                       </div>
                     </div>
