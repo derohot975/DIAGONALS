@@ -52,8 +52,8 @@ export default function AdminEventManagementScreen({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="flex-1 overflow-y-auto px-4 pb-20">
+        <div className="space-y-6 max-w-4xl mx-auto">
           
           {/* Active Events - New Modern Layout */}
           {activeEvents.length > 0 && (
@@ -65,38 +65,34 @@ export default function AdminEventManagementScreen({
               {activeEvents.map(event => (
                 <div key={event.id} className="relative overflow-hidden">
                   {/* Main Event Card */}
-                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 animate-fade-in">
+                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in">
                     
                     {/* Event Header */}
-                    <div className="text-center mb-6">
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2 break-words">{event.name}</h3>
-                      <p className="text-lg text-gray-600 flex items-center justify-center">
-                        <Calendar className="w-5 h-5 mr-2" />
+                    <div className="text-center mb-4">
+                      <h3 className="text-xl font-bold text-gray-800 mb-1 break-words">{event.name}</h3>
+                      <p className="text-base text-gray-600 flex items-center justify-center mb-2">
+                        <Calendar className="w-4 h-4 mr-2" />
                         {formatDate(event.date)}
                       </p>
-                    </div>
-
-                    {/* Participants Count */}
-                    <div className="text-center mb-8">
-                      <p className="text-lg text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
+                      <p className="text-base text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
                     </div>
 
                     {/* Primary Action - Voting Control */}
-                    <div className="mt-8">
+                    <div className="mt-6">
                       {event.votingStatus === 'voting' ? (
                         <button
                           onClick={() => onDeactivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                          className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-lg"
                         >
-                          <Square className="w-6 h-6" />
+                          <Square className="w-5 h-5" />
                           <span>SOSPENDI VOTAZIONI</span>
                         </button>
                       ) : (
                         <button
                           onClick={() => onActivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-3 px-8 py-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-xl rounded-2xl transition-all duration-200 hover:scale-105 shadow-xl"
+                          className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-lg"
                         >
-                          <Play className="w-6 h-6" />
+                          <Play className="w-5 h-5" />
                           <span>AVVIA VOTAZIONI</span>
                         </button>
                       )}
