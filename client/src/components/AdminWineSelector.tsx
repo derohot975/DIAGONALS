@@ -37,7 +37,7 @@ export function AdminWineSelector({
 
       {/* Current Status */}
       {currentVotingWineId && (
-        <div className="bg-[hsl(340,70%,35%)] text-white rounded-lg p-4 mb-4">
+        <div className="bg-[hsl(340,65%,30%)] text-white rounded-lg p-4 mb-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Votazione Attiva:</p>
