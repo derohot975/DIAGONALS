@@ -48,9 +48,15 @@ function App() {
     queryKey: ['/api/users'],
   });
 
-  const { data: events = [], isLoading: eventsLoading } = useQuery<WineEvent[]>({
+  const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery<WineEvent[]>({
     queryKey: ['/api/events'],
-    queryFn: () => fetch('/api/events').then(res => res.json()),
+    queryFn: async () => {
+      console.log('Fetching events from API...');
+      const response = await fetch('/api/events');
+      const data = await response.json();
+      console.log('Fetched events:', data);
+      return data;
+    },
     staleTime: 0, // Forza sempre reload
     gcTime: 0, // Non usare cache (v5 syntax)
     refetchOnMount: true,
@@ -130,12 +136,11 @@ function App() {
       }
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log('Event created successfully:', data);
-      // RESET COMPLETO della cache eventi
-      queryClient.removeQueries({ queryKey: ['/api/events'] });
-      queryClient.clear(); // Pulisce tutta la cache
-      window.location.reload(); // Forza reload della pagina per garantire aggiornamento
+      // FORZA REFRESH IMMEDIATO degli eventi
+      await refetchEvents();
+      console.log('Events refetched after creation');
       toast({ 
         title: '✅ Evento creato con successo!', 
         description: `"${data.name}" è stato aggiunto alla lista eventi.`
