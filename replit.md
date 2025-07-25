@@ -58,11 +58,11 @@ Preferred communication style: Simple, everyday language.
 
 ### User Management
 - **Full CRUD Operations**: Complete user management in admin panel
-- **Security Enhancement**: Removed admin checkbox from all user creation/editing for security
-- **Admin Interface**: Clean separation between admin functions and participant views
+- **No Admin User**: Removed admin user concept - all users are participants
+- **Open Admin Access**: Everyone can access admin page via home button
 - **User Flow**: Simplified navigation from home to events via user selection
-- **Participant Only**: All registered users are regular participants (DERO convertito a utente normale)
-- **Admin Access Control**: Gestione eventi controllata direttamente in pagina admin (futuro: codice accesso)
+- **All Participants**: All users are regular participants with equal access
+- **Simplified Architecture**: No role-based restrictions or admin-only features
 
 ### Event Management  
 - **Vista Separata Admin/Utenti**: Implementata AdminEventManagementScreen per gestione vs EventListScreen per partecipazione
@@ -133,8 +133,8 @@ Preferred communication style: Simple, everyday language.
 - **Host**: Supabase PostgreSQL (EU Central) - Migrazione completata
 - **Schema**: Users, Events, Wines, Votes tables completamente operative
 - **Migrazioni**: Drizzle ORM con push automatico
-- **Inizializzazione**: Auto-creazione utente Admin
-- **Utenti Ripristinati**: Admin, DERO, PETER, MARCO, GIULIA, FRANCESCO (25 Luglio 17:45)
+- **Inizializzazione**: Solo test connessione database (nessun utente auto-creato)
+- **Database Pulito**: Rimosso utente Admin - accesso libero alla pagina admin (25 Luglio 17:47)
 - **Performance**: Connection pooling attivo per ottimizzazione
 - **Persistenza**: Dati condivisi tra sessioni e deploy
 
