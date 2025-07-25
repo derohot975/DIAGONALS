@@ -123,6 +123,16 @@ Preferred communication style: Simple, everyday language.
 - **Debug Logging**: Sistema debug per verificare stati votazione
 - **Errori LSP Risolti**: Rimossi campi obsoleti (isRevealed, hasLode) dal codice
 
+### Sistema Card Orizzontali Votazione - COMPLETATO ✅ (25 Luglio 2025 - 18:35)
+**Interfaccia Votazione Finale Implementata**:
+- **Layout Orizzontale**: Card con "Vino di [User]" a sinistra, controlli voto a destra
+- **Badge Voto Sempre Visibile**: Tutti i vini mostrano badge con voto (grigio "1.0" se non votato, bordeaux se votato)
+- **Controlli Separati**: Frecce touch-friendly (ChevronUp/Down) separate dal badge per controllo preciso
+- **Ottimizzazione Mobile**: Touch-manipulation e padding generoso per interfaccia smartphone
+- **Voti Decimali**: Sistema 1.0-10.0 con step 0.5, modificabili con frecce dedicate
+- **Visibilità Perfetta**: Utente vede chiaramente il voto durante modifiche senza interferenze
+- **Colori App**: Mantenuta palette bordeaux/rosso invece dei colori di riferimento
+
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
 2. **Backend API**: Route login, logout e heartbeat implementate
