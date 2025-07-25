@@ -31,15 +31,9 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
         <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Risultati Finali</h2>
+            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Classifica Finale</h2>
             <p className="text-gray-600 text-lg">{event.name}</p>
             <p className="text-gray-600">{event.date}</p>
-            <div className="flex justify-center mt-4">
-              <button className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors">
-                <Download className="w-4 h-4" />
-                <span>Esporta</span>
-              </button>
-            </div>
           </div>
           
           {results.length === 0 ? (
@@ -92,7 +86,13 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                 ))}
               </div>
               
-
+              {/* Pulsante Esporta alla fine */}
+              <div className="flex justify-center mt-6">
+                <button className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors">
+                  <Download className="w-4 h-4" />
+                  <span>Esporta</span>
+                </button>
+              </div>
             </>
           )}
         </div>
