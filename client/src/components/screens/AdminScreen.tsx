@@ -56,7 +56,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           {/* 1. GESTISCI EVENTI */}
           <button
             onClick={onShowEventList}
-            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-white hover:bg-gray-50 text-black font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
           >
             <Calendar className="w-4 h-4" />
             <span>Gestisci Eventi</span>
@@ -65,7 +65,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           {/* 2. NUOVO EVENTO */}
           <button
             onClick={onShowCreateEventModal}
-            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-white hover:bg-gray-50 text-black font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
           >
             <Plus className="w-4 h-4" />
             <span>Nuovo Evento</span>
