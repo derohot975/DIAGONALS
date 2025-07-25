@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import { VotingModal } from "@/components/VotingModal";
 import diagoLogo from "@assets/diagologo.png";
@@ -65,10 +65,6 @@ export default function SimpleVotingScreen({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/votes', event.id] });
-      toast({
-        title: "✅ Voto registrato!",
-        description: "Il tuo voto è stato salvato con successo."
-      });
     },
     onError: () => {
       toast({
@@ -125,35 +121,88 @@ export default function SimpleVotingScreen({
           </div>
 
           {/* Wine List */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {wines.map((wine, index) => {
               const contributor = getWineContributor(wine.userId);
               const userVote = getUserVoteForWine(wine.id);
 
               return (
-                <div key={wine.id} className="glass-effect rounded-2xl shadow-xl p-6 animate-fade-in">
+                <div key={wine.id} className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in">
                   
-                  {/* Wine Counter */}
-                  <div className="text-center mb-4">
-                    <p className="text-gray-600 text-sm mb-2">
-                      Vino {index + 1} di {wines.length}
-                    </p>
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">{wine.name}</h3>
-                    <p className="text-gray-600 font-medium">Portato da: {contributor}</p>
-                    {wine.price && (
-                      <span className="inline-block bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold mt-2">
-                        €{parseFloat(wine.price.toString()).toFixed(2)}
-                      </span>
-                    )}
-                  </div>
+                  {/* Horizontal Layout */}
+                  <div className="flex items-center justify-between">
+                    
+                    {/* Left Side - Wine Info */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 mb-1">
+                        Vino di {contributor}
+                      </h3>
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <span>{wine.type || 'Vino'}</span>
+                        {wine.year && (
+                          <>
+                            <span className="mx-2">•</span>
+                            <span>{wine.year}</span>
+                          </>
+                        )}
+                        {wine.price && (
+                          <>
+                            <span className="mx-2">•</span>
+                            <span>€{parseFloat(wine.price.toString()).toFixed(2)}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
 
-                  {/* Vote Button */}
-                  <button
-                    onClick={() => handleOpenVotingModal(wine.id)}
-                    className="w-full bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-                  >
-                    {userVote ? `VOTO: ${userVote.score}` : 'VOTA QUESTO VINO'}
-                  </button>
+                    {/* Right Side - Vote Badge and Controls */}
+                    <div className="flex items-center space-x-3">
+                      {userVote ? (
+                        <>
+                          {/* Vote Badge */}
+                          <div className="bg-gradient-to-r from-[#8d0303] to-[#300505] text-white px-4 py-2 rounded-full font-bold min-w-[60px] text-center">
+                            {userVote.score}
+                          </div>
+                          
+                          {/* Vote Controls */}
+                          <div className="flex flex-col space-y-1">
+                            <button
+                              onClick={() => {
+                                const currentScore = parseFloat(userVote.score.toString());
+                                if (currentScore < 10) {
+                                  voteMutation.mutate({ wineId: wine.id, score: currentScore + 0.5 });
+                                }
+                              }}
+                              disabled={parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
+                              className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                const currentScore = parseFloat(userVote.score.toString());
+                                if (currentScore > 1) {
+                                  voteMutation.mutate({ wineId: wine.id, score: currentScore - 0.5 });
+                                }
+                              }}
+                              disabled={parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
+                              className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        /* No Vote - Click to Vote */
+                        <button
+                          onClick={() => handleOpenVotingModal(wine.id)}
+                          className="bg-gray-300 text-gray-600 px-4 py-2 rounded-full font-bold min-w-[60px] text-center hover:bg-gray-400 transition-colors"
+                        >
+                          --
+                        </button>
+                      )}
+                    </div>
+
+                  </div>
 
                 </div>
               );
