@@ -112,7 +112,7 @@ export default function AdminWineManagementScreen({
                         className={`p-2 rounded-full transition-all ${
                           isCurrentVoting
                             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-[hsl(340,65%,30%)] hover:bg-[hsl(340,75%,25%)] text-white shadow-lg hover:scale-105'
+                            : 'bg-[#300505] hover:bg-[#240404] text-white shadow-lg hover:scale-105'
                         }`}
                         title={isCurrentVoting ? 'Già in votazione' : 'Seleziona per votazione'}
                       >

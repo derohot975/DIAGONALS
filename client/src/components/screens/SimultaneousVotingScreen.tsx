@@ -254,11 +254,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   >
                     <ChevronUp 
                       size={16} 
-                      className="text-[hsl(340,65%,30%)] -mb-1" 
+                      className="text-[#300505] -mb-1" 
                     />
                     <ChevronDown 
                       size={16} 
-                      className="text-[hsl(340,65%,30%)] -mt-1" 
+                      className="text-[#300505] -mt-1" 
                     />
                   </div>
                 </div>

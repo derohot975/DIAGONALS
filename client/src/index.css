@@ -24,9 +24,9 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* Wine-specific colors - bordeaux scuro/rosso gradiente */
-  --wine-primary: hsl(340, 65%, 30%);
-  --wine-secondary: hsl(0, 55%, 45%);
+  /* Wine-specific colors - bordeaux scuro/rosso specifici */
+  --wine-primary: #300505;
+  --wine-secondary: #8d0303;
   --wine-accent: hsl(0, 84.2%, 60.2%);
   --wine-gold: hsl(43, 96%, 56%);
 }
@@ -39,7 +39,7 @@
   body {
     @apply font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, hsl(340, 65%, 30%) 0%, hsl(0, 55%, 45%) 100%) !important;
+    background: linear-gradient(135deg, #300505 0%, #8d0303 100%) !important;
     min-height: 100vh;
     margin: 0;
     padding: 0;
@@ -65,17 +65,17 @@
 
   .wine-card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(139, 0, 0, 0.25);
+    box-shadow: 0 20px 40px rgba(48, 5, 5, 0.3);
   }
 
   .wine-gradient {
-    background: linear-gradient(135deg, hsl(340, 65%, 30%) 0%, hsl(0, 55%, 45%) 100%);
+    background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
   }
 
   .wine-gradient-hover:hover {
-    background: linear-gradient(135deg, hsl(340, 75%, 25%) 0%, hsl(0, 65%, 40%) 100%);
+    background: linear-gradient(135deg, #240404 0%, #a00404 100%);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(48, 5, 5, 0.4);
   }
 
   .score-button {

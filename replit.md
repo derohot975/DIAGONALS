@@ -146,7 +146,7 @@ Preferred communication style: Simple, everyday language.
 - **Modals**: AddUser, EditUser, CreateEvent, WineRegistration
 
 ### Stile e Design
-- **Colori**: Palette bordeaux scuro/rosso (hsl(340,70%,35%) - hsl(0,60%,40%)) - aggiornata 25 Luglio 17:52
+- **Colori**: Palette bordeaux scuro/rosso (#300505 - #8d0303) - aggiornata 25 Luglio 17:57
 - **Tipografia**: Font system con dimensioni responsive
 - **Animazioni**: Transizioni fluide e hover effects con ombre bordeaux
 - **Layout**: Design mobile-only ottimizzato per smartphone

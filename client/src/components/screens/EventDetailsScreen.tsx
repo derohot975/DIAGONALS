@@ -89,7 +89,7 @@ export default function EventDetailsScreen({
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-[hsl(340,65%,30%)]">{event.name}</h2>
+              <h2 className="text-2xl font-bold text-[#300505]">{event.name}</h2>
               <p className="text-gray-600">{event.date} - Modalità {event.mode}</p>
             </div>
             <div className="flex items-center space-x-2">
@@ -102,7 +102,7 @@ export default function EventDetailsScreen({
             {wines.filter(wine => wine.userId === currentUser.id).length === 0 ? (
               <button
                 onClick={onShowWineRegistrationModal}
-                className="w-full bg-[hsl(0,55%,45%)] hover:bg-[hsl(340,65%,30%)] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
+                className="w-full bg-[#8d0303] hover:bg-[#300505] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
               >
                 <Plus className="w-5 h-5" />
                 <span>REGISTRA IL TUO VINO</span>
@@ -113,7 +113,7 @@ export default function EventDetailsScreen({
                 disabled={!votingIsActive}
                 className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
                   votingIsActive 
-                    ? 'bg-gradient-to-r from-[hsl(340,65%,30%)] to-[hsl(0,55%,45%)] hover:from-[hsl(340,75%,25%)] hover:to-[hsl(0,65%,40%)] text-white shadow-lg hover:scale-105' 
+                    ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white shadow-lg hover:scale-105' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
                 }`}
               >
