@@ -789,6 +789,7 @@ function App() {
             onDeactivateVoting={handleDeactivateVoting}
             onCompleteEvent={handleCompleteEvent}
             onViewReport={handleViewReport}
+            onGoHome={() => setCurrentScreen('home')}
           />
         );
       case 'voting':
@@ -813,6 +814,8 @@ function App() {
             onCompleteEvent={handleCompleteEvent}
             onShowResults={handleShowResults}
             onParticipateEvent={handleParticipateEvent}
+            onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('home')}
           />
         );
       case 'eventResults':
@@ -820,6 +823,8 @@ function App() {
           <EventResultsScreen
             event={currentEvent}
             results={results}
+            onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('home')}
           />
         );
 

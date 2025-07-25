@@ -1,4 +1,4 @@
-import { Plus, EyeOff, Star, Award, Eye } from 'lucide-react';
+import { Plus, EyeOff, Star, Award, Eye, ArrowLeft, Home } from 'lucide-react';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
 import { formatPrice, calculateProgress } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
@@ -14,6 +14,8 @@ interface EventDetailsScreenProps {
   onCompleteEvent: (eventId: number) => void;
   onShowResults: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
+  onGoBack?: () => void;
+  onGoHome?: () => void;
 }
 
 export default function EventDetailsScreen({
@@ -26,7 +28,9 @@ export default function EventDetailsScreen({
   onVoteForWine,
   onCompleteEvent,
   onShowResults,
-  onParticipateEvent
+  onParticipateEvent,
+  onGoBack,
+  onGoHome
 }: EventDetailsScreenProps) {
   if (!event || !currentUser) return null;
 
@@ -255,6 +259,30 @@ export default function EventDetailsScreen({
           )}
         </div>
       </div>
+      
+      {/* Navigation Buttons */}
+      {onGoBack && (
+        <div className="fixed bottom-4 left-4 z-50">
+          <button
+            onClick={onGoBack}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+      
+      {onGoHome && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={onGoHome}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+            title="Torna alla Home"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
     </div>
   );

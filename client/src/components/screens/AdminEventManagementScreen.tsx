@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings, CheckCircle } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings, CheckCircle, Home } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../lib/utils';
@@ -15,6 +15,7 @@ interface AdminEventManagementScreenProps {
   onDeactivateVoting: (eventId: number) => void;
   onCompleteEvent: (eventId: number) => void;
   onViewReport: (eventId: number) => void;
+  onGoHome?: () => void;
 }
 
 export default function AdminEventManagementScreen({ 
@@ -27,7 +28,8 @@ export default function AdminEventManagementScreen({
   onActivateVoting,
   onDeactivateVoting,
   onCompleteEvent,
-  onViewReport
+  onViewReport,
+  onGoHome
 }: AdminEventManagementScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -245,6 +247,19 @@ export default function AdminEventManagementScreen({
           <ArrowLeft className="w-5 h-5" />
         </button>
       </div>
+      
+      {/* Fixed Home Button */}
+      {onGoHome && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={onGoHome}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+            title="Torna alla Home"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
