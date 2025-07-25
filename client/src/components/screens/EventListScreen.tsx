@@ -88,9 +88,7 @@ export default function EventListScreen({
                   <div className="glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
                     {/* Event Name e Date - Una riga sola */}
                     <div className="text-center mb-4">
-                      <h3 className={`font-bold text-[#300505] mb-1 leading-tight break-words ${
-                        event.name.length > 20 ? 'text-lg' : 'text-xl'
-                      }`}>
+                      <h3 className="font-bold text-[#300505] mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-xl">
                         {event.name}
                       </h3>
                       <p className="text-lg font-bold text-[#300505]">
@@ -157,18 +155,13 @@ export default function EventListScreen({
               </h2>
               
               {completedEvents.map(event => (
-                <div key={event.id} className="bg-white rounded-xl p-4 border-2 border-gray-200 opacity-80">
+                <div key={event.id} className="bg-gradient-to-r from-[#8d0303] to-[#300505] rounded-xl p-4 border-2 border-[#300505] opacity-90">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-lg text-gray-700">{event.name}</h3>
-                    <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm font-medium">
-                        DIAGONALE
-                      </span>
-                    </div>
+                    <h3 className="font-semibold text-lg text-white whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-gray-500 text-sm">
+                    <div className="flex items-center space-x-2 text-white text-sm">
                       <Calendar className="w-4 h-4" />
                       <span>{formatDate(event.date)}</span>
                     </div>
