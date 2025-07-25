@@ -130,7 +130,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   const eventWines = wines.filter((wine: Wine) => wine.eventId === event.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white p-4 touch-pan-x">
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
@@ -176,11 +176,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   </p>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-4">
                   {/* Vote Score Box */}
                   <div
                     className={`
-                      bg-purple-500 rounded-full text-center cursor-pointer select-none touch-pan-y transition-all duration-200
+                      bg-purple-500 rounded-full text-center cursor-pointer select-none transition-all duration-200
                       ${selectedWineId === wine.id 
                         ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-purple-300' 
                         : 'px-4 py-2 min-w-[80px] shadow-lg'
@@ -196,6 +196,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     onTouchMove={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      document.body.style.overflow = 'hidden';
                       const touch = e.touches[0];
                       const startY = parseFloat(e.currentTarget.dataset.startY || '0');
                       const deltaY = startY - touch.clientY;
@@ -205,6 +206,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                         handleScoreChange(wine.id, delta);
                         e.currentTarget.dataset.startY = touch.clientY.toString();
                       }
+                    }}
+                    onTouchEnd={() => {
+                      document.body.style.overflow = 'auto';
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -219,10 +223,10 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   {/* Scroll Icon */}
                   <div
                     className={`
-                      flex flex-col items-center justify-center cursor-pointer select-none touch-pan-y transition-all duration-200
+                      flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-200 p-2 rounded-lg min-w-[48px] min-h-[48px]
                       ${selectedWineId === wine.id 
-                        ? 'opacity-100 scale-110' 
-                        : 'opacity-60 scale-95'
+                        ? 'opacity-100 scale-110 bg-purple-100' 
+                        : 'opacity-60 scale-95 bg-gray-100'
                       }
                     `}
                     onWheel={(e) => handleWheelChange(wine.id, e)}
@@ -235,6 +239,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     onTouchMove={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      document.body.style.overflow = 'hidden';
                       const touch = e.touches[0];
                       const startY = parseFloat(e.currentTarget.dataset.startY || '0');
                       const deltaY = startY - touch.clientY;
@@ -244,6 +249,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                         handleScoreChange(wine.id, delta);
                         e.currentTarget.dataset.startY = touch.clientY.toString();
                       }
+                    }}
+                    onTouchEnd={() => {
+                      document.body.style.overflow = 'auto';
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
