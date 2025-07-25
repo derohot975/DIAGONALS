@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 25, 2025 - Updated 10:12)
+## Recent Changes (July 25, 2025 - Updated 15:35)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -61,7 +61,8 @@ Preferred communication style: Simple, everyday language.
 - **Security Enhancement**: Removed admin checkbox from all user creation/editing for security
 - **Admin Interface**: Clean separation between admin functions and participant views
 - **User Flow**: Simplified navigation from home to events via user selection
-- **Participant Only**: All registered users are always regular participants, never admin
+- **Participant Only**: All registered users are regular participants (DERO convertito a utente normale)
+- **Admin Access Control**: Gestione eventi controllata direttamente in pagina admin (futuro: codice accesso)
 
 ### Event Management  
 - **Vista Separata Admin/Utenti**: Implementata AdminEventManagementScreen per gestione vs EventListScreen per partecipazione
@@ -87,32 +88,35 @@ Preferred communication style: Simple, everyday language.
 - **Performance**: Optimized imports and cleaned localStorage error handling
 - **Maintainability**: Centralized type definitions in shared schema
 
-## 🔄 PUNTO DI RIPRISTINO (18 Luglio 2025 - 14:55)
+## 🔄 PUNTO DI RIPRISTINO (25 Luglio 2025 - 15:35)
 
 ### Stato Attuale del Sistema
 **Database**: PostgreSQL funzionante con schema completo
 **Backend**: Express.js su porta 5000 con API RESTful
 **Frontend**: React con Vite in modalità sviluppo
-**Utenti**: Sistema completo con Admin predefinito
-**Eventi**: Sistema di gestione eventi attivi/completati
+**Utenti**: Sistema semplificato - DERO convertito a utente normale, solo Admin rimane amministratore
+**Eventi**: Gestione centralizzata nella pagina admin (futuro: codice accesso)
+**Votazioni**: Sistema simultaneo ottimizzato e semplificato per mobile
 **Logo**: Logo PNG originale integrato con filtri CSS
 
 ### Funzionalità Completate ✅
-1. **Gestione Utenti**: Creazione, modifica, eliminazione utenti
-2. **Gestione Eventi**: Creazione eventi base (modalità unica)
+1. **Gestione Utenti Semplificata**: DERO convertito a utente normale, gestione centralizzata
+2. **Gestione Eventi Centralizzata**: Controllo completo dalla pagina admin
 3. **Registrazione Vini**: Modal completo con 7 campi formattati
-4. **Sistema Voti**: Votazione vini base (da aggiornare)
-5. **Interfaccia Ottimizzata**: Layout centrato e responsivo
+4. **Sistema Voti Simultaneo**: Interfaccia ottimizzata per touchscreen mobile
+5. **Interfaccia Mobile**: Layout ottimizzato con prevenzione scroll indesiderato
 6. **Logo Integrato**: Logo PNG originale con colorazione app
 
 ### Sistema Votazioni Simultanee - COMPLETATO ✅
-**Nuova Interfaccia Implementata (25 Luglio 2025 - 10:12)**:
-- **Votazione Simultanea**: Tutti i vini visibili contemporaneamente, niente più selezione sequenziale
-- **Layout Mockup**: Interfaccia esatta come da mockup fornito dall'utente
+**Nuova Interfaccia Implementata (25 Luglio 2025 - 15:35)**:
+- **Votazione Semplificata**: Sistema di voto ottimizzato e più intuitivo
+- **Layout Ottimizzato**: Box voto e icona scroll con spazio adeguato per touchscreen
 - **Box Interattivi**: "Vino di [NOME]" + "[TIPO] • [ANNO]" per ogni partecipante
-- **Voti Touchscreen**: Scroll verticale per modificare voti (1.0-10.0 step 0.5)
-- **Selezione Visiva**: Box selezionato cambia colore con bordo evidenziato
+- **Voti Touchscreen**: Scroll verticale ottimizzato per modificare voti (1.0-10.0 step 0.5)
+- **Selezione Visiva**: Box selezionato ingrandito con anello viola e icona evidenziata
 - **Auto-Save**: Voti salvati automaticamente durante modifica
+- **Pagina Fissa**: Prevenzione scroll pagina durante votazione su mobile
+- **Interface Pulita**: Rimosso messaggio istruzioni per design minimalista
 - **Database Semplificato**: Rimossi campi obsoleti (currentVotingWineId, votingStatus, isRevealed)
 - **API Pulite**: Eliminate route sequenziali non più necessarie
 
