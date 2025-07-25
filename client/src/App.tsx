@@ -48,6 +48,24 @@ function App() {
     queryKey: ['/api/users'],
   });
 
+  // Validate currentUser still exists in database
+  useEffect(() => {
+    if (currentUser && users.length > 0) {
+      const userExists = users.find(u => u.id === currentUser.id);
+      if (!userExists) {
+        console.log('Current user no longer exists in database, clearing localStorage');
+        setCurrentUser(null);
+        setSessionId(null);
+        setCurrentScreen('home');
+        toast({ 
+          title: 'Utente non trovato', 
+          description: 'Riseleziona il tuo utente dalla lista.',
+          variant: 'destructive' 
+        });
+      }
+    }
+  }, [users, currentUser, setCurrentUser, setSessionId, toast]);
+
   const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery<WineEvent[]>({
     queryKey: ['/api/events'],
     queryFn: async () => {
