@@ -79,7 +79,7 @@ export default function AdminEventManagementScreen({
 
                     {/* Primary Action - Voting Control */}
                     <div className="mt-6">
-                      {event.votingStatus === 'voting' ? (
+                      {event.votingStatus === 'active' ? (
                         <button
                           onClick={() => onDeactivateVoting(event.id)}
                           className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-lg"
