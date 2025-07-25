@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import { VotingModal } from "@/components/VotingModal";
 import diagoLogo from "@assets/diagologo.png";
@@ -23,6 +23,7 @@ export default function SimpleVotingScreen({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
+  const [activeVoteWineId, setActiveVoteWineId] = useState<number | null>(null);
   const [showVotingModal, setShowVotingModal] = useState(false);
 
   // Fetch wines for this event
@@ -127,7 +128,28 @@ export default function SimpleVotingScreen({
               const userVote = getUserVoteForWine(wine.id);
 
               return (
-                <div key={wine.id} className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in">
+                <div 
+                  key={wine.id} 
+                  className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in"
+                  onWheel={(e) => {
+                    // Only handle scroll if this wine is active for voting
+                    if (activeVoteWineId === wine.id) {
+                      e.preventDefault();
+                      const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                      let newScore;
+                      
+                      if (e.deltaY < 0) {
+                        // Scroll up - increase score
+                        newScore = Math.min(currentScore + 0.5, 10);
+                      } else {
+                        // Scroll down - decrease score  
+                        newScore = Math.max(currentScore - 0.5, 1);
+                      }
+                      
+                      voteMutation.mutate({ wineId: wine.id, score: newScore });
+                    }
+                  }}
+                >
                   
                   {/* Horizontal Layout */}
                   <div className="flex items-center justify-between">
@@ -154,52 +176,46 @@ export default function SimpleVotingScreen({
                       </div>
                     </div>
 
-                    {/* Right Side - Vote Badge and Arrow Controls */}
-                    <div className="flex items-center space-x-3">
-                      {/* Vote Badge - Always Present */}
-                      <div className={`px-6 py-3 rounded-full font-bold text-lg text-center min-w-[80px] ${
-                        userVote 
-                          ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
-                          : 'bg-gray-400 text-white'
-                      }`}>
-                        {userVote ? userVote.score : '1.0'}
-                      </div>
-                      
-                      {/* Vote Controls - Touch Friendly Arrows */}
-                      <div className="flex flex-col items-center justify-center space-y-2">
-                        <button
-                          onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            const newScore = Math.min(currentScore + 0.5, 10);
-                            voteMutation.mutate({ wineId: wine.id, score: newScore });
-                          }}
-                          disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-2 touch-manipulation"
-                          style={{ touchAction: 'manipulation' }}
-                        >
-                          <ChevronUp className="w-6 h-6" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            if (currentScore > 1) {
-                              const newScore = Math.max(currentScore - 0.5, 1);
-                              voteMutation.mutate({ wineId: wine.id, score: newScore });
-                            } else if (!userVote) {
-                              // Initialize vote if none exists
+                    {/* Right Side - Vote Badge */}
+                    <div className="flex items-center">
+                      {/* Vote Badge - Click to Activate */}
+                      <div 
+                        className={`px-6 py-3 rounded-full font-bold text-lg text-center min-w-[80px] cursor-pointer select-none transition-all ${
+                          activeVoteWineId === wine.id
+                            ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] text-white ring-2 ring-[#8d0303] ring-opacity-50' 
+                            : userVote 
+                            ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
+                            : 'bg-gray-400 text-white'
+                        }`}
+                        onClick={() => {
+                          if (activeVoteWineId === wine.id) {
+                            // Deactivate if already active
+                            setActiveVoteWineId(null);
+                          } else {
+                            // Activate this wine for voting
+                            setActiveVoteWineId(wine.id);
+                            // Initialize vote if none exists
+                            if (!userVote) {
                               voteMutation.mutate({ wineId: wine.id, score: 1 });
                             }
-                          }}
-                          disabled={userVote && parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-2 touch-manipulation"
-                          style={{ touchAction: 'manipulation' }}
-                        >
-                          <ChevronDown className="w-6 h-6" />
-                        </button>
+                          }
+                        }}
+                        title={activeVoteWineId === wine.id ? "Scroll per modificare il voto" : "Clicca per attivare la modifica"}
+                      >
+                        {userVote ? userVote.score : '1.0'}
                       </div>
                     </div>
 
                   </div>
+
+                  {/* Active Vote Indicator */}
+                  {activeVoteWineId === wine.id && (
+                    <div className="mt-3 text-center">
+                      <p className="text-[#8d0303] text-sm font-medium">
+                        ⇅ Scroll per modificare il voto (1.0 - 10.0)
+                      </p>
+                    </div>
+                  )}
 
                 </div>
               );
