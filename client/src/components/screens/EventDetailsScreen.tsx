@@ -1,6 +1,6 @@
 import { Plus, EyeOff, Star, Award, Eye } from 'lucide-react';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
-import { formatPrice, calculateProgress } from '../../utils/helpers';
+import { formatPrice, calculateProgress } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventDetailsScreenProps {

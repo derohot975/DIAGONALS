@@ -1,6 +1,6 @@
 import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
-import { formatDate } from '../../utils/helpers';
+import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AdminEventManagementScreenProps {

@@ -1,5 +1,5 @@
 import { Calendar, ArrowLeft } from 'lucide-react';
-import { formatDate } from '../../utils/helpers';
+import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventListScreenProps {

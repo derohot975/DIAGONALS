@@ -20,7 +20,7 @@ import CreateEventModal from './components/modals/CreateEventModal';
 import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import InstallPrompt from './components/InstallPrompt';
-import FloatingNavigation from './components/FloatingNavigation';
+
 
 type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
 
@@ -839,12 +839,7 @@ function App() {
       {/* Install Prompt - Only show on home screen when not logged in */}
       {currentScreen === 'home' && !currentUser && <InstallPrompt />}
 
-      {/* Floating Navigation - Hide HOME button when on home screen */}
-      {currentScreen !== 'home' && currentScreen !== 'admin' && (
-        <FloatingNavigation
-          onShowHome={() => setCurrentScreen('home')}
-        />
-      )}
+
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Download, Crown, Star, Award, Users } from 'lucide-react';
 import { WineEvent, WineResult } from '@shared/schema';
-import { formatPrice } from '../../utils/helpers';
+import { formatPrice } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventResultsScreenProps {

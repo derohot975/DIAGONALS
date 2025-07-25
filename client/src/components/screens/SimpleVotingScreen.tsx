@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
-import { VotingModal } from "@/components/VotingModal";
+
 import diagoLogo from "@assets/diagologo.png";
 
 interface SimpleVotingScreenProps {
@@ -28,7 +28,7 @@ export default function SimpleVotingScreen({
   const [dragStartY, setDragStartY] = useState(0);
   const [dragStartScore, setDragStartScore] = useState(1);
   const [tempScore, setTempScore] = useState<number | null>(null);
-  const [showVotingModal, setShowVotingModal] = useState(false);
+
 
   // Fetch wines for this event
   const { data: wines = [] } = useQuery<Wine[]>({
@@ -104,7 +104,6 @@ export default function SimpleVotingScreen({
 
   const handleOpenVotingModal = (wineId: number) => {
     setSelectedWineId(wineId);
-    setShowVotingModal(true);
   };
 
   const selectedWine = wines.find(w => w.id === selectedWineId);
@@ -264,19 +263,7 @@ export default function SimpleVotingScreen({
         </div>
       </div>
 
-      {/* Voting Modal */}
-      <VotingModal
-        isOpen={showVotingModal}
-        onClose={() => {
-          setShowVotingModal(false);
-          setSelectedWineId(null);
-        }}
-        currentWine={selectedWine || null}
-        wineContributor={selectedWineContributor || null}
-        userVote={selectedWineVote}
-        onVote={handleVote}
-        wineLabel={selectedWine?.name || ''}
-      />
+
 
       {/* Fixed Navigation Buttons */}
       <div className="fixed bottom-4 left-4 z-50">
