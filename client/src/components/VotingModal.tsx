@@ -62,11 +62,13 @@ export function VotingModal({
         <div className="p-6">
           <div className="bg-gray-50 rounded-xl p-4 mb-6">
             {/* Wine Label */}
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-bold text-gray-800">{wineLabel}</h3>
-              <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-medium">
-                €{currentWine.price}
-              </div>
+            <div className="text-center mb-3">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{currentWine.name}</h3>
+              {currentWine.price && (
+                <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-medium inline-block">
+                  €{parseFloat(currentWine.price.toString()).toFixed(2)}
+                </div>
+              )}
             </div>
 
             {/* Contributor */}

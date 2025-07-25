@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
+import { VotingModal } from "@/components/VotingModal";
 import diagoLogo from "@assets/diagologo.png";
 
 interface SimpleVotingScreenProps {
@@ -21,6 +22,8 @@ export default function SimpleVotingScreen({
 }: SimpleVotingScreenProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [currentWineIndex, setCurrentWineIndex] = useState(0);
+  const [showVotingModal, setShowVotingModal] = useState(false);
 
   // Fetch wines for this event
   const { data: wines = [] } = useQuery<Wine[]>({
@@ -83,15 +86,28 @@ export default function SimpleVotingScreen({
     return votes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
   };
 
-  const handleVote = (wineId: number, score: number) => {
-    voteMutation.mutate({ wineId, score });
+  const handleVote = (score: number) => {
+    const currentWine = wines[currentWineIndex];
+    if (currentWine) {
+      voteMutation.mutate({ wineId: currentWine.id, score });
+    }
   };
 
-  // Generate score options from 1 to 10 with 0.5 steps
-  const scoreOptions: number[] = [];
-  for (let i = 1; i <= 10; i += 0.5) {
-    scoreOptions.push(i);
-  }
+  const handleNextWine = () => {
+    if (currentWineIndex < wines.length - 1) {
+      setCurrentWineIndex(currentWineIndex + 1);
+    }
+  };
+
+  const handlePrevWine = () => {
+    if (currentWineIndex > 0) {
+      setCurrentWineIndex(currentWineIndex - 1);
+    }
+  };
+
+  const currentWine = wines[currentWineIndex];
+  const currentUser_vote = currentWine ? getUserVoteForWine(currentWine.id) : undefined;
+  const wineContributor = currentWine ? users.find(u => u.id === currentWine.userId) : undefined;
 
   return (
     <div className="flex-1 flex flex-col">
@@ -104,75 +120,80 @@ export default function SimpleVotingScreen({
         />
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-20">
-        <div className="max-w-2xl mx-auto space-y-4">
+      {/* Main Content */}
+      <div className="flex-1 px-4 pb-20">
+        <div className="max-w-2xl mx-auto">
           
           {/* Event Header */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">{event.name}</h2>
             <div className="inline-block bg-green-500 text-white px-4 py-2 rounded-full">
               <span className="font-medium">ATTIVO</span>
             </div>
           </div>
 
-          {/* Wine List */}
-          {wines.map((wine, index) => {
-            const contributor = getWineContributor(wine.userId);
-            const userVote = getUserVoteForWine(wine.id);
-            const wineLabel = `Vino di ${contributor}`;
-
-            return (
-              <div key={wine.id} className="glass-effect rounded-2xl shadow-xl p-6 animate-fade-in">
-                
-                {/* Wine Header */}
-                <div className="text-center mb-4">
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">{wine.name}</h3>
-                  <p className="text-gray-600 font-medium">Portato da: {contributor}</p>
-                  {wine.price && (
-                    <span className="inline-block bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold mt-2">
-                      €{parseFloat(wine.price.toString()).toFixed(2)}
-                    </span>
-                  )}
-                </div>
-
-                {/* Current Vote Status */}
-                <div className="text-center mb-4">
-                  <span className="text-gray-700 font-medium">Il tuo voto: </span>
-                  <span className="text-gray-600">
-                    {userVote ? `${userVote.score}` : 'Non votato'}
-                  </span>
-                </div>
-
-                {/* Voting Grid */}
-                <div className="grid grid-cols-5 gap-2 mb-4">
-                  {scoreOptions.map((score) => (
-                    <button
-                      key={score}
-                      onClick={() => handleVote(wine.id, score)}
-                      disabled={voteMutation.isPending}
-                      className={`
-                        py-2 px-3 rounded-lg text-sm font-medium transition-all
-                        ${userVote && parseFloat(userVote.score.toString()) === score
-                          ? 'bg-[#8d0303] text-white shadow-lg transform scale-105' 
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                        }
-                        ${voteMutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}
-                      `}
-                    >
-                      {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Instructions */}
-                <p className="text-center text-sm text-gray-500">
-                  Voti da 1 a 10 con step 0.5
+          {/* Wine Navigation */}
+          {wines.length > 0 && (
+            <div className="glass-effect rounded-2xl shadow-xl p-6 text-center">
+              
+              {/* Wine Counter */}
+              <div className="mb-6">
+                <p className="text-gray-600 text-sm mb-2">
+                  Vino {currentWineIndex + 1} di {wines.length}
                 </p>
-
+                <h3 className="text-xl font-bold text-gray-800">{currentWine?.name}</h3>
+                <p className="text-gray-600">Portato da: {getWineContributor(currentWine?.userId || 0)}</p>
               </div>
-            );
-          })}
+
+              {/* Vote Button */}
+              <button
+                onClick={() => setShowVotingModal(true)}
+                className="w-full bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg mb-6"
+              >
+                {currentUser_vote ? `VOTO: ${currentUser_vote.score}` : 'VOTA QUESTO VINO'}
+              </button>
+
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={handlePrevWine}
+                  disabled={currentWineIndex === 0}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                    currentWineIndex === 0 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : 'bg-[#8d0303] text-white hover:bg-[#300505]'
+                  }`}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Precedente</span>
+                </button>
+
+                <span className="text-gray-600 text-sm">
+                  {wines.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`inline-block w-2 h-2 rounded-full mx-1 ${
+                        index === currentWineIndex ? 'bg-[#8d0303]' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </span>
+
+                <button
+                  onClick={handleNextWine}
+                  disabled={currentWineIndex === wines.length - 1}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                    currentWineIndex === wines.length - 1 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : 'bg-[#8d0303] text-white hover:bg-[#300505]'
+                  }`}
+                >
+                  <span>Successivo</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* No wines message */}
           {wines.length === 0 && (
@@ -183,6 +204,17 @@ export default function SimpleVotingScreen({
 
         </div>
       </div>
+
+      {/* Voting Modal */}
+      <VotingModal
+        isOpen={showVotingModal}
+        onClose={() => setShowVotingModal(false)}
+        currentWine={currentWine || null}
+        wineContributor={wineContributor || null}
+        userVote={currentUser_vote}
+        onVote={handleVote}
+        wineLabel={currentWine?.name || ''}
+      />
 
       {/* Fixed Navigation Buttons */}
       <div className="fixed bottom-4 left-4 z-50">
