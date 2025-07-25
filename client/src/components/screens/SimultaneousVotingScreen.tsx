@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import diagoLogo from "@assets/diagologo.png";
@@ -176,43 +176,89 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   </p>
                 </div>
                 
-                {/* Vote Score Box */}
-                <div
-                  className={`
-                    bg-purple-500 rounded-full text-center cursor-pointer select-none touch-pan-y transition-all duration-200
-                    ${selectedWineId === wine.id 
-                      ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-purple-300' 
-                      : 'px-4 py-2 min-w-[80px] shadow-lg'
-                    }
-                  `}
-                  onWheel={(e) => handleWheelChange(wine.id, e)}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    setSelectedWineId(wine.id);
-                    const touch = e.touches[0];
-                    e.currentTarget.dataset.startY = touch.clientY.toString();
-                  }}
-                  onTouchMove={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const touch = e.touches[0];
-                    const startY = parseFloat(e.currentTarget.dataset.startY || '0');
-                    const deltaY = startY - touch.clientY;
-                    
-                    if (Math.abs(deltaY) > 10) {
-                      const delta = deltaY > 0 ? 0.5 : -0.5;
-                      handleScoreChange(wine.id, delta);
+                <div className="flex items-center space-x-2">
+                  {/* Vote Score Box */}
+                  <div
+                    className={`
+                      bg-purple-500 rounded-full text-center cursor-pointer select-none touch-pan-y transition-all duration-200
+                      ${selectedWineId === wine.id 
+                        ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-purple-300' 
+                        : 'px-4 py-2 min-w-[80px] shadow-lg'
+                      }
+                    `}
+                    onWheel={(e) => handleWheelChange(wine.id, e)}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      setSelectedWineId(wine.id);
+                      const touch = e.touches[0];
                       e.currentTarget.dataset.startY = touch.clientY.toString();
-                    }
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedWineId(wine.id);
-                  }}
-                >
-                  <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
-                    {(votes[wine.id] || 1.0).toFixed(1)}
-                  </span>
+                    }}
+                    onTouchMove={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const touch = e.touches[0];
+                      const startY = parseFloat(e.currentTarget.dataset.startY || '0');
+                      const deltaY = startY - touch.clientY;
+                      
+                      if (Math.abs(deltaY) > 10) {
+                        const delta = deltaY > 0 ? 0.5 : -0.5;
+                        handleScoreChange(wine.id, delta);
+                        e.currentTarget.dataset.startY = touch.clientY.toString();
+                      }
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedWineId(wine.id);
+                    }}
+                  >
+                    <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
+                      {(votes[wine.id] || 1.0).toFixed(1)}
+                    </span>
+                  </div>
+
+                  {/* Scroll Icon */}
+                  <div
+                    className={`
+                      flex flex-col items-center justify-center cursor-pointer select-none touch-pan-y transition-all duration-200
+                      ${selectedWineId === wine.id 
+                        ? 'opacity-100 scale-110' 
+                        : 'opacity-60 scale-95'
+                      }
+                    `}
+                    onWheel={(e) => handleWheelChange(wine.id, e)}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      setSelectedWineId(wine.id);
+                      const touch = e.touches[0];
+                      e.currentTarget.dataset.startY = touch.clientY.toString();
+                    }}
+                    onTouchMove={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const touch = e.touches[0];
+                      const startY = parseFloat(e.currentTarget.dataset.startY || '0');
+                      const deltaY = startY - touch.clientY;
+                      
+                      if (Math.abs(deltaY) > 10) {
+                        const delta = deltaY > 0 ? 0.5 : -0.5;
+                        handleScoreChange(wine.id, delta);
+                        e.currentTarget.dataset.startY = touch.clientY.toString();
+                      }
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedWineId(wine.id);
+                    }}
+                  >
+                    <ChevronUp 
+                      size={16} 
+                      className="text-purple-500 -mb-1" 
+                    />
+                    <ChevronDown 
+                      size={16} 
+                      className="text-purple-500 -mt-1" 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
