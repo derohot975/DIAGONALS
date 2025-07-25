@@ -150,12 +150,12 @@ export default function EventListScreen({
           {/* Completed Events (Storico) */}
           {completedEvents.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-bold text-gray-600 text-center mb-4">
+              <h2 className="text-xl font-bold text-white text-center mb-4">
                 📚 Storico Eventi
               </h2>
               
               {completedEvents.map(event => (
-                <div key={event.id} className="bg-gradient-to-r from-[#8d0303] to-[#300505] rounded-xl p-4 border-2 border-[#300505] opacity-90">
+                <div key={event.id} className="bg-[#300505] rounded-xl p-4 border-2 border-[#300505]">
                   {/* Data e Nome evento centrati */}
                   <div className="text-center mb-3">
                     <p className="text-white text-sm font-medium mb-1">
