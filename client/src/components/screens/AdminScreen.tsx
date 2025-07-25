@@ -93,7 +93,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           {/* 4. AGGIUNGI UTENTE */}
           <button
             onClick={onShowAddUserModal}
-            className="w-full bg-white hover:bg-gray-50 text-[hsl(270,50%,65%)] font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-white hover:bg-gray-50 text-black font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
           >
             <UserPlus className="w-4 h-4" />
             <span>Aggiungi Utente</span>
