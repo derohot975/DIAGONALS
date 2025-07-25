@@ -27,7 +27,7 @@ export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: Cre
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-md m-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-[hsl(270,50%,65%)]">Crea Nuovo Evento</h3>
+          <h3 className="text-xl font-bold text-[#8d0303]">Crea Nuovo Evento</h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-5 h-5" />
           </button>
@@ -69,7 +69,7 @@ export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: Cre
             </button>
             <button
               type="submit"
-              className="flex-1 bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-lg transition-colors"
+              className="flex-1 bg-[#8d0303] hover:bg-[#300505] text-white px-4 py-2 rounded-lg transition-colors"
             >
               Crea Evento
             </button>
