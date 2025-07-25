@@ -46,6 +46,14 @@ export const votes = pgTable("votes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const eventReports = pgTable("event_reports", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id").references(() => wineEvents.id).notNull(),
+  reportData: text("report_data").notNull(), // JSON stringified report
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+  generatedBy: integer("generated_by").references(() => users.id).notNull(),
+});
+
 
 
 // Insert schemas
@@ -71,6 +79,11 @@ export const insertVoteSchema = createInsertSchema(votes).omit({
   score: z.number().min(1).max(10)
 });
 
+export const insertEventReportSchema = createInsertSchema(eventReports).omit({
+  id: true,
+  generatedAt: true,
+});
+
 
 
 // Types
@@ -82,6 +95,8 @@ export type Wine = typeof wines.$inferSelect;
 export type InsertWine = z.infer<typeof insertWineSchema>;
 export type Vote = typeof votes.$inferSelect;
 export type InsertVote = z.infer<typeof insertVoteSchema>;
+export type EventReport = typeof eventReports.$inferSelect;
+export type InsertEventReport = z.infer<typeof insertEventReportSchema>;
 
 // Extended type for results
 export interface WineResult extends Wine {
@@ -89,4 +104,35 @@ export interface WineResult extends Wine {
   totalVotes: number;
   lodeCount: number;
   contributor: string;
+}
+
+// Report data structure
+export interface EventReportData {
+  eventInfo: WineEvent;
+  userRankings: UserRanking[];
+  wineResults: WineResultDetailed[];
+  summary: {
+    totalParticipants: number;
+    totalWines: number;
+    totalVotes: number;
+    averageScore: number;
+  };
+}
+
+export interface UserRanking {
+  userId: number;
+  userName: string;
+  totalScore: number;
+  averageScore: number;
+  votesGiven: number;
+  position: number;
+}
+
+export interface WineResultDetailed extends WineResult {
+  votes: {
+    userId: number;
+    userName: string;
+    score: number;
+  }[];
+  position: number;
 }

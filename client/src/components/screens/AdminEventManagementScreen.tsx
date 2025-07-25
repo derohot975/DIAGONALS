@@ -1,5 +1,6 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings, CheckCircle } from 'lucide-react';
 import { WineEvent, User } from '@shared/schema';
+import { useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -12,6 +13,8 @@ interface AdminEventManagementScreenProps {
   onDeleteEvent: (eventId: number) => void;
   onActivateVoting: (eventId: number) => void;
   onDeactivateVoting: (eventId: number) => void;
+  onCompleteEvent: (eventId: number) => void;
+  onViewReport: (eventId: number) => void;
 }
 
 export default function AdminEventManagementScreen({ 
@@ -22,11 +25,59 @@ export default function AdminEventManagementScreen({
   onEditEvent,
   onDeleteEvent,
   onActivateVoting,
-  onDeactivateVoting
+  onDeactivateVoting,
+  onCompleteEvent,
+  onViewReport
 }: AdminEventManagementScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
     return user?.name || 'Unknown';
+  };
+
+  // Component to check voting completion status
+  const VotingCompletionChecker = ({ eventId }: { eventId: number }) => {
+    const { data: completionStatus } = useQuery<{
+      isComplete: boolean;
+      totalParticipants: number;
+      totalWines: number;
+      votesReceived: number;
+    }>({
+      queryKey: ['/api/events', eventId, 'voting-complete'],
+      enabled: true,
+      refetchInterval: 5000, // Check every 5 seconds
+    });
+
+    if (!completionStatus) return null;
+
+    return completionStatus.isComplete ? (
+      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2 text-green-700">
+            <CheckCircle className="w-5 h-5" />
+            <span className="text-sm font-medium">Tutti hanno votato! Pronto per conclusione</span>
+          </div>
+          <button
+            onClick={() => onCompleteEvent(eventId)}
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            Concludi Evento
+          </button>
+        </div>
+        <div className="mt-2 text-xs text-green-600">
+          {completionStatus.votesReceived} voti su {completionStatus.totalParticipants} partecipanti × {completionStatus.totalWines} vini
+        </div>
+      </div>
+    ) : (
+      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div className="flex items-center space-x-2 text-yellow-700">
+          <BarChart3 className="w-5 h-5" />
+          <span className="text-sm font-medium">Votazioni in corso...</span>
+        </div>
+        <div className="mt-1 text-xs text-yellow-600">
+          {completionStatus.votesReceived} voti ricevuti - Mancano {(completionStatus.totalParticipants * completionStatus.totalWines) - completionStatus.votesReceived} voti
+        </div>
+      </div>
+    );
   };
 
   // Calcola il numero di partecipanti per evento (utenti che hanno registrato vini)
@@ -97,6 +148,11 @@ export default function AdminEventManagementScreen({
                         </button>
                       )}
                     </div>
+
+                    {/* Voting Completion Status - Show only when voting is active or completed */}
+                    {event.votingStatus === 'completed' && (
+                      <VotingCompletionChecker eventId={event.id} />
+                    )}
                   </div>
 
                   {/* Action Menu - Below Modal */}
@@ -137,9 +193,17 @@ export default function AdminEventManagementScreen({
                       <p className="text-sm text-gray-600">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                         COMPLETATO
                       </span>
+                      <button
+                        onClick={() => onViewReport(event.id)}
+                        className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                        title="Visualizza Report"
+                      >
+                        <BarChart3 className="w-4 h-4 inline mr-1" />
+                        Report
+                      </button>
                       <button
                         onClick={() => onEditEvent(event)}
                         className="p-2 rounded-full hover:bg-gray-200 transition-colors"

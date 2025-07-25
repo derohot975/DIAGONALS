@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { User, WineEvent, Wine, Vote, WineResult } from '@shared/schema';
+import { User, WineEvent, Wine, Vote, WineResult, EventReportData } from '@shared/schema';
 import { apiRequest } from './lib/queryClient';
 
 // Components
@@ -19,6 +19,7 @@ import EditUserModal from './components/modals/EditUserModal';
 import CreateEventModal from './components/modals/CreateEventModal';
 import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
+import EventReportModal from './components/modals/EventReportModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
@@ -40,6 +41,8 @@ function App() {
   const [editingEvent, setEditingEvent] = useState<WineEvent | null>(null);
   const [showWineRegistrationModal, setShowWineRegistrationModal] = useState(false);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState<EventReportData | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -373,6 +376,44 @@ function App() {
     },
   });
 
+  // Event completion mutations
+  const completeEventMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      if (!currentUser) {
+        throw new Error('User not found');
+      }
+      const response = await apiRequest('POST', `/api/events/${eventId}/complete`, {
+        userId: currentUser.id
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '🎉 Evento completato!', 
+        description: 'Il report finale è stato generato con successo.'
+      });
+    },
+    onError: (error: any) => {
+      const message = error?.message || 'Errore nel completamento dell\'evento';
+      toast({ title: message, variant: 'destructive' });
+    },
+  });
+
+  const viewReportMutation = useMutation({
+    mutationFn: async (eventId: number) => {
+      const response = await apiRequest('GET', `/api/events/${eventId}/report`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setReportData(data);
+      setShowReportModal(true);
+    },
+    onError: () => {
+      toast({ title: 'Errore nel recupero del report', variant: 'destructive' });
+    },
+  });
+
   // Session management mutations
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -614,8 +655,16 @@ function App() {
     }
   };
 
-  const handleCompleteEvent = (eventId: number) => {
+  const handleCompleteEventOld = (eventId: number) => {
     updateEventStatusMutation.mutate({ eventId, status: 'completed' });
+  };
+
+  const handleCompleteEvent = (eventId: number) => {
+    completeEventMutation.mutate(eventId);
+  };
+
+  const handleViewReport = (eventId: number) => {
+    viewReportMutation.mutate(eventId);
   };
 
   const handleActivateVoting = async (eventId: number) => {
@@ -738,6 +787,8 @@ function App() {
             onDeleteEvent={handleDeleteEvent}
             onActivateVoting={handleActivateVoting}
             onDeactivateVoting={handleDeactivateVoting}
+            onCompleteEvent={handleCompleteEvent}
+            onViewReport={handleViewReport}
           />
         );
       case 'voting':
@@ -834,6 +885,15 @@ function App() {
         currentUser={currentUser}
         onRegisterWine={handleRegisterWine}
         wine={editingWine}
+      />
+
+      <EventReportModal
+        isOpen={showReportModal}
+        onClose={() => {
+          setShowReportModal(false);
+          setReportData(null);
+        }}
+        reportData={reportData}
       />
 
       {/* Install Prompt - Only show on home screen when not logged in */}

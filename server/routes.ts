@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertWineEventSchema, insertWineSchema, insertVoteSchema } from "@shared/schema";
+import { insertUserSchema, insertWineEventSchema, insertWineSchema, insertVoteSchema, insertEventReportSchema, EventReportData, UserRanking, WineResultDetailed } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 
@@ -285,7 +285,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Event completion routes
+  app.get("/api/events/:id/voting-complete", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const completionStatus = await storage.checkEventVotingComplete(id);
+      res.json(completionStatus);
+    } catch (error) {
+      console.error('Check voting completion error:', error);
+      res.status(500).json({ message: "Failed to check voting completion" });
+    }
+  });
 
+  app.post("/api/events/:id/complete", async (req, res) => {
+    try {
+      const eventId = parseInt(req.params.id);
+      const { userId } = req.body;
+
+      if (!userId) {
+        res.status(400).json({ message: "User ID is required" });
+        return;
+      }
+
+      // Check if event exists
+      const event = await storage.getWineEvent(eventId);
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+
+      // Check if voting is complete
+      const completionStatus = await storage.checkEventVotingComplete(eventId);
+      if (!completionStatus.isComplete) {
+        res.status(400).json({ 
+          message: "Non tutti i partecipanti hanno completato le votazioni",
+          completionStatus 
+        });
+        return;
+      }
+
+      // Check if report already exists
+      const existingReport = await storage.getEventReport(eventId);
+      if (existingReport) {
+        res.status(409).json({ message: "Report per questo evento già esistente" });
+        return;
+      }
+
+      // Generate comprehensive report data
+      const wines = await storage.getWinesByEventId(eventId);
+      const votes = await storage.getVotesByEventId(eventId);
+      const participants = await storage.getUsersByEventId(eventId);
+      const allUsers = await storage.getAllUsers();
+
+      // Calculate wine results with detailed votes
+      const wineResults: WineResultDetailed[] = wines.map(wine => {
+        const wineVotes = votes.filter(vote => vote.wineId === wine.id);
+        const totalScore = wineVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+        const averageScore = wineVotes.length > 0 ? totalScore / wineVotes.length : 0;
+        
+        const contributor = allUsers.find(u => u.id === wine.userId);
+        
+        return {
+          ...wine,
+          averageScore: Math.round(averageScore * 10) / 10,
+          totalScore: Math.round(totalScore * 10) / 10,
+          totalVotes: wineVotes.length,
+          lodeCount: 0, // Legacy field
+          contributor: contributor?.name || 'Unknown',
+          votes: wineVotes.map(vote => ({
+            userId: vote.userId,
+            userName: allUsers.find(u => u.id === vote.userId)?.name || 'Unknown',
+            score: parseFloat(vote.score.toString())
+          })),
+          position: 0 // Will be set after sorting
+        };
+      }).sort((a, b) => b.averageScore - a.averageScore);
+
+      // Set positions
+      wineResults.forEach((wine, index) => {
+        wine.position = index + 1;
+      });
+
+      // Calculate user rankings
+      const userRankings: UserRanking[] = participants.map(participant => {
+        const userVotes = votes.filter(vote => vote.userId === participant.id);
+        const totalScore = userVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+        const averageScore = userVotes.length > 0 ? totalScore / userVotes.length : 0;
+
+        return {
+          userId: participant.id,
+          userName: participant.name,
+          totalScore: Math.round(totalScore * 10) / 10,
+          averageScore: Math.round(averageScore * 10) / 10,
+          votesGiven: userVotes.length,
+          position: 0 // Will be set after sorting
+        };
+      }).sort((a, b) => b.averageScore - a.averageScore);
+
+      // Set user positions
+      userRankings.forEach((user, index) => {
+        user.position = index + 1;
+      });
+
+      // Create report data
+      const reportData: EventReportData = {
+        eventInfo: event,
+        userRankings,
+        wineResults,
+        summary: {
+          totalParticipants: participants.length,
+          totalWines: wines.length,
+          totalVotes: votes.length,
+          averageScore: votes.length > 0 ? 
+            Math.round((votes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0) / votes.length) * 10) / 10 : 0
+        }
+      };
+
+      // Save report to database
+      const report = await storage.createEventReport({
+        eventId,
+        reportData: JSON.stringify(reportData),
+        generatedBy: userId
+      });
+
+      // Update event status to completed
+      await storage.updateWineEvent(eventId, { status: 'completed' });
+
+      res.json({ 
+        message: "Evento completato con successo",
+        reportId: report.id,
+        reportData 
+      });
+
+    } catch (error) {
+      console.error('Event completion error:', error);
+      res.status(500).json({ message: "Failed to complete event" });
+    }
+  });
+
+  app.get("/api/events/:id/report", async (req, res) => {
+    try {
+      const eventId = parseInt(req.params.id);
+      const report = await storage.getEventReport(eventId);
+      
+      if (!report) {
+        res.status(404).json({ message: "Report not found" });
+        return;
+      }
+
+      const reportData: EventReportData = JSON.parse(report.reportData);
+      res.json(reportData);
+    } catch (error) {
+      console.error('Get report error:', error);
+      res.status(500).json({ message: "Failed to get report" });
+    }
+  });
 
   // Wine routes
   app.get("/api/wines", async (req, res) => {

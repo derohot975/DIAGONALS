@@ -1,5 +1,5 @@
-import { User, InsertUser, WineEvent, InsertWineEvent, Wine, InsertWine, Vote, InsertVote } from "@shared/schema";
-import { users, wineEvents, wines, votes } from "@shared/schema";
+import { User, InsertUser, WineEvent, InsertWineEvent, Wine, InsertWine, Vote, InsertVote, EventReport, InsertEventReport, EventReportData } from "@shared/schema";
+import { users, wineEvents, wines, votes, eventReports } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
@@ -43,6 +43,13 @@ export interface IStorage {
   getVotesByEventId(eventId: number): Promise<Vote[]>;
   getVotesByWineId(wineId: number): Promise<Vote[]>;
   getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
+  
+  // Event Report operations
+  createEventReport(report: InsertEventReport): Promise<EventReport>;
+  getEventReport(eventId: number): Promise<EventReport | undefined>;
+  
+  // Voting completion check
+  checkEventVotingComplete(eventId: number): Promise<{ isComplete: boolean; totalParticipants: number; totalWines: number; votesReceived: number; }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -197,7 +204,10 @@ export class DatabaseStorage implements IStorage {
   async createVote(insertVote: InsertVote): Promise<Vote> {
     const [vote] = await db
       .insert(votes)
-      .values(insertVote)
+      .values({
+        ...insertVote,
+        score: insertVote.score.toString()
+      })
       .returning();
     return vote;
   }
@@ -236,6 +246,52 @@ export class DatabaseStorage implements IStorage {
     // Get all users who have registered wines in this event
     const allUsers = await db.select().from(users);
     return allUsers.filter(user => userIds.includes(user.id));
+  }
+
+  // Event Report operations
+  async createEventReport(insertReport: InsertEventReport): Promise<EventReport> {
+    const [report] = await db
+      .insert(eventReports)
+      .values(insertReport)
+      .returning();
+    return report;
+  }
+
+  async getEventReport(eventId: number): Promise<EventReport | undefined> {
+    const [report] = await db
+      .select()
+      .from(eventReports)
+      .where(eq(eventReports.eventId, eventId));
+    return report || undefined;
+  }
+
+  // Check if all participants have voted for all wines in an event
+  async checkEventVotingComplete(eventId: number): Promise<{ isComplete: boolean; totalParticipants: number; totalWines: number; votesReceived: number; }> {
+    // Get all participants (users who registered wines for this event)
+    const participants = await this.getUsersByEventId(eventId);
+    
+    // Get all wines for this event
+    const eventWines = await this.getWinesByEventId(eventId);
+    
+    // Get all votes for this event
+    const eventVotes = await this.getVotesByEventId(eventId);
+    
+    // Calculate expected votes: each participant should vote for all wines except their own
+    let expectedVotes = 0;
+    for (const participant of participants) {
+      const winesCanVoteFor = eventWines.filter(wine => wine.userId !== participant.id);
+      expectedVotes += winesCanVoteFor.length;
+    }
+    
+    const votesReceived = eventVotes.length;
+    const isComplete = votesReceived >= expectedVotes;
+    
+    return {
+      isComplete,
+      totalParticipants: participants.length,
+      totalWines: eventWines.length,
+      votesReceived
+    };
   }
 }
 
