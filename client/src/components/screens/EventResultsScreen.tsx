@@ -11,11 +11,11 @@ interface EventResultsScreenProps {
 export default function EventResultsScreen({ event, results }: EventResultsScreenProps) {
   if (!event) return null;
 
-  const totalParticipants = results.length > 0 ? results[0].totalVotes : 0;
+  const totalParticipants = results.length > 0 ? results[0]?.totalVotes || 0 : 0;
   const averageScore = results.length > 0 
-    ? results.reduce((sum, result) => sum + result.averageScore, 0) / results.length 
+    ? results.reduce((sum, result) => sum + (result?.averageScore || 0), 0) / results.length 
     : 0;
-  const totalLodes = results.reduce((sum, result) => sum + result.lodeCount, 0);
+  const totalLodes = results.reduce((sum, result) => sum + (result?.lodeCount || 0), 0);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -67,31 +67,31 @@ export default function EventResultsScreen({ event, results }: EventResultsScree
                     <div className="ml-12">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
-                          <h3 className="font-semibold text-lg text-gray-800">{result.name}</h3>
+                          <h3 className="font-semibold text-lg text-gray-800">{result?.name || 'Vino senza nome'}</h3>
                           {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="bg-[hsl(43,96%,56%)] text-white px-2 py-1 rounded-full text-xs">
-                            {formatPrice(result.price)}
+                            {formatPrice(result?.price || '0')}
                           </span>
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
-                            <span className="font-bold text-lg">{result.averageScore.toFixed(1)}</span>
+                            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
                         <p className="text-gray-600 text-sm">
-                          Portato da: <span className="font-medium">{result.contributor}</span>
+                          Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
                         </p>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span className="flex items-center space-x-1">
                             <Users className="w-4 h-4" />
-                            <span>{result.totalVotes} voti</span>
+                            <span>{result?.totalVotes || 0} voti</span>
                           </span>
                           <span className="flex items-center space-x-1">
                             <Award className="w-4 h-4 text-[hsl(0,84.2%,60.2%)]" />
-                            <span>{result.lodeCount} lodi</span>
+                            <span>{result?.lodeCount || 0} lodi</span>
                           </span>
                         </div>
                       </div>
