@@ -1,4 +1,4 @@
-import { Download, Crown, Star, Award, Users, ArrowLeft, Home } from 'lucide-react';
+import { Download, Crown, Star, Users, ArrowLeft, Home } from 'lucide-react';
 import { WineEvent, WineResult } from '@shared/schema';
 import { formatPrice } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
@@ -13,11 +13,7 @@ interface EventResultsScreenProps {
 export default function EventResultsScreen({ event, results, onGoBack, onGoHome }: EventResultsScreenProps) {
   if (!event) return null;
 
-  const totalParticipants = results.length > 0 ? results[0]?.totalVotes || 0 : 0;
-  const averageScore = results.length > 0 
-    ? results.reduce((sum, result) => sum + (result?.averageScore || 0), 0) / results.length 
-    : 0;
-  const totalLodes = results.reduce((sum, result) => sum + (result?.lodeCount || 0), 0);
+
 
   return (
     <div className="flex-1 flex flex-col">
@@ -89,10 +85,6 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                             <Users className="w-4 h-4" />
                             <span>{result?.totalVotes || 0} voti</span>
                           </span>
-                          <span className="flex items-center space-x-1">
-                            <Award className="w-4 h-4 text-[hsl(0,84.2%,60.2%)]" />
-                            <span>{result?.lodeCount || 0} lodi</span>
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -100,20 +92,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                 ))}
               </div>
               
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{totalParticipants}</div>
-                  <div className="text-sm text-gray-600">Partecipanti</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{averageScore.toFixed(1)}</div>
-                  <div className="text-sm text-gray-600">Punteggio Medio</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-1">{totalLodes}</div>
-                  <div className="text-sm text-gray-600">Lodi Totali</div>
-                </div>
-              </div>
+
             </>
           )}
         </div>
