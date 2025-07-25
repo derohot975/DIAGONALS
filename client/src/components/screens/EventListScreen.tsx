@@ -86,14 +86,14 @@ export default function EventListScreen({
                   )}
                   
                   <div className="glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
-                    {/* Event Name e Date - Una riga sola */}
+                    {/* Date e Event Name - Data sopra, nome sotto */}
                     <div className="text-center mb-4">
-                      <h3 className="font-bold text-[#300505] mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-xl">
-                        {event.name}
-                      </h3>
-                      <p className="text-lg font-bold text-[#300505]">
+                      <p className="text-lg font-bold text-[#300505] mb-2">
                         {formatDate(event.date)}
                       </p>
+                      <h3 className="font-bold text-[#300505] leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-xl">
+                        {event.name}
+                      </h3>
                     </div>
 
                     {/* PULSANTE UNICO CONDIZIONALE */}
