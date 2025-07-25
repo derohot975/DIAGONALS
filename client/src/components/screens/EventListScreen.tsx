@@ -109,12 +109,24 @@ export default function EventListScreen({
                         </div>
                       </div>
                       
-                      <button
-                        onClick={() => onParticipateEvent(event.id)}
-                        className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
-                      >
-                        PARTECIPA ALLA DIAGONALE
-                      </button>
+                      {event.votingStatus === 'active' ? (
+                        <button
+                          onClick={() => onParticipateEvent(event.id)}
+                          className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
+                        >
+                          PARTECIPA ALLA DIAGONALE
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="w-full font-bold py-4 px-8 rounded-2xl text-lg bg-gray-400 text-gray-600 cursor-not-allowed"
+                        >
+                          <div className="flex items-center justify-center space-x-2">
+                            <span>👁️</span>
+                            <span>ATTENDI ATTIVAZIONE VOTAZIONI</span>
+                          </div>
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
