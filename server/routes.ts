@@ -357,21 +357,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/votes", async (req, res) => {
     try {
-      const voteData = insertVoteSchema.parse(req.body);
+      console.log('Received vote data:', req.body);
+      
+      // Ensure score is a number
+      const voteData = {
+        ...req.body,
+        score: Number(req.body.score)
+      };
+      
+      console.log('Processed vote data:', voteData);
+      const validatedData = insertVoteSchema.parse(voteData);
+      console.log('Validated vote data:', validatedData);
       
       // Check if user already voted for this wine
-      const existingVote = await storage.getUserVoteForWine(voteData.userId, voteData.wineId);
+      const existingVote = await storage.getUserVoteForWine(validatedData.userId, validatedData.wineId);
       if (existingVote) {
         // Update existing vote
-        const updatedVote = await storage.updateVote(existingVote.id, parseFloat(voteData.score.toString()));
+        const updatedVote = await storage.updateVote(existingVote.id, Number(validatedData.score));
         res.json(updatedVote);
       } else {
         // Create new vote
-        const vote = await storage.createVote(voteData);
+        const vote = await storage.createVote(validatedData);
         res.status(201).json(vote);
       }
     } catch (error) {
+      console.error('Vote creation error:', error);
       if (error instanceof z.ZodError) {
+        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid vote data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to create vote" });

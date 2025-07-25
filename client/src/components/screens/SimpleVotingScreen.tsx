@@ -53,6 +53,7 @@ export default function SimpleVotingScreen({
   // Vote mutation
   const voteMutation = useMutation({
     mutationFn: async ({ wineId, score }: { wineId: number; score: number }) => {
+      console.log('Sending vote data:', { eventId: event.id, wineId, userId: currentUser.id, score });
       const response = await fetch('/api/votes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,15 +61,23 @@ export default function SimpleVotingScreen({
           eventId: event.id,
           wineId,
           userId: currentUser.id,
-          score
+          score: Number(score) // Ensure it's sent as number
         })
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Vote error:', errorData);
+        throw new Error(errorData.message || 'Failed to vote');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/votes', event.id] });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Vote mutation error:', error);
       toast({
         title: "Errore nel salvare il voto",
         variant: "destructive"
