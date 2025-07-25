@@ -16,9 +16,7 @@ export const wineEvents = pgTable("wine_events", {
   name: text("name").notNull(),
   date: text("date").notNull(),
   mode: text("mode").notNull(), // Modalità unica
-  status: text("status").default('active').notNull(), // 'active', 'voting', 'completed'
-  votingStatus: text("voting_status").default('registration').notNull(), // 'registration', 'voting', 'completed'
-  currentVotingWineId: integer("current_voting_wine_id"),
+  status: text("status").default('registration').notNull(), // 'registration', 'voting', 'completed'
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -34,8 +32,6 @@ export const wines = pgTable("wines", {
   year: integer("year").notNull(),
   origin: text("origin").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  isRevealed: boolean("is_revealed").default(false).notNull(),
-  votingStatus: text("voting_status").default('pending').notNull(), // 'pending', 'voting', 'closed'
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

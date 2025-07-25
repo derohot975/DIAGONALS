@@ -12,7 +12,7 @@ import EventListScreen from './components/screens/EventListScreen';
 import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
-import VotingScreen from './components/screens/VotingScreen';
+import SimultaneousVotingScreen from './components/screens/SimultaneousVotingScreen';
 
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
@@ -602,18 +602,14 @@ function App() {
           />
         );
       case 'voting':
-        return (
-          <VotingScreen
+        return currentEvent && currentUser ? (
+          <SimultaneousVotingScreen
             event={currentEvent}
-            wines={wines}
-            votes={votes}
-            users={users}
             currentUser={currentUser}
-            onGoBack={() => setCurrentScreen('events')}
-            onVoteForWine={handleVoteForWine}
-            onSelectCurrentWine={handleSelectCurrentWine}
+            onBack={() => setCurrentScreen('events')}
+            onHome={() => setCurrentScreen('home')}
           />
-        );
+        ) : null;
       case 'eventDetails':
         return (
           <EventDetailsScreen

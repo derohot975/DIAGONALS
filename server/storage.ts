@@ -25,8 +25,7 @@ export interface IStorage {
   updateWineEvent(id: number, updates: Partial<InsertWineEvent>): Promise<WineEvent | undefined>;
   deleteWineEvent(id: number): Promise<boolean>;
   updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined>;
-  updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined>;
-  setCurrentVotingWine(eventId: number, wineId: number | null): Promise<WineEvent | undefined>;
+
   
   // Wine operations
   getWine(id: number): Promise<Wine | undefined>;
@@ -34,14 +33,12 @@ export interface IStorage {
   createWine(wine: InsertWine): Promise<Wine>;
   getAllWines(): Promise<Wine[]>;
   getWinesByEventId(eventId: number): Promise<Wine[]>;
-  updateWineRevealed(id: number, isRevealed: boolean): Promise<Wine | undefined>;
-  updateWineRevealStatus(id: number, isRevealed: boolean): Promise<Wine | undefined>;
-  updateWineVotingStatus(id: number, votingStatus: string): Promise<Wine | undefined>;
+
   
   // Vote operations
   getVote(id: number): Promise<Vote | undefined>;
   createVote(vote: InsertVote): Promise<Vote>;
-  updateVote(id: number, score: number, hasLode: boolean): Promise<Vote | undefined>;
+  updateVote(id: number, score: number): Promise<Vote | undefined>;
   getVotesByEventId(eventId: number): Promise<Vote[]>;
   getVotesByWineId(wineId: number): Promise<Vote[]>;
   getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
@@ -150,23 +147,7 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async updateEventVotingStatus(id: number, votingStatus: string): Promise<WineEvent | undefined> {
-    const [event] = await db
-      .update(wineEvents)
-      .set({ votingStatus })
-      .where(eq(wineEvents.id, id))
-      .returning();
-    return event || undefined;
-  }
 
-  async setCurrentVotingWine(eventId: number, wineId: number | null): Promise<WineEvent | undefined> {
-    const [event] = await db
-      .update(wineEvents)
-      .set({ currentVotingWineId: wineId })
-      .where(eq(wineEvents.id, eventId))
-      .returning();
-    return event || undefined;
-  }
 
   // Wine operations
   async getWine(id: number): Promise<Wine | undefined> {
@@ -195,32 +176,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(wines).where(eq(wines.eventId, eventId));
   }
 
-  async updateWineRevealed(id: number, isRevealed: boolean): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ isRevealed })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
-  }
 
-  async updateWineRevealStatus(id: number, isRevealed: boolean): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ isRevealed })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
-  }
-
-  async updateWineVotingStatus(id: number, votingStatus: string): Promise<Wine | undefined> {
-    const [wine] = await db
-      .update(wines)
-      .set({ votingStatus })
-      .where(eq(wines.id, id))
-      .returning();
-    return wine || undefined;
-  }
 
   // Vote operations
   async getVote(id: number): Promise<Vote | undefined> {
@@ -236,7 +192,7 @@ export class DatabaseStorage implements IStorage {
     return vote;
   }
 
-  async updateVote(id: number, score: number, hasLode: boolean): Promise<Vote | undefined> {
+  async updateVote(id: number, score: number): Promise<Vote | undefined> {
     const [vote] = await db
       .update(votes)
       .set({ score: score.toString() })

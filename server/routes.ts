@@ -247,21 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Set current voting wine for sequential voting
-  app.patch("/api/events/:id/current-wine", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const { wineId } = req.body;
-      const event = await storage.setCurrentVotingWine(id, wineId);
-      if (!event) {
-        res.status(404).json({ message: "Event not found" });
-        return;
-      }
-      res.json(event);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to set current voting wine" });
-    }
-  });
+
 
   // Wine routes
   app.get("/api/wines", async (req, res) => {
@@ -304,20 +290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/wines/:id/reveal", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const { isRevealed } = req.body;
-      const wine = await storage.updateWineRevealed(id, isRevealed);
-      if (!wine) {
-        res.status(404).json({ message: "Wine not found" });
-        return;
-      }
-      res.json(wine);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update wine" });
-    }
-  });
+
 
   // Vote routes
   app.get("/api/votes", async (req, res) => {
@@ -352,7 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingVote = await storage.getUserVoteForWine(voteData.userId, voteData.wineId);
       if (existingVote) {
         // Update existing vote
-        const updatedVote = await storage.updateVote(existingVote.id, parseFloat(voteData.score.toString()), false);
+        const updatedVote = await storage.updateVote(existingVote.id, parseFloat(voteData.score.toString()));
         res.json(updatedVote);
       } else {
         // Create new vote
@@ -378,78 +351,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Nuove route per gestione votazioni avanzate
-  
-  // Avvia fase votazioni per un evento
-  app.put("/api/events/:eventId/start-voting", async (req, res) => {
-    try {
-      const eventId = parseInt(req.params.eventId);
-      const event = await storage.updateEventVotingStatus(eventId, 'voting');
-      res.json(event);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to start voting" });
-    }
-  });
 
-  // Seleziona vino per votazione
-  app.put("/api/wines/:wineId/start-voting", async (req, res) => {
-    try {
-      const wineId = parseInt(req.params.wineId);
-      const wine = await storage.updateWineVotingStatus(wineId, 'voting');
-      res.json(wine);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to start wine voting" });
-    }
-  });
-
-  // Chiudi votazioni per un vino
-  app.put("/api/wines/:wineId/close-voting", async (req, res) => {
-    try {
-      const wineId = parseInt(req.params.wineId);
-      const wine = await storage.updateWineVotingStatus(wineId, 'closed');
-      res.json(wine);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to close wine voting" });
-    }
-  });
-
-  // Rivela info vino (per proprietario)
-  app.put("/api/wines/:wineId/reveal", async (req, res) => {
-    try {
-      const wineId = parseInt(req.params.wineId);
-      const wine = await storage.updateWineRevealStatus(wineId, true);
-      res.json(wine);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to reveal wine info" });
-    }
-  });
-
-  // Verifica se tutti hanno votato per un vino
-  app.get("/api/wines/:wineId/voting-complete", async (req, res) => {
-    try {
-      const wineId = parseInt(req.params.wineId);
-      const wine = await storage.getWineById(wineId);
-      if (!wine) {
-        res.status(404).json({ message: "Wine not found" });
-        return;
-      }
-      
-      const eventUsers = await storage.getUsersByEventId(wine.eventId);
-      const wineVotes = await storage.getVotesByWineId(wineId);
-      
-      // Escludi il proprietario del vino dal conteggio
-      const eligibleVoters = eventUsers.filter(user => user.id !== wine.userId);
-      const isComplete = wineVotes.length >= eligibleVoters.length;
-      
-      res.json({ 
-        isComplete, 
-        totalVotes: wineVotes.length, 
-        requiredVotes: eligibleVoters.length 
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to check voting completion" });
-    }
-  });
 
   app.get("/api/events/:eventId/results", async (req, res) => {
     try {
