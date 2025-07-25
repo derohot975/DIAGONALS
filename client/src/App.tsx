@@ -52,7 +52,7 @@ function App() {
     queryKey: ['/api/events'],
     queryFn: () => fetch('/api/events').then(res => res.json()),
     staleTime: 0, // Forza sempre reload
-    cacheTime: 0, // Non usare cache
+    gcTime: 0, // Non usare cache (v5 syntax)
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
@@ -512,7 +512,7 @@ function App() {
   };
 
   const handleParticipateEvent = (eventId: number) => {
-    const event = events.find(e => e.id === eventId);
+    const event = events.find((e: WineEvent) => e.id === eventId);
     if (!event) return;
     
     setSelectedEventId(eventId);
@@ -595,7 +595,7 @@ function App() {
   };
 
   // Get current event
-  const currentEvent = selectedEventId ? events.find(e => e.id === selectedEventId) || null : null;
+  const currentEvent = selectedEventId ? events.find((e: WineEvent) => e.id === selectedEventId) || null : null;
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -627,7 +627,7 @@ function App() {
       case 'events':
         return (
           <EventListScreen
-            events={events}
+            events={events as WineEvent[]}
             users={users}
             currentUser={currentUser}
             wines={wines}
@@ -643,7 +643,7 @@ function App() {
       case 'adminEvents':
         return (
           <AdminEventManagementScreen
-            events={events}
+            events={events as WineEvent[]}
             users={users}
             wines={wines}
             onGoBack={() => setCurrentScreen('admin')}

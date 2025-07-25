@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 25, 2025 - Updated 15:35)
+## Recent Changes (July 25, 2025 - Updated 18:14)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -87,6 +87,8 @@ Preferred communication style: Simple, everyday language.
 - **Code Optimization**: Eliminated duplicate types, removed unused UI components
 - **Performance**: Optimized imports and cleaned localStorage error handling
 - **Maintainability**: Centralized type definitions in shared schema
+- **Cache Resolution**: Fixed React Query cache issues preventing new events from displaying
+- **LSP Compliance**: Resolved all TypeScript errors with proper type casting and v5 syntax
 
 ## 🔄 PUNTO DI RIPRISTINO (25 Luglio 2025 - 15:35)
 
@@ -106,6 +108,7 @@ Preferred communication style: Simple, everyday language.
 4. **Sistema Voti Simultaneo**: Interfaccia ottimizzata per touchscreen mobile
 5. **Interfaccia Mobile**: Layout ottimizzato con prevenzione scroll indesiderato
 6. **Logo Integrato**: Logo PNG originale con colorazione app
+7. **Creazione Eventi Riparata**: Fix completo cache React Query con reload automatico
 
 ### Sistema Controllo Votazioni - COMPLETATO ✅
 **Controllo Admin Implementato (25 Luglio 2025 - 17:45)**:
