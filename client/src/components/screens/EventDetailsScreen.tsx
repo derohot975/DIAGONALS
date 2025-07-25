@@ -45,6 +45,8 @@ export default function EventDetailsScreen({
   const votingIsActive = event.votingStatus === 'active';
 
   // DEBUG: Log per verificare la logica
+  console.log('DEBUG - Event:', event);
+  console.log('DEBUG - Event votingStatus:', event.votingStatus);
   console.log('DEBUG - User ID:', currentUser.id);
   console.log('DEBUG - Wines:', wines.map(w => ({ id: w.id, userId: w.userId, name: w.name })));
   console.log('DEBUG - User has registered wine:', userHasRegisteredWine);
@@ -111,8 +113,8 @@ export default function EventDetailsScreen({
                 disabled={!votingIsActive}
                 className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
                   votingIsActive 
-                    ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(229,73%,69%)] hover:from-[hsl(270,60%,70%)] hover:to-[hsl(229,83%,74%)] text-white shadow-lg' 
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-[hsl(270,50%,65%)] to-[hsl(229,73%,69%)] hover:from-[hsl(270,60%,70%)] hover:to-[hsl(229,83%,74%)] text-white shadow-lg hover:scale-105' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
                 }`}
               >
                 <Eye className="w-5 h-5" />

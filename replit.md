@@ -107,18 +107,18 @@ Preferred communication style: Simple, everyday language.
 5. **Interfaccia Mobile**: Layout ottimizzato con prevenzione scroll indesiderato
 6. **Logo Integrato**: Logo PNG originale con colorazione app
 
-### Sistema Votazioni Simultanee - COMPLETATO ✅
-**Nuova Interfaccia Implementata (25 Luglio 2025 - 15:35)**:
-- **Votazione Semplificata**: Sistema di voto ottimizzato e più intuitivo
-- **Layout Ottimizzato**: Box voto e icona scroll con spazio adeguato per touchscreen
-- **Box Interattivi**: "Vino di [NOME]" + "[TIPO] • [ANNO]" per ogni partecipante
-- **Voti Touchscreen**: Scroll verticale ottimizzato per modificare voti (1.0-10.0 step 0.5)
-- **Selezione Visiva**: Box selezionato ingrandito con anello viola e icona evidenziata
-- **Auto-Save**: Voti salvati automaticamente durante modifica
-- **Pagina Fissa**: Prevenzione scroll pagina durante votazione su mobile
-- **Interface Pulita**: Rimosso messaggio istruzioni per design minimalista
-- **Database Semplificato**: Rimossi campi obsoleti (currentVotingWineId, votingStatus, isRevealed)
-- **API Pulite**: Eliminate route sequenziali non più necessarie
+### Sistema Controllo Votazioni - COMPLETATO ✅
+**Controllo Admin Implementato (25 Luglio 2025 - 17:45)**:
+- **Database Schema**: Campo votingStatus (not_started/active/completed) aggiunto
+- **API Backend**: Route /api/events/:id/voting-status per controllo stato
+- **Pulsanti Admin**: "AVVIA VOTAZIONI" e "FERMA VOTAZIONI" funzionanti
+- **Controllo Accesso**: Pulsante "PARTECIPA ALLA DIAGONALE" attivo solo quando admin avvia votazioni
+- **Logica Condizionale**: Utenti vedono votazione (active) o risultati (completed)
+- **Interfaccia Disabilitata**: Pulsante grigio "ATTENDI ATTIVAZIONE VOTAZIONI" quando non attive
+- **Auto-redirect**: Sistema automatico pagina corretta basato su stato votazioni
+- **Toast Feedback**: Messaggi conferma per admin quando attiva/disattiva votazioni
+- **Debug Logging**: Sistema debug per verificare stati votazione
+- **Errori LSP Risolti**: Rimossi campi obsoleti (isRevealed, hasLode) dal codice
 
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
