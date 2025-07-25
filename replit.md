@@ -134,6 +134,7 @@ Preferred communication style: Simple, everyday language.
 - **Schema**: Users, Events, Wines, Votes tables completamente operative
 - **Migrazioni**: Drizzle ORM con push automatico
 - **Inizializzazione**: Auto-creazione utente Admin
+- **Utenti Ripristinati**: Admin, DERO, PETER, MARCO, GIULIA, FRANCESCO (25 Luglio 17:45)
 - **Performance**: Connection pooling attivo per ottimizzazione
 - **Persistenza**: Dati condivisi tra sessioni e deploy
 
