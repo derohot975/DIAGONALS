@@ -13,6 +13,7 @@ interface EventDetailsScreenProps {
   onVoteForWine: (wineId: number, score: number, hasLode: boolean) => void;
   onCompleteEvent: (eventId: number) => void;
   onShowResults: (eventId: number) => void;
+  onParticipateEvent: (eventId: number) => void;
 }
 
 export default function EventDetailsScreen({
@@ -24,7 +25,8 @@ export default function EventDetailsScreen({
   onShowWineRegistrationModal,
   onVoteForWine,
   onCompleteEvent,
-  onShowResults
+  onShowResults,
+  onParticipateEvent
 }: EventDetailsScreenProps) {
   if (!event || !currentUser) return null;
 
@@ -40,7 +42,7 @@ export default function EventDetailsScreen({
   const userHasRegisteredWine = wines.some(wine => wine.userId === currentUser.id);
   
   // Controlla se le votazioni sono attive
-  const votingIsActive = event.votingStatus === 'voting';
+  const votingIsActive = event.votingStatus === 'active';
 
   // DEBUG: Log per verificare la logica
   console.log('DEBUG - User ID:', currentUser.id);
@@ -105,7 +107,7 @@ export default function EventDetailsScreen({
               </button>
             ) : (
               <button
-                onClick={() => votingIsActive ? onShowResults(event.id) : null}
+                onClick={() => votingIsActive ? onParticipateEvent(event.id) : null}
                 disabled={!votingIsActive}
                 className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
                   votingIsActive 
@@ -136,17 +138,13 @@ export default function EventDetailsScreen({
                     <div key={wine.id} className="bg-white rounded-xl p-4 border-2 border-[hsl(229,73%,69%)]/20 wine-card-hover">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-lg text-gray-800">
-                          {wine.isRevealed ? wine.name : `Vino ${String.fromCharCode(65 + wines.indexOf(wine))}`}
+                          {wine.name}
                         </h3>
                         <div className="flex items-center space-x-2">
                           <span className="bg-[hsl(43,96%,56%)] text-white px-2 py-1 rounded-full text-xs">
                             {formatPrice(wine.price)}
                           </span>
-                          {wine.isRevealed ? (
-                            <Eye className="w-4 h-4 text-gray-600" />
-                          ) : (
-                            <EyeOff className="w-4 h-4 text-gray-400" />
-                          )}
+                          <Eye className="w-4 h-4 text-gray-600" />
                         </div>
                       </div>
                       <p className="text-gray-600 text-sm mb-4">
@@ -173,7 +171,7 @@ export default function EventDetailsScreen({
                               score={score}
                               wineId={wine.id}
                               currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, userVote?.hasLode || false)}
+                              onScore={(score) => onVoteForWine(wine.id, score, false)}
                             />
                           ))}
                         </div>
@@ -185,7 +183,7 @@ export default function EventDetailsScreen({
                               score={score}
                               wineId={wine.id}
                               currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, userVote?.hasLode || false)}
+                              onScore={(score) => onVoteForWine(wine.id, score, false)}
                             />
                           ))}
                         </div>
@@ -197,7 +195,7 @@ export default function EventDetailsScreen({
                               score={score}
                               wineId={wine.id}
                               currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, userVote?.hasLode || false)}
+                              onScore={(score) => onVoteForWine(wine.id, score, false)}
                             />
                           ))}
                         </div>
@@ -209,7 +207,7 @@ export default function EventDetailsScreen({
                               score={score}
                               wineId={wine.id}
                               currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, userVote?.hasLode || false)}
+                              onScore={(score) => onVoteForWine(wine.id, score, false)}
                             />
                           ))}
                         </div>

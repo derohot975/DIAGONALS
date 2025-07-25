@@ -247,6 +247,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Voting control routes
+  app.patch("/api/events/:id/voting-status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { votingStatus } = req.body;
+      
+      if (!['not_started', 'active', 'completed'].includes(votingStatus)) {
+        res.status(400).json({ message: "Invalid voting status" });
+        return;
+      }
+      
+      const event = await storage.updateWineEvent(id, { votingStatus });
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      res.json(event);
+    } catch (error) {
+      console.error('Voting status update error:', error);
+      res.status(500).json({ message: "Failed to update voting status" });
+    }
+  });
+
+  app.get("/api/events/:id/voting-status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const event = await storage.getWineEvent(id);
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      res.json({ votingStatus: event.votingStatus || 'not_started' });
+    } catch (error) {
+      console.error('Get voting status error:', error);
+      res.status(500).json({ message: "Failed to get voting status" });
+    }
+  });
+
 
 
   // Wine routes

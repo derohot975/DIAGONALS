@@ -504,20 +504,64 @@ function App() {
   };
 
   const handleParticipateEvent = (eventId: number) => {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
     setSelectedEventId(eventId);
-    setCurrentScreen('voting');
+    
+    // Reindirizza alla pagina corretta basata sullo stato delle votazioni
+    if (event.votingStatus === 'active') {
+      setCurrentScreen('voting');
+    } else if (event.votingStatus === 'completed') {
+      setCurrentScreen('eventResults');
+    } else {
+      // votingStatus === 'not_started' - mostra dettagli evento
+      setCurrentScreen('eventDetails');
+    }
   };
 
   const handleCompleteEvent = (eventId: number) => {
     updateEventStatusMutation.mutate({ eventId, status: 'completed' });
   };
 
-  const handleActivateVoting = (eventId: number) => {
-    activateVotingMutation.mutate(eventId);
+  const handleActivateVoting = async (eventId: number) => {
+    try {
+      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+        votingStatus: 'active'
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: 'Votazioni Attivate!', 
+        description: 'Gli utenti possono ora votare i vini.' 
+      });
+    } catch (error) {
+      console.error('Failed to activate voting:', error);
+      toast({ 
+        title: 'Errore', 
+        description: 'Impossibile attivare le votazioni.', 
+        variant: 'destructive' 
+      });
+    }
   };
 
-  const handleDeactivateVoting = (eventId: number) => {
-    deactivateVotingMutation.mutate(eventId);
+  const handleDeactivateVoting = async (eventId: number) => {
+    try {
+      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+        votingStatus: 'completed'
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: 'Votazioni Completate!', 
+        description: 'Gli utenti vedranno ora i risultati finali.' 
+      });
+    } catch (error) {
+      console.error('Failed to deactivate voting:', error);
+      toast({ 
+        title: 'Errore', 
+        description: 'Impossibile completare le votazioni.', 
+        variant: 'destructive' 
+      });
+    }
   };
 
   const handleShowResults = (eventId: number) => {
@@ -622,6 +666,7 @@ function App() {
             onVoteForWine={handleVoteForWine}
             onCompleteEvent={handleCompleteEvent}
             onShowResults={handleShowResults}
+            onParticipateEvent={handleParticipateEvent}
           />
         );
       case 'eventResults':
