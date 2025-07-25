@@ -155,9 +155,9 @@ export default function SimpleVotingScreen({
                     </div>
 
                     {/* Right Side - Vote Badge and Controls */}
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
                       {/* Vote Badge - Always Present */}
-                      <div className={`px-4 py-2 rounded-full font-bold min-w-[60px] text-center ${
+                      <div className={`px-6 py-3 rounded-full font-bold text-lg text-center ${
                         userVote 
                           ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
                           : 'bg-gray-300 text-gray-600'
@@ -165,31 +165,31 @@ export default function SimpleVotingScreen({
                         {userVote ? userVote.score : '--'}
                       </div>
                       
-                      {/* Vote Controls - Always Present */}
-                      <div className="flex flex-col space-y-1">
+                      {/* Vote Controls - Always Visible */}
+                      <div className="flex flex-col items-center justify-center">
                         <button
                           onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            const newScore = userVote ? (currentScore < 10 ? currentScore + 0.5 : currentScore) : 1;
+                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 0.5;
+                            const newScore = userVote ? Math.min(currentScore + 0.5, 10) : 1;
                             voteMutation.mutate({ wineId: wine.id, score: newScore });
                           }}
                           disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors"
+                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-1"
                         >
-                          <ChevronUp className="w-4 h-4" />
+                          <ChevronUp className="w-5 h-5" />
                         </button>
                         <button
                           onClick={() => {
-                            const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                            const newScore = userVote ? (currentScore > 1 ? currentScore - 0.5 : currentScore) : 1;
                             if (userVote) {
+                              const currentScore = parseFloat(userVote.score.toString());
+                              const newScore = Math.max(currentScore - 0.5, 1);
                               voteMutation.mutate({ wineId: wine.id, score: newScore });
                             }
                           }}
                           disabled={!userVote || parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
-                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors"
+                          className="text-[#8d0303] hover:text-[#300505] disabled:text-gray-300 transition-colors p-1"
                         >
-                          <ChevronDown className="w-4 h-4" />
+                          <ChevronDown className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
