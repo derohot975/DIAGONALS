@@ -98,18 +98,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
         </div>
       )}
 
-      {/* Messaggio successo per modifica vino */}
-      {wine && currentUser && (
-        <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-60">
-          <div className="text-center py-2">
-            <div className="flex items-center justify-center space-x-2">
-              <span className="text-xl animate-bounce">⭐</span>
-              <span className="text-white font-bold text-base">REGISTRATO CON SUCCESSO!</span>
-              <span className="text-xl animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
-            </div>
-          </div>
-        </div>
-      )}
+
       
       <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
