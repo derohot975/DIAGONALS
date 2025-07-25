@@ -142,16 +142,16 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       </div>
 
       {/* Voting Section */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 mx-auto max-w-md">
-        <h3 className="text-center text-lg font-semibold mb-4">
+      <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
+        <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
           Seleziona Vino per Votazione
         </h3>
         
         <div className="text-center mb-6">
-          <p className="text-sm text-white/80">
-            Partecipanti Registrati: <span className="text-purple-300 font-bold">{eventWines.length}</span>
+          <p className="text-sm text-gray-600">
+            Partecipanti Registrati: <span className="text-purple-600 font-bold">{eventWines.length}</span>
           </p>
-          <p className="text-xs text-white/70 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             {eventWines.map((wine: Wine) => getWineOwner(wine.userId)).join(", ")}
           </p>
         </div>
@@ -162,17 +162,17 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
             <div
               key={wine.id}
               className={`
-                bg-white/20 rounded-2xl p-4 transition-all duration-200 cursor-pointer
-                ${selectedWineId === wine.id ? 'ring-2 ring-purple-300 bg-white/30' : 'hover:bg-white/25'}
+                bg-white border-2 rounded-2xl p-4 transition-all duration-200 cursor-pointer
+                ${selectedWineId === wine.id ? 'border-purple-400 shadow-lg' : 'border-gray-200 shadow-sm hover:border-gray-300'}
               `}
               onClick={() => setSelectedWineId(wine.id)}
             >
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-sm">
+                  <h4 className="font-semibold text-sm text-gray-800">
                     Vino di {getWineOwner(wine.userId)}
                   </h4>
-                  <p className="text-xs text-white/80">
+                  <p className="text-xs text-gray-600">
                     {wine.type} • {wine.year.toString()}
                   </p>
                 </div>
@@ -186,39 +186,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     setSelectedWineId(wine.id);
                   }}
                 >
-                  <span className="text-lg font-bold">
+                  <span className="text-lg font-bold text-white">
                     {(votes[wine.id] || 1.0).toFixed(1)}
                   </span>
                 </div>
               </div>
-              
-              {/* Touch controls for selected wine */}
-              {selectedWineId === wine.id && (
-                <div className="flex justify-center mt-3 space-x-4">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="bg-white/20 border-white/30 text-white hover:bg-white/30"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleScoreChange(wine.id, -0.5);
-                    }}
-                  >
-                    -0.5
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="bg-white/20 border-white/30 text-white hover:bg-white/30"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleScoreChange(wine.id, +0.5);
-                    }}
-                  >
-                    +0.5
-                  </Button>
-                </div>
-              )}
             </div>
           ))}
         </div>
