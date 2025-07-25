@@ -13,6 +13,7 @@ interface WineRegistrationModalProps {
     year: number;
     origin: string;
     price: number;
+    alcohol?: number;
   }) => void;
 }
 
@@ -24,6 +25,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
   const [year, setYear] = useState('');
   const [origin, setOrigin] = useState('');
   const [price, setPrice] = useState('');
+  const [alcohol, setAlcohol] = useState('');
 
   // Function to capitalize first letter of each word
   const capitalizeFirstLetter = (str: string) => {
@@ -42,7 +44,8 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
         grape: grape.trim(),
         year: parseInt(year),
         origin: origin.trim(),
-        price: parseFloat(price)
+        price: parseFloat(price),
+        alcohol: alcohol ? parseFloat(alcohol) : undefined
       });
       setType('');
       setName('');
@@ -51,6 +54,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
       setYear('');
       setOrigin('');
       setPrice('');
+      setAlcohol('');
       onClose();
     }
   };
@@ -128,9 +132,9 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Anno</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Anno</label>
               <input
                 type="number"
                 value={year}
@@ -138,12 +142,12 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
                 min="1900"
                 max="2025"
                 placeholder="2020"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Prezzo (€)</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Prezzo (€)</label>
               <input
                 type="number"
                 value={price}
@@ -151,8 +155,21 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, on
                 min="0"
                 step="0.01"
                 placeholder="25.00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Grad. %</label>
+              <input
+                type="number"
+                value={alcohol}
+                onChange={(e) => setAlcohol(e.target.value)}
+                min="0"
+                max="50"
+                step="0.1"
+                placeholder="13.5"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
               />
             </div>
           </div>

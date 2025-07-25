@@ -33,6 +33,7 @@ export const wines = pgTable("wines", {
   year: integer("year").notNull(),
   origin: text("origin").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  alcohol: decimal("alcohol", { precision: 4, scale: 1 }), // Gradazione alcolica opzionale
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
