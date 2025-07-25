@@ -89,7 +89,7 @@ export default function EventDetailsScreen({
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-[hsl(340,60%,45%)]">{event.name}</h2>
+              <h2 className="text-2xl font-bold text-[hsl(340,70%,35%)]">{event.name}</h2>
               <p className="text-gray-600">{event.date} - Modalità {event.mode}</p>
             </div>
             <div className="flex items-center space-x-2">
@@ -102,7 +102,7 @@ export default function EventDetailsScreen({
             {wines.filter(wine => wine.userId === currentUser.id).length === 0 ? (
               <button
                 onClick={onShowWineRegistrationModal}
-                className="w-full bg-[hsl(270,50%,55%)] hover:bg-[hsl(340,60%,45%)] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
+                className="w-full bg-[hsl(0,60%,40%)] hover:bg-[hsl(340,70%,35%)] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
               >
                 <Plus className="w-5 h-5" />
                 <span>REGISTRA IL TUO VINO</span>
@@ -113,7 +113,7 @@ export default function EventDetailsScreen({
                 disabled={!votingIsActive}
                 className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
                   votingIsActive 
-                    ? 'bg-gradient-to-r from-[hsl(340,60%,45%)] to-[hsl(270,50%,55%)] hover:from-[hsl(340,70%,35%)] hover:to-[hsl(270,60%,45%)] text-white shadow-lg hover:scale-105' 
+                    ? 'bg-gradient-to-r from-[hsl(340,70%,35%)] to-[hsl(0,60%,40%)] hover:from-[hsl(340,80%,30%)] hover:to-[hsl(0,70%,35%)] text-white shadow-lg hover:scale-105' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
                 }`}
               >
