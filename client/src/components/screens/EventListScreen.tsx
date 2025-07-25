@@ -75,18 +75,16 @@ export default function EventListScreen({
               <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
 
 
-                {/* Event Name - Prima riga */}
+                {/* Event Name e Date - Una riga sola */}
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-[#300505] mb-2 leading-tight">
+                  <h3 className={`font-bold text-[#300505] mb-2 leading-tight break-words ${
+                    event.name.length > 20 ? 'text-lg' : 'text-xl'
+                  }`}>
                     {event.name}
                   </h3>
-                </div>
-
-                {/* Date - Seconda riga centrata ed evidenziata */}
-                <div className="text-center mb-6">
-                  <div className="inline-block bg-gradient-to-r from-[#300505] to-[#8d0303] px-6 py-3 rounded-2xl shadow-lg">
-                    <span className="text-xl font-bold text-white">{formatDate(event.date)}</span>
-                  </div>
+                  <p className="text-lg font-bold text-[#300505]">
+                    {formatDate(event.date)}
+                  </p>
                 </div>
 
 
