@@ -194,16 +194,10 @@ export default function SimpleVotingScreen({
                       </h3>
                       <div className="flex items-center text-gray-600 text-sm">
                         <span>{wine.type || 'Vino'}</span>
-                        {wine.year && (
+                        {wine.alcohol && (
                           <>
                             <span className="mx-2">•</span>
-                            <span>{wine.year}</span>
-                          </>
-                        )}
-                        {wine.price && (
-                          <>
-                            <span className="mx-2">•</span>
-                            <span>€{parseFloat(wine.price.toString()).toFixed(2)}</span>
+                            <span>{wine.alcohol}% vol</span>
                           </>
                         )}
                       </div>
