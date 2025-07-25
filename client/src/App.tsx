@@ -534,6 +534,11 @@ function App() {
     setShowWineRegistrationModal(true);
   };
 
+  const handleEditWine = (eventId: number) => {
+    setSelectedEventId(eventId);
+    setShowWineRegistrationModal(true);
+  };
+
   const handleParticipateEvent = (eventId: number) => {
     const event = events.find((e: WineEvent) => e.id === eventId);
     if (!event) return;
@@ -661,6 +666,7 @@ function App() {
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
+            onEditWine={handleEditWine}
           />
         );
       case 'adminEvents':

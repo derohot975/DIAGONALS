@@ -15,6 +15,7 @@ interface EventListScreenProps {
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
   onVoteForWine: (wineId: number, score: number) => void;
+  onEditWine: (eventId: number) => void;
 }
 
 export default function EventListScreen({ 
@@ -28,7 +29,8 @@ export default function EventListScreen({
   onGoBack,
   onRegisterWine,
   onParticipateEvent,
-  onVoteForWine
+  onVoteForWine,
+  onEditWine
 }: EventListScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -72,12 +74,12 @@ export default function EventListScreen({
             )}
             
             {activeEvents.map(event => (
-              <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
+              <div key={event.id} className="glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
 
 
                 {/* Event Name e Date - Una riga sola */}
-                <div className="text-center mb-6">
-                  <h3 className={`font-bold text-[#300505] mb-2 leading-tight break-words ${
+                <div className="text-center mb-4">
+                  <h3 className={`font-bold text-[#300505] mb-1 leading-tight break-words ${
                     event.name.length > 20 ? 'text-lg' : 'text-xl'
                   }`}>
                     {event.name}
@@ -99,27 +101,27 @@ export default function EventListScreen({
                       REGISTRA IL TUO VINO
                     </button>
                   ) : (
-                    <div className="space-y-4">
-                      {/* MESSAGGIO SUCCESSO SENZA CONTAINER */}
-                      <div className="text-center py-3">
+                    <div className="space-y-3 relative">
+                      {/* MESSAGGIO SUCCESSO RIDOTTO */}
+                      <div className="text-center py-2">
                         <div className="flex items-center justify-center space-x-2">
-                          <span className="text-2xl animate-bounce">⭐</span>
-                          <span className="text-gray-800 font-bold text-lg">REGISTRATO CON SUCCESSO!</span>
-                          <span className="text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
+                          <span className="text-xl animate-bounce">⭐</span>
+                          <span className="text-gray-800 font-bold text-base">REGISTRATO CON SUCCESSO!</span>
+                          <span className="text-xl animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
                         </div>
                       </div>
                       
                       {event.votingStatus === 'active' ? (
                         <button
                           onClick={() => onParticipateEvent(event.id)}
-                          className="w-full font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
+                          className="w-full font-bold py-3 px-6 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
                         >
                           PARTECIPA ALLA DIAGONALE
                         </button>
                       ) : (
                         <button
                           disabled
-                          className="w-full font-bold py-4 px-8 rounded-2xl text-lg bg-gray-400 text-gray-600 cursor-not-allowed"
+                          className="w-full font-bold py-3 px-6 rounded-2xl text-lg bg-gray-400 text-gray-600 cursor-not-allowed"
                         >
                           <div className="flex items-center justify-center space-x-2">
                             <span>👁️</span>
@@ -127,6 +129,16 @@ export default function EventListScreen({
                           </div>
                         </button>
                       )}
+                      
+                      {/* PULSANTE MODIFICA VINO - In basso a sinistra */}
+                      <div className="absolute -bottom-2 left-0">
+                        <button
+                          onClick={() => onEditWine(event.id)}
+                          className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg transition-colors shadow-sm"
+                        >
+                          ✏️ Modifica
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
