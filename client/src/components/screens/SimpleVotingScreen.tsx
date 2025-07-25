@@ -24,8 +24,10 @@ export default function SimpleVotingScreen({
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [activeVoteWineId, setActiveVoteWineId] = useState<number | null>(null);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [lastVoteTime, setLastVoteTime] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragStartScore, setDragStartScore] = useState(1);
+  const [tempScore, setTempScore] = useState<number | null>(null);
   const [showVotingModal, setShowVotingModal] = useState(false);
 
   // Fetch wines for this event
@@ -148,71 +150,37 @@ export default function SimpleVotingScreen({
                     touchAction: activeVoteWineId === wine.id ? 'none' : 'auto',
                     overscrollBehavior: activeVoteWineId === wine.id ? 'none' : 'auto'
                   }}
-                  onWheel={(e) => {
-                    // Only handle scroll if this wine is active for voting
-                    if (activeVoteWineId === wine.id) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      
-                      const now = Date.now();
-                      if (now - lastVoteTime > 50) { // Fast wheel response
-                        const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                        let newScore;
-                        
-                        if (e.deltaY < 0) {
-                          // Scroll up - increase score
-                          newScore = Math.min(currentScore + 0.5, 10);
-                        } else {
-                          // Scroll down - decrease score  
-                          newScore = Math.max(currentScore - 0.5, 1);
-                        }
-                        
-                        if (newScore !== currentScore) {
-                          voteMutation.mutate({ wineId: wine.id, score: newScore });
-                          setLastVoteTime(now);
-                        }
-                      }
-                    }
-                  }}
                   onTouchStart={(e) => {
                     if (activeVoteWineId === wine.id && e.touches.length === 1) {
                       e.preventDefault();
-                      setTouchStartY(e.touches[0].clientY);
+                      const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
+                      setIsDragging(true);
+                      setDragStartY(e.touches[0].clientY);
+                      setDragStartScore(currentScore);
+                      setTempScore(currentScore);
                     }
                   }}
                   onTouchMove={(e) => {
-                    if (activeVoteWineId === wine.id && e.touches.length === 1 && touchStartY !== null) {
+                    if (activeVoteWineId === wine.id && isDragging && e.touches.length === 1) {
                       e.preventDefault();
                       e.stopPropagation();
                       
                       const currentY = e.touches[0].clientY;
-                      const deltaY = touchStartY - currentY;
-                      const threshold = 8; // Very low threshold for instant response
-                      const now = Date.now();
+                      const deltaY = dragStartY - currentY;
                       
-                      // Throttle to prevent too many requests (max every 100ms)
-                      if (Math.abs(deltaY) > threshold && now - lastVoteTime > 100) {
-                        const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                        let newScore;
-                        
-                        if (deltaY > 0) {
-                          // Swipe up - increase score
-                          newScore = Math.min(currentScore + 0.5, 10);
-                        } else {
-                          // Swipe down - decrease score
-                          newScore = Math.max(currentScore - 0.5, 1);
-                        }
-                        
-                        if (newScore !== currentScore) {
-                          voteMutation.mutate({ wineId: wine.id, score: newScore });
-                          setTouchStartY(currentY); // Reset for continuous scrolling
-                          setLastVoteTime(now);
-                        }
-                      }
+                      // iPhone-style: 20px movement = 0.5 score change
+                      const scoreChange = Math.round((deltaY / 20) * 2) / 2; // Round to nearest 0.5
+                      const newScore = Math.max(1, Math.min(10, dragStartScore + scoreChange));
+                      
+                      setTempScore(newScore);
                     }
                   }}
                   onTouchEnd={() => {
-                    setTouchStartY(null);
+                    if (activeVoteWineId === wine.id && isDragging && tempScore !== null) {
+                      voteMutation.mutate({ wineId: wine.id, score: tempScore });
+                      setIsDragging(false);
+                      setTempScore(null);
+                    }
                   }}
                 >
                   
@@ -251,7 +219,7 @@ export default function SimpleVotingScreen({
                             : userVote 
                             ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
                             : 'bg-gray-400 text-white'
-                        }`}
+                        } ${isDragging && activeVoteWineId === wine.id ? 'scale-110' : ''}`}
                         onClick={() => {
                           if (activeVoteWineId === wine.id) {
                             // Deactivate if already active
@@ -265,57 +233,22 @@ export default function SimpleVotingScreen({
                             }
                           }
                         }}
-                        title={activeVoteWineId === wine.id ? "Attivo - usa frecce per modificare" : "Clicca per attivare"}
+                        title={activeVoteWineId === wine.id ? "Attivo - trascina per modificare" : "Clicca per attivare"}
                       >
-                        {userVote ? userVote.score : '1.0'}
+                        {activeVoteWineId === wine.id && tempScore !== null ? tempScore.toFixed(1) : (userVote ? userVote.score : '1.0')}
                       </div>
                       
-                      {/* Arrow Controls - Always Visible */}
-                      <div className="flex flex-col items-center space-y-1">
-                        <button
-                          onClick={() => {
-                            const now = Date.now();
-                            if (now - lastVoteTime > 50) {
-                              const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                              const newScore = Math.min(currentScore + 0.5, 10);
-                              voteMutation.mutate({ wineId: wine.id, score: newScore });
-                              setLastVoteTime(now);
-                            }
-                          }}
-                          disabled={userVote && parseFloat(userVote.score.toString()) >= 10 || voteMutation.isPending}
-                          className={`p-2 rounded transition-all ${
-                            activeVoteWineId === wine.id 
-                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50 active:bg-red-100' 
-                              : 'text-gray-400'
-                          } disabled:text-gray-300`}
-                        >
-                          <ChevronUp className="w-6 h-6" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            const now = Date.now();
-                            if (now - lastVoteTime > 50) {
-                              const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                              if (currentScore > 1) {
-                                const newScore = Math.max(currentScore - 0.5, 1);
-                                voteMutation.mutate({ wineId: wine.id, score: newScore });
-                                setLastVoteTime(now);
-                              } else if (!userVote) {
-                                voteMutation.mutate({ wineId: wine.id, score: 1 });
-                                setLastVoteTime(now);
-                              }
-                            }
-                          }}
-                          disabled={userVote && parseFloat(userVote.score.toString()) <= 1 || voteMutation.isPending}
-                          className={`p-2 rounded transition-all ${
-                            activeVoteWineId === wine.id 
-                              ? 'text-[#8d0303] hover:text-[#300505] hover:bg-red-50 active:bg-red-100' 
-                              : 'text-gray-400'
-                          } disabled:text-gray-300`}
-                        >
-                          <ChevronDown className="w-6 h-6" />
-                        </button>
-                      </div>
+                      {/* Drag Indicator - Only show when active */}
+                      {activeVoteWineId === wine.id && (
+                        <div className="flex flex-col items-center justify-center px-3">
+                          <div className="text-[#8d0303] text-xs opacity-60">
+                            ⇅
+                          </div>
+                          <div className="text-[#8d0303] text-xs font-medium">
+                            DRAG
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                   </div>
@@ -324,7 +257,7 @@ export default function SimpleVotingScreen({
                   {activeVoteWineId === wine.id && (
                     <div className="mt-2 text-center">
                       <p className="text-[#8d0303] text-xs font-medium animate-pulse">
-                        ⇅ Swipe verticale o usa frecce (1.0 - 10.0)
+                        📱 Trascina il badge verticalmente come la sveglia iPhone
                       </p>
                     </div>
                   )}
