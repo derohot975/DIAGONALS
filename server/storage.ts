@@ -1,7 +1,7 @@
 import { User, InsertUser, WineEvent, InsertWineEvent, Wine, InsertWine, Vote, InsertVote } from "@shared/schema";
 import { users, wineEvents, wines, votes } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -121,7 +121,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWineEvents(): Promise<WineEvent[]> {
-    return await db.select().from(wineEvents);
+    return await db.select().from(wineEvents).orderBy(wineEvents.id);
   }
 
   async updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined> {
