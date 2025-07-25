@@ -41,7 +41,7 @@ export default function EventListScreen({
     return wines.some(wine => wine.eventId === eventId && wine.userId === currentUser.id);
   };
 
-  const activeEvents = events.filter(event => event.status === 'active');
+  const activeEvents = events.filter(event => event.status === 'registration' || event.status === 'active');
   const completedEvents = events.filter(event => event.status === 'completed');
 
   return (
