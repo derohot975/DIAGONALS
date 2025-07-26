@@ -38,6 +38,9 @@ Preferred communication style: Simple, everyday language.
 - **Navigation Standardization**: All back arrow and home buttons use consistent circular blue style
 - **Fixed Bottom Positioning**: All navigation buttons positioned at bottom of pages for better UX
 - **Clean Interface**: Removed redundant elements like home button from event pages
+- **Splash Screen Enhancement**: Logo glow animation with subtle pulsing effect (26 Luglio 2025)
+- **Report Optimization**: Removed participant rankings and summary stats, showing only wine rankings (26 Luglio 2025)
+- **Historic Events Styling**: "STORICO EVENTI" centered in white, bordeaux background boxes with clean layout
 
 ### Home Page Optimization (18 Luglio 2025 - 14:55)
 - **Icona Admin**: Cambiata da Settings a Shield (scudo) senza container
