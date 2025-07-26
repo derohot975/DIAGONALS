@@ -44,18 +44,28 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
         )}
 
         {/* Area scrollabile per i pulsanti utenti */}
-        <div className="flex-1 overflow-y-auto mb-2 min-h-0">
+        <div className="flex-1 overflow-y-auto mb-2 min-h-0 overscroll-contain scroll-container">
           {regularUsers.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
               Nessun iscritto registrato. Aggiungi il primo utente per iniziare!
             </p>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 px-1" style={{
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
+              perspective: '1000px'
+            }}>
               {regularUsers.map(user => (
                 <button
                   key={user.id}
                   onClick={() => onUserSelect(user)}
-                  className="w-[70%] mx-auto block p-4 rounded-xl font-medium text-center wine-card-hover transition-all glass-effect hover:bg-white/80 text-[#300505] border border-white/30 shadow-lg hover:shadow-xl"
+                  className="w-[70%] mx-auto block p-4 rounded-xl font-medium text-center wine-card-hover transition-all glass-effect hover:bg-white/80 text-[#300505] border border-white/30 shadow-lg hover:shadow-xl hardware-accelerated"
+                  style={{
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    willChange: 'auto'
+                  }}
                 >
                   <span>{user.name}</span>
                 </button>
