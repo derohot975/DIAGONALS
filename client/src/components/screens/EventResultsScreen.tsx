@@ -156,15 +156,25 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                         {result?.votes && result.votes.length > 0 && expandedWines.has(result.id) && (
                           <div className="bg-gray-50 rounded-lg p-3 animate-in slide-in-from-top-2 duration-200">
                             <div className="flex flex-wrap gap-2">
-                              {result.votes.map(vote => (
-                                <span 
-                                  key={vote.userId} 
-                                  className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border shadow-sm"
-                                >
-                                  <span className="font-medium">{vote.userName}:</span>
-                                  <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
-                                </span>
-                              ))}
+                              {result.votes.map(vote => {
+                                // Mostra il nome solo se è il proprietario del vino
+                                const isOwner = vote.userId === result.userId;
+                                return (
+                                  <span 
+                                    key={vote.userId} 
+                                    className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border shadow-sm"
+                                  >
+                                    {isOwner ? (
+                                      <>
+                                        <span className="font-medium">{vote.userName}:</span>
+                                        <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
+                                      </>
+                                    ) : (
+                                      <span className="text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
+                                    )}
+                                  </span>
+                                );
+                              })}
                             </div>
                           </div>
                         )}
