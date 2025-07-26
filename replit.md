@@ -133,6 +133,15 @@ Preferred communication style: Simple, everyday language.
 - **Visibilità Perfetta**: Utente vede chiaramente il voto durante modifiche senza interferenze
 - **Colori App**: Mantenuta palette bordeaux/rosso invece dei colori di riferimento
 
+### Report Risultati Completo - COMPLETATO ✅ (26 Luglio 2025 - 12:15)
+**Sistema Report Utenti Allineato con Admin**:
+- **Backend Aggiornato**: Route /api/events/:id/results ora include dettagli voti individuali
+- **Tipo WineResultDetailed**: Frontend usa tipo completo con array votes per ogni vino
+- **Interfaccia Unificata**: Report utenti identico al report admin per completezza
+- **Layout Semplificato**: Rimosso box statistiche giallo e elementi ridondanti
+- **Informazioni Essenziali**: Solo classifica, punteggi e voti individuali visualizzati
+- **Design Pulito**: Nascosti prezzo e contatore voti per focus su classifica pura
+
 ### Controllo Accesso Unico - IMPLEMENTATO ✅
 1. **Database Schema**: Campi sessionId e lastActivity aggiunti
 2. **Backend API**: Route login, logout e heartbeat implementate

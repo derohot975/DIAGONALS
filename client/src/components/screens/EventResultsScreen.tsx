@@ -80,33 +80,10 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
-          {/* Header con statistiche */}
-          <div className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white p-6 rounded-xl mb-6">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold mb-2">Classifica Finale</h2>
-              <p className="text-amber-100 text-lg">{event.name}</p>
-              <p className="text-amber-100">{event.date}</p>
-            </div>
-            
-            {/* Statistiche generali */}
-            <div className="grid grid-cols-4 gap-4 mt-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold">{totalParticipants}</div>
-                <div className="text-sm text-amber-100">Partecipanti</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{totalWines}</div>
-                <div className="text-sm text-amber-100">Vini</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{totalVotes}</div>
-                <div className="text-sm text-amber-100">Voti Totali</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{averageScore.toFixed(1)}</div>
-                <div className="text-sm text-amber-100">Media Generale</div>
-              </div>
-            </div>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Classifica Finale</h2>
+            <p className="text-gray-600 text-lg">{event.name}</p>
+            <p className="text-gray-600">{event.date}</p>
           </div>
           
           {results.length === 0 ? (
@@ -133,26 +110,15 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                           <h3 className="font-semibold text-lg text-gray-800">{result?.name || 'Vino senza nome'}</h3>
                           {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="bg-[hsl(43,96%,56%)] text-white px-2 py-1 rounded-full text-xs">
-                            {formatPrice(result?.price || '0')}
-                          </span>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
-                            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
-                          </div>
+                        <div className="flex items-center space-x-1">
+                          <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
+                          <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <p className="text-gray-600 text-sm">
                           Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
                         </p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center space-x-1">
-                            <Users className="w-4 h-4" />
-                            <span>{result?.totalVotes || 0} voti</span>
-                          </span>
-                        </div>
                         
                         {/* Dettagli voti individuali */}
                         {result?.votes && result.votes.length > 0 && (
