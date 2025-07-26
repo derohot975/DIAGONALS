@@ -191,7 +191,7 @@ export default function AdminEventManagementScreen({
                 <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-6 border border-[#8d0303]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-xs text-white break-words leading-tight">{event.name}</h4>
+                      <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
                       <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center">
