@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft } from 'lucide-react';
+import { Calendar, ArrowLeft, BarChart3 } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -164,9 +164,11 @@ export default function EventListScreen({
                     <div className="flex items-center">
                       <button
                         onClick={() => onShowEventResults(event.id)}
-                        className="bg-[hsl(43,96%,56%)] hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                        className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                        title="Visualizza Report"
                       >
-                        Risultati
+                        <BarChart3 className="w-4 h-4 inline mr-1" />
+                        Report
                       </button>
                     </div>
                   </div>
