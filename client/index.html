@@ -31,12 +31,6 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Registra Service Worker per PWA
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js?v=4')
-          .catch(err => console.log('SW registration failed'));
-      }
-    </script>
+
   </body>
 </html>
