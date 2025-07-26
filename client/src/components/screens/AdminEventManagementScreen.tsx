@@ -188,16 +188,13 @@ export default function AdminEventManagementScreen({
               </h3>
               
               {completedEvents.map(event => (
-                <div key={event.id} className="glass-effect rounded-2xl shadow-xl p-6 border border-gray-200 opacity-80">
+                <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-6 border border-[#8d0303]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-lg text-gray-700">{event.name}</h4>
-                      <p className="text-sm text-gray-600">{formatDate(event.date)}</p>
+                      <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
+                      <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                        COMPLETATO
-                      </span>
                       <button
                         onClick={() => onViewReport(event.id)}
                         className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
