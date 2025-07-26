@@ -15,12 +15,15 @@ interface AdminScreenProps {
 }
 
 export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
-  const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(true);
+  const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('diagonale_unique_session_enabled');
     if (saved !== null) {
       setUniqueSessionEnabled(saved === 'true');
+    } else {
+      // Se non esiste, imposta esplicitamente a false
+      localStorage.setItem('diagonale_unique_session_enabled', 'false');
     }
   }, []);
 

@@ -419,8 +419,8 @@ function App() {
   // Session management mutations
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
-      // Get unique session setting from localStorage
-      const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') !== 'false';
+      // Get unique session setting from localStorage (default: false)
+      const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') === 'true';
       
       const response = await fetch(`/api/users/${userId}/login`, {
         method: 'POST',
