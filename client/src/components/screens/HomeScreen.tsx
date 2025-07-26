@@ -50,7 +50,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
               Nessun iscritto registrato. Aggiungi il primo utente per iniziare!
             </p>
           ) : (
-            <div className="space-y-2">
+            <div className="flex flex-col gap-3">
               {regularUsers.map(user => (
                 <button
                   key={user.id}
@@ -65,7 +65,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
         </div>
 
         {/* Admin Button fisso in basso */}
-        <div className="flex justify-center flex-shrink-0 pt-4 pb-2">
+        <div className="flex justify-center flex-shrink-0 pt-4 mb-4">
           <button
             onClick={onShowAdmin}
             className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
