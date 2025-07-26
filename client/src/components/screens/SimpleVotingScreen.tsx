@@ -70,7 +70,7 @@ export default function SimpleVotingScreen({
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Vote error:', errorData);
+        // Vote error handled
         throw new Error(errorData.message || 'Failed to vote');
       }
       
@@ -80,7 +80,7 @@ export default function SimpleVotingScreen({
       queryClient.invalidateQueries({ queryKey: ['/api/votes', event.id] });
     },
     onError: (error) => {
-      console.error('Vote mutation error:', error);
+      // Vote mutation error handled
       toast({
         title: "Errore nel salvare il voto",
         variant: "destructive"

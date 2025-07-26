@@ -2,18 +2,20 @@ import { Calendar, ArrowLeft, BarChart3 } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
+import { User, WineEvent, Wine, Vote } from '@shared/schema';
+
 interface EventListScreenProps {
-  events: any[];
-  users: any[];
-  currentUser: any;
-  wines: any[];
-  votes: any[];
+  events: WineEvent[];
+  users: User[];
+  currentUser: User | null;
+  wines: Wine[];
+  votes: Vote[];
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
   onGoBack: () => void;
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
-  onVoteForWine: (voteData: any) => void;
+  onVoteForWine: (wineId: number, score: number, hasLode: boolean) => void;
   onEditWine: (eventId: number) => void;
 }
 

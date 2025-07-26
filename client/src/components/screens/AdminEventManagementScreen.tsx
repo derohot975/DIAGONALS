@@ -1,5 +1,5 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine, BarChart3, Settings, CheckCircle, Home } from 'lucide-react';
-import { WineEvent, User } from '@shared/schema';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine as WineIcon, BarChart3, Settings, CheckCircle, Home } from 'lucide-react';
+import { WineEvent, User, Wine } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
@@ -7,7 +7,7 @@ import diagoLogo from '@assets/diagologo.png';
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
   users: User[];
-  wines: any[];
+  wines: Wine[];
   onGoBack: () => void;
   onEditEvent: (event: WineEvent) => void;
   onDeleteEvent: (eventId: number) => void;

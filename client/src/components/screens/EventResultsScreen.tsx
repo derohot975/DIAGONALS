@@ -73,7 +73,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       }
     } catch (error) {
       // Fallback finale: mostra i risultati in un alert
-      console.error('Errore durante la condivisione:', error);
+      // Sharing error handled
       alert('Impossibile condividere. I risultati:\n\n' + shareData.text);
     }
   };

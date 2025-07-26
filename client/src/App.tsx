@@ -567,18 +567,18 @@ function App() {
     setEditingWine(null); // Reset editing state
   };
 
-  const handleVoteForWine = (voteData: { wineId: number; score: number }) => {
+  const handleVoteForWine = (wineId: number, score: number, hasLode: boolean = false) => {
     if (!currentUser) return;
     // Find event for this wine
-    const wine = wines.find(w => w.id === voteData.wineId);
+    const wine = wines.find(w => w.id === wineId);
     if (!wine) return;
     
     voteMutation.mutate({
       eventId: wine.eventId,
-      wineId: voteData.wineId,
+      wineId: wineId,
       userId: currentUser.id,
-      score: voteData.score,
-      hasLode: false, // Remove lode system for now
+      score: score,
+      hasLode: hasLode,
     });
   };
 
