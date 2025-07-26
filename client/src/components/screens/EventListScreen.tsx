@@ -155,7 +155,7 @@ export default function EventListScreen({
               </h2>
               
               {completedEvents.map(event => (
-                <div key={event.id} className="bg-[#300505] rounded-xl p-4 border-2 border-[#300505]">
+                <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303]">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
