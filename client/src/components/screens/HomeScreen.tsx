@@ -14,10 +14,10 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
   const regularUsers = users.filter(user => !user.isAdmin).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="flex-1 flex flex-col p-2 h-screen">
+    <div className="flex-1 flex flex-col p-2 h-screen mobile-safe-area">
       <div className="w-full max-w-md mx-auto animate-fade-in flex flex-col h-full">
         {/* Header fisso con logo */}
-        <div className="text-center mb-2 flex-shrink-0">
+        <div className="text-center mb-2 flex-shrink-0 mobile-header">
           <img 
             src={diagonaleLogo} 
             alt="DIAGONALE" 

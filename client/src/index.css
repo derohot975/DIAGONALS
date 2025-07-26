@@ -36,19 +36,34 @@
     border-color: hsl(var(--border));
   }
 
+  html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #300505;
+    overflow-x: hidden;
+  }
+
   body {
     @apply font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #300505 0%, #8d0303 100%) !important;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    /* Elimina spazi bianchi su mobile */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 
   #root {
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height per mobile */
     display: flex;
     flex-direction: column;
+    background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
   }
 
   /* Stabilizzazione scroll mobile */
@@ -72,6 +87,28 @@
     transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
     will-change: transform;
+  }
+  
+  /* Mobile: elimina barra bianca superiore */
+  @supports (padding: max(0px)) {
+    .mobile-safe-area {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+  
+  /* PWA: schermo intero su mobile */
+  @media (display-mode: standalone) {
+    body {
+      background-attachment: fixed;
+    }
+  }
+  
+  /* iPhone notch support */
+  @supports (padding: env(safe-area-inset-top)) {
+    .mobile-header {
+      padding-top: calc(env(safe-area-inset-top) + 1rem);
+    }
   }
 }
 
