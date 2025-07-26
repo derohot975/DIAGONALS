@@ -109,9 +109,13 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
             <>
               <div className="space-y-4">
                 {results.map((result, index) => (
-                  <div key={result.id} className={`bg-white rounded-xl p-4 border-2 wine-card-hover relative ${
-                    index === 0 ? 'border-[hsl(43,96%,56%)]/30' : 'border-gray-300'
-                  }`}>
+                  <div 
+                    key={result.id} 
+                    className={`bg-white rounded-xl p-4 border-2 wine-card-hover relative cursor-pointer transition-all duration-200 ${
+                      index === 0 ? 'border-[hsl(43,96%,56%)]/30' : 'border-gray-300'
+                    } ${expandedWines.has(result.id) ? 'shadow-lg' : 'hover:shadow-md'}`}
+                    onClick={() => toggleExpandWine(result.id)}
+                  >
                     <div className={`absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                       index === 0 ? 'bg-[hsl(43,96%,56%)] text-white' : 'bg-gray-400 text-white'
                     }`}>
@@ -123,56 +127,82 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                           <h3 className="font-semibold text-lg text-gray-800">{result?.name || 'Vino senza nome'}</h3>
                           {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
-                          <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <p className="text-gray-600 text-sm">
-                            Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
-                          </p>
-                          
-                          {/* Pulsante per espandere/collassare voti individuali */}
-                          {result?.votes && result.votes.length > 0 && (
-                            <button
-                              onClick={() => toggleExpandWine(result.id)}
-                              className="flex items-center space-x-1 text-xs text-[hsl(43,96%,56%)] hover:text-[hsl(43,96%,46%)] transition-colors py-1 px-2 rounded"
-                            >
-                              <span>Voti individuali</span>
-                              {expandedWines.has(result.id) ? (
-                                <ChevronUp className="w-3 h-3" />
-                              ) : (
-                                <ChevronDown className="w-3 h-3" />
-                              )}
-                            </button>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
+                            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
+                          </div>
+                          {expandedWines.has(result.id) ? (
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
                           )}
                         </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <p className="text-gray-600 text-sm">
+                          Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
+                        </p>
                         
-                        {/* Dettagli voti individuali - Collassabile */}
-                        {result?.votes && result.votes.length > 0 && expandedWines.has(result.id) && (
-                          <div className="bg-gray-50 rounded-lg p-3 animate-in slide-in-from-top-2 duration-200">
-                            <div className="flex flex-wrap gap-2">
-                              {result.votes.map(vote => {
-                                // Mostra il nome solo se è il proprietario del vino
-                                const isOwner = vote.userId === result.userId;
-                                return (
-                                  <span 
-                                    key={vote.userId} 
-                                    className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border shadow-sm"
-                                  >
-                                    {isOwner ? (
-                                      <>
-                                        <span className="font-medium">{vote.userName}:</span>
-                                        <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
-                                      </>
-                                    ) : (
-                                      <span className="text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
-                                    )}
-                                  </span>
-                                );
-                              })}
+                        {/* Informazioni complete del vino - Collassabile */}
+                        {expandedWines.has(result.id) && (
+                          <div className="bg-gray-50 rounded-lg p-4 animate-in slide-in-from-top-2 duration-200 space-y-3">
+                            {/* Dettagli del vino */}
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <span className="font-medium text-gray-700">Tipo:</span>
+                                <span className="ml-2 text-gray-600">{result.type || 'N/A'}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-gray-700">Produttore:</span>
+                                <span className="ml-2 text-gray-600">{result.producer || 'N/A'}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-gray-700">Vitigno:</span>
+                                <span className="ml-2 text-gray-600">{result.grape || 'N/A'}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-gray-700">Anno:</span>
+                                <span className="ml-2 text-gray-600">{result.year || 'N/A'}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-gray-700">Origine:</span>
+                                <span className="ml-2 text-gray-600">{result.origin || 'N/A'}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-gray-700">Prezzo:</span>
+                                <span className="ml-2 text-gray-600">€{result.price || 'N/A'}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Separatore */}
+                            <hr className="border-gray-200" />
+                            
+                            {/* Voti individuali */}
+                            <div>
+                              <p className="font-medium text-gray-700 mb-2">Voti individuali:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {result?.votes && result.votes.map(vote => {
+                                  // Mostra il nome solo se è il proprietario del vino
+                                  const isOwner = vote.userId === result.userId;
+                                  return (
+                                    <span 
+                                      key={vote.userId} 
+                                      className="inline-flex items-center bg-white px-3 py-1 rounded-full text-sm border shadow-sm"
+                                    >
+                                      {isOwner ? (
+                                        <>
+                                          <span className="font-medium">{vote.userName}:</span>
+                                          <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
+                                        </>
+                                      ) : (
+                                        <span className="text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
+                                      )}
+                                    </span>
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
                         )}
