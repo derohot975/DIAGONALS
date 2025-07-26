@@ -97,8 +97,6 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Classifica Finale</h2>
-            <p className="text-gray-600 text-lg">{event.name}</p>
-            <p className="text-gray-600">{event.date}</p>
           </div>
           
           {results.length === 0 ? (
