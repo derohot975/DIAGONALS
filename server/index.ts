@@ -49,8 +49,20 @@ app.use((req, res, next) => {
       setHeaders: (res, filePath) => {
         if (filePath.endsWith('.png')) {
           res.setHeader('Content-Type', 'image/png');
+          // Force revalidation for PWA icons
+          if (filePath.includes('pwa-icon') || filePath.includes('apple-touch-icon')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+          }
         } else if (filePath.endsWith('.json')) {
           res.setHeader('Content-Type', 'application/json');
+          // Force revalidation for manifest.json
+          if (filePath.includes('manifest.json')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+          }
         }
       }
     }));
