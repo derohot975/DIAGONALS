@@ -1,12 +1,12 @@
 // Service Worker per DIAGONALE PWA
-const CACHE_NAME = 'diagonale-v9';
-const ICON_CACHE = 'diagonale-icons-v9';
+const CACHE_NAME = 'diagonale-v10';
+const ICON_CACHE = 'diagonale-icons-v10';
 
 // Cache delle icone PWA
 const ICON_URLS = [
-  '/pwa-icon-1753571932.png',
+  '/pwa-icon-1753573265.png?v=10',
   '/apple-touch-icon.png',
-  '/manifest.json?v=9'
+  '/manifest.json?v=10'
 ];
 
 // Installa service worker e pre-carica icone

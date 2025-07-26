@@ -2,7 +2,7 @@
   "name": "DIAGONALE - Wine Tasting App",
   "short_name": "DIAGONALE",
   "description": "App per degustazioni di vini alla cieca",
-  "start_url": "/?source=pwa&v=9",
+  "start_url": "/?source=pwa&v=10",
   "display": "standalone",
   "background_color": "#8d0303",
   "theme_color": "#8d0303",
@@ -12,31 +12,31 @@
   "lang": "it",
   "icons": [
     {
-      "src": "/pwa-icon-1753571932.png?v=9",
+      "src": "/pwa-icon-1753573265.png?v=10",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa-icon-1753571932.png?v=9",
+      "src": "/pwa-icon-1753573265.png?v=10",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa-icon-1753571932.png?v=9",
+      "src": "/pwa-icon-1753573265.png?v=10",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa-icon-1753571932.png?v=9",
+      "src": "/pwa-icon-1753573265.png?v=10",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa-icon-1753571932.png?v=9",
+      "src": "/pwa-icon-1753573265.png?v=10",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
