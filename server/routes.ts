@@ -589,15 +589,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const results = wines.map(wine => {
         const wineVotes = votes.filter(vote => vote.wineId === wine.id);
         const totalScore = wineVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+        const averageScore = wineVotes.length > 0 ? totalScore / wineVotes.length : 0;
         const contributor = users.find(u => u.id === wine.userId);
+        
+        // Includi i dettagli dei voti individuali
+        const voteDetails = wineVotes.map(vote => {
+          const voter = users.find(u => u.id === vote.userId);
+          return {
+            userId: vote.userId,
+            userName: voter?.name || "Unknown",
+            score: parseFloat(vote.score.toString())
+          };
+        });
         
         return {
           ...wine,
-          totalScore: Math.round(totalScore * 10) / 10, // Somma totale invece di media
+          averageScore: Math.round(averageScore * 10) / 10,
           totalVotes: wineVotes.length,
-          contributor: contributor?.name || "Unknown"
+          contributor: contributor?.name || "Unknown",
+          votes: voteDetails // Aggiungi i dettagli dei voti
         };
-      }).sort((a, b) => b.totalScore - a.totalScore);
+      }).sort((a, b) => b.averageScore - a.averageScore);
       
       res.json(results);
     } catch (error) {

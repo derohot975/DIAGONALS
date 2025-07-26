@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { User, WineEvent, Wine, Vote, WineResult, EventReportData } from '@shared/schema';
+import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 import { apiRequest } from './lib/queryClient';
 
 // Components
@@ -98,7 +98,7 @@ function App() {
     enabled: !!selectedEventId,
   });
 
-  const { data: results = [] } = useQuery<WineResult[]>({
+  const { data: results = [] } = useQuery<WineResultDetailed[]>({
     queryKey: ['/api/events/' + selectedEventId + '/results'],
     enabled: !!selectedEventId && currentScreen === 'eventResults',
   });
@@ -564,7 +564,7 @@ function App() {
           year: wineData.year,
           origin: wineData.origin,
           price: wineData.price.toString(),
-          alcohol: wineData.alcohol?.toString() || "0",
+          alcohol: wineData.alcohol || 0,
         }
       });
     } else {
@@ -585,17 +585,17 @@ function App() {
     setEditingWine(null); // Reset editing state
   };
 
-  const handleVoteForWine = (wineId: number, score: number) => {
+  const handleVoteForWine = (voteData: { wineId: number; score: number }) => {
     if (!currentUser) return;
     // Find event for this wine
-    const wine = wines.find(w => w.id === wineId);
+    const wine = wines.find(w => w.id === voteData.wineId);
     if (!wine) return;
     
     voteMutation.mutate({
       eventId: wine.eventId,
-      wineId,
+      wineId: voteData.wineId,
       userId: currentUser.id,
-      score,
+      score: voteData.score,
       hasLode: false, // Remove lode system for now
     });
   };

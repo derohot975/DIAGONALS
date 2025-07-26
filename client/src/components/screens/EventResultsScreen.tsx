@@ -1,17 +1,25 @@
 import { Download, Crown, Star, Users, ArrowLeft, Home } from 'lucide-react';
-import { WineEvent, WineResult } from '@shared/schema';
+import { WineEvent, WineResultDetailed } from '@shared/schema';
 import { formatPrice } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventResultsScreenProps {
   event: WineEvent | null;
-  results: WineResult[];
+  results: WineResultDetailed[];
   onGoBack?: () => void;
   onGoHome?: () => void;
 }
 
 export default function EventResultsScreen({ event, results, onGoBack, onGoHome }: EventResultsScreenProps) {
   if (!event) return null;
+
+  // Calcola le statistiche generali
+  const totalParticipants = results.length > 0 ? Math.max(...results.map(r => r?.totalVotes || 0)) : 0;
+  const totalWines = results.length;
+  const totalVotes = results.reduce((sum, result) => sum + (result?.totalVotes || 0), 0);
+  const averageScore = results.length > 0 
+    ? results.reduce((sum, result) => sum + (result?.averageScore || 0), 0) / results.length 
+    : 0;
 
   const handleExport = async () => {
     // Formatta i risultati per la condivisione
@@ -72,10 +80,33 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Classifica Finale</h2>
-            <p className="text-gray-600 text-lg">{event.name}</p>
-            <p className="text-gray-600">{event.date}</p>
+          {/* Header con statistiche */}
+          <div className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white p-6 rounded-xl mb-6">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold mb-2">Classifica Finale</h2>
+              <p className="text-amber-100 text-lg">{event.name}</p>
+              <p className="text-amber-100">{event.date}</p>
+            </div>
+            
+            {/* Statistiche generali */}
+            <div className="grid grid-cols-4 gap-4 mt-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">{totalParticipants}</div>
+                <div className="text-sm text-amber-100">Partecipanti</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{totalWines}</div>
+                <div className="text-sm text-amber-100">Vini</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{totalVotes}</div>
+                <div className="text-sm text-amber-100">Voti Totali</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{averageScore.toFixed(1)}</div>
+                <div className="text-sm text-amber-100">Media Generale</div>
+              </div>
+            </div>
           </div>
           
           {results.length === 0 ? (
@@ -112,7 +143,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="space-y-2">
                         <p className="text-gray-600 text-sm">
                           Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
                         </p>
@@ -122,6 +153,24 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                             <span>{result?.totalVotes || 0} voti</span>
                           </span>
                         </div>
+                        
+                        {/* Dettagli voti individuali */}
+                        {result?.votes && result.votes.length > 0 && (
+                          <div className="bg-gray-50 rounded-lg p-3 mt-2">
+                            <p className="text-xs text-gray-500 mb-1">Voti individuali:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {result.votes.map(vote => (
+                                <span 
+                                  key={vote.userId} 
+                                  className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border"
+                                >
+                                  <span className="font-medium">{vote.userName}:</span>
+                                  <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
