@@ -25,31 +25,11 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
             <X className="w-5 h-5" />
           </button>
           
-          <div className="flex items-center space-x-3 mb-2">
+          <div className="flex items-center space-x-3">
             <Trophy className="w-8 h-8" />
             <div>
               <h2 className="text-2xl font-bold">{eventInfo.name}</h2>
               <p className="text-amber-100">{formatDate(eventInfo.date)} • Report Finale</p>
-            </div>
-          </div>
-          
-          {/* Summary Stats */}
-          <div className="grid grid-cols-4 gap-4 mt-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{summary.totalParticipants}</div>
-              <div className="text-sm text-amber-100">Partecipanti</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{summary.totalWines}</div>
-              <div className="text-sm text-amber-100">Vini</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{summary.totalVotes}</div>
-              <div className="text-sm text-amber-100">Voti Totali</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{summary.averageScore.toFixed(1)}</div>
-              <div className="text-sm text-amber-100">Media Generale</div>
             </div>
           </div>
         </div>
