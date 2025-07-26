@@ -27,7 +27,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       </div>
       
       {/* Firma in fondo */}
-      <div className="pb-8 text-center">
+      <div className="pb-16 text-center">
         <p className="text-white text-sm opacity-70">By DERO</p>
       </div>
     </div>
