@@ -6,6 +6,7 @@ import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from
 import { apiRequest } from './lib/queryClient';
 
 // Components
+import SplashScreen from './components/screens/SplashScreen';
 import HomeScreen from './components/screens/HomeScreen';
 import AdminScreen from './components/screens/AdminScreen';
 import EventListScreen from './components/screens/EventListScreen';
@@ -26,6 +27,7 @@ import InstallPrompt from './components/InstallPrompt';
 type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [currentUser, setCurrentUser] = useLocalStorage<User | null>('diagonale_current_user', null);
   const [sessionId, setSessionId] = useLocalStorage<string | null>('diagonale_session_id', null);
@@ -842,6 +844,11 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // Show splash screen for 3 seconds on app start
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
   return (
