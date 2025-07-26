@@ -1,9 +1,10 @@
-v1.4.0 - PWA Icons Fixed (26 July 2025)
+v1.5.0 - DIAGONALE Icon Updated (26 July 2025 - 22:07)
 
-Build fixes:
-- PWA icons properly included in production build
-- Simplified HTML meta tags
-- Post-build script ensures all PWA files are deployed
-- Icons use original appdiago.png design without modifications
+Icon updates:
+- New appdiago.png with "DIAGONALE" text and bordeaux background
+- All PWA icons regenerated with new design (96x96, 144x144, 192x192, 512x512px)
+- Apple touch icon updated for iOS support
+- Manifest cache-busting updated to v=5
+- Build includes all updated PWA files
 
 Deployment ready: ✅
