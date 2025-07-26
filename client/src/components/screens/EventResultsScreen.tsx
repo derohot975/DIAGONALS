@@ -147,9 +147,9 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                         
                         {/* Informazioni complete del vino - Collassabile */}
                         {expandedWines.has(result.id) && (
-                          <div className="bg-gray-50 rounded-lg p-3 mt-3 animate-in slide-in-from-top-2 duration-200 space-y-4">
-                            {/* Dettagli del vino - Layout compatto */}
-                            <div className="space-y-2">
+                          <div className="bg-gray-50 rounded-lg p-2.5 mt-2 animate-in slide-in-from-top-2 duration-200 space-y-2.5">
+                            {/* Dettagli del vino - Layout ultra-compatto */}
+                            <div className="space-y-1">
                               <div className="flex justify-between items-center">
                                 <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Tipo</span>
                                 <span className="text-sm font-medium text-gray-800">{result.type || 'N/A'}</span>
@@ -179,17 +179,17 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                             {/* Separatore sottile */}
                             <div className="h-px bg-gray-200"></div>
                             
-                            {/* Voti individuali - Design compatto */}
+                            {/* Voti individuali - Design ultra-compatto */}
                             <div>
-                              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Voti individuali</p>
-                              <div className="flex flex-wrap gap-1.5">
+                              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Voti individuali</p>
+                              <div className="flex flex-wrap gap-1">
                                 {result?.votes && result.votes.map(vote => {
                                   // Mostra il nome solo se è il proprietario del vino
                                   const isOwner = vote.userId === result.userId;
                                   return (
                                     <span 
                                       key={vote.userId} 
-                                      className="inline-flex items-center bg-white px-2.5 py-1 rounded-full text-xs border border-gray-200 shadow-sm"
+                                      className="inline-flex items-center bg-white px-2 py-0.5 rounded-full text-xs border border-gray-200 shadow-sm"
                                     >
                                       {isOwner ? (
                                         <>
