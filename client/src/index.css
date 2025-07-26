@@ -128,6 +128,10 @@
     animation: fadeIn 0.5s ease-out;
   }
 
+  .logo-glow {
+    animation: logoGlow 2s ease-in-out infinite;
+  }
+
   .logo-filter {
     filter: none;
     transition: all 0.3s ease;
@@ -160,6 +164,18 @@
   to { 
     opacity: 1; 
     transform: translateY(0) scale(1); 
+  }
+}
+
+@keyframes logoGlow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.2));
+  }
+  100% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
   }
 }
 
