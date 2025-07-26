@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import diagonaleLogo from '@assets/appdiago_1753567545836.png';
 
 interface SplashScreenProps {
   onFinish: () => void;
@@ -18,7 +17,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#300505] to-[#8d0303]">
       <div className="animate-fade-in">
         <img 
-          src={diagonaleLogo} 
+          src="/diagologo.png" 
           alt="DIAGONALE" 
           className="w-48 h-auto mx-auto drop-shadow-2xl" 
         />
