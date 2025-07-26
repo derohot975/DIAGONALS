@@ -1,0 +1,9 @@
+v1.4.0 - PWA Icons Fixed (26 July 2025)
+
+Build fixes:
+- PWA icons properly included in production build
+- Simplified HTML meta tags
+- Post-build script ensures all PWA files are deployed
+- Icons use original appdiago.png design without modifications
+
+Deployment ready: ✅

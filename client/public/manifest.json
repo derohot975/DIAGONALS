@@ -1,0 +1,45 @@
+{
+  "name": "DIAGONALE - Wine Tasting App",
+  "short_name": "DIAGONALE",
+  "description": "App per degustazioni di vini alla cieca",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#8d0303",
+  "theme_color": "#8d0303",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["food"],
+  "lang": "it",
+  "icons": [
+    {
+      "src": "/icon-96x96.png?v=4",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144x144.png?v=4",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png?v=4",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png?v=4",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png?v=4",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
