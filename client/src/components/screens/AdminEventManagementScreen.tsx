@@ -182,7 +182,7 @@ export default function AdminEventManagementScreen({
           {/* Completed Events */}
           {completedEvents.length > 0 && (
             <div className="space-y-4 mt-8">
-              <h3 className="text-lg font-semibold text-white flex items-center">
+              <h3 className="text-lg font-semibold text-white flex items-center justify-center">
                 <Calendar className="w-5 h-5 mr-2" />
                 STORICO EVENTI
               </h3>
