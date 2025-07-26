@@ -55,7 +55,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
                 <button
                   key={user.id}
                   onClick={() => onUserSelect(user)}
-                  className="w-full block p-4 rounded-xl font-medium text-center wine-card-hover transition-all glass-effect hover:bg-white/80 text-[#300505] border border-white/30 shadow-lg hover:shadow-xl"
+                  className="w-[70%] mx-auto block p-4 rounded-xl font-medium text-center wine-card-hover transition-all glass-effect hover:bg-white/80 text-[#300505] border border-white/30 shadow-lg hover:shadow-xl"
                 >
                   <span>{user.name}</span>
                 </button>
