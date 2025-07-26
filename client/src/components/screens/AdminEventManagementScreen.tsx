@@ -182,9 +182,9 @@ export default function AdminEventManagementScreen({
           {/* Completed Events */}
           {completedEvents.length > 0 && (
             <div className="space-y-4 mt-8">
-              <h3 className="text-lg font-semibold text-gray-600 flex items-center">
+              <h3 className="text-lg font-semibold text-white flex items-center">
                 <Calendar className="w-5 h-5 mr-2" />
-                Eventi Completati ({completedEvents.length})
+                STORICO EVENTI
               </h3>
               
               {completedEvents.map(event => (
