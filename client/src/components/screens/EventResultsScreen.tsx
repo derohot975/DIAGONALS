@@ -1,4 +1,5 @@
-import { Download, Crown, Star, Users, ArrowLeft, Home } from 'lucide-react';
+import { useState } from 'react';
+import { Download, Crown, Star, Users, ArrowLeft, Home, ChevronDown, ChevronUp } from 'lucide-react';
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import { formatPrice } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
@@ -12,6 +13,9 @@ interface EventResultsScreenProps {
 
 export default function EventResultsScreen({ event, results, onGoBack, onGoHome }: EventResultsScreenProps) {
   if (!event) return null;
+  
+  // State per gestire l'espansione dei voti individuali
+  const [expandedWines, setExpandedWines] = useState<Set<number>>(new Set());
 
   // Calcola le statistiche generali
   const totalParticipants = results.length > 0 ? Math.max(...results.map(r => r?.totalVotes || 0)) : 0;
@@ -20,6 +24,17 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
   const averageScore = results.length > 0 
     ? results.reduce((sum, result) => sum + (result?.averageScore || 0), 0) / results.length 
     : 0;
+    
+  // Funzione per toggle dell'espansione
+  const toggleExpandWine = (wineId: number) => {
+    const newExpanded = new Set(expandedWines);
+    if (newExpanded.has(wineId)) {
+      newExpanded.delete(wineId);
+    } else {
+      newExpanded.add(wineId);
+    }
+    setExpandedWines(newExpanded);
+  };
 
   const handleExport = async () => {
     // Formatta i risultati per la condivisione
@@ -116,19 +131,35 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <p className="text-gray-600 text-sm">
-                          Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-gray-600 text-sm">
+                            Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
+                          </p>
+                          
+                          {/* Pulsante per espandere/collassare voti individuali */}
+                          {result?.votes && result.votes.length > 0 && (
+                            <button
+                              onClick={() => toggleExpandWine(result.id)}
+                              className="flex items-center space-x-1 text-xs text-[hsl(43,96%,56%)] hover:text-[hsl(43,96%,46%)] transition-colors py-1 px-2 rounded"
+                            >
+                              <span>Voti individuali</span>
+                              {expandedWines.has(result.id) ? (
+                                <ChevronUp className="w-3 h-3" />
+                              ) : (
+                                <ChevronDown className="w-3 h-3" />
+                              )}
+                            </button>
+                          )}
+                        </div>
                         
-                        {/* Dettagli voti individuali */}
-                        {result?.votes && result.votes.length > 0 && (
-                          <div className="bg-gray-50 rounded-lg p-3 mt-2">
-                            <p className="text-xs text-gray-500 mb-1">Voti individuali:</p>
+                        {/* Dettagli voti individuali - Collassabile */}
+                        {result?.votes && result.votes.length > 0 && expandedWines.has(result.id) && (
+                          <div className="bg-gray-50 rounded-lg p-3 animate-in slide-in-from-top-2 duration-200">
                             <div className="flex flex-wrap gap-2">
                               {result.votes.map(vote => (
                                 <span 
                                   key={vote.userId} 
-                                  className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border"
+                                  className="inline-flex items-center bg-white px-2 py-1 rounded text-xs border shadow-sm"
                                 >
                                   <span className="font-medium">{vote.userName}:</span>
                                   <span className="ml-1 text-[hsl(43,96%,56%)] font-semibold">{vote.score}</span>
