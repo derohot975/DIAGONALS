@@ -56,7 +56,7 @@ export default function SimpleVotingScreen({
   // Vote mutation
   const voteMutation = useMutation({
     mutationFn: async ({ wineId, score }: { wineId: number; score: number }) => {
-      console.log('Sending vote data:', { eventId: event.id, wineId, userId: currentUser.id, score });
+      // Vote data submission
       const response = await fetch('/api/votes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

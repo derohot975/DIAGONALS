@@ -59,7 +59,7 @@ function App() {
     if (currentUser && users.length > 0) {
       const userExists = users.find(u => u.id === currentUser.id);
       if (!userExists) {
-        console.log('Current user no longer exists in database, clearing localStorage');
+        // User validation: clearing localStorage for non-existent user
         setCurrentUser(null);
         setSessionId(null);
         setCurrentScreen('home');
@@ -74,25 +74,14 @@ function App() {
 
   const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery<WineEvent[]>({
     queryKey: ['/api/events'],
-    queryFn: async () => {
-      console.log('Fetching events from API...');
-      const response = await fetch('/api/events');
-      const data = await response.json();
-      console.log('Fetched events:', data);
-      return data;
-    },
-    staleTime: 0, // Forza sempre reload
-    gcTime: 0, // Non usare cache (v5 syntax)
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ['/api/wines', currentUser?.id],
-    queryFn: () => fetch('/api/wines').then(res => res.json()),
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 0, // Forza sempre reload
+    queryKey: ['/api/wines'],
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+    refetchOnWindowFocus: false,
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({
@@ -150,28 +139,21 @@ function App() {
 
   const createEventMutation = useMutation({
     mutationFn: async (eventData: { name: string; date: string; mode: string; createdBy: number }) => {
-      console.log('Creating event with:', eventData);
       const response = await apiRequest('POST', '/api/events', eventData);
-      console.log('Response status:', response.status);
       if (!response.ok) {
         const errorData = await response.text();
-        console.error('Error response:', errorData);
         throw new Error(errorData);
       }
       return response.json();
     },
     onSuccess: async (data) => {
-      console.log('Event created successfully:', data);
-      // FORZA REFRESH IMMEDIATO degli eventi
-      await refetchEvents();
-      console.log('Events refetched after creation');
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({ 
         title: '✅ Evento creato con successo!', 
         description: `"${data.name}" è stato aggiunto alla lista eventi.`
       });
     },
-    onError: (error) => {
-      console.error('Event creation error:', error);
+    onError: () => {
       toast({ title: 'Errore nella creazione dell\'evento', variant: 'destructive' });
     },
   });
@@ -497,7 +479,7 @@ function App() {
             toast({ title: 'Sessione scaduta. Ricollegati.', variant: 'destructive' });
           }
         } catch (error) {
-          console.error('Heartbeat failed:', error);
+          // Heartbeat failed silently
         }
       }, 60000); // Every minute
     }
@@ -519,11 +501,9 @@ function App() {
 
   const handleCreateEvent = (name: string, date: string, mode: string) => {
     if (!currentUser) {
-      console.error('No current user found');
       toast({ title: 'Errore: nessun utente selezionato', variant: 'destructive' });
       return;
     }
-    console.log('Current user for event creation:', currentUser);
     createEventMutation.mutate({ name, date, mode, createdBy: currentUser.id });
   };
 
@@ -680,7 +660,6 @@ function App() {
         description: 'Gli utenti possono ora votare i vini.' 
       });
     } catch (error) {
-      console.error('Failed to activate voting:', error);
       toast({ 
         title: 'Errore', 
         description: 'Impossibile attivare le votazioni.', 
@@ -700,7 +679,6 @@ function App() {
         description: 'Gli utenti vedranno ora i risultati finali.' 
       });
     } catch (error) {
-      console.error('Failed to deactivate voting:', error);
       toast({ 
         title: 'Errore', 
         description: 'Impossibile completare le votazioni.', 

@@ -28,28 +28,19 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   // Fetch wines for this event
   const { data: wines = [] } = useQuery<Wine[]>({
     queryKey: ["/api/events", event.id, "wines"],
-    queryFn: async () => {
-      const response = await fetch(`/api/events/${event.id}/wines`);
-      return response.json();
-    }
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
   // Fetch existing votes
   const { data: existingVotes = [] } = useQuery<Vote[]>({
     queryKey: ["/api/votes", event.id],
-    queryFn: async () => {
-      const response = await fetch(`/api/votes?eventId=${event.id}`);
-      return response.json();
-    }
+    staleTime: 30 * 1000, // Cache for 30 seconds during voting
   });
 
   // Fetch users to get wine owners
   const { data: users = [] } = useQuery<User[]>({
     queryKey: ["/api/users"],
-    queryFn: async () => {
-      const response = await fetch("/api/users");
-      return response.json();
-    }
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   // Initialize votes from existing data

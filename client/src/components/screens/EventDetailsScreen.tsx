@@ -49,12 +49,7 @@ export default function EventDetailsScreen({
   const votingIsActive = event.votingStatus === 'active';
 
   // DEBUG: Log per verificare la logica
-  console.log('DEBUG - Event:', event);
-  console.log('DEBUG - Event votingStatus:', event.votingStatus);
-  console.log('DEBUG - User ID:', currentUser.id);
-  console.log('DEBUG - Wines:', wines.map(w => ({ id: w.id, userId: w.userId, name: w.name })));
-  console.log('DEBUG - User has registered wine:', userHasRegisteredWine);
-  console.log('DEBUG - Voting is active:', votingIsActive);
+  // Debug info removed for performance
 
   const progress = calculateProgress(wines, votes);
 
