@@ -21,7 +21,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           <img 
             src="/diagologo.png" 
             alt="DIAGONALE" 
-            className="w-48 h-auto mx-auto drop-shadow-2xl logo-glow" 
+            className="w-48 h-auto mx-auto drop-shadow-2xl logo-bounce" 
           />
         </div>
       </div>

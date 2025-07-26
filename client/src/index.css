@@ -128,8 +128,8 @@
     animation: fadeIn 0.5s ease-out;
   }
 
-  .logo-glow {
-    animation: logoGlow 2s ease-in-out infinite;
+  .logo-bounce {
+    animation: logoBounce 1s ease-out;
   }
 
   .logo-filter {
@@ -167,15 +167,24 @@
   }
 }
 
-@keyframes logoGlow {
+@keyframes logoBounce {
   0% {
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.15)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+    transform: scale(0.3) translateY(-100px);
+    opacity: 0;
   }
   50% {
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.2)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.1));
+    transform: scale(1.1) translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9) translateY(-10px);
+  }
+  85% {
+    transform: scale(1.05) translateY(0);
   }
   100% {
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.15)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+    transform: scale(1) translateY(0);
+    opacity: 1;
   }
 }
 
