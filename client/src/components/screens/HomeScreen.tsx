@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Users, Shield } from 'lucide-react';
 import { User } from '@shared/schema';
 import diagonaleLogo from '../../assets/diagologo.png';
+import AdminPinModal from '../AdminPinModal';
 
 interface HomeScreenProps {
   users: User[];
@@ -11,7 +13,17 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionError, onForceLogout }: HomeScreenProps) {
+  const [showPinModal, setShowPinModal] = useState(false);
   const regularUsers = users.filter(user => !user.isAdmin).sort((a, b) => a.name.localeCompare(b.name));
+
+  const handleAdminClick = () => {
+    setShowPinModal(true);
+  };
+
+  const handlePinSuccess = () => {
+    setShowPinModal(false);
+    onShowAdmin();
+  };
 
   return (
     <div className="flex-1 flex flex-col p-2 h-screen mobile-safe-area">
@@ -77,13 +89,19 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
         {/* Admin Button fisso in basso */}
         <div className="flex justify-center flex-shrink-0 pt-4 mb-4">
           <button
-            onClick={onShowAdmin}
+            onClick={handleAdminClick}
             className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium"
           >
             <Shield className="w-5 h-5" />
             <span>Admin</span>
           </button>
         </div>
+
+        <AdminPinModal
+          isOpen={showPinModal}
+          onClose={() => setShowPinModal(false)}
+          onSuccess={handlePinSuccess}
+        />
       </div>
     </div>
   );
