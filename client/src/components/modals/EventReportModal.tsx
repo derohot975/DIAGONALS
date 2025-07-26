@@ -56,98 +56,55 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
 
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* User Rankings */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Users className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold">Classifica Partecipanti</h3>
-              </div>
-              
-              <div className="space-y-3">
-                {userRankings.map((user, index) => (
-                  <div key={user.userId} className={`p-4 rounded-lg border ${
-                    index === 0 ? 'bg-amber-50 border-amber-200' :
-                    index === 1 ? 'bg-gray-50 border-gray-200' :
-                    index === 2 ? 'bg-orange-50 border-orange-200' :
-                    'bg-white border-gray-100'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                          index === 0 ? 'bg-amber-500 text-white' :
-                          index === 1 ? 'bg-gray-400 text-white' :
-                          index === 2 ? 'bg-orange-500 text-white' :
-                          'bg-gray-200 text-gray-700'
-                        }`}>
-                          {user.position}
-                        </div>
-                        <div>
-                          <div className="font-medium">{user.userName}</div>
-                          <div className="text-sm text-gray-500">{user.votesGiven} voti dati</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-lg">{user.averageScore.toFixed(1)}</div>
-                        <div className="text-sm text-gray-500">media</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Wine Rankings Only */}
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <Wine className="w-5 h-5 text-red-600" />
+              <h3 className="text-lg font-semibold">Classifica Vini</h3>
             </div>
-
-            {/* Wine Rankings */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Wine className="w-5 h-5 text-red-600" />
-                <h3 className="text-lg font-semibold">Classifica Vini</h3>
-              </div>
-              
-              <div className="space-y-3">
-                {wineResults.map((wine, index) => (
-                  <div key={wine.id} className={`p-4 rounded-lg border ${
-                    index === 0 ? 'bg-red-50 border-red-200' :
-                    index === 1 ? 'bg-gray-50 border-gray-200' :
-                    index === 2 ? 'bg-orange-50 border-orange-200' :
-                    'bg-white border-gray-100'
-                  }`}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                          index === 0 ? 'bg-red-500 text-white' :
-                          index === 1 ? 'bg-gray-400 text-white' :
-                          index === 2 ? 'bg-orange-500 text-white' :
-                          'bg-gray-200 text-gray-700'
-                        }`}>
-                          {wine.position}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="font-medium break-words">{wine.name}</div>
-                          <div className="text-sm text-gray-600">{wine.producer}</div>
-                          <div className="text-xs text-gray-500">da {wine.contributor}</div>
-                        </div>
+            
+            <div className="space-y-3">
+              {wineResults.map((wine, index) => (
+                <div key={wine.id} className={`p-4 rounded-lg border ${
+                  index === 0 ? 'bg-red-50 border-red-200' :
+                  index === 1 ? 'bg-gray-50 border-gray-200' :
+                  index === 2 ? 'bg-orange-50 border-orange-200' :
+                  'bg-white border-gray-100'
+                }`}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                        index === 0 ? 'bg-red-500 text-white' :
+                        index === 1 ? 'bg-gray-400 text-white' :
+                        index === 2 ? 'bg-orange-500 text-white' :
+                        'bg-gray-200 text-gray-700'
+                      }`}>
+                        {wine.position}
                       </div>
-                      <div className="text-right ml-2">
-                        <div className="font-bold text-lg">{wine.averageScore.toFixed(1)}</div>
-                        <div className="text-sm text-gray-500">{wine.totalVotes} voti</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium break-words">{wine.name}</div>
+                        <div className="text-sm text-gray-600">{wine.producer}</div>
+                        <div className="text-xs text-gray-500">da {wine.contributor}</div>
                       </div>
                     </div>
-                    
-                    {/* Individual votes */}
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                      <div className="flex flex-wrap gap-2">
-                        {wine.votes.map((vote, voteIndex) => (
-                          <div key={voteIndex} className="bg-gray-100 px-2 py-1 rounded text-xs">
-                            {vote.userName}: {vote.score}
-                          </div>
-                        ))}
-                      </div>
+                    <div className="text-right ml-2">
+                      <div className="font-bold text-lg">{wine.averageScore.toFixed(1)}</div>
+                      <div className="text-sm text-gray-500">{wine.totalVotes} voti</div>
                     </div>
                   </div>
-                ))}
-              </div>
+                  
+                  {/* Individual votes */}
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <div className="flex flex-wrap gap-2">
+                      {wine.votes.map((vote, voteIndex) => (
+                        <div key={voteIndex} className="bg-gray-100 px-2 py-1 rounded text-xs">
+                          {vote.userName}: {vote.score}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
