@@ -1,0 +1,18 @@
+[build]
+  command = "node build-render.js"
+  publish = "dist/public"
+  functions = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/index/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
