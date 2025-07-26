@@ -68,7 +68,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
         <div className="flex justify-center flex-shrink-0 pt-4 pb-2">
           <button
             onClick={onShowAdmin}
-            className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 rounded-xl px-4 py-3 text-white hover:text-gray-200 transition-all text-sm font-medium shadow-lg"
+            className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-sm font-medium"
           >
             <Shield className="w-4 h-4" />
             <span>Admin</span>
