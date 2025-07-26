@@ -191,10 +191,10 @@ export default function AdminEventManagementScreen({
                 <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-6 border border-[#8d0303]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
+                      <h4 className="font-semibold text-xs text-white break-words leading-tight">{event.name}</h4>
                       <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
                       <button
                         onClick={() => onViewReport(event.id)}
                         className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
@@ -202,20 +202,6 @@ export default function AdminEventManagementScreen({
                       >
                         <BarChart3 className="w-4 h-4 inline mr-1" />
                         Report
-                      </button>
-                      <button
-                        onClick={() => onEditEvent(event)}
-                        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-                        title="Modifica evento"
-                      >
-                        <Edit className="w-3 h-3 text-gray-600" />
-                      </button>
-                      <button
-                        onClick={() => onDeleteEvent(event.id)}
-                        className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                        title="Elimina evento"
-                      >
-                        <Trash2 className="w-3 h-3 text-red-600" />
                       </button>
                     </div>
                   </div>
