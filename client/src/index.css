@@ -42,28 +42,46 @@
     padding: 0;
     background: #300505;
     overflow-x: hidden;
+    /* Prevenzione zoom e stabilizzazione mobile */
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Fisso il viewport per mobile */
+    position: fixed;
+    width: 100%;
   }
 
   body {
     @apply font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #300505 0%, #8d0303 100%) !important;
-    min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height per mobile */
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow: hidden; /* Previeni scroll dell'intera pagina */
     /* Elimina spazi bianchi su mobile */
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
+    /* Stabilizzazione mobile */
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Fisso dimensioni */
+    position: fixed;
+    width: 100%;
   }
 
   #root {
-    min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height per mobile */
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height per mobile */
     display: flex;
     flex-direction: column;
     background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
+    overflow: hidden; /* Previeni scroll del container principale */
+    position: relative;
   }
 
   /* Stabilizzazione scroll mobile */
@@ -80,6 +98,23 @@
     backface-visibility: hidden;
     -webkit-perspective: 1000px;
     perspective: 1000px;
+  }
+
+  /* Area scrollabile controllata - solo per contenuti specifici */
+  .scrollable-area {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    height: 100%;
+    /* Previeni zoom durante scroll */
+    touch-action: pan-y;
+  }
+
+  /* Prevenzione zoom su input e bottoni */
+  input, button, textarea, select {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Forza accelerazione hardware per elementi scroll */
