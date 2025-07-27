@@ -6,6 +6,8 @@ import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 import diagoLogo from "@assets/diagologo.png";
+import { format } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 interface SimpleVotingScreenProps {
   event: WineEvent;
@@ -92,6 +94,15 @@ export default function SimpleVotingScreen({
     return users.find(u => u.id === userId)?.name || 'Sconosciuto';
   };
 
+  const formatEventDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return format(date, 'd MMMM yyyy', { locale: it });
+    } catch {
+      return dateString; // Fallback to original string if parsing fails
+    }
+  };
+
   const getUserVoteForWine = (wineId: number) => {
     return votes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
   };
@@ -128,7 +139,7 @@ export default function SimpleVotingScreen({
           {/* Event Header */}
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-yellow-400 mb-2">{event.name}</h2>
-            <p className="text-sm text-white/80 font-bold">{event.date}</p>
+            <p className="text-sm text-white/80 font-bold">{formatEventDate(event.date)}</p>
           </div>
 
           {/* Wine List */}
@@ -203,7 +214,7 @@ export default function SimpleVotingScreen({
                     {/* Left Side - Wine Info */}
                     <div className="flex-1">
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
-                        Vino di {contributor}
+                        Vino di <span className="text-[#300505]">{contributor}</span>
                       </h3>
                       <div className="flex items-center text-gray-600 text-sm">
                         <span>{wine.type || 'Vino'} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}</span>

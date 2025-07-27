@@ -6,6 +6,8 @@ import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import diagoLogo from "@assets/diagologo.png";
+import { format } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 interface VotingScreenProps {
   event: WineEvent;
@@ -129,6 +131,15 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     return users.find((user: User) => user.id === userId)?.name || "Sconosciuto";
   };
 
+  const formatEventDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return format(date, 'd MMMM yyyy', { locale: it });
+    } catch {
+      return dateString; // Fallback to original string if parsing fails
+    }
+  };
+
   // Filter and sort wines for this event
   const eventWines = wines
     .filter((wine: Wine) => wine.eventId === event.id)
@@ -155,7 +166,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
         <h1 className="text-xl font-bold">DIAGONALE</h1>
         <h2 className="text-lg font-semibold mt-4 text-yellow-400">{event.name}</h2>
-        <p className="text-sm text-white/80 mt-1 font-bold">{event.date}</p>
+        <p className="text-sm text-white/80 mt-1 font-bold">{formatEventDate(event.date)}</p>
       </div>
 
       {/* Voting Section */}
@@ -180,7 +191,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <h4 className="font-semibold text-sm text-gray-800">
-                    Vino di {getWineOwner(wine.userId)}
+                    Vino di <span className="text-[#300505]">{getWineOwner(wine.userId)}</span>
                   </h4>
                   <p className="text-xs text-gray-600">
                     {wine.type} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}
