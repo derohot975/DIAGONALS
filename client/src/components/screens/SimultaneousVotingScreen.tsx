@@ -25,6 +25,8 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<number, number>>({});
   const [pendingVotes, setPendingVotes] = useState<Record<number, number>>({});
+  const [tempScores, setTempScores] = useState<Record<number, number>>({});
+  const [isDragging, setIsDragging] = useState<Record<number, boolean>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -215,7 +217,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                       e.stopPropagation();
                       setSelectedWineId(wine.id);
                       const touch = e.touches[0];
+                      const currentScore = pendingVotes[wine.id] || votes[wine.id] || 1.0;
+                      setIsDragging(prev => ({ ...prev, [wine.id]: true }));
+                      setTempScores(prev => ({ ...prev, [wine.id]: currentScore }));
                       e.currentTarget.dataset.startY = touch.clientY.toString();
+                      e.currentTarget.dataset.startScore = currentScore.toString();
                     }}
                     onTouchMove={(e) => {
                       e.preventDefault();
@@ -223,16 +229,28 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                       document.body.style.overflow = 'hidden';
                       const touch = e.touches[0];
                       const startY = parseFloat(e.currentTarget.dataset.startY || '0');
+                      const startScore = parseFloat(e.currentTarget.dataset.startScore || '1');
                       const deltaY = startY - touch.clientY;
                       
-                      if (Math.abs(deltaY) > 10) {
-                        const delta = deltaY > 0 ? 0.5 : -0.5;
-                        handleScoreChange(wine.id, delta);
-                        e.currentTarget.dataset.startY = touch.clientY.toString();
-                      }
+                      // Mobile-optimized: 20px movement = 0.5 score change
+                      const scoreChange = Math.round((deltaY / 20) * 2) / 2;
+                      const newScore = Math.max(1, Math.min(10, startScore + scoreChange));
+                      
+                      setTempScores(prev => ({ ...prev, [wine.id]: newScore }));
                     }}
                     onTouchEnd={() => {
                       document.body.style.overflow = 'auto';
+                      if (isDragging[wine.id] && tempScores[wine.id] !== undefined) {
+                        const finalScore = tempScores[wine.id];
+                        setPendingVotes(prev => ({ ...prev, [wine.id]: finalScore }));
+                        submitVoteMutation.mutate({ wineId: wine.id, score: finalScore });
+                        setIsDragging(prev => ({ ...prev, [wine.id]: false }));
+                        setTempScores(prev => {
+                          const updated = { ...prev };
+                          delete updated[wine.id];
+                          return updated;
+                        });
+                      }
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -240,7 +258,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     }}
                   >
                     <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
-                      {(pendingVotes[wine.id] || votes[wine.id] || 1.0).toFixed(1)}
+                      {isDragging[wine.id] && tempScores[wine.id] !== undefined 
+                        ? tempScores[wine.id].toFixed(1) 
+                        : (pendingVotes[wine.id] || votes[wine.id] || 1.0).toFixed(1)}
                     </span>
                   </div>
 
@@ -254,29 +274,6 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                       }
                     `}
                     onWheel={(e) => handleWheelChange(wine.id, e)}
-                    onTouchStart={(e) => {
-                      e.stopPropagation();
-                      setSelectedWineId(wine.id);
-                      const touch = e.touches[0];
-                      e.currentTarget.dataset.startY = touch.clientY.toString();
-                    }}
-                    onTouchMove={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      document.body.style.overflow = 'hidden';
-                      const touch = e.touches[0];
-                      const startY = parseFloat(e.currentTarget.dataset.startY || '0');
-                      const deltaY = startY - touch.clientY;
-                      
-                      if (Math.abs(deltaY) > 10) {
-                        const delta = deltaY > 0 ? 0.5 : -0.5;
-                        handleScoreChange(wine.id, delta);
-                        e.currentTarget.dataset.startY = touch.clientY.toString();
-                      }
-                    }}
-                    onTouchEnd={() => {
-                      document.body.style.overflow = 'auto';
-                    }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedWineId(wine.id);
