@@ -474,11 +474,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/wines", async (req, res) => {
     try {
-      const wineData = insertWineSchema.parse(req.body);
+      // Trasforma i campi numerici per la compatibilità
+      const requestData = { ...req.body };
+      if (requestData.alcohol !== undefined && requestData.alcohol !== null) {
+        requestData.alcohol = typeof requestData.alcohol === 'number' ? requestData.alcohol.toString() : requestData.alcohol;
+      }
+      if (requestData.price !== undefined && requestData.price !== null) {
+        requestData.price = typeof requestData.price === 'number' ? requestData.price.toString() : requestData.price;
+      }
+      
+      const wineData = insertWineSchema.parse(requestData);
       const wine = await storage.createWine(wineData);
       res.status(201).json(wine);
     } catch (error) {
+      console.error('Wine creation error:', error);
       if (error instanceof z.ZodError) {
+        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid wine data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to create wine" });
