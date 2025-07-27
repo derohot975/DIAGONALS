@@ -56,13 +56,13 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
         )}
 
         {/* Area scrollabile per i pulsanti utenti - lascia spazio per il pulsante admin */}
-        <div className="flex-1 overflow-y-auto mb-2 min-h-0 overscroll-contain scroll-container pb-20">
+        <div className="flex-1 overflow-y-auto mb-2 min-h-0 overscroll-contain scroll-container pb-32">
           {regularUsers.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
               Nessun iscritto registrato. Aggiungi il primo utente per iniziare!
             </p>
           ) : (
-            <div className="flex flex-col gap-3 px-1" style={{
+            <div className="flex flex-col gap-3 px-1 pb-4" style={{
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden',
               perspective: '1000px'
@@ -94,7 +94,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
       </div>
 
       {/* Admin Button FISSO in posizione assoluta in fondo */}
-      <div className="fixed bottom-4 left-0 right-0 flex justify-center z-50">
+      <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50">
         <button
           onClick={handleAdminClick}
           className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium bg-black/30 rounded-full px-6 py-3 backdrop-blur-md border border-white/30 shadow-xl"
