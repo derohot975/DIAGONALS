@@ -1,6 +1,21 @@
 # Use Node.js 18 as the base image
 FROM node:18-alpine
 
+# Install Python and build dependencies for canvas
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev
+
 # Set the working directory
 WORKDIR /app
 
