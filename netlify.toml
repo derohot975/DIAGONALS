@@ -1,7 +1,7 @@
 [build]
-  command = "node build-render.js"
-  publish = "dist/public"
-  functions = "dist"
+  command = "npm run build"
+  publish = "public"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
