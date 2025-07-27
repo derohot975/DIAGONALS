@@ -86,11 +86,11 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
           )}
         </div>
 
-        {/* Admin Button fisso in basso */}
-        <div className="flex justify-center flex-shrink-0 pt-4 mb-4">
+        {/* Admin Button fisso in basso - sempre visibile */}
+        <div className="flex justify-center flex-shrink-0 pt-2 pb-safe-area-inset-bottom">
           <button
             onClick={handleAdminClick}
-            className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium"
+            className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium bg-black/20 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20"
           >
             <Shield className="w-5 h-5" />
             <span>Admin</span>
