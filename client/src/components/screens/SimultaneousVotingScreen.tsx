@@ -105,13 +105,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   });
 
   const handleScoreChange = (wineId: number, delta: number) => {
-    const currentScore = votes[wineId] || 1.0;
+    // Use pending vote if available, otherwise use current vote
+    const currentScore = pendingVotes[wineId] || votes[wineId] || 1.0;
     const newScore = Math.max(1.0, Math.min(10.0, currentScore + delta));
     
-    // Immediately update local state for instant visual feedback
-    setVotes(prev => ({ ...prev, [wineId]: newScore }));
-    
-    // Mark as pending to prevent server overwrite
+    // Immediately update pending votes for instant visual feedback
     setPendingVotes(prev => ({ ...prev, [wineId]: newScore }));
     
     // Auto-save vote
@@ -229,7 +227,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     }}
                   >
                     <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
-                      {(votes[wine.id] || 1.0).toFixed(1)}
+                      {(pendingVotes[wine.id] || votes[wine.id] || 1.0).toFixed(1)}
                     </span>
                   </div>
 
