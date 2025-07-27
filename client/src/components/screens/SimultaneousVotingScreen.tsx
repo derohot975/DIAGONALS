@@ -171,7 +171,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     Vino di {getWineOwner(wine.userId)}
                   </h4>
                   <p className="text-xs text-gray-600">
-                    {wine.type} • {wine.year.toString()}
+                    {wine.type} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}
                   </p>
                 </div>
                 

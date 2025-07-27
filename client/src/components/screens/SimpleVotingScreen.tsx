@@ -192,13 +192,7 @@ export default function SimpleVotingScreen({
                         Vino di {contributor}
                       </h3>
                       <div className="flex items-center text-gray-600 text-sm">
-                        <span>{wine.type || 'Vino'}</span>
-                        {wine.alcohol && (
-                          <>
-                            <span className="mx-2">•</span>
-                            <span>{wine.alcohol}% vol</span>
-                          </>
-                        )}
+                        <span>{wine.type || 'Vino'} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}</span>
                       </div>
                     </div>
 
