@@ -22,6 +22,7 @@ interface VoteData {
 export default function SimultaneousVotingScreen({ event, currentUser, onBack, onHome }: VotingScreenProps) {
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<number, number>>({});
+  const [pendingVotes, setPendingVotes] = useState<Record<number, number>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -53,15 +54,18 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
           userVotes[vote.wineId] = parseFloat(vote.score.toString());
         });
       setVotes(prevVotes => {
-        // Only update if votes have actually changed
-        const hasChanged = Object.keys(userVotes).some(
-          wineId => prevVotes[parseInt(wineId)] !== userVotes[parseInt(wineId)]
-        ) || Object.keys(prevVotes).length !== Object.keys(userVotes).length;
-        
-        return hasChanged ? userVotes : prevVotes;
+        // Only update votes that are not currently being modified (not in pendingVotes)
+        const updatedVotes = { ...prevVotes };
+        Object.keys(userVotes).forEach(wineIdStr => {
+          const wineId = parseInt(wineIdStr);
+          if (!pendingVotes[wineId]) {
+            updatedVotes[wineId] = userVotes[wineId];
+          }
+        });
+        return updatedVotes;
       });
     }
-  }, [existingVotes, currentUser.id]);
+  }, [existingVotes, currentUser.id, pendingVotes]);
 
   // Submit vote mutation
   const submitVoteMutation = useMutation({
@@ -77,7 +81,13 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         }),
       }).then(res => res.json());
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Remove from pending votes once saved successfully
+      setPendingVotes(prev => {
+        const updated = { ...prev };
+        delete updated[variables.wineId];
+        return updated;
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/votes", event.id] });
       toast({
         title: "Voto salvato!",
@@ -98,7 +108,11 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     const currentScore = votes[wineId] || 1.0;
     const newScore = Math.max(1.0, Math.min(10.0, currentScore + delta));
     
+    // Immediately update local state for instant visual feedback
     setVotes(prev => ({ ...prev, [wineId]: newScore }));
+    
+    // Mark as pending to prevent server overwrite
+    setPendingVotes(prev => ({ ...prev, [wineId]: newScore }));
     
     // Auto-save vote
     submitVoteMutation.mutate({
