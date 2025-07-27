@@ -194,7 +194,7 @@ export default function AdminEventManagementScreen({
                       <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
                       <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center space-x-2">
                       <button
                         onClick={() => onViewReport(event.id)}
                         className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
@@ -202,6 +202,13 @@ export default function AdminEventManagementScreen({
                       >
                         <BarChart3 className="w-4 h-4 inline mr-1" />
                         Report
+                      </button>
+                      <button
+                        onClick={() => onDeleteEvent(event.id)}
+                        className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
+                        title="Elimina evento"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
