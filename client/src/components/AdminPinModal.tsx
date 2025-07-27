@@ -15,7 +15,7 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
   if (!isOpen) return null;
 
   const handleNumberClick = (number: string) => {
-    if (pin.length < 4) {
+    if (pin.length < 2) {
       setPin(prev => prev + number);
       setError('');
     }
@@ -44,44 +44,43 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-auto shadow-2xl">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 w-full max-w-sm mx-auto shadow-2xl border border-[#300505]/10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Accesso Admin</h2>
+        <div className="flex items-center justify-end mb-6">
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-[#300505]/10 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-5 h-5 text-[#300505]" />
           </button>
         </div>
 
         {/* PIN Display */}
-        <div className="mb-6">
-          <div className="flex justify-center space-x-3 mb-2">
-            {[0, 1, 2, 3].map(index => (
+        <div className="mb-8">
+          <div className="flex justify-center space-x-4 mb-4">
+            {[0, 1].map(index => (
               <div
                 key={index}
-                className={`w-4 h-4 rounded-full border-2 transition-colors ${
+                className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
                   index < pin.length 
-                    ? 'bg-[#300505] border-[#300505]' 
-                    : 'border-gray-300 bg-gray-100'
+                    ? 'bg-[#300505] border-[#300505] shadow-lg' 
+                    : 'border-[#300505]/30 bg-white'
                 }`}
               />
             ))}
           </div>
           {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
+            <p className="text-red-500 text-sm text-center font-medium">{error}</p>
           )}
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-3 mb-8">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(number => (
             <button
               key={number}
               onClick={() => handleNumberClick(number.toString())}
-              className="h-16 bg-gray-50 hover:bg-gray-100 rounded-xl text-xl font-semibold text-gray-700 transition-colors active:scale-95"
+              className="h-16 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-xl font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
             >
               {number}
             </button>
@@ -90,21 +89,21 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
           {/* Bottom row */}
           <button
             onClick={handleClear}
-            className="h-16 bg-red-50 hover:bg-red-100 rounded-xl text-sm font-medium text-red-600 transition-colors active:scale-95"
+            className="h-16 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl text-sm font-medium text-red-600 transition-all duration-200 active:scale-95"
           >
             Clear
           </button>
           
           <button
             onClick={() => handleNumberClick('0')}
-            className="h-16 bg-gray-50 hover:bg-gray-100 rounded-xl text-xl font-semibold text-gray-700 transition-colors active:scale-95"
+            className="h-16 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-xl font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
           >
             0
           </button>
           
           <button
             onClick={handleDelete}
-            className="h-16 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 transition-colors active:scale-95"
+            className="h-16 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
           >
             <Delete className="w-6 h-6" />
           </button>
@@ -114,9 +113,9 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
         <button
           onClick={handleConfirm}
           disabled={pin.length === 0}
-          className={`w-full h-12 rounded-xl font-semibold transition-all ${
+          className={`w-full h-14 rounded-xl font-semibold transition-all duration-200 ${
             pin.length > 0
-              ? 'bg-[#300505] hover:bg-[#8d0303] text-white active:scale-95'
+              ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#8d0303] hover:to-[#300505] text-white active:scale-95 shadow-lg'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
         >
