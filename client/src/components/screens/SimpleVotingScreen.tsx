@@ -128,7 +128,7 @@ export default function SimpleVotingScreen({
           {/* Event Header */}
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-yellow-400 mb-2">{event.name}</h2>
-            <p className="text-sm text-white/80">{event.date}</p>
+            <p className="text-sm text-white/80 font-bold">{event.date}</p>
           </div>
 
           {/* Wine List */}
