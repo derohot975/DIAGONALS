@@ -110,8 +110,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteUser(id: number): Promise<boolean> {
-    const result = await db.delete(users).where(eq(users.id, id));
-    return (result.rowCount ?? 0) > 0;
+    try {
+      await db.delete(users).where(eq(users.id, id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      return false;
+    }
   }
 
   // Wine Event operations
@@ -166,8 +171,8 @@ export class DatabaseStorage implements IStorage {
       await db.delete(eventReports).where(eq(eventReports.eventId, id));
       
       // Infine elimina l'evento stesso
-      const result = await db.delete(wineEvents).where(eq(wineEvents.id, id));
-      return (result.rowCount ?? 0) > 0;
+      await db.delete(wineEvents).where(eq(wineEvents.id, id));
+      return true;
     } catch (error) {
       console.error('Error deleting wine event:', error);
       return false;

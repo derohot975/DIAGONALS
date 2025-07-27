@@ -1,20 +1,24 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import * as schema from "../shared/schema";
 
-neonConfig.webSocketConstructor = ws;
-
-// Supabase PostgreSQL connection string
+// PostgreSQL connection string
 const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
   throw new Error(
-    "DATABASE_URL must be set. Please add your Supabase PostgreSQL connection string to Replit Secrets.",
+    "DATABASE_URL must be set. Please add your PostgreSQL connection string to Replit Secrets.",
   );
 }
 
-console.log('🔗 Connecting to Supabase PostgreSQL database...');
+console.log('🔗 Connecting to PostgreSQL database...');
 
-export const pool = new Pool({ connectionString: databaseUrl });
-export const db = drizzle({ client: pool, schema });
+// Create postgres connection with proper configuration
+const client = postgres(databaseUrl, {
+  max: 10,
+  idle_timeout: 20,
+  connect_timeout: 10,
+  ssl: 'require'
+});
+
+export const db = drizzle(client, { schema });
