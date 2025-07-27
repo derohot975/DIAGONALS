@@ -131,8 +131,24 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     return users.find((user: User) => user.id === userId)?.name || "Sconosciuto";
   };
 
-  // Filter wines for this event
-  const eventWines = wines.filter((wine: Wine) => wine.eventId === event.id);
+  // Filter and sort wines for this event
+  const eventWines = wines
+    .filter((wine: Wine) => wine.eventId === event.id)
+    .sort((a, b) => {
+      // Ordine: Bollicina < Bianco < Rosso
+      const typeOrder = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3 };
+      const aOrder = typeOrder[a.type as keyof typeof typeOrder] || 4;
+      const bOrder = typeOrder[b.type as keyof typeof typeOrder] || 4;
+      
+      if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+      }
+      
+      // Stesso tipo: ordina per gradazione crescente
+      const aAlcohol = parseFloat(a.alcohol?.toString() || '0');
+      const bAlcohol = parseFloat(b.alcohol?.toString() || '0');
+      return aAlcohol - bAlcohol;
+    });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white p-4 touch-pan-x">

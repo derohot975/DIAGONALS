@@ -135,7 +135,23 @@ export default function SimpleVotingScreen({
 
           {/* Wine List */}
           <div className="space-y-3">
-            {wines.map((wine, index) => {
+            {wines
+              .sort((a, b) => {
+                // Ordine: Bollicina < Bianco < Rosso
+                const typeOrder = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3 };
+                const aOrder = typeOrder[a.type as keyof typeof typeOrder] || 4;
+                const bOrder = typeOrder[b.type as keyof typeof typeOrder] || 4;
+                
+                if (aOrder !== bOrder) {
+                  return aOrder - bOrder;
+                }
+                
+                // Stesso tipo: ordina per gradazione crescente
+                const aAlcohol = parseFloat(a.alcohol?.toString() || '0');
+                const bAlcohol = parseFloat(b.alcohol?.toString() || '0');
+                return aAlcohol - bAlcohol;
+              })
+              .map((wine, index) => {
               const contributor = getWineContributor(wine.userId);
               const userVote = getUserVoteForWine(wine.id);
 
