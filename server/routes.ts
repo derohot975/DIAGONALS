@@ -490,14 +490,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       
+      console.log('Original request body:', req.body);
+      
       // Trasforma il campo alcohol se presente
       const requestData = { ...req.body };
       if (requestData.alcohol !== undefined && requestData.alcohol !== null) {
+        console.log('Original alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
         requestData.alcohol = typeof requestData.alcohol === 'number' ? requestData.alcohol.toString() : requestData.alcohol;
+        console.log('Transformed alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
       }
       
-      const updateWineSchema = insertWineSchema.partial().omit({ userId: true, eventId: true });
+      console.log('Processed request data:', requestData);
+      
+      // Creo uno schema di update specifico che gestisce correttamente l'alcohol
+      const updateWineSchema = z.object({
+        type: z.string().optional(),
+        name: z.string().optional(),
+        producer: z.string().optional(),
+        grape: z.string().optional(),
+        year: z.number().optional(),
+        origin: z.string().optional(),
+        price: z.union([z.string(), z.number()]).optional().transform((val) => {
+          if (val === null || val === undefined) return undefined;
+          return typeof val === 'number' ? val.toString() : val;
+        }),
+        alcohol: z.union([z.string(), z.number()]).optional().transform((val) => {
+          if (val === null || val === undefined) return undefined;
+          return typeof val === 'number' ? val.toString() : val;
+        })
+      });
+      
       const wineData = updateWineSchema.parse(requestData);
+      console.log('Final validated data:', wineData);
       
       const wine = await storage.updateWine(id, wineData);
       if (!wine) {
@@ -508,6 +532,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Wine update error:', error);
       if (error instanceof z.ZodError) {
+        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid wine data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to update wine" });
