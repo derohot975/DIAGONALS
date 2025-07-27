@@ -24,9 +24,10 @@ interface VoteData {
 export default function SimultaneousVotingScreen({ event, currentUser, onBack, onHome }: VotingScreenProps) {
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [votes, setVotes] = useState<Record<number, number>>({});
-  const [pendingVotes, setPendingVotes] = useState<Record<number, number>>({});
-  const [tempScores, setTempScores] = useState<Record<number, number>>({});
-  const [isDragging, setIsDragging] = useState<Record<number, boolean>>({});
+  const [tempScore, setTempScore] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragStartScore, setDragStartScore] = useState(1);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -57,19 +58,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         .forEach((vote: Vote) => {
           userVotes[vote.wineId] = parseFloat(vote.score.toString());
         });
-      setVotes(prevVotes => {
-        // Only update votes that are not currently being modified (not in pendingVotes)
-        const updatedVotes = { ...prevVotes };
-        Object.keys(userVotes).forEach(wineIdStr => {
-          const wineId = parseInt(wineIdStr);
-          if (!pendingVotes[wineId]) {
-            updatedVotes[wineId] = userVotes[wineId];
-          }
-        });
-        return updatedVotes;
-      });
+      setVotes(userVotes);
     }
-  }, [existingVotes, currentUser.id, pendingVotes]);
+  }, [existingVotes, currentUser.id]);
 
   // Submit vote mutation
   const submitVoteMutation = useMutation({
@@ -86,12 +77,6 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       }).then(res => res.json());
     },
     onSuccess: (data, variables) => {
-      // Remove from pending votes once saved successfully
-      setPendingVotes(prev => {
-        const updated = { ...prev };
-        delete updated[variables.wineId];
-        return updated;
-      });
       queryClient.invalidateQueries({ queryKey: ["/api/votes", event.id] });
       toast({
         title: "Voto salvato!",
@@ -108,25 +93,24 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     },
   });
 
-  const handleScoreChange = (wineId: number, delta: number) => {
-    // Use pending vote if available, otherwise use current vote
-    const currentScore = pendingVotes[wineId] || votes[wineId] || 1.0;
-    const newScore = Math.max(1.0, Math.min(10.0, currentScore + delta));
-    
-    // Immediately update pending votes for instant visual feedback
-    setPendingVotes(prev => ({ ...prev, [wineId]: newScore }));
-    
-    // Auto-save vote
+  const handleVote = (wineId: number, score: number) => {
+    setVotes(prev => ({ ...prev, [wineId]: score }));
     submitVoteMutation.mutate({
       wineId,
-      score: newScore,
+      score: score,
     });
+  };
+
+  const getUserVoteForWine = (wineId: number) => {
+    return existingVotes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
   };
 
   const handleWheelChange = (wineId: number, event: React.WheelEvent) => {
     event.preventDefault();
+    const currentScore = votes[wineId] || 1.0;
     const delta = event.deltaY > 0 ? -0.5 : 0.5;
-    handleScoreChange(wineId, delta);
+    const newScore = Math.max(1.0, Math.min(10.0, currentScore + delta));
+    handleVote(wineId, newScore);
   };
 
   const getWineOwner = (userId: number) => {
@@ -214,42 +198,35 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     `}
                     onWheel={(e) => handleWheelChange(wine.id, e)}
                     onTouchStart={(e) => {
-                      e.stopPropagation();
-                      setSelectedWineId(wine.id);
-                      const touch = e.touches[0];
-                      const currentScore = pendingVotes[wine.id] || votes[wine.id] || 1.0;
-                      setIsDragging(prev => ({ ...prev, [wine.id]: true }));
-                      setTempScores(prev => ({ ...prev, [wine.id]: currentScore }));
-                      e.currentTarget.dataset.startY = touch.clientY.toString();
-                      e.currentTarget.dataset.startScore = currentScore.toString();
+                      if (selectedWineId === wine.id && e.touches.length === 1) {
+                        e.preventDefault();
+                        const currentScore = votes[wine.id] || 1;
+                        setIsDragging(true);
+                        setDragStartY(e.touches[0].clientY);
+                        setDragStartScore(currentScore);
+                        setTempScore(currentScore);
+                      }
                     }}
                     onTouchMove={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      document.body.style.overflow = 'hidden';
-                      const touch = e.touches[0];
-                      const startY = parseFloat(e.currentTarget.dataset.startY || '0');
-                      const startScore = parseFloat(e.currentTarget.dataset.startScore || '1');
-                      const deltaY = startY - touch.clientY;
-                      
-                      // Mobile-optimized: 20px movement = 0.5 score change
-                      const scoreChange = Math.round((deltaY / 20) * 2) / 2;
-                      const newScore = Math.max(1, Math.min(10, startScore + scoreChange));
-                      
-                      setTempScores(prev => ({ ...prev, [wine.id]: newScore }));
+                      if (selectedWineId === wine.id && isDragging && e.touches.length === 1) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const currentY = e.touches[0].clientY;
+                        const deltaY = dragStartY - currentY;
+                        
+                        // iPhone-style: 20px movement = 0.5 score change
+                        const scoreChange = Math.round((deltaY / 20) * 2) / 2; // Round to nearest 0.5
+                        const newScore = Math.max(1, Math.min(10, dragStartScore + scoreChange));
+                        
+                        setTempScore(newScore);
+                      }
                     }}
                     onTouchEnd={() => {
-                      document.body.style.overflow = 'auto';
-                      if (isDragging[wine.id] && tempScores[wine.id] !== undefined) {
-                        const finalScore = tempScores[wine.id];
-                        setPendingVotes(prev => ({ ...prev, [wine.id]: finalScore }));
-                        submitVoteMutation.mutate({ wineId: wine.id, score: finalScore });
-                        setIsDragging(prev => ({ ...prev, [wine.id]: false }));
-                        setTempScores(prev => {
-                          const updated = { ...prev };
-                          delete updated[wine.id];
-                          return updated;
-                        });
+                      if (selectedWineId === wine.id && isDragging && tempScore !== null) {
+                        handleVote(wine.id, tempScore);
+                        setIsDragging(false);
+                        setTempScore(null);
                       }
                     }}
                     onClick={(e) => {
@@ -258,9 +235,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                     }}
                   >
                     <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
-                      {isDragging[wine.id] && tempScores[wine.id] !== undefined 
-                        ? tempScores[wine.id].toFixed(1) 
-                        : (pendingVotes[wine.id] || votes[wine.id] || 1.0).toFixed(1)}
+                      {selectedWineId === wine.id && isDragging && tempScore !== null 
+                        ? tempScore.toFixed(1) 
+                        : (votes[wine.id] || 1.0).toFixed(1)}
                     </span>
                   </div>
 
