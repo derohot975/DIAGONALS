@@ -489,8 +489,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/wines/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Trasforma il campo alcohol se presente
+      const requestData = { ...req.body };
+      if (requestData.alcohol !== undefined && requestData.alcohol !== null) {
+        requestData.alcohol = typeof requestData.alcohol === 'number' ? requestData.alcohol.toString() : requestData.alcohol;
+      }
+      
       const updateWineSchema = insertWineSchema.partial().omit({ userId: true, eventId: true });
-      const wineData = updateWineSchema.parse(req.body);
+      const wineData = updateWineSchema.parse(requestData);
       
       const wine = await storage.updateWine(id, wineData);
       if (!wine) {
