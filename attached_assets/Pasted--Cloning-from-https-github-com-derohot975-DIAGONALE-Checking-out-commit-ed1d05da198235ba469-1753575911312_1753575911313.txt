@@ -1,0 +1,245 @@
+==> Cloning from https://github.com/derohot975/DIAGONALE
+==> Checking out commit ed1d05da198235ba469fcf875765a499292bd23c in branch main
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 752B done
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:18-alpine
+#2 ...
+#3 [auth] library/node:pull render-prod/docker-mirror-repository/library/node:pull token for us-west1-docker.pkg.dev
+#3 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:18-alpine
+#2 DONE 5.1s
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+#5 [1/7] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#5 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e done
+#5 ...
+#6 [internal] load build context
+#6 transferring context: 19.01MB 0.3s done
+#6 DONE 0.3s
+#5 [1/7] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#5 extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870
+#5 extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 0.3s done
+#5 extracting sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e
+#5 extracting sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e 17.4s done
+#5 extracting sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3 0.1s done
+#5 DONE 21.4s
+#5 [1/7] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#5 extracting sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549 0.0s done
+#5 DONE 21.4s
+#7 [2/7] RUN apk add --no-cache     python3     make     g++     cairo-dev     jpeg-dev     pango-dev     musl-dev     giflib-dev     pixman-dev     pangomm-dev     libjpeg-turbo-dev     freetype-dev
+#7 0.060 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+#7 0.126 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+#7 0.426 (1/149) Installing cairo-tools (1.18.4-r0)
+#7 0.441 (2/149) Installing libexpat (2.7.0-r0)
+#7 0.444 (3/149) Installing brotli-libs (1.1.0-r2)
+#7 0.452 (4/149) Installing libbz2 (1.0.8-r6)
+#7 0.454 (5/149) Installing libpng (1.6.47-r0)
+#7 0.459 (6/149) Installing freetype (2.13.3-r0)
+#7 0.466 (7/149) Installing fontconfig (2.15.0-r1)
+#7 0.487 (8/149) Installing expat (2.7.0-r0)
+#7 0.490 (9/149) Installing pkgconf (2.3.0-r0)
+#7 0.493 (10/149) Installing expat-dev (2.7.0-r0)
+#7 0.500 (11/149) Installing bzip2-dev (1.0.8-r6)
+#7 0.503 (12/149) Installing brotli (1.1.0-r2)
+#7 0.506 (13/149) Installing brotli-dev (1.1.0-r2)
+#7 0.509 (14/149) Installing zlib-dev (1.3.1-r2)
+#7 0.513 (15/149) Installing libpng-dev (1.6.47-r0)
+#7 0.517 (16/149) Installing freetype-dev (2.13.3-r0)
+#7 0.528 (17/149) Installing fontconfig-dev (2.15.0-r1)
+#7 0.531 (18/149) Installing libxau (1.0.11-r4)
+#7 0.547 (19/149) Installing xorgproto (2024.1-r0)
+#7 0.582 (20/149) Installing libxau-dev (1.0.11-r4)
+#7 0.585 (21/149) Installing libmd (1.1.0-r0)
+#7 0.588 (22/149) Installing libbsd (0.12.2-r0)
+#7 0.591 (23/149) Installing libxdmcp (1.1.5-r1)
+#7 0.594 (24/149) Installing libxcb (1.16.1-r0)
+#7 0.605 (25/149) Installing libx11 (1.8.10-r0)
+#7 0.638 (26/149) Installing libxext (1.3.6-r2)
+#7 0.641 (27/149) Installing libffi (3.4.7-r0)
+#7 0.644 (28/149) Installing gdbm (1.24-r0)
+#7 0.647 (29/149) Installing xz-libs (5.6.3-r1)
+#7 0.652 (30/149) Installing mpdecimal (4.0.0-r0)
+#7 0.656 (31/149) Installing ncurses-terminfo-base (6.5_p20241006-r3)
+#7 0.661 (32/149) Installing libncursesw (6.5_p20241006-r3)
+#7 0.666 (33/149) Installing libpanelw (6.5_p20241006-r3)
+#7 0.668 (34/149) Installing readline (8.2.13-r0)
+#7 0.672 (35/149) Installing sqlite-libs (3.48.0-r2)
+#7 0.685 (36/149) Installing python3 (3.12.11-r0)
+#7 0.882 (37/149) Installing python3-pycache-pyc0 (3.12.11-r0)
+#7 1.016 (38/149) Installing pyc (3.12.11-r0)
+#7 1.016 (39/149) Installing xcb-proto-pyc (1.17.0-r0)
+#7 1.022 (40/149) Installing python3-pyc (3.12.11-r0)
+#7 1.022 (41/149) Installing xcb-proto (1.17.0-r0)
+#7 1.034 (42/149) Installing libxdmcp-dev (1.1.5-r1)
+#7 1.037 (43/149) Installing libxcb-dev (1.16.1-r0)
+#7 1.056 (44/149) Installing xtrans (1.5.2-r0)
+#7 1.062 (45/149) Installing libx11-dev (1.8.10-r0)
+#7 1.068 (46/149) Installing libxext-dev (1.3.6-r2)
+#7 1.073 (47/149) Installing libxrender (0.9.11-r5)
+#7 1.076 (48/149) Installing libxrender-dev (0.9.11-r5)
+#7 1.080 (49/149) Installing pixman (0.43.4-r1)
+#7 1.092 (50/149) Installing pixman-dev (0.43.4-r1)
+#7 1.095 (51/149) Installing util-macros (1.20.1-r0)
+#7 1.101 (52/149) Installing xcb-util (0.4.1-r3)
+#7 1.105 (53/149) Installing xcb-util-dev (0.4.1-r3)
+#7 1.108 (54/149) Installing cairo (1.18.4-r0)
+#7 1.119 (55/149) Installing libintl (0.22.5-r0)
+#7 1.125 (56/149) Installing libeconf (0.6.3-r0)
+#7 1.131 (57/149) Installing libblkid (2.40.4-r1)
+#7 1.136 (58/149) Installing libmount (2.40.4-r1)
+#7 1.140 (59/149) Installing pcre2 (10.43-r0)
+#7 1.148 (60/149) Installing glib (2.82.5-r0)
+#7 1.194 (61/149) Installing cairo-gobject (1.18.4-r0)
+#7 1.197 (62/149) Installing libxml2 (2.13.4-r6)
+#7 1.207 (63/149) Installing libxml2-utils (2.13.4-r6)
+#7 1.210 (64/149) Installing docbook-xml (4.5-r9)
+#7 1.238 Executing docbook-xml-4.5-r9.post-install
+#7 1.250 (65/149) Installing libgpg-error (1.51-r0)
+#7 1.255 (66/149) Installing libgcrypt (1.10.3-r1)
+#7 1.265 (67/149) Installing libxslt (1.1.42-r2)
+#7 1.271 (68/149) Installing docbook-xsl-ns (1.79.2-r11)
+#7 1.491 Executing docbook-xsl-ns-1.79.2-r11.post-install
+#7 1.518 (69/149) Installing docbook-xsl-nons (1.79.2-r11)
+#7 1.738 Executing docbook-xsl-nons-1.79.2-r11.post-install
+#7 1.764 (70/149) Installing docbook-xsl (1.79.2-r11)
+#7 1.767 (71/149) Installing xz (5.6.3-r1)
+#7 1.773 (72/149) Installing gettext-asprintf (0.22.5-r0)
+#7 1.776 (73/149) Installing libunistring (1.2-r0)
+#7 1.788 (74/149) Installing gettext-libs (0.22.5-r0)
+#7 1.798 (75/149) Installing gettext-envsubst (0.22.5-r0)
+#7 1.801 (76/149) Installing libgomp (14.2.0-r4)
+#7 1.805 (77/149) Installing gettext (0.22.5-r0)
+#7 1.822 (78/149) Installing gettext-dev (0.22.5-r0)
+#7 1.837 (79/149) Installing py3-parsing (3.1.4-r0)
+#7 1.845 (80/149) Installing py3-parsing-pyc (3.1.4-r0)
+#7 1.853 (81/149) Installing py3-packaging (24.2-r0)
+#7 1.861 (82/149) Installing py3-packaging-pyc (24.2-r0)
+#7 1.867 (83/149) Installing linux-headers (6.6-r1)
+#7 2.013 (84/149) Installing libffi-dev (3.4.7-r0)
+#7 2.022 (85/149) Installing bsd-compat-headers (0.7.2-r6)
+#7 2.026 (86/149) Installing libformw (6.5_p20241006-r3)
+#7 2.029 (87/149) Installing libmenuw (6.5_p20241006-r3)
+#7 2.032 (88/149) Installing libncurses++ (6.5_p20241006-r3)
+#7 2.035 (89/149) Installing ncurses-dev (6.5_p20241006-r3)
+#7 2.046 (90/149) Installing libedit (20240808.3.1-r0)
+#7 2.049 (91/149) Installing libedit-dev (20240808.3.1-r0)
+#7 2.053 (92/149) Installing libpcre2-16 (10.43-r0)
+#7 2.061 (93/149) Installing libpcre2-32 (10.43-r0)
+#7 2.069 (94/149) Installing pcre2-dev (10.43-r0)
+#7 2.089 (95/149) Installing libuuid (2.40.4-r1)
+#7 2.092 (96/149) Installing libfdisk (2.40.4-r1)
+#7 2.097 (97/149) Installing liblastlog2 (2.40.4-r1)
+#7 2.099 (98/149) Installing libsmartcols (2.40.4-r1)
+#7 2.103 (99/149) Installing sqlite (3.48.0-r2)
+#7 2.120 (100/149) Installing sqlite-dev (3.48.0-r2)
+#7 2.126 (101/149) Installing util-linux-dev (2.40.4-r1)
+#7 2.131 (102/149) Installing glib-dev (2.82.5-r0)
+#7 2.224 (103/149) Installing cairo-dev (1.18.4-r0)
+#7 2.232 (104/149) Installing libstdc++-dev (14.2.0-r4)
+#7 2.396 (105/149) Installing jansson (2.14-r4)
+#7 2.398 (106/149) Installing zstd-libs (1.5.6-r2)
+#7 2.409 (107/149) Installing binutils (2.43.1-r3)
+#7 2.483 (108/149) Installing libatomic (14.2.0-r4)
+#7 2.485 (109/149) Installing gmp (6.3.0-r2)
+#7 2.491 (110/149) Installing isl26 (0.26-r1)
+#7 2.507 (111/149) Installing mpfr4 (4.2.1-r0)
+#7 2.514 (112/149) Installing mpc1 (1.3.1-r1)
+#7 2.517 (113/149) Installing gcc (14.2.0-r4)
+#7 3.306 (114/149) Installing musl-dev (1.2.5-r9)
+#7 3.368 (115/149) Installing g++ (14.2.0-r4)
+#7 3.620 (116/149) Installing giflib (5.2.2-r1)
+#7 3.623 (117/149) Installing giflib-dev (5.2.2-r1)
+#7 3.626 (118/149) Installing libjpeg-turbo (3.0.4-r0)
+#7 3.632 (119/149) Installing libturbojpeg (3.0.4-r0)
+#7 3.642 (120/149) Installing libjpeg-turbo-dev (3.0.4-r0)
+#7 3.647 (121/149) Installing jpeg-dev (9f-r0)
+#7 3.647 (122/149) Installing make (4.4.1-r2)
+#7 3.651 (123/149) Installing libxft (2.3.8-r3)
+#7 3.654 (124/149) Installing graphite2 (1.3.14-r6)
+#7 3.658 (125/149) Installing harfbuzz (9.0.0-r1)
+#7 3.669 (126/149) Installing fribidi (1.0.16-r0)
+#7 3.673 (127/149) Installing pango (1.54.0-r1)
+#7 3.681 (128/149) Installing pango-tools (1.54.0-r1)
+#7 3.684 (129/149) Installing fribidi-dev (1.0.16-r0)
+#7 3.690 (130/149) Installing harfbuzz-cairo (9.0.0-r1)
+#7 3.694 (131/149) Installing harfbuzz-gobject (9.0.0-r1)
+#7 3.697 (132/149) Installing icu-data-en (74.2-r1)
+#7 3.716 Executing icu-data-en-74.2-r1.post-install
+#7 3.720 *
+#7 3.720 * If you need ICU with non-English locales and legacy charset support, install
+#7 3.720 * package icu-data-full.
+#7 3.720 *
+#7 3.720 (133/149) Installing icu-libs (74.2-r1)
+#7 3.755 (134/149) Installing harfbuzz-icu (9.0.0-r1)
+#7 3.758 (135/149) Installing harfbuzz-subset (9.0.0-r1)
+#7 3.770 (136/149) Installing graphite2-dev (1.3.14-r6)
+#7 3.774 (137/149) Installing icu (74.2-r1)
+#7 3.870 (138/149) Installing icu-dev (74.2-r1)
+#7 3.919 (139/149) Installing harfbuzz-dev (9.0.0-r1)
+#7 3.932 (140/149) Installing libxft-dev (2.3.8-r3)
+#7 3.936 (141/149) Installing pango-dev (1.54.0-r1)
+#7 3.949 (142/149) Installing libsigc++3 (3.6.0-r0)
+#7 3.953 (143/149) Installing cairomm1.16 (1.16.2-r1)
+#7 3.956 (144/149) Installing glibmm (2.82.0-r0)
+#7 3.972 (145/149) Installing pangomm (2.50.1-r4)
+#7 3.976 (146/149) Installing libsigc++3-dev (3.6.0-r0)
+#7 3.984 (147/149) Installing cairomm1.16-dev (1.16.2-r1)
+#7 3.992 (148/149) Installing glibmm-dev (2.82.0-r0)
+#7 4.048 (149/149) Installing pangomm-dev (2.50.1-r4)
+#7 4.060 Executing busybox-1.37.0-r12.trigger
+#7 4.067 Executing glib-2.82.5-r0.trigger
+#7 4.071 No schema files found: doing nothing.
+#7 4.279 OK: 383 MiB in 166 packages
+#7 DONE 5.6s
+#8 [3/7] WORKDIR /app
+#8 DONE 0.1s
+#9 [4/7] COPY package*.json ./
+#9 DONE 0.0s
+#10 [5/7] RUN npm ci --only=production
+#10 0.176 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#10 48.72 
+#10 48.72 added 407 packages, and audited 408 packages in 49s
+#10 48.72 
+#10 48.72 61 packages are looking for funding
+#10 48.72   run `npm fund` for details
+#10 48.72 
+#10 48.72 3 low severity vulnerabilities
+#10 48.72 
+#10 48.72 To address all issues, run:
+#10 48.72   npm audit fix
+#10 48.72 
+#10 48.72 Run `npm audit` for details.
+#10 48.72 npm notice
+#10 48.72 npm notice New major version of npm available! 10.8.2 -> 11.5.1
+#10 48.72 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.5.1
+#10 48.72 npm notice To update run: npm install -g npm@11.5.1
+#10 48.72 npm notice
+#10 DONE 48.8s
+#11 [6/7] COPY . .
+#11 DONE 0.4s
+#12 [7/7] RUN npm run build
+#12 0.243 
+#12 0.243 > rest-express@1.0.0 build
+#12 0.243 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+#12 0.243 
+#12 0.248 sh: vite: not found
+#12 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 127
+------
+ > [7/7] RUN npm run build:
+0.243 
+0.243 > rest-express@1.0.0 build
+0.243 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+0.243 
+0.248 sh: vite: not found
+------
+Dockerfile:32
+--------------------
+  30 |     
+  31 |     # Build the application
+  32 | >>> RUN npm run build
+  33 |     
+  34 |     # Expose the port
+--------------------
+error: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 127
