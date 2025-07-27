@@ -65,14 +65,7 @@ export default function EventListScreen({
           {/* Active Events */}
           {activeEvents.length > 0 && (
             <div className="space-y-4">
-              {/* User Name Display */}
-              {currentUser && (
-                <div className="text-center mb-6">
-                  <h3 className="text-4xl font-bold text-yellow-400">
-                    {currentUser.name}
-                  </h3>
-                </div>
-              )}
+
               
               {activeEvents.map(event => (
                 <div key={event.id} className="space-y-3">
