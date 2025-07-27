@@ -134,7 +134,9 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   const formatEventDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return format(date, 'd MMMM yyyy', { locale: it });
+      const formatted = format(date, 'd MMMM yyyy', { locale: it });
+      // Capitalize first letter of month
+      return formatted.replace(/(\d+ )([a-z])/, (match, day, firstLetter) => day + firstLetter.toUpperCase());
     } catch {
       return dateString; // Fallback to original string if parsing fails
     }
@@ -166,7 +168,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
         <h1 className="text-xl font-bold">DIAGONALE</h1>
         <h2 className="text-lg font-semibold mt-4 text-yellow-400">{event.name}</h2>
-        <p className="text-sm text-white/80 mt-1 font-bold">{formatEventDate(event.date)}</p>
+        <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
       </div>
 
       {/* Voting Section */}

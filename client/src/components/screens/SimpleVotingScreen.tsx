@@ -97,7 +97,9 @@ export default function SimpleVotingScreen({
   const formatEventDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return format(date, 'd MMMM yyyy', { locale: it });
+      const formatted = format(date, 'd MMMM yyyy', { locale: it });
+      // Capitalize first letter of month
+      return formatted.replace(/(\d+ )([a-z])/, (match, day, firstLetter) => day + firstLetter.toUpperCase());
     } catch {
       return dateString; // Fallback to original string if parsing fails
     }
@@ -139,7 +141,7 @@ export default function SimpleVotingScreen({
           {/* Event Header */}
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-yellow-400 mb-2">{event.name}</h2>
-            <p className="text-sm text-white/80 font-bold">{formatEventDate(event.date)}</p>
+            <p className="text-sm text-white font-bold">{formatEventDate(event.date)}</p>
           </div>
 
           {/* Wine List */}
