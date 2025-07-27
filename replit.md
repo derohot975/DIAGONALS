@@ -46,6 +46,7 @@ Preferred communication style: Simple, everyday language.
 - **Alcohol Field Validation Fix (27 Luglio 2025 - 12:46)**: Risolto errore validazione campo gradazione alcolica accettando sia numeri che stringhe
 - **User Name Removal (27 Luglio 2025 - 15:02)**: Rimossa visualizzazione nome utente dalla schermata eventi per interfaccia più pulita
 - **Button Centering (27 Luglio 2025 - 15:04)**: Centrato pulsante "Modifica il tuo vino" e aggiornata icona a 🔧
+- **Button Color Update (27 Luglio 2025 - 15:05)**: Aggiornato colore pulsante "Modifica il tuo vino" a bordeaux scuro per coerenza tema
 
 ### Home Page Optimization (18 Luglio 2025 - 14:55)
 - **Icona Admin**: Cambiata da Settings a Shield (scudo) senza container

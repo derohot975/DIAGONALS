@@ -129,7 +129,7 @@ export default function EventListScreen({
                       <div className="mt-3 flex justify-center">
                         <button
                           onClick={() => onEditWine(event.id)}
-                          className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-1"
+                          className="text-sm bg-[#300505] hover:bg-[#8d0303] text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-1"
                         >
                           <span>🔧</span>
                           <span>Modifica il tuo vino</span>
