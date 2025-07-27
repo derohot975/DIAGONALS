@@ -126,12 +126,12 @@ export default function EventListScreen({
                     
                     {/* PULSANTE MODIFICA VINO - Sotto il modal */}
                     {userHasRegisteredWineForEvent(event.id) && (
-                      <div className="mt-3 flex justify-start">
+                      <div className="mt-3 flex justify-center">
                         <button
                           onClick={() => onEditWine(event.id)}
                           className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-1"
                         >
-                          <span>✏️</span>
+                          <span>🔧</span>
                           <span>Modifica il tuo vino</span>
                         </button>
                       </div>
