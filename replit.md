@@ -47,6 +47,7 @@ Preferred communication style: Simple, everyday language.
 - **User Name Removal (27 Luglio 2025 - 15:02)**: Rimossa visualizzazione nome utente dalla schermata eventi per interfaccia più pulita
 - **Button Centering (27 Luglio 2025 - 15:04)**: Centrato pulsante "Modifica il tuo vino" e aggiornata icona a 🔧
 - **Button Color Update (27 Luglio 2025 - 15:05)**: Aggiornato colore pulsante "Modifica il tuo vino" a bordeaux scuro per coerenza tema
+- **Date Format Fix (27 Luglio 2025 - 15:08)**: Assicurata iniziale maiuscola per i nomi dei mesi nelle date (es. "4 Agosto 2025")
 
 ### Home Page Optimization (18 Luglio 2025 - 14:55)
 - **Icona Admin**: Cambiata da Settings a Shield (scudo) senza container
