@@ -8,7 +8,7 @@ DIAGONALE is a mobile-only web application for blind wine tasting events, optimi
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (July 27, 2025 - Updated 02:36)
+## Recent Changes (July 27, 2025 - Updated 12:46)
 
 ### Database & Core System
 - **Supabase Migration Completed**: Successfully migrated from in-memory to Supabase PostgreSQL 
@@ -42,6 +42,8 @@ Preferred communication style: Simple, everyday language.
 - **Report Optimization**: Removed participant rankings and summary stats, showing only wine rankings (26 Luglio 2025)
 - **Historic Events Styling**: "STORICO EVENTI" centered in white, bordeaux background boxes with clean layout
 - **Event Deletion Enhancement (27 Luglio 2025)**: Aggiunto pulsante ELIMINA (cestino) negli eventi completati con eliminazione cascata completa di tutti i dati collegati (vini, voti, report)
+- **Database Connection Fix (27 Luglio 2025 - 12:05)**: Risolto problema connessione database passando da Neon WebSocket a driver PostgreSQL standard 
+- **Alcohol Field Validation Fix (27 Luglio 2025 - 12:46)**: Risolto errore validazione campo gradazione alcolica accettando sia numeri che stringhe
 
 ### Home Page Optimization (18 Luglio 2025 - 14:55)
 - **Icona Admin**: Cambiata da Settings a Shield (scudo) senza container

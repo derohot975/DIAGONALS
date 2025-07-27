@@ -70,6 +70,11 @@ export const insertWineEventSchema = createInsertSchema(wineEvents).omit({
 export const insertWineSchema = createInsertSchema(wines).omit({
   id: true,
   createdAt: true,
+}).extend({
+  alcohol: z.union([z.string(), z.number()]).optional().transform((val) => {
+    if (val === null || val === undefined) return undefined;
+    return typeof val === 'number' ? val.toString() : val;
+  })
 });
 
 export const insertVoteSchema = createInsertSchema(votes).omit({
