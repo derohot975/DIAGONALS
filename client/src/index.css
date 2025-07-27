@@ -89,25 +89,10 @@
     will-change: transform;
   }
   
-  /* Mobile: elimina barra bianca superiore */
-  @supports (padding: max(0px)) {
-    .mobile-safe-area {
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-  }
-  
   /* PWA: schermo intero su mobile */
   @media (display-mode: standalone) {
     body {
       background-attachment: fixed;
-    }
-  }
-  
-  /* iPhone notch support */
-  @supports (padding: env(safe-area-inset-top)) {
-    .mobile-header {
-      padding-top: calc(env(safe-area-inset-top) + 1rem);
     }
   }
 }
