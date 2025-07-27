@@ -151,8 +151,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteWineEvent(id: number): Promise<boolean> {
-    const result = await db.delete(wineEvents).where(eq(wineEvents.id, id));
-    return (result.rowCount ?? 0) > 0;
+    try {
+      // Prima elimina tutti i voti collegati ai vini dell'evento
+      const eventWines = await db.select().from(wines).where(eq(wines.eventId, id));
+      
+      for (const wine of eventWines) {
+        await db.delete(votes).where(eq(votes.wineId, wine.id));
+      }
+      
+      // Poi elimina tutti i vini dell'evento
+      await db.delete(wines).where(eq(wines.eventId, id));
+      
+      // Elimina i report dell'evento se esistono
+      await db.delete(eventReports).where(eq(eventReports.eventId, id));
+      
+      // Infine elimina l'evento stesso
+      const result = await db.delete(wineEvents).where(eq(wineEvents.id, id));
+      return (result.rowCount ?? 0) > 0;
+    } catch (error) {
+      console.error('Error deleting wine event:', error);
+      return false;
+    }
   }
 
 
