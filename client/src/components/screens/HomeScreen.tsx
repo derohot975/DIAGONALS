@@ -26,7 +26,7 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
   };
 
   return (
-    <div className="flex-1 flex flex-col p-2 h-screen">
+    <div className="flex-1 flex flex-col p-2 h-screen relative">
       <div className="w-full max-w-md mx-auto animate-fade-in flex flex-col h-full">
         {/* Header fisso con logo */}
         <div className="text-center mb-2 flex-shrink-0">
@@ -55,8 +55,8 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
           </div>
         )}
 
-        {/* Area scrollabile per i pulsanti utenti */}
-        <div className="flex-1 overflow-y-auto mb-2 min-h-0 overscroll-contain scroll-container">
+        {/* Area scrollabile per i pulsanti utenti - lascia spazio per il pulsante admin */}
+        <div className="flex-1 overflow-y-auto mb-2 min-h-0 overscroll-contain scroll-container pb-20">
           {regularUsers.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
               Nessun iscritto registrato. Aggiungi il primo utente per iniziare!
@@ -86,22 +86,22 @@ export default function HomeScreen({ users, onUserSelect, onShowAdmin, sessionEr
           )}
         </div>
 
-        {/* Admin Button fisso in basso - sempre visibile */}
-        <div className="flex justify-center flex-shrink-0 pt-2 pb-safe-area-inset-bottom">
-          <button
-            onClick={handleAdminClick}
-            className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium bg-black/20 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20"
-          >
-            <Shield className="w-5 h-5" />
-            <span>Admin</span>
-          </button>
-        </div>
-
         <AdminPinModal
           isOpen={showPinModal}
           onClose={() => setShowPinModal(false)}
           onSuccess={handlePinSuccess}
         />
+      </div>
+
+      {/* Admin Button FISSO in posizione assoluta in fondo */}
+      <div className="fixed bottom-4 left-0 right-0 flex justify-center z-50">
+        <button
+          onClick={handleAdminClick}
+          className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors text-base font-medium bg-black/30 rounded-full px-6 py-3 backdrop-blur-md border border-white/30 shadow-xl"
+        >
+          <Shield className="w-5 h-5" />
+          <span>Admin</span>
+        </button>
       </div>
     </div>
   );
