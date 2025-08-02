@@ -33,7 +33,7 @@ Preferred communication style: Simple, everyday language.
 - **Animations**: Subtle logo glow, smooth transitions, and hover effects.
 - **Reporting**: Focus on wine rankings and individual votes, simplifying results display.
 - **Authentication UI**: Clean interface with PIN-only login mode and dual-field registration mode. No titles above modals. Always resets to authentication screen on app reload/restart.
-- **Streamlined Navigation**: Direct redirect to events list after authentication, eliminating traditional home screen.
+- **Streamlined Navigation**: Direct redirect to events list after authentication, eliminating traditional home screen. All "Home" buttons throughout the app consistently navigate to the events page.
 - **Voting Interface**: Horizontal cards with "Vino di [User]", touch-friendly chevron arrows for decimal votes (0.5 steps), and persistent vote badges.
 
 ### Core Features
