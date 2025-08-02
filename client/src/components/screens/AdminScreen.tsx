@@ -12,9 +12,10 @@ interface AdminScreenProps {
   onShowEditUserModal: (user: User) => void;
   onDeleteUser: (userId: number) => void;
   onGoBack: () => void;
+  onGoHome?: () => void;
 }
 
-export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack }: AdminScreenProps) {
+export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack, onGoHome }: AdminScreenProps) {
   const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(false);
 
   useEffect(() => {
@@ -137,15 +138,17 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
         </button>
       </div>
       
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={onGoBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-          title="Torna alla Home"
-        >
-          <Home className="w-5 h-5" />
-        </button>
-      </div>
+      {onGoHome && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={onGoHome}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+            title="Torna alla Home"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

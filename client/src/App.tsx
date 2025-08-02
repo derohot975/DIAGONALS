@@ -809,7 +809,8 @@ function App() {
             onShowEventList={() => setCurrentScreen('adminEvents')}
             onShowEditUserModal={handleShowEditUserModal}
             onDeleteUser={handleDeleteUser}
-            onGoBack={() => setCurrentScreen('auth')}
+            onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('events')}
           />
         );
       case 'events':
