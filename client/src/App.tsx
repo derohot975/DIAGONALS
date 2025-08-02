@@ -610,19 +610,19 @@ function App() {
   };
 
   const handleShowAddUserModal = () => {
-    requireAdminPin('add-user', () => setShowAddUserModal(true));
+    setShowAddUserModal(true);
   };
 
   const handleShowCreateEventModal = () => {
-    requireAdminPin('create-event', () => setShowCreateEventModal(true));
+    setShowCreateEventModal(true);
   };
 
   const handleShowAdminEvents = () => {
-    requireAdminPin('admin-events', () => setCurrentScreen('adminEvents'));
+    setCurrentScreen('adminEvents');
   };
 
   const handleShowChangeAdminPin = () => {
-    requireAdminPin('change-admin-pin', () => setShowChangeAdminPinModal(true));
+    setShowChangeAdminPinModal(true);
   };
 
   const handleChangeAdminPin = (newPin: string) => {
@@ -649,18 +649,14 @@ function App() {
   };
 
   const handleEditEvent = (event: WineEvent) => {
-    requireAdminPin('edit-event', () => {
-      setEditingEvent(event);
-      setShowEditEventModal(true);
-    });
+    setEditingEvent(event);
+    setShowEditEventModal(true);
   };
 
   const handleDeleteEvent = (eventId: number) => {
-    requireAdminPin('delete-event', () => {
-      if (confirm('Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.')) {
-        deleteEventMutation.mutate(eventId);
-      }
-    });
+    if (confirm('Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.')) {
+      deleteEventMutation.mutate(eventId);
+    }
   };
 
   const handleRegisterWine = (wineData: {
@@ -783,57 +779,49 @@ function App() {
   };
 
   const handleCompleteEvent = (eventId: number) => {
-    requireAdminPin('complete-event', () => {
-      completeEventMutation.mutate(eventId);
-    });
+    completeEventMutation.mutate(eventId);
   };
 
   const handleViewReport = (eventId: number) => {
-    requireAdminPin('view-report', () => {
-      viewReportMutation.mutate(eventId);
-    });
+    viewReportMutation.mutate(eventId);
   };
 
-  const handleActivateVoting = (eventId: number) => {
-    requireAdminPin('activate-voting', async () => {
-      try {
-        await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
-          votingStatus: 'active'
-        });
-        queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-        toast({ 
-          title: 'Votazioni Attivate!', 
-          description: 'Gli utenti possono ora votare i vini.' 
-        });
-      } catch (error) {
-        toast({ 
-          title: 'Errore', 
-          description: 'Impossibile attivare le votazioni.', 
-          variant: 'destructive' 
-        });
-      }
-    });
+  const handleActivateVoting = async (eventId: number) => {
+    try {
+      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+        votingStatus: 'active'
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: 'Votazioni Attivate!', 
+        description: 'Gli utenti possono ora votare i vini.' 
+      });
+    } catch (error) {
+      toast({ 
+        title: 'Errore', 
+        description: 'Impossibile attivare le votazioni.', 
+        variant: 'destructive' 
+      });
+    }
   };
 
-  const handleDeactivateVoting = (eventId: number) => {
-    requireAdminPin('deactivate-voting', async () => {
-      try {
-        await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
-          votingStatus: 'completed'
-        });
-        queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-        toast({ 
-          title: 'Votazioni Completate!', 
-          description: 'Gli utenti vedranno ora i risultati finali.' 
-        });
-      } catch (error) {
-        toast({ 
-          title: 'Errore', 
-          description: 'Impossibile completare le votazioni.', 
-          variant: 'destructive' 
-        });
-      }
-    });
+  const handleDeactivateVoting = async (eventId: number) => {
+    try {
+      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+        votingStatus: 'completed'
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: 'Votazioni Completate!', 
+        description: 'Gli utenti vedranno ora i risultati finali.' 
+      });
+    } catch (error) {
+      toast({ 
+        title: 'Errore', 
+        description: 'Impossibile completare le votazioni.', 
+        variant: 'destructive' 
+      });
+    }
   };
 
   const handleShowResults = (eventId: number) => {
@@ -842,10 +830,8 @@ function App() {
   };
 
   const handleShowEditUserModal = (user: User) => {
-    requireAdminPin('edit-user', () => {
-      setEditingUser(user);
-      setShowEditUserModal(true);
-    });
+    setEditingUser(user);
+    setShowEditUserModal(true);
   };
 
   const handleUpdateUser = (id: number, name: string, isAdmin: boolean) => {
@@ -855,11 +841,9 @@ function App() {
   };
 
   const handleDeleteUser = (userId: number) => {
-    requireAdminPin('delete-user', () => {
-      if (window.confirm('Sei sicuro di voler eliminare questo utente?')) {
-        deleteUserMutation.mutate(userId);
-      }
-    });
+    if (window.confirm('Sei sicuro di voler eliminare questo utente?')) {
+      deleteUserMutation.mutate(userId);
+    }
   };
 
   // Get current event
