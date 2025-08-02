@@ -63,7 +63,7 @@ export default function EventListScreen({
       {/* Welcome Message */}
       {currentUser && (
         <div className="flex-shrink-0 text-center pb-6">
-          <h2 className="text-2xl font-bold text-yellow-400">
+          <h2 className="text-2xl font-bold text-yellow-200">
             Ciao {currentUser.name}!
           </h2>
         </div>
