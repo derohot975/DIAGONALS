@@ -44,73 +44,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Session management routes
-  app.post("/api/users/:id/login", async (req, res) => {
+  // Authentication routes
+  app.post("/api/auth/login", async (req, res) => {
     try {
-      const userId = parseInt(req.params.id);
-      const user = await storage.checkUserSession(userId);
+      const { name, pin } = req.body;
+      
+      if (!name || !pin) {
+        res.status(400).json({ message: "Nome e PIN sono richiesti" });
+        return;
+      }
+
+      const user = await storage.authenticateUser(name, pin);
       
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        res.status(401).json({ message: "Nome utente o PIN non validi" });
         return;
       }
 
-      // Check unique session setting from header (passed from frontend)
-      const uniqueSessionEnabled = req.headers['x-unique-session-enabled'] !== 'false';
-      
-      // Check if user is already logged in from another device (only if enabled)
-      if (uniqueSessionEnabled && user.sessionId) {
-        // Check if session is still active (less than 5 minutes of inactivity)
-        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-        if (user.lastActivity && user.lastActivity > fiveMinutesAgo) {
-          res.status(409).json({ 
-            message: "Utente già connesso da un altro dispositivo. Disconnetti prima di continuare.",
-            activeSession: true 
-          });
-          return;
-        }
-      }
-
-      // Generate new session ID
-      const sessionId = nanoid();
-      const updatedUser = await storage.updateUserSession(userId, sessionId);
-      
-      res.json({ 
-        user: updatedUser, 
-        sessionId,
-        message: "Login effettuato con successo"
-      });
+      res.json({ user, message: "Login effettuato con successo" });
     } catch (error) {
-      res.status(500).json({ message: "Failed to login user" });
+      res.status(500).json({ message: "Errore durante il login" });
     }
   });
 
-  app.post("/api/users/:id/logout", async (req, res) => {
+  app.post("/api/auth/register", async (req, res) => {
     try {
-      const userId = parseInt(req.params.id);
-      await storage.clearUserSession(userId);
-      res.json({ message: "Logout effettuato con successo" });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to logout user" });
-    }
-  });
-
-  app.post("/api/users/:id/heartbeat", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.id);
-      const { sessionId } = req.body;
+      const { name, pin } = req.body;
       
-      const user = await storage.checkUserSession(userId);
-      if (!user || user.sessionId !== sessionId) {
-        res.status(401).json({ message: "Sessione non valida" });
+      if (!name || !pin) {
+        res.status(400).json({ message: "Nome e PIN sono richiesti" });
         return;
       }
 
-      // Update last activity
-      await storage.updateUserSession(userId, sessionId);
-      res.json({ message: "Heartbeat updated" });
+      if (name.length > 10) {
+        res.status(400).json({ message: "Il nome non può superare i 10 caratteri" });
+        return;
+      }
+
+      if (!/^\d{4}$/.test(pin)) {
+        res.status(400).json({ message: "Il PIN deve essere di 4 cifre" });
+        return;
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByName(name);
+      if (existingUser) {
+        res.status(409).json({ message: "Nome utente già esistente" });
+        return;
+      }
+
+      const userData = { name, pin, isAdmin: false };
+      const user = await storage.createUser(userData);
+      
+      res.status(201).json({ user, message: "Registrazione completata con successo" });
     } catch (error) {
-      res.status(500).json({ message: "Failed to update heartbeat" });
+      res.status(500).json({ message: "Errore durante la registrazione" });
     }
   });
 

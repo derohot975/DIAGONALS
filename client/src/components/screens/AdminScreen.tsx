@@ -74,24 +74,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             <span>Nuovo Evento</span>
           </button>
 
-          {/* 3. ACCESSO UNICO */}
-          <button
-            onClick={toggleUniqueSession}
-            className={`w-full font-medium py-3 px-4 rounded-xl border-2 transition-all relative flex items-center justify-center ${
-              uniqueSessionEnabled
-                ? 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200'
-                : 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200'
-            }`}
-          >
-            <span>Accesso Unico</span>
-            <span className={`absolute right-4 text-xs font-bold px-2 py-1 rounded-full ${
-              uniqueSessionEnabled
-                ? 'bg-green-200 text-green-800'
-                : 'bg-red-200 text-red-800'
-            }`}>
-              {uniqueSessionEnabled ? 'ON' : 'OFF'}
-            </span>
-          </button>
+
 
           {/* 4. AGGIUNGI UTENTE */}
           <button

@@ -13,10 +13,8 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   getUsersByEventId(eventId: number): Promise<User[]>;
   
-  // Session management
-  updateUserSession(userId: number, sessionId: string): Promise<User | undefined>;
-  checkUserSession(userId: number): Promise<User | undefined>;
-  clearUserSession(userId: number): Promise<void>;
+  // PIN authentication
+  authenticateUser(name: string, pin: string): Promise<User | undefined>;
   
   // Wine Event operations
   getWineEvent(id: number): Promise<WineEvent | undefined>;
@@ -72,29 +70,14 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserSession(userId: number, sessionId: string): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ sessionId, lastActivity: new Date() })
-      .where(eq(users.id, userId))
-      .returning();
-    return user;
+  async authenticateUser(name: string, pin: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(
+      and(eq(users.name, name), eq(users.pin, pin))
+    );
+    return user || undefined;
   }
 
-  async checkUserSession(userId: number): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
-    return user;
-  }
 
-  async clearUserSession(userId: number): Promise<void> {
-    await db
-      .update(users)
-      .set({ sessionId: null, lastActivity: null })
-      .where(eq(users.id, userId));
-  }
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users);

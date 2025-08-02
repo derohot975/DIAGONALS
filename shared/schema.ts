@@ -5,9 +5,8 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  pin: text("pin").notNull(), // PIN a 4 cifre per autenticazione
   isAdmin: boolean("is_admin").default(false).notNull(),
-  sessionId: text("session_id"),
-  lastActivity: timestamp("last_activity"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

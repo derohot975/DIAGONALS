@@ -14,6 +14,7 @@ import AdminEventManagementScreen from './components/screens/AdminEventManagemen
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
 import SimpleVotingScreen from './components/screens/SimpleVotingScreen';
+import AuthScreen from './components/screens/AuthScreen';
 
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
@@ -24,12 +25,14 @@ import EventReportModal from './components/modals/EventReportModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
-type Screen = 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
+type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('auth');
   const [currentUser, setCurrentUser] = useLocalStorage<User | null>('diagonale_current_user', null);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
   const [sessionId, setSessionId] = useLocalStorage<string | null>('diagonale_session_id', null);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -48,6 +51,61 @@ function App() {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Authentication functions
+  const handleLogin = async (name: string, pin: string) => {
+    setAuthLoading(true);
+    setAuthError(null);
+    
+    try {
+      const response = await apiRequest('POST', '/api/auth/login', { name, pin });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setAuthError(data.message || 'Errore durante il login');
+        return;
+      }
+      
+      setCurrentUser(data.user);
+      setCurrentScreen('home');
+      toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
+    } catch (error) {
+      setAuthError('Errore di connessione');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleRegister = async (name: string, pin: string) => {
+    setAuthLoading(true);
+    setAuthError(null);
+    
+    try {
+      const response = await apiRequest('POST', '/api/auth/register', { name, pin });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setAuthError(data.message || 'Errore durante la registrazione');
+        return;
+      }
+      
+      setCurrentUser(data.user);
+      setCurrentScreen('home');
+      toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    } catch (error) {
+      setAuthError('Errore di connessione');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Auto-login if user exists in localStorage
+  useEffect(() => {
+    if (currentUser && currentScreen === 'auth') {
+      setCurrentScreen('home');
+    }
+  }, [currentUser, currentScreen]);
 
   // Queries
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
@@ -714,17 +772,39 @@ function App() {
 
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'home':
+      case 'auth':
         return (
-          <HomeScreen
+          <AuthScreen
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            onGoBack={() => setCurrentScreen('home')}
+            isLoading={authLoading}
+            error={authError}
+          />
+        );
+      case 'home':
+        return currentUser ? (
+          <EventListScreen
+            events={events as WineEvent[]}
             users={users}
-            onUserSelect={handleUserSelect}
-            onShowAdmin={() => setCurrentScreen('admin')}
-            sessionError={sessionError}
-            onForceLogout={() => {
-              setSessionError(null);
-              // Force logout logic if needed
+            currentUser={currentUser}
+            wines={wines}
+            votes={votes}
+            onGoBack={() => {
+              setCurrentUser(null);
+              setCurrentScreen('auth');
             }}
+            onWineRegistration={handleShowWineRegistration}
+            onEventParticipation={handleParticipateEvent}
+            onWineEdit={handleEditWine}
+          />
+        ) : (
+          <AuthScreen
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            onGoBack={() => setCurrentScreen('auth')}
+            isLoading={authLoading}
+            error={authError}
           />
         );
       case 'admin':
