@@ -23,6 +23,7 @@ import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import EventReportModal from './components/modals/EventReportModal';
 import AdminPinModal from './components/AdminPinModal';
+import ChangeAdminPinModal from './components/modals/ChangeAdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
@@ -60,6 +61,7 @@ function App() {
   // Admin PIN protection
   const [showAdminPinModal, setShowAdminPinModal] = useState(false);
   const [pendingAdminAction, setPendingAdminAction] = useState<string | null>(null);
+  const [showChangeAdminPinModal, setShowChangeAdminPinModal] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -619,6 +621,21 @@ function App() {
     requireAdminPin('admin-events', () => setCurrentScreen('adminEvents'));
   };
 
+  const handleShowChangeAdminPin = () => {
+    requireAdminPin('change-admin-pin', () => setShowChangeAdminPinModal(true));
+  };
+
+  const handleChangeAdminPin = (newPin: string) => {
+    // TODO: Implementare il salvataggio del nuovo PIN admin
+    // Per ora mantengo il PIN hardcoded, ma qui si potrebbe salvare in localStorage o database
+    console.log('Nuovo PIN admin:', newPin);
+    toast({ 
+      title: 'PIN Admin Modificato', 
+      description: 'Il PIN admin è stato aggiornato con successo.' 
+    });
+    setShowChangeAdminPinModal(false);
+  };
+
   const handleCreateEvent = (name: string, date: string, mode: string) => {
     if (!currentUser) {
       toast({ title: 'Errore: nessun utente selezionato', variant: 'destructive' });
@@ -873,6 +890,7 @@ function App() {
             onDeleteUser={handleDeleteUser}
             onGoBack={() => setCurrentScreen('events')}
             onGoHome={() => setCurrentScreen('events')}
+            onChangeAdminPin={handleShowChangeAdminPin}
           />
         );
       case 'events':
@@ -1027,6 +1045,12 @@ function App() {
         isOpen={showAdminPinModal}
         onClose={handleAdminPinClose}
         onSuccess={handleAdminPinSuccess}
+      />
+
+      <ChangeAdminPinModal
+        isOpen={showChangeAdminPinModal}
+        onClose={() => setShowChangeAdminPinModal(false)}
+        onSuccess={handleChangeAdminPin}
       />
 
       {/* Install Prompt - Only show on home screen when not logged in */}

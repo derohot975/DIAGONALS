@@ -1,4 +1,4 @@
-import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight } from 'lucide-react';
+import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight, Key } from 'lucide-react';
 // CACHE BREAKER v2.1
 import { User } from '@shared/schema';
 import { useState, useEffect } from 'react';
@@ -13,9 +13,10 @@ interface AdminScreenProps {
   onDeleteUser: (userId: number) => void;
   onGoBack: () => void;
   onGoHome?: () => void;
+  onChangeAdminPin?: () => void;
 }
 
-export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack, onGoHome }: AdminScreenProps) {
+export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack, onGoHome, onChangeAdminPin }: AdminScreenProps) {
   const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(false);
 
   useEffect(() => {
@@ -75,7 +76,16 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             <span>Nuovo Evento</span>
           </button>
 
-
+          {/* 3. MODIFICA PIN ADMIN */}
+          {onChangeAdminPin && (
+            <button
+              onClick={onChangeAdminPin}
+              className="w-full bg-white hover:bg-gray-50 text-black font-medium py-3 px-4 rounded-xl border-2 border-[hsl(229,73%,69%)]/20 transition-colors flex items-center justify-center space-x-2"
+            >
+              <Key className="w-4 h-4" />
+              <span>Modifica PIN Admin</span>
+            </button>
+          )}
 
           {/* 4. AGGIUNGI UTENTE */}
           <button
