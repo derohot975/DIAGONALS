@@ -80,17 +80,6 @@ export default function EventListScreen({
               
               {activeEvents.map(event => (
                 <div key={event.id} className="space-y-3">
-                  {/* MESSAGGIO SUCCESSO - SOPRA IL CONTAINER BIANCO */}
-                  {userHasRegisteredWineForEvent(event.id) && (
-                    <div className="text-center py-2">
-                      <div className="flex items-center justify-center space-x-2">
-                        <span className="text-xl animate-bounce">⭐</span>
-                        <span className="text-yellow-400 font-bold text-base">REGISTRATO CON SUCCESSO!</span>
-                        <span className="text-xl animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
-                      </div>
-                    </div>
-                  )}
-                  
                   <div className="glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
                     {/* Date e Event Name - Data sopra, nome sotto */}
                     <div className="text-center mb-4">
@@ -100,6 +89,17 @@ export default function EventListScreen({
                       <h3 className="font-bold text-[#300505] leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-xl">
                         {event.name}
                       </h3>
+                      
+                      {/* MESSAGGIO SUCCESSO - DENTRO IL MODAL SOTTO IL NOME */}
+                      {userHasRegisteredWineForEvent(event.id) && (
+                        <div className="mt-3">
+                          <div className="flex items-center justify-center space-x-2">
+                            <span className="text-lg animate-bounce">⭐</span>
+                            <span className="text-green-600 font-bold text-sm">REGISTRATO CON SUCCESSO!</span>
+                            <span className="text-lg animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* PULSANTE UNICO CONDIZIONALE */}
