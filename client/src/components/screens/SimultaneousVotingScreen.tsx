@@ -132,10 +132,10 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
   const eventWines = wines
     .filter((wine: Wine) => wine.eventId === event.id)
     .sort((a, b) => {
-      // Ordine: Bollicina < Bianco < Rosso
-      const typeOrder = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3 };
-      const aOrder = typeOrder[a.type as keyof typeof typeOrder] || 4;
-      const bOrder = typeOrder[b.type as keyof typeof typeOrder] || 4;
+      // Ordine: Bollicina < Bianco < Rosso < Altro
+      const typeOrder = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3, 'Altro': 4 };
+      const aOrder = typeOrder[a.type as keyof typeof typeOrder] || 5;
+      const bOrder = typeOrder[b.type as keyof typeof typeOrder] || 5;
       
       if (aOrder !== bOrder) {
         return aOrder - bOrder;

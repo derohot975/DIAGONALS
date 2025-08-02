@@ -148,6 +148,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               <option value="Bianco">Bianco</option>
               <option value="Rosso">Rosso</option>
               <option value="Bollicina">Bollicina</option>
+              <option value="Altro">Altro</option>
             </select>
           </div>
 
