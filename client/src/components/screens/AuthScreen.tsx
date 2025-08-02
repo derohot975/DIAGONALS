@@ -103,9 +103,7 @@ export default function AuthScreen({
                     maxLength={10}
                     required
                   />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {name.length}/10 caratteri
-                  </div>
+
                 </div>
               )}
 
