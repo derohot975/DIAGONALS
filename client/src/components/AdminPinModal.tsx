@@ -21,11 +21,6 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
     }
   };
 
-  const handleClear = () => {
-    setPin('');
-    setError('');
-  };
-
   const handleConfirm = () => {
     if (pin === ADMIN_PIN) {
       onSuccess();
@@ -87,12 +82,7 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
           ))}
           
           {/* Bottom row */}
-          <button
-            onClick={handleClear}
-            className="h-16 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl text-sm font-medium text-red-600 transition-all duration-200 active:scale-95"
-          >
-            Clear
-          </button>
+          <div></div>
           
           <button
             onClick={() => handleNumberClick('0')}
