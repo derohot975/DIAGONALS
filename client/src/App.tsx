@@ -7,7 +7,7 @@ import { apiRequest } from './lib/queryClient';
 
 // Components
 import SplashScreen from './components/screens/SplashScreen';
-import HomeScreen from './components/screens/HomeScreen';
+
 import AdminScreen from './components/screens/AdminScreen';
 import EventListScreen from './components/screens/EventListScreen';
 import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
@@ -67,7 +67,7 @@ function App() {
       }
       
       setCurrentUser(data.user);
-      setCurrentScreen('home');
+      setCurrentScreen('events');
       toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
     } catch (error) {
       setAuthError('Errore di connessione');
@@ -90,7 +90,7 @@ function App() {
       }
       
       setCurrentUser(data.user);
-      setCurrentScreen('home');
+      setCurrentScreen('events');
       toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
       queryClient.invalidateQueries({ queryKey: ['/api/users'] });
     } catch (error) {
@@ -777,24 +777,13 @@ function App() {
           <AuthScreen
             onLogin={handleLogin}
             onRegister={handleRegister}
-            onGoBack={() => setCurrentScreen('home')}
+            onGoBack={() => setCurrentScreen('auth')}
             onShowAdmin={() => setCurrentScreen('admin')}
             isLoading={authLoading}
             error={authError}
           />
         );
-      case 'home':
-        return (
-          <HomeScreen
-            users={users}
-            onUserSelect={handleUserSelect}
-            onShowAdmin={() => setCurrentScreen('admin')}
-            sessionError={sessionError}
-            onForceLogout={() => {
-              setSessionError(null);
-            }}
-          />
-        );
+
       case 'admin':
         return (
           <AdminScreen
@@ -804,7 +793,7 @@ function App() {
             onShowEventList={() => setCurrentScreen('adminEvents')}
             onShowEditUserModal={handleShowEditUserModal}
             onDeleteUser={handleDeleteUser}
-            onGoBack={() => setCurrentScreen('home')}
+            onGoBack={() => setCurrentScreen('auth')}
           />
         );
       case 'events':
@@ -817,7 +806,7 @@ function App() {
             votes={votes}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
-            onGoBack={() => setCurrentScreen('home')}
+            onGoBack={() => setCurrentScreen('auth')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
@@ -837,7 +826,7 @@ function App() {
             onDeactivateVoting={handleDeactivateVoting}
             onCompleteEvent={handleCompleteEvent}
             onViewReport={handleViewReport}
-            onGoHome={() => setCurrentScreen('home')}
+            onGoHome={() => setCurrentScreen('events')}
           />
         );
       case 'voting':
@@ -846,7 +835,7 @@ function App() {
             event={currentEvent}
             currentUser={currentUser}
             onBack={() => setCurrentScreen('events')}
-            onHome={() => setCurrentScreen('home')}
+            onHome={() => setCurrentScreen('events')}
           />
         ) : null;
       case 'eventDetails':
@@ -863,7 +852,7 @@ function App() {
             onShowResults={handleShowResults}
             onParticipateEvent={handleParticipateEvent}
             onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('home')}
+            onGoHome={() => setCurrentScreen('events')}
           />
         );
       case 'eventResults':
@@ -872,7 +861,7 @@ function App() {
             event={currentEvent}
             results={results}
             onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('home')}
+            onGoHome={() => setCurrentScreen('events')}
           />
         );
 

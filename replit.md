@@ -32,16 +32,18 @@ Preferred communication style: Simple, everyday language.
 - **Color Palette**: Dark bordeaux/red theme.
 - **Animations**: Subtle logo glow, smooth transitions, and hover effects.
 - **Reporting**: Focus on wine rankings and individual votes, simplifying results display.
-- **Session Management UI**: Clear error messages for concurrent login attempts, "ATTENDI ATTIVAZIONE VOTAZIONI" button state.
+- **Authentication UI**: Clean interface with PIN-only login mode and dual-field registration mode. No titles above modals.
+- **Streamlined Navigation**: Direct redirect to events list after authentication, eliminating traditional home screen.
 - **Voting Interface**: Horizontal cards with "Vino di [User]", touch-friendly chevron arrows for decimal votes (0.5 steps), and persistent vote badges.
 
 ### Core Features
+- **PIN-Based Authentication**: 4-digit PIN system for secure user identification. Login requires only PIN, registration requires username + PIN.
 - **Event Management**: Creation, activation, and completion of wine tasting events, with clear separation of active and historic events.
 - **Wine Registration**: Modal system for 7 wine fields (type, name, producer, grape, year, origin, price) with auto-formatting and smart capitalization.
 - **Voting System**: Simultaneous voting with numerical scores (1.0-10.0 in 0.5 steps). Admin controls "AVVIA VOTAZIONI" and "FERMA VOTAZIONI".
 - **Results Display**: Comprehensive results with wine rankings, scores, and individual votes.
 - **User Management**: Simplified user management without traditional admin roles; all users are participants. Open access to the admin panel.
-- **Session Control**: Prevents simultaneous access from multiple devices, tracks `sessionId` and `lastActivity`, with 5-minute inactivity auto-expiry.
+- **Direct Event Access**: Users are redirected directly to events list after authentication, bypassing the old home screen.
 
 ## External Dependencies
 
