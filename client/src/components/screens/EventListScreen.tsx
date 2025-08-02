@@ -1,4 +1,4 @@
-import { Calendar, BarChart3 } from 'lucide-react';
+import { Calendar, BarChart3, Shield, LogOut } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -12,7 +12,8 @@ interface EventListScreenProps {
   votes: Vote[];
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
-
+  onShowAdmin?: () => void;
+  onLogout?: () => void;
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
   onVoteForWine: (wineId: number, score: number, hasLode: boolean) => void;
@@ -27,7 +28,8 @@ export default function EventListScreen({
   votes,
   onShowEventDetails, 
   onShowEventResults,
-
+  onShowAdmin,
+  onLogout,
   onRegisterWine,
   onParticipateEvent,
   onVoteForWine,
@@ -182,6 +184,28 @@ export default function EventListScreen({
           )}
         </div>
         
+        {/* Pulsanti in basso */}
+        <div className="fixed bottom-4 left-4 right-4 z-50 flex justify-between">
+          {/* Pulsante Logout a sinistra */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          )}
+          
+          {/* Pulsante Admin a destra */}
+          {onShowAdmin && (
+            <button
+              onClick={onShowAdmin}
+              className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+            >
+              <Shield className="w-5 h-5" />
+            </button>
+          )}
+        </div>
 
       </div>
     </div>

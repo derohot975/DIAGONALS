@@ -59,6 +59,15 @@ function App() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Logout function
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentScreen('auth');
+    setSessionId(null);
+    setAuthError(null);
+    toast({ title: 'Logout effettuato', description: 'Arrivederci!' });
+  };
+
   // Authentication functions
   const handleLogin = async (name: string, pin: string) => {
     setAuthLoading(true);
@@ -813,6 +822,8 @@ function App() {
             votes={votes}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
+            onShowAdmin={() => setCurrentScreen('admin')}
+            onLogout={handleLogout}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
