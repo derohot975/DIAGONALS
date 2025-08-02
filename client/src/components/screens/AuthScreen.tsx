@@ -169,7 +169,7 @@ export default function AuthScreen({
                 </div>
 
                 {!isLoginMode && (
-                  <div className="text-xs text-black mt-1 text-center">
+                  <div className="text-sm text-yellow-600 mt-1 text-center font-semibold">
                     Inserisci giorno e mese di nascita,<br />così te lo ricordi anche da ubriaco!
                   </div>
                 )}
