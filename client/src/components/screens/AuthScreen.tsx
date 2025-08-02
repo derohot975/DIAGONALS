@@ -115,7 +115,7 @@ export default function AuthScreen({
                   required
                 />
                 <div className="text-xs text-gray-500 mt-1">
-                  💡 Suggerimento: Inserisci mese e anno di nascita così anche se sei ubriaco non te lo scordi
+                  💡 Suggerimento: Inserisci giorno e mese di nascita così anche se sei ubriaco non te lo scordi
                 </div>
               </div>
 
