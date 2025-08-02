@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { LogIn, UserPlus, ArrowLeft } from 'lucide-react';
+import { LogIn, UserPlus, ArrowLeft, Shield } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AuthScreenProps {
   onLogin: (name: string, pin: string) => void;
   onRegister: (name: string, pin: string) => void;
   onGoBack: () => void;
+  onShowAdmin?: () => void;
   isLoading: boolean;
   error: string | null;
 }
@@ -13,7 +14,8 @@ interface AuthScreenProps {
 export default function AuthScreen({ 
   onLogin, 
   onRegister, 
-  onGoBack, 
+  onGoBack,
+  onShowAdmin,
   isLoading, 
   error 
 }: AuthScreenProps) {
@@ -163,7 +165,7 @@ export default function AuthScreen({
         </div>
       </div>
 
-      {/* Pulsante freccia indietro */}
+      {/* Pulsanti di navigazione */}
       <div className="fixed bottom-4 left-4 z-50">
         <button
           onClick={onGoBack}
@@ -172,6 +174,17 @@ export default function AuthScreen({
           <ArrowLeft className="w-5 h-5" />
         </button>
       </div>
+
+      {onShowAdmin && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={onShowAdmin}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+          >
+            <Shield className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

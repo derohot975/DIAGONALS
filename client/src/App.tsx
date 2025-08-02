@@ -778,6 +778,7 @@ function App() {
             onLogin={handleLogin}
             onRegister={handleRegister}
             onGoBack={() => setCurrentScreen('home')}
+            onShowAdmin={() => setCurrentScreen('admin')}
             isLoading={authLoading}
             error={authError}
           />
@@ -817,6 +818,7 @@ function App() {
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
             onGoBack={() => setCurrentScreen('home')}
+            onShowAdmin={() => setCurrentScreen('admin')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
