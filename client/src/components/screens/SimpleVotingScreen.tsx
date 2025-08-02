@@ -135,7 +135,7 @@ export default function SimpleVotingScreen({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-20">
+      <div className="flex-1 overflow-y-auto px-4 pb-24">
         <div className="max-w-2xl mx-auto">
           
           {/* Event Header */}

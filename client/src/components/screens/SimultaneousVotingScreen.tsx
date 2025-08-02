@@ -158,7 +158,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       </div>
 
       {/* Voting Section */}
-      <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
+      <div className="bg-white rounded-3xl p-6 mx-auto max-w-md mb-24">
         <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
           Seleziona Vino per Votazione
         </h3>
