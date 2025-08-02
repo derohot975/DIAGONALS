@@ -91,14 +91,14 @@ export default function AuthScreen({
               {/* Nome Utente - Solo in modalità registrazione */}
               {!isLoginMode && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 text-center">
                     Nome Utente (max 10 caratteri)
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={handleNameChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase text-center"
                     placeholder="INSERISCI IL TUO NOME"
                     maxLength={10}
                     required
