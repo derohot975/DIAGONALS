@@ -148,17 +148,18 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white p-4 touch-pan-x">
+    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white">
       {/* Header */}
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex-shrink-0 flex flex-col items-center pt-8 pb-6">
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
         <h1 className="text-xl font-bold">DIAGONALE</h1>
         <h2 className="text-lg font-semibold mt-4 text-yellow-400">{event.name}</h2>
         <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
       </div>
 
-      {/* Voting Section */}
-      <div className="bg-white rounded-3xl p-6 mx-auto max-w-md mb-24">
+      {/* Scrollable Voting Section */}
+      <div className="flex-1 overflow-y-auto px-4 pb-24">
+        <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
         <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
           Seleziona Vino per Votazione
         </h3>
@@ -273,9 +274,10 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
         {eventWines.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-white/70">Nessun vino registrato per questo evento</p>
+            <p className="text-gray-600">Nessun vino registrato per questo evento</p>
           </div>
         )}
+        </div>
       </div>
 
       {/* Navigation Buttons */}
