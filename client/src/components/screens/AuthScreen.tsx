@@ -70,7 +70,7 @@ export default function AuthScreen({
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-xs mx-auto">
           
 
 
@@ -101,7 +101,7 @@ export default function AuthScreen({
 
               {/* PIN */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 text-center">
                   PIN (4 cifre)
                 </label>
                 <input
