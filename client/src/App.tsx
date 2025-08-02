@@ -783,28 +783,15 @@ function App() {
           />
         );
       case 'home':
-        return currentUser ? (
-          <EventListScreen
-            events={events as WineEvent[]}
+        return (
+          <HomeScreen
             users={users}
-            currentUser={currentUser}
-            wines={wines}
-            votes={votes}
-            onGoBack={() => {
-              setCurrentUser(null);
-              setCurrentScreen('auth');
+            onUserSelect={handleUserSelect}
+            onShowAdmin={() => setCurrentScreen('admin')}
+            sessionError={sessionError}
+            onForceLogout={() => {
+              setSessionError(null);
             }}
-            onWineRegistration={handleShowWineRegistration}
-            onEventParticipation={handleParticipateEvent}
-            onWineEdit={handleEditWine}
-          />
-        ) : (
-          <AuthScreen
-            onLogin={handleLogin}
-            onRegister={handleRegister}
-            onGoBack={() => setCurrentScreen('auth')}
-            isLoading={authLoading}
-            error={authError}
           />
         );
       case 'admin':
