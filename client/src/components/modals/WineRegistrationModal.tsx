@@ -132,7 +132,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value.toUpperCase())}
-              placeholder="es. BAROLO RISERVA"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] uppercase"
               required
             />
@@ -144,7 +143,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={producer}
               onChange={(e) => setProducer(capitalizeFirstLetter(e.target.value))}
-              placeholder="es. Antinori"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
@@ -156,7 +154,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={grape}
               onChange={(e) => setGrape(capitalizeFirstLetter(e.target.value))}
-              placeholder="es. Sangiovese, Chardonnay"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
@@ -171,7 +168,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 onChange={(e) => setYear(e.target.value)}
                 min="1900"
                 max="2025"
-                placeholder="2020"
+
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
@@ -184,7 +181,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 onChange={(e) => setPrice(e.target.value)}
                 min="0"
                 step="0.01"
-                placeholder="25.00"
+
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
@@ -198,7 +195,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 min="0"
                 max="50"
                 step="0.1"
-                placeholder="13.5"
+
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
@@ -211,7 +208,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={origin}
               onChange={(e) => setOrigin(capitalizeFirstLetter(e.target.value))}
-              placeholder="es. Piemonte, Italia"
+
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
