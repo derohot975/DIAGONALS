@@ -22,6 +22,7 @@ import CreateEventModal from './components/modals/CreateEventModal';
 import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
 import EventReportModal from './components/modals/EventReportModal';
+import AdminPinModal from './components/AdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
@@ -55,6 +56,10 @@ function App() {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportData, setReportData] = useState<EventReportData | null>(null);
+  
+  // Admin PIN protection
+  const [showAdminPinModal, setShowAdminPinModal] = useState(false);
+  const [pendingAdminAction, setPendingAdminAction] = useState<string | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -573,6 +578,47 @@ function App() {
     createUserMutation.mutate({ name, isAdmin });
   };
 
+  // Admin PIN protection functions
+  const requireAdminPin = (action: string, callback: () => void) => {
+    setPendingAdminAction(action);
+    setShowAdminPinModal(true);
+    // Store the callback temporarily for execution after PIN validation
+    (window as any).pendingAdminCallback = callback;
+  };
+
+  const handleAdminPinSuccess = () => {
+    setShowAdminPinModal(false);
+    setPendingAdminAction(null);
+    // Execute the pending admin action
+    if ((window as any).pendingAdminCallback) {
+      (window as any).pendingAdminCallback();
+      (window as any).pendingAdminCallback = null;
+    }
+  };
+
+  const handleAdminPinClose = () => {
+    setShowAdminPinModal(false);
+    setPendingAdminAction(null);
+    (window as any).pendingAdminCallback = null;
+  };
+
+  // Protected admin actions
+  const handleShowAdmin = () => {
+    requireAdminPin('admin-access', () => setCurrentScreen('admin'));
+  };
+
+  const handleShowAddUserModal = () => {
+    requireAdminPin('add-user', () => setShowAddUserModal(true));
+  };
+
+  const handleShowCreateEventModal = () => {
+    requireAdminPin('create-event', () => setShowCreateEventModal(true));
+  };
+
+  const handleShowAdminEvents = () => {
+    requireAdminPin('admin-events', () => setCurrentScreen('adminEvents'));
+  };
+
   const handleCreateEvent = (name: string, date: string, mode: string) => {
     if (!currentUser) {
       toast({ title: 'Errore: nessun utente selezionato', variant: 'destructive' });
@@ -586,14 +632,18 @@ function App() {
   };
 
   const handleEditEvent = (event: WineEvent) => {
-    setEditingEvent(event);
-    setShowEditEventModal(true);
+    requireAdminPin('edit-event', () => {
+      setEditingEvent(event);
+      setShowEditEventModal(true);
+    });
   };
 
   const handleDeleteEvent = (eventId: number) => {
-    if (confirm('Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.')) {
-      deleteEventMutation.mutate(eventId);
-    }
+    requireAdminPin('delete-event', () => {
+      if (confirm('Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.')) {
+        deleteEventMutation.mutate(eventId);
+      }
+    });
   };
 
   const handleRegisterWine = (wineData: {
@@ -716,49 +766,57 @@ function App() {
   };
 
   const handleCompleteEvent = (eventId: number) => {
-    completeEventMutation.mutate(eventId);
+    requireAdminPin('complete-event', () => {
+      completeEventMutation.mutate(eventId);
+    });
   };
 
   const handleViewReport = (eventId: number) => {
-    viewReportMutation.mutate(eventId);
+    requireAdminPin('view-report', () => {
+      viewReportMutation.mutate(eventId);
+    });
   };
 
-  const handleActivateVoting = async (eventId: number) => {
-    try {
-      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
-        votingStatus: 'active'
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: 'Votazioni Attivate!', 
-        description: 'Gli utenti possono ora votare i vini.' 
-      });
-    } catch (error) {
-      toast({ 
-        title: 'Errore', 
-        description: 'Impossibile attivare le votazioni.', 
-        variant: 'destructive' 
-      });
-    }
+  const handleActivateVoting = (eventId: number) => {
+    requireAdminPin('activate-voting', async () => {
+      try {
+        await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+          votingStatus: 'active'
+        });
+        queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+        toast({ 
+          title: 'Votazioni Attivate!', 
+          description: 'Gli utenti possono ora votare i vini.' 
+        });
+      } catch (error) {
+        toast({ 
+          title: 'Errore', 
+          description: 'Impossibile attivare le votazioni.', 
+          variant: 'destructive' 
+        });
+      }
+    });
   };
 
-  const handleDeactivateVoting = async (eventId: number) => {
-    try {
-      await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
-        votingStatus: 'completed'
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: 'Votazioni Completate!', 
-        description: 'Gli utenti vedranno ora i risultati finali.' 
-      });
-    } catch (error) {
-      toast({ 
-        title: 'Errore', 
-        description: 'Impossibile completare le votazioni.', 
-        variant: 'destructive' 
-      });
-    }
+  const handleDeactivateVoting = (eventId: number) => {
+    requireAdminPin('deactivate-voting', async () => {
+      try {
+        await apiRequest('PATCH', `/api/events/${eventId}/voting-status`, {
+          votingStatus: 'completed'
+        });
+        queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+        toast({ 
+          title: 'Votazioni Completate!', 
+          description: 'Gli utenti vedranno ora i risultati finali.' 
+        });
+      } catch (error) {
+        toast({ 
+          title: 'Errore', 
+          description: 'Impossibile completare le votazioni.', 
+          variant: 'destructive' 
+        });
+      }
+    });
   };
 
   const handleShowResults = (eventId: number) => {
@@ -767,8 +825,10 @@ function App() {
   };
 
   const handleShowEditUserModal = (user: User) => {
-    setEditingUser(user);
-    setShowEditUserModal(true);
+    requireAdminPin('edit-user', () => {
+      setEditingUser(user);
+      setShowEditUserModal(true);
+    });
   };
 
   const handleUpdateUser = (id: number, name: string, isAdmin: boolean) => {
@@ -778,9 +838,11 @@ function App() {
   };
 
   const handleDeleteUser = (userId: number) => {
-    if (window.confirm('Sei sicuro di voler eliminare questo utente?')) {
-      deleteUserMutation.mutate(userId);
-    }
+    requireAdminPin('delete-user', () => {
+      if (window.confirm('Sei sicuro di voler eliminare questo utente?')) {
+        deleteUserMutation.mutate(userId);
+      }
+    });
   };
 
   // Get current event
@@ -794,7 +856,7 @@ function App() {
             onLogin={handleLogin}
             onRegister={handleRegister}
             onGoBack={() => setCurrentScreen('auth')}
-            onShowAdmin={() => setCurrentScreen('admin')}
+            onShowAdmin={handleShowAdmin}
             isLoading={authLoading}
             error={authError}
           />
@@ -804,9 +866,9 @@ function App() {
         return (
           <AdminScreen
             users={users}
-            onShowAddUserModal={() => setShowAddUserModal(true)}
-            onShowCreateEventModal={() => setShowCreateEventModal(true)}
-            onShowEventList={() => setCurrentScreen('adminEvents')}
+            onShowAddUserModal={handleShowAddUserModal}
+            onShowCreateEventModal={handleShowCreateEventModal}
+            onShowEventList={handleShowAdminEvents}
             onShowEditUserModal={handleShowEditUserModal}
             onDeleteUser={handleDeleteUser}
             onGoBack={() => setCurrentScreen('events')}
@@ -823,7 +885,7 @@ function App() {
             votes={votes}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
-            onShowAdmin={() => setCurrentScreen('admin')}
+            onShowAdmin={handleShowAdmin}
             onLogout={handleLogout}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
@@ -959,6 +1021,12 @@ function App() {
           setReportData(null);
         }}
         reportData={reportData}
+      />
+
+      <AdminPinModal
+        isOpen={showAdminPinModal}
+        onClose={handleAdminPinClose}
+        onSuccess={handleAdminPinSuccess}
       />
 
       {/* Install Prompt - Only show on home screen when not logged in */}

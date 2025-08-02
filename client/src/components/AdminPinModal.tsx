@@ -10,12 +10,12 @@ interface AdminPinModalProps {
 export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinModalProps) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
-  const ADMIN_PIN = '00';
+  const ADMIN_PIN = '000';
 
   if (!isOpen) return null;
 
   const handleNumberClick = (number: string) => {
-    if (pin.length < 2) {
+    if (pin.length < 3) {
       setPin(prev => prev + number);
       setError('');
     }
@@ -58,7 +58,7 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
         {/* PIN Display */}
         <div className="mb-8">
           <div className="flex justify-center space-x-4 mb-4">
-            {[0, 1].map(index => (
+            {[0, 1, 2].map(index => (
               <div
                 key={index}
                 className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
