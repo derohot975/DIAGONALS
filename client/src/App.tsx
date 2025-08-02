@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { useLocalStorage } from './hooks/useLocalStorage';
+
 import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 import { apiRequest } from './lib/queryClient';
 
@@ -30,10 +30,17 @@ type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetai
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [currentScreen, setCurrentScreen] = useState<Screen>('auth');
-  const [currentUser, setCurrentUser] = useLocalStorage<User | null>('diagonale_current_user', null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
-  const [sessionId, setSessionId] = useLocalStorage<string | null>('diagonale_session_id', null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  // Forza sempre il reset all'autenticazione quando l'app si ricarica
+  useEffect(() => {
+    setCurrentUser(null);
+    setCurrentScreen('auth');
+    setSessionId(null);
+  }, []);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
   
