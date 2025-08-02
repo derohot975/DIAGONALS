@@ -159,17 +159,17 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
 
       {/* Scrollable Voting Section */}
       <div className="flex-1 overflow-y-auto px-4 pb-24">
-        <div className="bg-white rounded-3xl p-6 mx-auto max-w-md">
-        <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
-          Seleziona Vino per Votazione
-        </h3>
-        
+        <div className="mx-auto max-w-md">
+          <div className="bg-white rounded-3xl p-6 mb-4">
+            <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
+              Seleziona Vino per Votazione
+            </h3>
+          </div>
 
-
-        {/* Wine Voting Boxes */}
-        <div className="space-y-4">
-          {eventWines.map((wine: Wine) => (
-            <div
+          {/* Wine Voting Boxes - Now outside the fixed container */}
+          <div className="space-y-4">
+            {eventWines.map((wine: Wine) => (
+              <div
               key={wine.id}
               className={`
                 bg-white border-2 rounded-2xl p-4 transition-all duration-200 cursor-pointer
@@ -268,15 +268,14 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {eventWines.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-600">Nessun vino registrato per questo evento</p>
+            ))}
           </div>
-        )}
+
+          {eventWines.length === 0 && (
+            <div className="bg-white rounded-3xl p-6 text-center">
+              <p className="text-gray-600">Nessun vino registrato per questo evento</p>
+            </div>
+          )}
         </div>
       </div>
 
