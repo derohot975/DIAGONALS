@@ -132,13 +132,13 @@ export default function AuthScreen({
                 </div>
 
                 {/* Smart Keypad */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-3 gap-4 mb-4">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
                     <button
                       key={number}
                       type="button"
                       onClick={() => handleNumberInput(number.toString())}
-                      className="h-14 bg-gradient-to-br from-[#300505] to-[#8d0303] text-white text-xl font-bold rounded-lg hover:from-[#240404] hover:to-[#a00404] active:scale-95 transition-all duration-150 shadow-lg"
+                      className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
                     >
                       {number}
                     </button>
@@ -151,7 +151,7 @@ export default function AuthScreen({
                   <button
                     type="button"
                     onClick={() => handleNumberInput('0')}
-                    className="h-14 bg-gradient-to-br from-[#300505] to-[#8d0303] text-white text-xl font-bold rounded-lg hover:from-[#240404] hover:to-[#a00404] active:scale-95 transition-all duration-150 shadow-lg"
+                    className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
                   >
                     0
                   </button>
@@ -160,7 +160,7 @@ export default function AuthScreen({
                   <button
                     type="button"
                     onClick={handleDeletePin}
-                    className="h-14 bg-gray-500 text-white text-lg font-bold rounded-lg hover:bg-gray-600 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                    className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-lg font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
                   >
                     ⌫
                   </button>
