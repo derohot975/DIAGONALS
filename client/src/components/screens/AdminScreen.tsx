@@ -100,7 +100,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
           <div className="bg-white/50 rounded-xl p-4 border border-gray-200">
             {/* Header con conteggio utenti */}
             <div className="mb-3 text-center">
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-white uppercase tracking-wide">
                 {users.filter(user => !user.isAdmin).length} UTENTI REGISTRATI
               </h3>
             </div>
