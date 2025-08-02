@@ -57,6 +57,16 @@ export default function AuthScreen({
     }
   };
 
+  const handleNumberInput = (number: string) => {
+    if (pin.length < 4) {
+      setPin(prev => prev + number);
+    }
+  };
+
+  const handleDeletePin = () => {
+    setPin(prev => prev.slice(0, -1));
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Logo Header */}
@@ -101,20 +111,63 @@ export default function AuthScreen({
 
               {/* PIN */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 text-center">
+                <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
                   PIN (4 cifre)
                 </label>
-                <input
-                  type="password"
-                  value={pin}
-                  onChange={handlePinChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent text-center text-2xl tracking-widest"
-                  placeholder="••••"
-                  maxLength={4}
-                  required
-                />
+                
+                {/* PIN Display */}
+                <div className="flex justify-center mb-4">
+                  <div className="flex space-x-2">
+                    {[0, 1, 2, 3].map((index) => (
+                      <div
+                        key={index}
+                        className="w-12 h-12 border-2 border-gray-300 rounded-lg flex items-center justify-center bg-white"
+                      >
+                        <span className="text-2xl font-bold text-gray-800">
+                          {pin[index] ? '•' : ''}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Smart Keypad */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                    <button
+                      key={number}
+                      type="button"
+                      onClick={() => handleNumberInput(number.toString())}
+                      className="h-14 bg-gradient-to-br from-[#300505] to-[#8d0303] text-white text-xl font-bold rounded-lg hover:from-[#240404] hover:to-[#a00404] active:scale-95 transition-all duration-150 shadow-lg"
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  
+                  {/* Empty space */}
+                  <div></div>
+                  
+                  {/* Zero */}
+                  <button
+                    type="button"
+                    onClick={() => handleNumberInput('0')}
+                    className="h-14 bg-gradient-to-br from-[#300505] to-[#8d0303] text-white text-xl font-bold rounded-lg hover:from-[#240404] hover:to-[#a00404] active:scale-95 transition-all duration-150 shadow-lg"
+                  >
+                    0
+                  </button>
+                  
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={handleDeletePin}
+                    className="h-14 bg-gray-500 text-white text-lg font-bold rounded-lg hover:bg-gray-600 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                  >
+                    ⌫
+                  </button>
+                </div>
+
                 {!isLoginMode && (
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-gray-500 mt-1 text-center">
                     💡 Suggerimento: Inserisci giorno e mese di nascita così anche se sei ubriaco non te lo scordi
                   </div>
                 )}
