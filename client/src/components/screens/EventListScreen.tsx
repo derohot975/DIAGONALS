@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, BarChart3 } from 'lucide-react';
+import { Calendar, BarChart3 } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -12,7 +12,7 @@ interface EventListScreenProps {
   votes: Vote[];
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
-  onGoBack: () => void;
+
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
   onVoteForWine: (wineId: number, score: number, hasLode: boolean) => void;
@@ -27,7 +27,7 @@ export default function EventListScreen({
   votes,
   onShowEventDetails, 
   onShowEventResults,
-  onGoBack,
+
   onRegisterWine,
   onParticipateEvent,
   onVoteForWine,
@@ -182,15 +182,7 @@ export default function EventListScreen({
           )}
         </div>
         
-        {/* Pulsante freccia indietro in fondo alla pagina */}
-        <div className="fixed bottom-4 left-4 z-50">
-          <button
-            onClick={onGoBack}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-        </div>
+
       </div>
     </div>
   );

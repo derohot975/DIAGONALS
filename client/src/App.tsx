@@ -806,7 +806,6 @@ function App() {
             votes={votes}
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
-            onGoBack={() => setCurrentScreen('auth')}
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
