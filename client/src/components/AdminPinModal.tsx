@@ -104,7 +104,9 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
           onClick={handleConfirm}
           disabled={pin.length === 0}
           className={`w-full h-14 rounded-xl font-semibold transition-all duration-200 ${
-            pin.length > 0
+            pin === ADMIN_PIN
+              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white active:scale-95 shadow-lg'
+              : pin.length > 0
               ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#8d0303] hover:to-[#300505] text-white active:scale-95 shadow-lg'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
