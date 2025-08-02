@@ -132,38 +132,40 @@ export default function AuthScreen({
                 </div>
 
                 {/* Smart Keypad */}
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                <div className="flex justify-center mb-4">
+                  <div className="grid grid-cols-3 gap-5 max-w-xs">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                      <button
+                        key={number}
+                        type="button"
+                        onClick={() => handleNumberInput(number.toString())}
+                        className="w-16 h-16 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    
+                    {/* Empty space */}
+                    <div></div>
+                    
+                    {/* Zero */}
                     <button
-                      key={number}
                       type="button"
-                      onClick={() => handleNumberInput(number.toString())}
-                      className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                      onClick={() => handleNumberInput('0')}
+                      className="w-16 h-16 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
                     >
-                      {number}
+                      0
                     </button>
-                  ))}
-                  
-                  {/* Empty space */}
-                  <div></div>
-                  
-                  {/* Zero */}
-                  <button
-                    type="button"
-                    onClick={() => handleNumberInput('0')}
-                    className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
-                  >
-                    0
-                  </button>
-                  
-                  {/* Delete */}
-                  <button
-                    type="button"
-                    onClick={handleDeletePin}
-                    className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-lg font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
-                  >
-                    ⌫
-                  </button>
+                    
+                    {/* Delete */}
+                    <button
+                      type="button"
+                      onClick={handleDeletePin}
+                      className="w-16 h-16 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                    >
+                      ⌫
+                    </button>
+                  </div>
                 </div>
 
                 {!isLoginMode && (
