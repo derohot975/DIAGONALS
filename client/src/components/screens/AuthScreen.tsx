@@ -42,7 +42,7 @@ export default function AuthScreen({
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.toUpperCase();
     if (value.length <= 10) {
       setName(value);
     }
@@ -90,8 +90,8 @@ export default function AuthScreen({
                   type="text"
                   value={name}
                   onChange={handleNameChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent"
-                  placeholder="Inserisci il tuo nome"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase"
+                  placeholder="INSERISCI IL TUO NOME"
                   maxLength={10}
                   required
                 />
