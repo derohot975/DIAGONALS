@@ -60,6 +60,31 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     ).join(' ');
   };
 
+  // Function to format decimal values (replace comma with dot, limit to 1 decimal)
+  const formatDecimalValue = (value: string) => {
+    // Remove any non-numeric characters except comma and dot
+    let cleaned = value.replace(/[^0-9.,]/g, '');
+    
+    // Replace comma with dot
+    let formatted = cleaned.replace(',', '.');
+    
+    // Ensure only one dot is allowed
+    const dotCount = (formatted.match(/\./g) || []).length;
+    if (dotCount > 1) {
+      const firstDotIndex = formatted.indexOf('.');
+      formatted = formatted.substring(0, firstDotIndex + 1) + formatted.substring(firstDotIndex + 1).replace(/\./g, '');
+    }
+    
+    // If there's a dot, ensure only one decimal place
+    if (formatted.includes('.')) {
+      const [integer, decimal] = formatted.split('.');
+      // Take only the first decimal digit
+      formatted = decimal ? `${integer}.${decimal.charAt(0)}` : `${integer}.`;
+    }
+    
+    return formatted;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && alcohol) {
@@ -176,12 +201,9 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Prezzo (€)</label>
               <input
-                type="number"
+                type="text"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                min="0"
-                step="0.01"
-
+                onChange={(e) => setPrice(formatDecimalValue(e.target.value))}
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
@@ -189,13 +211,9 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Grad. %</label>
               <input
-                type="number"
+                type="text"
                 value={alcohol}
-                onChange={(e) => setAlcohol(e.target.value)}
-                min="0"
-                max="50"
-                step="0.1"
-
+                onChange={(e) => setAlcohol(formatDecimalValue(e.target.value))}
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
