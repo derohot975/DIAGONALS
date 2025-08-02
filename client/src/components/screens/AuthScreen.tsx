@@ -72,12 +72,12 @@ export default function AuthScreen({
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-md mx-auto">
           
-          {/* Titolo */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-white">
-              {isLoginMode ? 'ACCEDI' : 'REGISTRATI'}
-            </h1>
-          </div>
+          {/* Titolo solo per registrazione */}
+          {!isLoginMode && (
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold text-white">REGISTRATI</h1>
+            </div>
+          )}
 
           {/* Form */}
           <div className="bg-white/95 rounded-2xl p-6 shadow-2xl">
