@@ -52,13 +52,22 @@ export default function EventListScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
+      <div className="flex-shrink-0 flex justify-center pt-8 pb-4">
         <img 
           src={diagoLogo} 
           alt="DIAGO Logo" 
           className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
         />
       </div>
+
+      {/* Welcome Message */}
+      {currentUser && (
+        <div className="flex-shrink-0 text-center pb-6">
+          <h2 className="text-2xl font-bold text-yellow-400">
+            Ciao {currentUser.name}!
+          </h2>
+        </div>
+      )}
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
