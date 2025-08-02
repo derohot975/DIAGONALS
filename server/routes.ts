@@ -47,17 +47,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { name, pin } = req.body;
+      const { pin } = req.body;
       
-      if (!name || !pin) {
-        res.status(400).json({ message: "Nome e PIN sono richiesti" });
+      if (!pin) {
+        res.status(400).json({ message: "PIN richiesto" });
         return;
       }
 
-      const user = await storage.authenticateUser(name, pin);
+      // Cerca utente solo per PIN
+      const user = await storage.authenticateUserByPin(pin);
       
       if (!user) {
-        res.status(401).json({ message: "Nome utente o PIN non validi" });
+        res.status(401).json({ message: "PIN non valido" });
         return;
       }
 

@@ -26,8 +26,8 @@ export default function AuthScreen({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validazione nome (max 10 caratteri)
-    if (name.trim().length === 0 || name.trim().length > 10) {
+    // Validazione nome solo in modalità registrazione
+    if (!isLoginMode && (name.trim().length === 0 || name.trim().length > 10)) {
       return;
     }
     
@@ -37,7 +37,7 @@ export default function AuthScreen({
     }
 
     if (isLoginMode) {
-      onLogin(name.trim(), pin);
+      onLogin('', pin); // In modalità login non serve il nome
     } else {
       onRegister(name.trim(), pin);
     }
@@ -83,24 +83,26 @@ export default function AuthScreen({
           <div className="bg-white/95 rounded-2xl p-6 shadow-2xl">
             <form onSubmit={handleSubmit} className="space-y-4">
               
-              {/* Nome Utente */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nome Utente (max 10 caratteri)
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase"
-                  placeholder="INSERISCI IL TUO NOME"
-                  maxLength={10}
-                  required
-                />
-                <div className="text-xs text-gray-500 mt-1">
-                  {name.length}/10 caratteri
+              {/* Nome Utente - Solo in modalità registrazione */}
+              {!isLoginMode && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome Utente (max 10 caratteri)
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={handleNameChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase"
+                    placeholder="INSERISCI IL TUO NOME"
+                    maxLength={10}
+                    required
+                  />
+                  <div className="text-xs text-gray-500 mt-1">
+                    {name.length}/10 caratteri
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* PIN */}
               <div>
@@ -116,9 +118,11 @@ export default function AuthScreen({
                   maxLength={4}
                   required
                 />
-                <div className="text-xs text-gray-500 mt-1">
-                  💡 Suggerimento: Inserisci giorno e mese di nascita così anche se sei ubriaco non te lo scordi
-                </div>
+                {!isLoginMode && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    💡 Suggerimento: Inserisci giorno e mese di nascita così anche se sei ubriaco non te lo scordi
+                  </div>
+                )}
               </div>
 
               {/* Errore */}
@@ -131,7 +135,7 @@ export default function AuthScreen({
               {/* Pulsante Submit */}
               <button
                 type="submit"
-                disabled={isLoading || name.trim().length === 0 || pin.length !== 4}
+                disabled={isLoading || pin.length !== 4 || (!isLoginMode && name.trim().length === 0)}
                 className="w-full bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {isLoading ? (

@@ -58,7 +58,7 @@ function App() {
     setAuthError(null);
     
     try {
-      const response = await apiRequest('POST', '/api/auth/login', { name, pin });
+      const response = await apiRequest('POST', '/api/auth/login', { pin });
       const data = await response.json();
       
       if (!response.ok) {

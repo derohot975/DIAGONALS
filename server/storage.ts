@@ -15,6 +15,7 @@ export interface IStorage {
   
   // PIN authentication
   authenticateUser(name: string, pin: string): Promise<User | undefined>;
+  authenticateUserByPin(pin: string): Promise<User | undefined>;
   
   // Wine Event operations
   getWineEvent(id: number): Promise<WineEvent | undefined>;
@@ -74,6 +75,11 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(
       and(eq(users.name, name), eq(users.pin, pin))
     );
+    return user || undefined;
+  }
+
+  async authenticateUserByPin(pin: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.pin, pin));
     return user || undefined;
   }
 
