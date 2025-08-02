@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogIn, UserPlus, ArrowLeft, Shield } from 'lucide-react';
+import { LogIn, UserPlus, Shield } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AuthScreenProps {
@@ -223,18 +223,9 @@ export default function AuthScreen({
         </div>
       </div>
 
-      {/* Pulsanti di navigazione */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <button
-          onClick={onGoBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-      </div>
-
+      {/* Pulsante Admin Centralizzato */}
       {onShowAdmin && (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
           <button
             onClick={onShowAdmin}
             className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
