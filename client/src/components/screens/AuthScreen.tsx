@@ -186,7 +186,11 @@ export default function AuthScreen({
               <button
                 type="submit"
                 disabled={isLoading || pin.length !== 4 || (!isLoginMode && name.trim().length === 0)}
-                className="w-full bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className={`w-full font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-white ${
+                  pin.length === 4 && (isLoginMode || name.trim().length > 0)
+                    ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600'
+                    : 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404]'
+                }`}
               >
                 {isLoading ? (
                   <span>Caricamento...</span>
