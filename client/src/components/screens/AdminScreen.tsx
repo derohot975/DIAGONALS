@@ -96,8 +96,15 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             <span>Aggiungi Utente</span>
           </button>
 
-          {/* 5. LISTA UTENTI (senza scritta "Utenti Registrati") */}
+          {/* 5. LISTA UTENTI CON CONTEGGIO */}
           <div className="bg-white/50 rounded-xl p-4 border border-gray-200">
+            {/* Header con conteggio utenti */}
+            <div className="mb-3 text-center">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                {users.filter(user => !user.isAdmin).length} UTENTI REGISTRATI
+              </h3>
+            </div>
+            
             {users.filter(user => !user.isAdmin).length === 0 ? (
               <p className="text-gray-500 text-center py-4">
                 Nessun utente registrato
