@@ -27,22 +27,60 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
     onClose();
   };
 
+  // Auto-scroll to selected value when modal opens
   useEffect(() => {
     if (isOpen && scrollRef.current) {
-      // Center the current score in view
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
-        const itemHeight = 48; // Height of each item
+        const itemHeight = 48;
         const scrollTop = currentIndex * itemHeight;
         
         setTimeout(() => {
           if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollTop;
           }
-        }, 200);
+        }, 100);
       }
     }
   }, [isOpen]);
+  
+  // Add scroll event listener for auto-snap
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement || !isOpen) return;
+    
+    let scrollTimeout: NodeJS.Timeout;
+    
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const itemHeight = 48;
+        const scrollTop = scrollElement.scrollTop;
+        const centerPosition = scrollTop + 116;
+        const nearestIndex = Math.round(centerPosition / itemHeight);
+        const targetScrollTop = nearestIndex * itemHeight;
+        
+        // Validate index bounds
+        if (nearestIndex >= 0 && nearestIndex < scores.length) {
+          scrollElement.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+          
+          const newScore = scores[nearestIndex];
+          if (typeof newScore === 'number') {
+            setSelectedScore(newScore);
+          }
+        }
+      }, 150);
+    };
+    
+    scrollElement.addEventListener('scroll', handleScroll);
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isOpen, scores, setSelectedScore]);
 
   if (!isOpen) return null;
 
@@ -75,17 +113,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
               paddingTop: '116px',
               paddingBottom: '116px'
             }}
-            onScroll={(e) => {
-              const container = e.target as HTMLDivElement;
-              const itemHeight = 48;
-              const scrollTop = container.scrollTop;
-              const centerPosition = scrollTop + 116; // Half of container height
-              const selectedIndex = Math.round(centerPosition / itemHeight);
-              const newScore = scores[selectedIndex];
-              if (newScore !== undefined && newScore !== selectedScore) {
-                setSelectedScore(newScore);
-              }
-            }}
+
           >
             {scores.map((score, index) => (
               <div
@@ -111,7 +139,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
                   }
                 }}
               >
-                {score.toFixed(1)}
+                {typeof score === 'number' ? score.toFixed(1) : '0.0'}
               </div>
             ))}
           </div>
@@ -130,7 +158,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
             className="flex-1 py-3 px-4 text-black rounded-xl font-semibold hover:bg-yellow-300"
             style={{background: '#FFD700'}}
           >
-            Conferma {selectedScore.toFixed(1)}
+            Conferma {typeof selectedScore === 'number' ? selectedScore.toFixed(1) : '0.0'}
           </button>
         </div>
       </div>
