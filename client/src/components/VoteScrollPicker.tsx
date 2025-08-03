@@ -12,9 +12,9 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
   const scrollRef = useRef<HTMLDivElement>(null);
   
-  // Generate scores from 1.0 to 10.0 in 0.5 increments
+  // Generate scores from 0.0 to 10.0 in 0.5 increments
   const scores: number[] = [];
-  for (let i = 1.0; i <= 10.0; i += 0.5) {
+  for (let i = 0.0; i <= 10.0; i += 0.5) {
     scores.push(Number(i.toFixed(1)));
   }
 
@@ -32,9 +32,17 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
       // Center the current score in view
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
-        const itemHeight = 60;
-        const scrollTop = (currentIndex * itemHeight) - (3 * itemHeight); // Center in 7-item view
-        scrollRef.current.scrollTop = Math.max(0, scrollTop);
+        const itemHeight = 48; // Height of each item
+        const containerHeight = 320; // Total height of picker
+        const visibleItems = Math.floor(containerHeight / itemHeight);
+        const centerOffset = Math.floor(visibleItems / 2);
+        const scrollTop = (currentIndex - centerOffset) * itemHeight;
+        
+        setTimeout(() => {
+          if (scrollRef.current) {
+            scrollRef.current.scrollTop = Math.max(0, scrollTop);
+          }
+        }, 100);
       }
     }
   }, [isOpen, selectedScore, scores]);
@@ -63,13 +71,26 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
           {/* Scrollable content */}
           <div 
             ref={scrollRef}
-            className="h-full overflow-y-auto scrollbar-hide px-4 py-16"
+            className="h-full overflow-y-auto scrollbar-hide px-4"
             style={{
               scrollSnapType: 'y mandatory',
-              scrollBehavior: 'smooth'
+              scrollBehavior: 'smooth',
+              paddingTop: '140px',
+              paddingBottom: '140px'
+            }}
+            onScroll={(e) => {
+              const container = e.target as HTMLDivElement;
+              const itemHeight = 48;
+              const scrollTop = container.scrollTop;
+              const centerPosition = scrollTop + 140; // Half of container height
+              const selectedIndex = Math.round(centerPosition / itemHeight);
+              const newScore = scores[selectedIndex];
+              if (newScore !== undefined && newScore !== selectedScore) {
+                setSelectedScore(newScore);
+              }
             }}
           >
-            {scores.map((score) => (
+            {scores.map((score, index) => (
               <div
                 key={score}
                 className={`h-12 flex items-center justify-center text-2xl font-bold transition-all duration-200 cursor-pointer ${
@@ -80,7 +101,18 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
                 style={{
                   scrollSnapAlign: 'center'
                 }}
-                onClick={() => handleScoreSelect(score)}
+                onClick={() => {
+                  handleScoreSelect(score);
+                  // Scroll to center this item
+                  if (scrollRef.current) {
+                    const itemHeight = 48;
+                    const scrollTop = index * itemHeight;
+                    scrollRef.current.scrollTo({
+                      top: scrollTop,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
               >
                 {score.toFixed(1)}
               </div>
