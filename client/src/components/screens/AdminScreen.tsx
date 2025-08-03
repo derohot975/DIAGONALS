@@ -62,10 +62,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="w-full max-w-md mx-auto">
-          {/* ADMIN HEADER - FINAL VERSION */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-white mb-1">ADMIN</h1>
-          </div>
+
 
 
 
