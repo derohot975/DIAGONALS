@@ -88,7 +88,7 @@ export default function EventDetailsScreen({
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="event-name-script text-3xl font-bold text-[#300505]">{event.name}</h2>
+              <h2 className="event-name-script text-2xl font-bold text-[#300505]">{event.name}</h2>
               <p className="text-gray-600">{event.date} - Modalità {event.mode}</p>
             </div>
             <div className="flex items-center space-x-2">
