@@ -58,7 +58,7 @@ export default function HistoricEventsScreen({
                     <p className="text-sm text-gray-300 mb-1">{formatDate(event.date)}</p>
                     <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex flex-col items-end space-y-2">
                     <button
                       onClick={() => onShowEventResults(event.id)}
                       className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
@@ -66,6 +66,13 @@ export default function HistoricEventsScreen({
                     >
                       <BarChart3 className="w-4 h-4 inline mr-1" />
                       Report
+                    </button>
+                    <button
+                      onClick={() => {/* TODO: Implementare funzione pagella */}}
+                      className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg text-sm font-medium transition-colors"
+                      title="Visualizza Pagella"
+                    >
+                      📊 Pagella
                     </button>
                   </div>
                 </div>
