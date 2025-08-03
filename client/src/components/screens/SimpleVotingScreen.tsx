@@ -121,7 +121,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header */}
-      <div className="flex-shrink-0 bg-gradient-to-b from-[#300505] to-[#8d0303] px-4 pb-4">
+      <div className="sticky top-0 z-10 px-4 pb-4" style={{background: 'linear-gradient(135deg, #300505 0%, #8d0303 100%)'}}>
         {/* Logo */}
         <div className="flex justify-center pt-8 pb-4">
           <img 
