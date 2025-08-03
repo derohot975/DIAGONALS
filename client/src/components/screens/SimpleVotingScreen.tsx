@@ -121,7 +121,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
-      <div className="sticky top-0 z-50 pt-8 pb-4 backdrop-blur-sm" style={{background: 'rgba(48, 5, 5, 0.95)'}}>
+      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#300505'}}>
         {/* Logo */}
         <div className="flex justify-center pb-4">
           <img 
@@ -165,7 +165,7 @@ export default function SimpleVotingScreen({
               return (
                 <div 
                   key={wine.id} 
-                  className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in"
+                  className="bg-white rounded-2xl shadow-lg p-3 animate-fade-in"
                 >
                   
                   {/* Horizontal Layout */}
