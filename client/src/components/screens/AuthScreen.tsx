@@ -200,22 +200,24 @@ export default function AuthScreen({
                 )}
               </button>
 
-              {/* Toggle Mode */}
-              <div className="text-center pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLoginMode(!isLoginMode);
-                    setName('');
-                    setPin('');
-                  }}
-                  className="text-[#300505] hover:text-[#8d0303] font-medium underline"
-                >
-                  {isLoginMode ? 'Non hai un account? Registrati' : 'Hai già un account? Accedi'}
-                </button>
-              </div>
+
 
             </form>
+          </div>
+
+          {/* Toggle Mode - Fuori dal modal */}
+          <div className="text-center pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setIsLoginMode(!isLoginMode);
+                setName('');
+                setPin('');
+              }}
+              className="text-white hover:text-yellow-200 font-medium underline"
+            >
+              {isLoginMode ? 'Non hai un account? Registrati' : 'Hai già un account? Accedi'}
+            </button>
           </div>
           
         </div>
