@@ -148,7 +148,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     });
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white flex flex-col">
       {/* Header */}
       <div className="flex-shrink-0 flex flex-col items-center pt-8 pb-6">
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
@@ -169,7 +169,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       </div>
 
       {/* Scrollable Wine List Section */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-20">
+      <div className="flex-1 overflow-y-auto px-4 pb-20" style={{ minHeight: 0 }}>
         <div className="mx-auto max-w-md">
           <div className="space-y-4">
             {eventWines.map((wine: Wine) => (
