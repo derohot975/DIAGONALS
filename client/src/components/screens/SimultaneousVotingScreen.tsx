@@ -158,8 +158,8 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
           <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
         </div>
 
-        {/* Content Section */}
-        <div className="px-4 pb-24">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto px-4 pb-24">
           <div className="mx-auto max-w-md">
             {/* Title Section */}
             <div className="mb-4">
@@ -170,8 +170,8 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
               </div>
             </div>
 
-            {/* Scrollable Wine List Container */}
-            <div className="max-h-96 overflow-y-auto space-y-4">
+            {/* Wine List */}
+            <div className="space-y-4">
               {eventWines.map((wine: Wine) => (
               <div
                 key={wine.id}
