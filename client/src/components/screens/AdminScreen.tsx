@@ -57,7 +57,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
 
 
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {/* 1. GESTISCI EVENTI */}
           <button
             onClick={onShowEventList}
