@@ -32,17 +32,14 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
       // Center the current score in view
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
-        const itemHeight = 48; // Height of each item
-        const containerHeight = 320; // Total height of picker
-        const visibleItems = Math.floor(containerHeight / itemHeight);
-        const centerOffset = Math.floor(visibleItems / 2);
-        const scrollTop = (currentIndex - centerOffset) * itemHeight;
+        const itemHeight = 40; // Height of each item
+        const scrollTop = currentIndex * itemHeight;
         
         setTimeout(() => {
           if (scrollRef.current) {
-            scrollRef.current.scrollTop = Math.max(0, scrollTop);
+            scrollRef.current.scrollTop = scrollTop;
           }
-        }, 100);
+        }, 150);
       }
     }
   }, [isOpen, selectedScore, scores]);
@@ -50,8 +47,8 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-50">
-      <div className="bg-white rounded-t-3xl w-full max-w-md mx-4 mb-0 overflow-hidden" style={{background: '#F5F5F5'}}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden" style={{background: '#F5F5F5'}}>
         
         {/* Header */}
         <div className="p-6 border-b border-gray-200" style={{background: '#300505'}}>
@@ -62,57 +59,42 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
         </div>
 
         {/* iOS-Style Scroll Picker */}
-        <div className="relative h-80 overflow-hidden">
+        <div className="relative h-64 overflow-hidden">
           {/* Gradient overlays for iOS effect */}
-          <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-gray-100 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-100 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-gray-100 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-100 to-transparent z-10 pointer-events-none"></div>
           
           {/* Selection highlight */}
-          <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-12 bg-gray-200 bg-opacity-50 border-t border-b border-gray-300 z-5"></div>
+          <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-10 bg-gray-200 bg-opacity-60 border-t border-b border-gray-300 z-5"></div>
           
           {/* Scrollable content */}
           <div 
             ref={scrollRef}
-            className="h-full overflow-y-auto scrollbar-hide px-4"
+            className="h-full overflow-y-scroll scrollbar-hide px-4"
             style={{
-              scrollSnapType: 'y proximity',
-              scrollBehavior: 'smooth',
-              paddingTop: '140px',
-              paddingBottom: '140px'
+              paddingTop: '110px',
+              paddingBottom: '110px'
             }}
-            onScroll={(e) => {
-              const container = e.target as HTMLDivElement;
-              const itemHeight = 48;
-              const scrollTop = container.scrollTop;
-              const centerPosition = scrollTop + 140; // Half of container height
-              const selectedIndex = Math.round(centerPosition / itemHeight);
-              const newScore = scores[selectedIndex];
-              if (newScore !== undefined && newScore !== selectedScore) {
-                setSelectedScore(newScore);
-              }
-            }}
-
           >
             {scores.map((score, index) => (
               <div
                 key={score}
-                className={`h-12 flex items-center justify-center text-2xl transition-all duration-200 cursor-pointer ${
+                className={`h-10 flex items-center justify-center text-xl transition-all duration-150 cursor-pointer ${
                   selectedScore === score 
-                    ? 'font-black scale-110' 
+                    ? 'font-black scale-105' 
                     : 'font-normal text-gray-400 scale-100'
                 }`}
                 style={{
-                  color: selectedScore === score ? '#300505' : undefined,
-                  scrollSnapAlign: 'center'
+                  color: selectedScore === score ? '#300505' : undefined
                 }}
                 onClick={() => {
-                  handleScoreSelect(score);
-                  // Scroll to center this item
+                  setSelectedScore(score);
+                  // Smooth scroll to position
                   if (scrollRef.current) {
-                    const itemHeight = 48;
-                    const scrollTop = index * itemHeight;
+                    const itemHeight = 40;
+                    const targetScrollTop = index * itemHeight;
                     scrollRef.current.scrollTo({
-                      top: scrollTop,
+                      top: targetScrollTop,
                       behavior: 'smooth'
                     });
                   }
