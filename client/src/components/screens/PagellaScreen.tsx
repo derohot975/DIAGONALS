@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, ArrowLeft, Save, Copy } from 'lucide-react';
+import { Home, ArrowLeft, Save, Clipboard } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
 
@@ -22,12 +22,15 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
     setTimeout(() => setIsSaved(false), 2000);
   };
 
-  const handleCopy = async () => {
+  const handlePaste = async () => {
     try {
-      await navigator.clipboard.writeText(content);
-      alert('Testo copiato negli appunti!');
+      const clipboardText = await navigator.clipboard.readText();
+      if (clipboardText) {
+        setContent(prevContent => prevContent + clipboardText);
+      }
     } catch (error) {
-      console.error('Errore durante la copia:', error);
+      console.error('Errore durante l\'incollaggio:', error);
+      alert('Non è possibile accedere agli appunti. Assicurati di aver dato i permessi necessari.');
     }
   };
 
@@ -76,12 +79,11 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
               {/* Action Buttons - Inside textarea, bottom right */}
               <div className="absolute bottom-4 right-4 flex space-x-2">
                 <button
-                  onClick={handleCopy}
-                  className="p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full shadow-lg transition-colors"
-                  disabled={!content.trim()}
-                  title="Copia"
+                  onClick={handlePaste}
+                  className="p-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg transition-colors"
+                  title="Incolla"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Clipboard className="w-4 h-4" />
                 </button>
                 
                 <button
