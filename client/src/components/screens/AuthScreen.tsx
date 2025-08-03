@@ -113,63 +113,82 @@ export default function AuthScreen({
                   PIN (4 cifre)
                 </label>
                 
-                {/* PIN Display */}
-                <div className="flex justify-center mb-4">
-                  <div className="flex space-x-2">
-                    {[0, 1, 2, 3].map((index) => (
-                      <div
-                        key={index}
-                        className="w-11 h-11 border-2 border-gray-300 rounded-lg flex items-center justify-center bg-white"
-                      >
-                        <span className="text-2xl font-bold text-gray-800">
-                          {pin[index] ? '•' : ''}
-                        </span>
+                {isLoginMode ? (
+                  // Modalità Login: Pulsantiera e display PIN
+                  <>
+                    {/* PIN Display */}
+                    <div className="flex justify-center mb-4">
+                      <div className="flex space-x-2">
+                        {[0, 1, 2, 3].map((index) => (
+                          <div
+                            key={index}
+                            className="w-11 h-11 border-2 border-gray-300 rounded-lg flex items-center justify-center bg-white"
+                          >
+                            <span className="text-2xl font-bold text-gray-800">
+                              {pin[index] ? '•' : ''}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                {/* Smart Keypad */}
-                <div className="flex justify-center mb-4">
-                  <div className="grid grid-cols-3 gap-5 max-w-72">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                      <button
-                        key={number}
-                        type="button"
-                        onClick={() => handleNumberInput(number.toString())}
-                        className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
-                      >
-                        {number}
-                      </button>
-                    ))}
-                    
-                    {/* Empty space */}
-                    <div></div>
-                    
-                    {/* Zero */}
-                    <button
-                      type="button"
-                      onClick={() => handleNumberInput('0')}
-                      className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
-                    >
-                      0
-                    </button>
-                    
-                    {/* Delete */}
-                    <button
-                      type="button"
-                      onClick={handleDeletePin}
-                      className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
-                    >
-                      ⌫
-                    </button>
-                  </div>
-                </div>
-
-                {!isLoginMode && (
-                  <div className="text-sm text-yellow-700 mt-1 text-center font-semibold">
-                    Inserisci giorno e mese di nascita,<br />così te lo ricordi anche da ubriaco! 🍷
-                  </div>
+                    {/* Smart Keypad */}
+                    <div className="flex justify-center mb-4">
+                      <div className="grid grid-cols-3 gap-5 max-w-72">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                          <button
+                            key={number}
+                            type="button"
+                            onClick={() => handleNumberInput(number.toString())}
+                            className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                          >
+                            {number}
+                          </button>
+                        ))}
+                        
+                        {/* Empty space */}
+                        <div></div>
+                        
+                        {/* Zero */}
+                        <button
+                          type="button"
+                          onClick={() => handleNumberInput('0')}
+                          className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                        >
+                          0
+                        </button>
+                        
+                        {/* Delete */}
+                        <button
+                          type="button"
+                          onClick={handleDeletePin}
+                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                        >
+                          ⌫
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  // Modalità Registrazione: Campo input normale
+                  <>
+                    <input
+                      type="tel"
+                      value={pin}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                        setPin(value);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent text-center text-2xl font-bold tracking-widest"
+                      placeholder="0000"
+                      maxLength={4}
+                      pattern="[0-9]{4}"
+                      required
+                    />
+                    <div className="text-sm text-yellow-700 mt-2 text-center font-semibold">
+                      Inserisci giorno e mese di nascita,<br />così te lo ricordi anche da ubriaco! 🍷
+                    </div>
+                  </>
                 )}
               </div>
 
