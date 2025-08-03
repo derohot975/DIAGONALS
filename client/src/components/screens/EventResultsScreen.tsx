@@ -137,7 +137,10 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                     <div className="ml-12">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
-                          <h3 className="font-semibold text-lg text-gray-800">{result?.name || 'Vino senza nome'}</h3>
+                          <div>
+                            <h3 className="font-bold text-lg text-gray-800 uppercase">{result?.contributor || 'SCONOSCIUTO'}</h3>
+                            <p className="text-sm text-gray-600">{result?.name || 'Vino senza nome'}</p>
+                          </div>
                           {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
                         </div>
                         <div className="flex items-center space-x-2">
@@ -154,9 +157,6 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                       </div>
                       
                       <div className="space-y-2">
-                        <p className="text-gray-600 text-sm">
-                          Portato da: <span className="font-medium">{result?.contributor || 'Sconosciuto'}</span>
-                        </p>
                         
                         {/* Informazioni complete del vino - Collassabile */}
                         {expandedWines.has(result.id) && (
