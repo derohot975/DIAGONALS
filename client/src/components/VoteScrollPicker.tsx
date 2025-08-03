@@ -82,8 +82,8 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
       <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden" style={{background: '#300505'}}>
         
         {/* Header */}
-        <div className="p-6 border-b border-gray-200" style={{background: '#300505'}}>
-          <h3 className="text-xl font-bold text-center text-white">Vota il vino di</h3>
+        <div className="p-6" style={{background: '#300505'}}>
+          <h3 className="text-xl font-normal text-center text-white">Vota il vino di</h3>
           <p className="text-lg font-bold text-center text-yellow-400 mt-1">
             {wineName.replace('Vino di ', '').toUpperCase()}
           </p>
