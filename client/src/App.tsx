@@ -908,6 +908,7 @@ function App() {
             onCompleteEvent={handleCompleteEvent}
             onViewReport={handleViewReport}
             onGoHome={() => setCurrentScreen('events')}
+            onGoBackToAdmin={() => setCurrentScreen('admin')}
           />
         );
       case 'voting':

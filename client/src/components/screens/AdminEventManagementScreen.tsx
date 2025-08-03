@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine as WineIcon, BarChart3, Settings, CheckCircle, Home } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine as WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from 'lucide-react';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../lib/utils';
@@ -16,6 +16,7 @@ interface AdminEventManagementScreenProps {
   onCompleteEvent: (eventId: number) => void;
   onViewReport: (eventId: number) => void;
   onGoHome?: () => void;
+  onGoBackToAdmin?: () => void;
 }
 
 export default function AdminEventManagementScreen({ 
@@ -29,7 +30,8 @@ export default function AdminEventManagementScreen({
   onDeactivateVoting,
   onCompleteEvent,
   onViewReport,
-  onGoHome
+  onGoHome,
+  onGoBackToAdmin
 }: AdminEventManagementScreenProps) {
   const getCreatorName = (createdBy: number) => {
     const user = users.find(u => u.id === createdBy);
@@ -227,9 +229,9 @@ export default function AdminEventManagementScreen({
         </div>
       </div>
 
-      {/* Fixed Home Button - Center Bottom */}
-      {onGoHome && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+      {/* Fixed Buttons - Center Bottom */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex space-x-4">
+        {onGoHome && (
           <button
             onClick={onGoHome}
             className="flex items-center justify-center w-12 h-12 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all shadow-lg"
@@ -238,8 +240,18 @@ export default function AdminEventManagementScreen({
           >
             <Home size={24} />
           </button>
-        </div>
-      )}
+        )}
+        {onGoBackToAdmin && (
+          <button
+            onClick={onGoBackToAdmin}
+            className="flex items-center justify-center w-12 h-12 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all shadow-lg"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+            title="Torna all'Admin"
+          >
+            <Shield size={24} />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
