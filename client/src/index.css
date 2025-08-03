@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,7 +53,7 @@
   body {
     @apply font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #4A1C1C 0%, #2D1010 100%) !important;
+    background: linear-gradient(135deg, #300505 0%, #8d0303 100%) !important;
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
@@ -73,7 +74,7 @@
     height: 100dvh; /* Dynamic viewport height per mobile */
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, #4A1C1C 0%, #2D1010 100%);
+    background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
     position: relative;
   }
 
