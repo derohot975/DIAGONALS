@@ -64,26 +64,27 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
           <div className="absolute top-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to bottom, #8d0303, transparent)'}}></div>
           <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, #8d0303, transparent)'}}></div>
           
-          {/* Selection highlight */}
-          <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-12 bg-yellow-400 bg-opacity-20 border-t-2 border-b-2 border-yellow-400 z-5"></div>
+          {/* Selection highlight - posizionato al centro esatto */}
+          <div className="absolute left-0 right-0 h-12 bg-yellow-400 bg-opacity-20 border-t-2 border-b-2 border-yellow-400 z-5" style={{top: '126px'}}></div>
           
           {/* Scrollable content */}
           <div 
             ref={scrollRef}
             className="h-full overflow-y-scroll scrollbar-hide px-4"
             style={{
-              paddingTop: '116px',
-              paddingBottom: '116px'
+              paddingTop: '126px',
+              paddingBottom: '126px'
             }}
             onScroll={(e) => {
               // SOLO lettura della posizione, NESSUN auto-scroll
               const container = e.target as HTMLDivElement;
               const itemHeight = 48;
               const scrollTop = container.scrollTop;
-              const centerPosition = scrollTop + 116;
+              // La posizione centrale è a metà dell'altezza visibile (132px / 2 = 66px dal top)
+              const centerPosition = scrollTop + 132; // 264px / 2 = 132px dal top del container
               const selectedIndex = Math.round(centerPosition / itemHeight);
               const newScore = scores[selectedIndex];
-              if (newScore !== undefined && typeof newScore === 'number') {
+              if (newScore !== undefined && typeof newScore === 'number' && selectedIndex >= 0 && selectedIndex < scores.length) {
                 setSelectedScore(newScore);
               }
             }}
