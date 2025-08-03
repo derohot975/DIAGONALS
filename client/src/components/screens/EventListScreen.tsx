@@ -86,7 +86,7 @@ export default function EventListScreen({
                       <p className="text-lg font-bold text-[#300505] mb-2">
                         {formatDate(event.date)}
                       </p>
-                      <h3 className="event-name-script font-bold text-[#300505] leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-lg">
+                      <h3 className="event-name-script font-bold text-[#300505] leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-base">
                         {event.name}
                       </h3>
                       

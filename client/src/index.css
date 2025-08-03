@@ -253,6 +253,7 @@
 .event-name-script {
   font-family: 'Rock Salt', cursive;
   font-weight: 400;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  line-height: 1.2;
 }
