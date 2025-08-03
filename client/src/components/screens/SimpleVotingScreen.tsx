@@ -124,9 +124,9 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
-      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#300505'}}>
+      <div className="sticky top-0 z-50 pt-2 pb-4" style={{background: '#300505'}}>
         {/* Navigation Bar */}
-        <div className="flex justify-between items-center px-4 pb-4">
+        <div className="flex justify-between items-center px-4 pb-6">
           {/* Home Button */}
           <button
             onClick={onHome}
@@ -143,16 +143,8 @@ export default function SimpleVotingScreen({
             className="w-20 h-auto logo-filter drop-shadow-lg" 
           />
 
-          {/* Admin Button */}
-          {onShowAdmin && (
-            <button
-              onClick={onShowAdmin}
-              className="flex items-center justify-center w-10 h-10 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
-              style={{background: 'rgba(255, 255, 255, 0.1)'}}
-            >
-              <Shield size={20} />
-            </button>
-          )}
+          {/* Spacer for symmetry */}
+          <div className="w-10 h-10"></div>
         </div>
         
         {/* Event Info */}
@@ -254,6 +246,18 @@ export default function SimpleVotingScreen({
         currentVote={selectedWineId ? getUserVoteForWine(selectedWineId)?.score : undefined}
         wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
       />
+
+      {/* Admin Button - Fixed Bottom Right */}
+      {onShowAdmin && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={onShowAdmin}
+            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+          >
+            <Shield className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
     </div>
   );
