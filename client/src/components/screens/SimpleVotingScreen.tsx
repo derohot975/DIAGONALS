@@ -8,6 +8,7 @@ import { User, Wine, WineEvent, Vote } from "@shared/schema";
 import diagoLogo from "@assets/diagologo.png";
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { VoteScrollPicker } from "../VoteScrollPicker";
 
 interface SimpleVotingScreenProps {
   event: WineEvent;
@@ -218,41 +219,18 @@ export default function SimpleVotingScreen({
         </div>
       </div>
 
-      {/* Vote Modal */}
-      {selectedWineId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-              Vota il Vino
-            </h3>
-            <p className="text-gray-600 mb-6 text-center">
-              Seleziona un punteggio da 1.0 a 10.0
-            </p>
-            
-            <div className="grid grid-cols-5 gap-2 mb-6">
-              {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10].map((score) => (
-                <button
-                  key={score}
-                  onClick={() => {
-                    voteMutation.mutate({ wineId: selectedWineId, score });
-                    setSelectedWineId(null);
-                  }}
-                  className="px-3 py-2 bg-gray-200 hover:bg-[#8d0303] hover:text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  {score}
-                </button>
-              ))}
-            </div>
-            
-            <button
-              onClick={() => setSelectedWineId(null)}
-              className="w-full py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-medium"
-            >
-              Annulla
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Vote Scroll Picker */}
+      <VoteScrollPicker 
+        isOpen={!!selectedWineId}
+        onClose={() => setSelectedWineId(null)}
+        onVote={(score) => {
+          if (selectedWineId) {
+            voteMutation.mutate({ wineId: selectedWineId, score });
+          }
+        }}
+        currentVote={selectedWineId ? getUserVoteForWine(selectedWineId)?.score : undefined}
+        wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
+      />
 
     </div>
   );
