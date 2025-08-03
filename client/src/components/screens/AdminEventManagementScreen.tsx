@@ -114,7 +114,7 @@ export default function AdminEventManagementScreen({
           {activeEvents.length > 0 && (
             <div className="space-y-6">
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-white mb-2">Gestione Eventi</h2>
+                <h2 className="text-lg text-yellow-200 mb-2">Gestione Eventi</h2>
               </div>
               
               {activeEvents.map(event => (
@@ -144,7 +144,6 @@ export default function AdminEventManagementScreen({
                         {formatDate(event.date)}
                       </p>
                       <h3 className="event-name-script text-lg font-bold text-gray-800 mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
-                      <p className="text-base text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
                     </div>
 
                     {/* Primary Action - Voting Control */}
@@ -172,6 +171,11 @@ export default function AdminEventManagementScreen({
                     {event.votingStatus === 'completed' && (
                       <VotingCompletionChecker eventId={event.id} />
                     )}
+
+                    {/* Participants Count - Below Voting Button */}
+                    <div className="text-center mt-4">
+                      <p className="text-base text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
+                    </div>
                   </div>
 
 
