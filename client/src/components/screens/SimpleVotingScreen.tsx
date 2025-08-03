@@ -286,24 +286,6 @@ export default function SimpleVotingScreen({
 
 
 
-      {/* Fixed Navigation Buttons */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <button
-          onClick={onBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-      </div>
-      
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={onHome}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-        >
-          <Home className="w-5 h-5" />
-        </button>
-      </div>
     </div>
   );
 }
