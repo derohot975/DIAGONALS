@@ -54,7 +54,7 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
 
       {/* Title */}
       <div className="flex-shrink-0 text-center pb-6">
-        <h2 className="text-2xl font-bold text-yellow-200">
+        <h2 className="event-name-script text-2xl font-bold text-yellow-200">
           Pagellone di Tommy
         </h2>
       </div>
