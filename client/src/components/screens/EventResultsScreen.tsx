@@ -88,7 +88,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
           <button
             onClick={onGoHome}
             className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-            style={{background: 'rgba(48, 5, 5, 0.8)'}}
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
             title="Torna alla Home"
           >
             <Home className="w-5 h-5" />
