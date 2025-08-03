@@ -100,6 +100,13 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: number): Promise<boolean> {
     try {
+      // Prima elimina tutti i voti dell'utente
+      await db.delete(votes).where(eq(votes.userId, id));
+      
+      // Poi elimina tutti i vini dell'utente
+      await db.delete(wines).where(eq(wines.userId, id));
+      
+      // Infine elimina l'utente stesso
       await db.delete(users).where(eq(users.id, id));
       return true;
     } catch (error) {
