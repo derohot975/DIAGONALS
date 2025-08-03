@@ -118,15 +118,32 @@ export default function AdminEventManagementScreen({
               {activeEvents.map(event => (
                 <div key={event.id} className="relative overflow-hidden">
                   {/* Main Event Card */}
-                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in">
+                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in relative">
                     
+                    {/* Action Buttons - Top Right */}
+                    <div className="absolute top-4 right-4 flex space-x-2">
+                      <button
+                        onClick={() => onEditEvent(event)}
+                        className="p-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-all duration-200 shadow-sm"
+                        title="Modifica evento"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => onDeleteEvent(event.id)}
+                        className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all duration-200 shadow-sm"
+                        title="Elimina evento"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
                     {/* Event Header */}
-                    <div className="text-center mb-4">
-                      <h3 className="event-name-script text-lg font-bold text-gray-800 mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
-                      <p className="text-base text-gray-600 flex items-center justify-center mb-2">
-                        <Calendar className="w-4 h-4 mr-2" />
+                    <div className="text-center mb-4 pr-20">
+                      <p className="text-base text-gray-600 mb-2">
                         {formatDate(event.date)}
                       </p>
+                      <h3 className="event-name-script text-lg font-bold text-gray-800 mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
                       <p className="text-base text-gray-600">⭐ <span className="font-bold">{getParticipantsCount(event.id)} partecipanti</span> ⭐</p>
                     </div>
 
@@ -157,23 +174,7 @@ export default function AdminEventManagementScreen({
                     )}
                   </div>
 
-                  {/* Action Menu - Below Modal */}
-                  <div className="flex justify-end space-x-3 mt-4">
-                    <button
-                      onClick={() => onEditEvent(event)}
-                      className="p-3 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-all duration-200 shadow-sm"
-                      title="Modifica evento"
-                    >
-                      <Edit className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteEvent(event.id)}
-                      className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all duration-200 shadow-sm"
-                      title="Elimina evento"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+
                 </div>
               ))}
             </div>
