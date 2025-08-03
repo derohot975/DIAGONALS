@@ -90,10 +90,10 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
         </div>
 
         {/* iOS-Style Scroll Picker */}
-        <div className="relative h-64 overflow-hidden" style={{background: '#8d0303'}}>
+        <div className="relative h-64 overflow-hidden" style={{background: '#300505'}}>
           {/* Gradient overlays for iOS effect */}
-          <div className="absolute top-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to bottom, #8d0303, transparent)'}}></div>
-          <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, #8d0303, transparent)'}}></div>
+          <div className="absolute top-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to bottom, #300505, transparent)'}}></div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, #300505, transparent)'}}></div>
           
           {/* Selection highlight - posizionato al centro esatto */}
           <div className="absolute left-0 right-0 h-12 bg-yellow-400 bg-opacity-20 border-t-2 border-b-2 border-yellow-400 z-5" style={{top: '126px'}}></div>
