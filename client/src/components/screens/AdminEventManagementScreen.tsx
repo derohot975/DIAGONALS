@@ -123,7 +123,7 @@ export default function AdminEventManagementScreen({
                     {/* Action Buttons - Top Right */}
                     <button
                       onClick={() => onEditEvent(event)}
-                      className="absolute top-4 right-16 p-2 text-gray-700 hover:text-gray-900 transition-all duration-200"
+                      className="absolute top-4 right-12 p-2 text-gray-700 hover:text-gray-900 transition-all duration-200"
                       title="Modifica evento"
                     >
                       <Edit className="w-4 h-4" />
