@@ -76,6 +76,15 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
               {/* Action Buttons - Inside textarea, bottom right */}
               <div className="absolute bottom-4 right-4 flex space-x-2">
                 <button
+                  onClick={handleCopy}
+                  className="p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full shadow-lg transition-colors"
+                  disabled={!content.trim()}
+                  title="Copia"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+                
+                <button
                   onClick={handleSave}
                   className={`p-2 rounded-full shadow-lg transition-colors ${
                     isSaved 
@@ -85,15 +94,6 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
                   title={isSaved ? 'Salvato!' : 'Salva'}
                 >
                   <Save className="w-4 h-4" />
-                </button>
-                
-                <button
-                  onClick={handleCopy}
-                  className="p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full shadow-lg transition-colors"
-                  disabled={!content.trim()}
-                  title="Copia"
-                >
-                  <Copy className="w-4 h-4" />
                 </button>
               </div>
             </div>
