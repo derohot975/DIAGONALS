@@ -1,4 +1,4 @@
-import { BarChart3, Home, ArrowLeft } from 'lucide-react';
+import { BarChart3, Home, ArrowLeft, StickyNote } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -72,7 +72,8 @@ export default function HistoricEventsScreen({
                       className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg text-sm font-medium transition-colors"
                       title="Visualizza Pagella"
                     >
-                      📊 Pagella
+                      <StickyNote className="w-4 h-4 inline mr-1" />
+                      Pagella
                     </button>
                   </div>
                 </div>
