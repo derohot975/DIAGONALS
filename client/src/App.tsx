@@ -969,7 +969,7 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col">
       {renderScreen()}
       
       {/* Modals */}
