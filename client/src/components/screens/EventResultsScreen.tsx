@@ -82,6 +82,20 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
 
   return (
     <div className="flex-1 flex flex-col">
+      {/* Home Button - Top Right */}
+      {onGoHome && (
+        <div className="fixed top-6 right-6 z-50">
+          <button
+            onClick={onGoHome}
+            className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+            style={{background: 'rgba(48, 5, 5, 0.8)'}}
+            title="Torna alla Home"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
       {/* Logo Header */}
       <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
         <img 
@@ -226,30 +240,6 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
           )}
         </div>
       </div>
-      
-      {/* Navigation Buttons */}
-      {onGoBack && (
-        <div className="fixed bottom-4 left-4 z-50">
-          <button
-            onClick={onGoBack}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-      
-      {onGoHome && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={onGoHome}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-            title="Torna alla Home"
-          >
-            <Home className="w-5 h-5" />
-          </button>
-        </div>
-      )}
     </div>
     </div>
   );
