@@ -126,7 +126,7 @@ function App() {
   // Auto-login if user exists in localStorage
   useEffect(() => {
     if (currentUser && currentScreen === 'auth') {
-      setCurrentScreen('home');
+      setCurrentScreen('events');
     }
   }, [currentUser, currentScreen]);
 
@@ -143,7 +143,7 @@ function App() {
         // User validation: clearing localStorage for non-existent user
         setCurrentUser(null);
         setSessionId(null);
-        setCurrentScreen('home');
+        setCurrentScreen('auth');
         toast({ 
           title: 'Utente non trovato', 
           description: 'Riseleziona il tuo utente dalla lista.',
