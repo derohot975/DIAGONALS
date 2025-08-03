@@ -168,7 +168,7 @@ export default function SimpleVotingScreen({
 
       {/* Scrollable Wine List */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-sm mx-auto">
           <div className="space-y-3">
             {wines
               .sort((a, b) => {
