@@ -55,8 +55,10 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
         
         {/* Header */}
         <div className="p-6 border-b border-gray-200" style={{background: '#300505'}}>
-          <h3 className="text-xl font-bold text-center text-white">Vota il Vino</h3>
-          <p className="text-sm text-center text-gray-200 mt-1">{wineName}</p>
+          <h3 className="text-xl font-bold text-center text-white">Vota il vino di</h3>
+          <p className="text-lg font-bold text-center text-yellow-400 mt-1">
+            {wineName.replace('Vino di ', '').toUpperCase()}
+          </p>
         </div>
 
         {/* iOS-Style Scroll Picker */}
@@ -73,7 +75,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
             ref={scrollRef}
             className="h-full overflow-y-auto scrollbar-hide px-4"
             style={{
-              scrollSnapType: 'y mandatory',
+              scrollSnapType: 'y proximity',
               scrollBehavior: 'smooth',
               paddingTop: '140px',
               paddingBottom: '140px'
@@ -89,16 +91,18 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
                 setSelectedScore(newScore);
               }
             }}
+
           >
             {scores.map((score, index) => (
               <div
                 key={score}
-                className={`h-12 flex items-center justify-center text-2xl font-bold transition-all duration-200 cursor-pointer ${
+                className={`h-12 flex items-center justify-center text-2xl transition-all duration-200 cursor-pointer ${
                   selectedScore === score 
-                    ? 'text-black scale-110' 
-                    : 'text-gray-400 scale-100'
+                    ? 'font-black scale-110' 
+                    : 'font-normal text-gray-400 scale-100'
                 }`}
                 style={{
+                  color: selectedScore === score ? '#300505' : undefined,
                   scrollSnapAlign: 'center'
                 }}
                 onClick={() => {
