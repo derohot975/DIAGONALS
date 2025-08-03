@@ -108,22 +108,22 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
             </div>
           ) : (
             <>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {results.map((result, index) => (
                   <div 
                     key={result.id} 
-                    className={`bg-white rounded-xl p-3 border-2 wine-card-hover relative cursor-pointer transition-all duration-200 ${
+                    className={`bg-white rounded-xl p-2 border-2 wine-card-hover relative cursor-pointer transition-all duration-200 ${
                       index === 0 ? 'border-[hsl(43,96%,56%)]/30' : 'border-gray-300'
                     } ${expandedWines.has(result.id) ? 'shadow-lg' : 'hover:shadow-md'}`}
                     onClick={() => toggleExpandWine(result.id)}
                   >
-                    <div className={`absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                    <div className={`absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                       index === 0 ? 'bg-[hsl(43,96%,56%)] text-white' : 'bg-gray-400 text-white'
                     }`}>
                       {index + 1}
                     </div>
                     <div className="ml-12">
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center space-x-3">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2">
