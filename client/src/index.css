@@ -257,3 +257,12 @@
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
   line-height: 1.2;
 }
+
+/* Custom size utilities for 20% reduction */
+.w-13 {
+  width: 3.25rem; /* 52px (reduced from 64px) */
+}
+
+.h-13 {
+  height: 3.25rem; /* 52px (reduced from 64px) */
+}
