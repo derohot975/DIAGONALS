@@ -107,6 +107,7 @@ export const useMutations = () => {
       year: number; 
       origin: string; 
       price: string; 
+      alcohol?: number;
       eventId: number; 
       userId: number 
     }) => {
