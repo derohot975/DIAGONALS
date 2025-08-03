@@ -25,11 +25,6 @@ export default function SimpleVotingScreen({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
-  const [activeVoteWineId, setActiveVoteWineId] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartY, setDragStartY] = useState(0);
-  const [dragStartScore, setDragStartScore] = useState(1);
-  const [tempScore, setTempScore] = useState<number | null>(null);
 
 
   // Fetch wines for this event
@@ -169,45 +164,7 @@ export default function SimpleVotingScreen({
               return (
                 <div 
                   key={wine.id} 
-                  className={`bg-white rounded-2xl shadow-lg p-4 animate-fade-in ${
-                    activeVoteWineId === wine.id ? 'touch-none' : ''
-                  }`}
-                  style={{
-                    touchAction: activeVoteWineId === wine.id ? 'none' : 'auto',
-                    overscrollBehavior: activeVoteWineId === wine.id ? 'none' : 'auto'
-                  }}
-                  onTouchStart={(e) => {
-                    if (activeVoteWineId === wine.id && e.touches.length === 1) {
-                      e.preventDefault();
-                      const currentScore = userVote ? parseFloat(userVote.score.toString()) : 1;
-                      setIsDragging(true);
-                      setDragStartY(e.touches[0].clientY);
-                      setDragStartScore(currentScore);
-                      setTempScore(currentScore);
-                    }
-                  }}
-                  onTouchMove={(e) => {
-                    if (activeVoteWineId === wine.id && isDragging && e.touches.length === 1) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      
-                      const currentY = e.touches[0].clientY;
-                      const deltaY = dragStartY - currentY;
-                      
-                      // iPhone-style: 20px movement = 0.5 score change
-                      const scoreChange = Math.round((deltaY / 20) * 2) / 2; // Round to nearest 0.5
-                      const newScore = Math.max(1, Math.min(10, dragStartScore + scoreChange));
-                      
-                      setTempScore(newScore);
-                    }
-                  }}
-                  onTouchEnd={() => {
-                    if (activeVoteWineId === wine.id && isDragging && tempScore !== null) {
-                      voteMutation.mutate({ wineId: wine.id, score: tempScore });
-                      setIsDragging(false);
-                      setTempScore(null);
-                    }
-                  }}
+                  className="bg-white rounded-2xl shadow-lg p-4 animate-fade-in"
                 >
                   
                   {/* Horizontal Layout */}
@@ -223,46 +180,20 @@ export default function SimpleVotingScreen({
                       </div>
                     </div>
 
-                    {/* Right Side - Vote Controls */}
+                    {/* Right Side - Vote Display */}
                     <div className="flex items-center space-x-3">
-                      {/* Vote Badge - Moved Left */}
+                      {/* Vote Badge */}
                       <div 
-                        className={`px-5 py-2 rounded-full font-bold text-lg text-center min-w-[70px] cursor-pointer select-none transition-all ${
-                          activeVoteWineId === wine.id
-                            ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] text-white ring-2 ring-[#8d0303] ring-opacity-50' 
-                            : userVote 
+                        className={`px-5 py-2 rounded-full font-bold text-lg text-center min-w-[70px] cursor-pointer transition-all ${
+                          userVote 
                             ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
-                            : 'bg-gray-400 text-white'
-                        } ${isDragging && activeVoteWineId === wine.id ? 'scale-110' : ''}`}
-                        onClick={() => {
-                          if (activeVoteWineId === wine.id) {
-                            // Deactivate if already active
-                            setActiveVoteWineId(null);
-                          } else {
-                            // Activate this wine for voting
-                            setActiveVoteWineId(wine.id);
-                            // Initialize vote if none exists
-                            if (!userVote) {
-                              voteMutation.mutate({ wineId: wine.id, score: 1 });
-                            }
-                          }
-                        }}
-                        title={activeVoteWineId === wine.id ? "Attivo - trascina per modificare" : "Clicca per attivare"}
+                            : 'bg-gray-400 text-white hover:bg-gray-500'
+                        }`}
+                        onClick={() => setSelectedWineId(wine.id)}
+                        title="Clicca per votare"
                       >
-                        {activeVoteWineId === wine.id && tempScore !== null ? tempScore.toFixed(1) : (userVote ? userVote.score : '1.0')}
+                        {userVote ? userVote.score : '1.0'}
                       </div>
-                      
-                      {/* Drag Indicator - Only show when active */}
-                      {activeVoteWineId === wine.id && (
-                        <div className="flex flex-col items-center justify-center px-3">
-                          <div className="text-[#8d0303] text-xs opacity-60">
-                            ⇅
-                          </div>
-                          <div className="text-[#8d0303] text-xs font-medium">
-                            DRAG
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                   </div>
@@ -284,7 +215,41 @@ export default function SimpleVotingScreen({
         </div>
       </div>
 
-
+      {/* Vote Modal */}
+      {selectedWineId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+              Vota il Vino
+            </h3>
+            <p className="text-gray-600 mb-6 text-center">
+              Seleziona un punteggio da 1.0 a 10.0
+            </p>
+            
+            <div className="grid grid-cols-5 gap-2 mb-6">
+              {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10].map((score) => (
+                <button
+                  key={score}
+                  onClick={() => {
+                    voteMutation.mutate({ wineId: selectedWineId, score });
+                    setSelectedWineId(null);
+                  }}
+                  className="px-3 py-2 bg-gray-200 hover:bg-[#8d0303] hover:text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  {score}
+                </button>
+              ))}
+            </div>
+            
+            <button
+              onClick={() => setSelectedWineId(null)}
+              className="w-full py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-medium"
+            >
+              Annulla
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
