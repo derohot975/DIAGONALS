@@ -104,7 +104,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
             className="h-full overflow-y-scroll scrollbar-hide px-4"
             style={{
               paddingTop: '126px',
-              paddingBottom: '126px'
+              paddingBottom: '78px'
             }}
             onScroll={(e) => {
               const container = e.target as HTMLDivElement;
