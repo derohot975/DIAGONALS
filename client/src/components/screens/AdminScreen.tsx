@@ -38,13 +38,25 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
+      {/* Header with Logo and Home Button */}
+      <div className="flex-shrink-0 flex justify-between items-center pt-8 pb-6 px-4">
+        <div className="w-10"></div> {/* Spacer per centrare il logo */}
         <img 
           src={diagoLogo} 
           alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
+          className="w-20 h-auto logo-filter drop-shadow-lg" 
         />
+        {/* Home Button */}
+        {onGoHome && (
+          <button
+            onClick={onGoHome}
+            className="flex items-center justify-center w-10 h-10 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+            title="Torna alla Home"
+          >
+            <Home size={20} />
+          </button>
+        )}
       </div>
 
       {/* Scrollable Content */}
@@ -145,27 +157,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
       </div>
     </div>
 
-      {/* Pulsanti fissi in fondo alla pagina */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <button
-          onClick={onGoBack}
-          className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-      </div>
-      
-      {onGoHome && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={onGoHome}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-            title="Torna alla Home"
-          >
-            <Home className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+
     </div>
   );
 }
