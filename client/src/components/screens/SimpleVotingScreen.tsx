@@ -121,7 +121,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
-      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#4A1C1C'}}>
+      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#300505'}}>
         {/* Logo */}
         <div className="flex justify-center pb-4">
           <img 
@@ -133,7 +133,7 @@ export default function SimpleVotingScreen({
         
         {/* Event Info */}
         <div className="text-center">
-          <h2 className="text-xl font-bold text-yellow-400 mb-1" style={{fontFamily: 'Dancing Script, cursive'}}>
+          <h2 className="text-3xl font-bold text-yellow-400 mb-1" style={{fontFamily: 'Dancing Script, cursive'}}>
             {event.name.charAt(0).toUpperCase() + event.name.slice(1).toLowerCase()}
           </h2>
           <p className="text-sm text-white font-bold">{formatEventDate(event.date)}</p>
