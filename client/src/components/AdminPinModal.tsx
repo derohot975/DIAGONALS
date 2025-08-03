@@ -10,7 +10,7 @@ interface AdminPinModalProps {
 export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinModalProps) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
-  const ADMIN_PIN = '000';
+  const ADMIN_PIN = localStorage.getItem('diagonale_admin_pin') || '000';
 
   if (!isOpen) return null;
 

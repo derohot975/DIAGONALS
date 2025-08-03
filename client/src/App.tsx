@@ -626,9 +626,8 @@ function App() {
   };
 
   const handleChangeAdminPin = (newPin: string) => {
-    // TODO: Implementare il salvataggio del nuovo PIN admin
-    // Per ora mantengo il PIN hardcoded, ma qui si potrebbe salvare in localStorage o database
-    console.log('Nuovo PIN admin:', newPin);
+    // Salvataggio del nuovo PIN admin in localStorage
+    localStorage.setItem('diagonale_admin_pin', newPin);
     toast({ 
       title: 'PIN Admin Modificato', 
       description: 'Il PIN admin è stato aggiornato con successo.' 

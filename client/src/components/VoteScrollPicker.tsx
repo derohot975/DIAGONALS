@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, memo } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface VoteScrollPickerProps {
   wineName: string;
 }
 
-export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineName }: VoteScrollPickerProps) {
+export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineName }: VoteScrollPickerProps) {
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
   const scrollRef = useRef<HTMLDivElement>(null);
   
@@ -170,4 +170,4 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
       </div>
     </div>
   );
-}
+});

@@ -5,6 +5,7 @@ DIAGONALE is a mobile-only web application designed for blind wine tasting event
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+Cost-conscious development: Wants definitive fixes without multiple iterations.
 
 ## System Architecture
 
@@ -40,10 +41,11 @@ Preferred communication style: Simple, everyday language.
 - **PIN-Based Authentication**: 4-digit PIN system for secure user identification. Login requires only PIN, registration requires username + PIN. No state persistence - users must authenticate on each app access.
 - **Event Management**: Creation, activation, and completion of wine tasting events, with clear separation of active and historic events.
 - **Wine Registration**: Modal system for 7 wine fields (type, name, producer, grape, year, origin, price) with auto-formatting and smart capitalization.
-- **Voting System**: Simultaneous voting with numerical scores (1.0-10.0 in 0.5 steps). Admin controls "AVVIA VOTAZIONI" and "FERMA VOTAZIONI".
+- **Voting System**: iPhone-style scroll picker with decimal voting (1.0-10.0 in 0.5 steps). Admin controls "AVVIA VOTAZIONI" and "FERMA VOTAZIONI".
 - **Results Display**: Comprehensive results with wine rankings, scores, and individual votes.
-- **User Management**: Simplified user management without traditional admin roles; all users are participants. Open access to the admin panel.
+- **User Management**: Simplified user management without traditional admin roles; all users are participants. Admin PIN "000" protection for all administrative functions.
 - **Direct Event Access**: Users are redirected directly to events list after authentication, bypassing the old home screen.
+- **Performance Optimization**: Comprehensive optimization including React.memo usage, removed unused UI components (20+ shadcn components), streamlined CSS, and duplicate file cleanup.
 
 ## External Dependencies
 
