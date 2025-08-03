@@ -28,7 +28,7 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
           <div className="flex items-center space-x-3">
             <Trophy className="w-8 h-8" />
             <div>
-              <h2 className="text-2xl font-bold">{eventInfo.name}</h2>
+              <h2 className="event-name-script text-3xl font-bold">{eventInfo.name}</h2>
               <p className="text-amber-100">{formatDate(eventInfo.date)} • Report Finale</p>
             </div>
           </div>

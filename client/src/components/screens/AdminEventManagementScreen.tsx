@@ -122,7 +122,7 @@ export default function AdminEventManagementScreen({
                     
                     {/* Event Header */}
                     <div className="text-center mb-4">
-                      <h3 className="text-xl font-bold text-gray-800 mb-1 break-words">{event.name}</h3>
+                      <h3 className="event-name-script text-2xl font-bold text-gray-800 mb-1 break-words">{event.name}</h3>
                       <p className="text-base text-gray-600 flex items-center justify-center mb-2">
                         <Calendar className="w-4 h-4 mr-2" />
                         {formatDate(event.date)}

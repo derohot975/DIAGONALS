@@ -248,3 +248,10 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Event name script font */
+.event-name-script {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}

@@ -159,7 +159,7 @@ export default function SimpleVotingScreen({
         
         {/* Event Info */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-yellow-400 mb-1" style={{fontFamily: 'Dancing Script, cursive'}}>
+          <h2 className="event-name-script text-4xl font-bold text-yellow-400 mb-1">
             {event.name.charAt(0).toUpperCase() + event.name.slice(1).toLowerCase()}
           </h2>
           <p className="text-sm text-white font-bold">{formatEventDate(event.date)}</p>
