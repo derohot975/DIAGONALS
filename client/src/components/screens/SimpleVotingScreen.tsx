@@ -9,6 +9,7 @@ import diagoLogo from "@assets/diagologo.png";
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { VoteScrollPicker } from "../VoteScrollPicker";
+import AdminPinModal from "../AdminPinModal";
 
 interface SimpleVotingScreenProps {
   event: WineEvent;
@@ -28,6 +29,7 @@ export default function SimpleVotingScreen({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
+  const [showAdminPinModal, setShowAdminPinModal] = useState(false);
 
 
   // Fetch wines for this event
@@ -146,7 +148,7 @@ export default function SimpleVotingScreen({
           {/* Admin Button */}
           {onShowAdmin && (
             <button
-              onClick={onShowAdmin}
+              onClick={() => setShowAdminPinModal(true)}
               className="flex items-center justify-center w-10 h-10 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
               style={{background: 'rgba(255, 255, 255, 0.1)'}}
             >
@@ -255,7 +257,17 @@ export default function SimpleVotingScreen({
         wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
       />
 
-
+      {/* Admin PIN Modal */}
+      <AdminPinModal 
+        isOpen={showAdminPinModal}
+        onClose={() => setShowAdminPinModal(false)}
+        onSuccess={() => {
+          setShowAdminPinModal(false);
+          if (onShowAdmin) {
+            onShowAdmin();
+          }
+        }}
+      />
 
     </div>
   );
