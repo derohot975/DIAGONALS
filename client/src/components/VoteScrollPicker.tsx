@@ -145,7 +145,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
                   }
                 }}
               >
-                {typeof score === 'number' ? score.toFixed(1) : '0.0'}
+                {typeof score === 'number' ? (score % 1 === 0 ? score.toString() : score.toFixed(1)) : '0'}
               </div>
             ))}
           </div>
@@ -164,7 +164,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
             className="flex-1 py-3 px-4 text-black rounded-xl font-semibold hover:bg-yellow-300"
             style={{background: '#FFD700'}}
           >
-            Conferma {typeof selectedScore === 'number' ? selectedScore.toFixed(1) : '0.0'}
+            Conferma {typeof selectedScore === 'number' ? (selectedScore % 1 === 0 ? selectedScore.toString() : selectedScore.toFixed(1)) : '0'}
           </button>
         </div>
       </div>
