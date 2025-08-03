@@ -13,6 +13,7 @@ import EventListScreen from './components/screens/EventListScreen';
 import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
+import HistoricEventsScreen from './components/screens/HistoricEventsScreen';
 import SimpleVotingScreen from './components/screens/SimpleVotingScreen';
 import AuthScreen from './components/screens/AuthScreen';
 
@@ -27,7 +28,7 @@ import ChangeAdminPinModal from './components/modals/ChangeAdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
-type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting';
+type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -609,6 +610,10 @@ function App() {
     requireAdminPin('admin-access', () => setCurrentScreen('admin'));
   };
 
+  const handleShowHistoricEvents = () => {
+    setCurrentScreen('historicEvents');
+  };
+
   const handleShowAddUserModal = () => {
     setShowAddUserModal(true);
   };
@@ -892,6 +897,7 @@ function App() {
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
             onEditWine={handleEditWine}
+            onShowHistoricEvents={handleShowHistoricEvents}
           />
         );
       case 'adminEvents':
@@ -943,6 +949,16 @@ function App() {
           <EventResultsScreen
             event={currentEvent}
             results={results}
+            onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('events')}
+          />
+        );
+      case 'historicEvents':
+        return (
+          <HistoricEventsScreen
+            events={events as WineEvent[]}
+            users={users}
+            onShowEventResults={handleShowEventResults}
             onGoBack={() => setCurrentScreen('events')}
             onGoHome={() => setCurrentScreen('events')}
           />

@@ -13,6 +13,7 @@ interface EventListScreenProps {
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
   onShowAdmin?: () => void;
+  onShowHistoricEvents?: () => void;
 
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
@@ -29,6 +30,7 @@ export default function EventListScreen({
   onShowEventDetails, 
   onShowEventResults,
   onShowAdmin,
+  onShowHistoricEvents,
 
   onRegisterWine,
   onParticipateEvent,
@@ -152,33 +154,16 @@ export default function EventListScreen({
             </div>
           )}
 
-          {/* Completed Events (Storico) */}
+          {/* Storico Eventi Button */}
           {completedEvents.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-white text-center mb-4">
-                📚 Storico Eventi
-              </h2>
-              
-              {completedEvents.map(event => (
-                <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303]">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-300 mb-1">{formatDate(event.date)}</p>
-                      <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
-                    </div>
-                    <div className="flex items-center">
-                      <button
-                        onClick={() => onShowEventResults(event.id)}
-                        className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-                        title="Visualizza Report"
-                      >
-                        <BarChart3 className="w-4 h-4 inline mr-1" />
-                        Report
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="text-center mt-8">
+              <button
+                onClick={onShowHistoricEvents}
+                className="bg-gradient-to-r from-[#8d0303] to-[#300505] hover:from-[#300505] hover:to-[#8d0303] text-white font-bold py-3 px-6 rounded-2xl text-sm transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2 mx-auto"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>📚 STORICO EVENTI</span>
+              </button>
             </div>
           )}
 
