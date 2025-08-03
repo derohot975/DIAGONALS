@@ -37,7 +37,7 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Logo and Title */}
-      <div className="sticky top-0 z-10 text-center py-4" style={{background: 'linear-gradient(135deg, #300505 0%, #8d0303 100%)'}}>
+      <div className="sticky top-0 z-10 text-center py-4" style={{background: 'linear-gradient(to bottom, #8d0303 0%, #300505 100%)'}}>
         <img 
           src={diagoLogo} 
           alt="DIAGO Logo" 
