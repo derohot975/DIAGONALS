@@ -41,7 +41,7 @@ export default function HistoricEventsScreen({
       {/* Title */}
       <div className="flex-shrink-0 text-center pb-6">
         <h2 className="text-2xl font-bold text-yellow-200">
-          📚 Storico Eventi
+          Storico Eventi
         </h2>
       </div>
 
@@ -57,7 +57,6 @@ export default function HistoricEventsScreen({
                   <div className="flex-1">
                     <p className="text-sm text-gray-300 mb-1">{formatDate(event.date)}</p>
                     <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
-                    <p className="text-xs text-gray-400 mt-1">Creato da: {getCreatorName(event.createdBy)}</p>
                   </div>
                   <div className="flex items-center">
                     <button
