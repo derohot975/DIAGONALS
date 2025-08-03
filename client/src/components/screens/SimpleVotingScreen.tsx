@@ -120,22 +120,19 @@ export default function SimpleVotingScreen({
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Fixed Header */}
-      <div className="sticky top-0 z-10 px-4 pb-4" style={{background: 'linear-gradient(135deg, #300505 0%, #8d0303 100%)'}}>
-        {/* Logo */}
-        <div className="flex justify-center pt-8 pb-4">
-          <img 
-            src={diagoLogo} 
-            alt="DIAGO Logo" 
-            className="w-20 h-auto logo-filter drop-shadow-lg" 
-          />
-        </div>
-        
-        {/* Event Info */}
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-yellow-400 mb-1">{event.name}</h2>
-          <p className="text-sm text-white font-bold">{formatEventDate(event.date)}</p>
-        </div>
+      {/* Fixed Header - Logo */}
+      <div className="sticky top-0 z-10 flex justify-center pt-8 pb-4">
+        <img 
+          src={diagoLogo} 
+          alt="DIAGO Logo" 
+          className="w-20 h-auto logo-filter drop-shadow-lg" 
+        />
+      </div>
+      
+      {/* Fixed Header - Event Info */}
+      <div className="sticky top-16 z-10 text-center pb-4">
+        <h2 className="text-xl font-bold text-yellow-400 mb-1">{event.name}</h2>
+        <p className="text-sm text-white font-bold">{formatEventDate(event.date)}</p>
       </div>
 
       {/* Scrollable Wine List */}
