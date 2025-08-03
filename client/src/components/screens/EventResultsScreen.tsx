@@ -82,19 +82,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Home Button - Top Right */}
-      {onGoHome && (
-        <div className="fixed top-6 right-6 z-50">
-          <button
-            onClick={onGoHome}
-            className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-            style={{background: 'rgba(255, 255, 255, 0.1)'}}
-            title="Torna alla Home"
-          >
-            <Home className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+
 
       {/* Logo Header */}
       <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
@@ -124,18 +112,18 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                 {results.map((result, index) => (
                   <div 
                     key={result.id} 
-                    className={`bg-white rounded-xl p-4 border-2 wine-card-hover relative cursor-pointer transition-all duration-200 ${
+                    className={`bg-white rounded-xl p-3 border-2 wine-card-hover relative cursor-pointer transition-all duration-200 ${
                       index === 0 ? 'border-[hsl(43,96%,56%)]/30' : 'border-gray-300'
                     } ${expandedWines.has(result.id) ? 'shadow-lg' : 'hover:shadow-md'}`}
                     onClick={() => toggleExpandWine(result.id)}
                   >
-                    <div className={`absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                    <div className={`absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                       index === 0 ? 'bg-[hsl(43,96%,56%)] text-white' : 'bg-gray-400 text-white'
                     }`}>
                       {index + 1}
                     </div>
                     <div className="ml-12">
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-3">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2">
@@ -230,16 +218,28 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
         </div>
       </div>
       
-      {/* Pulsante Condividi fisso in fondo */}
+      {/* Pulsanti Condividi e Home fissi in fondo */}
       <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
-        <button 
-          onClick={handleExport}
-          className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-          style={{background: 'rgba(255, 255, 255, 0.1)'}}
-          title="Condividi"
-        >
-          <Download className="w-5 h-5" />
-        </button>
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={handleExport}
+            className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+            title="Condividi"
+          >
+            <Download className="w-5 h-5" />
+          </button>
+          {onGoHome && (
+            <button
+              onClick={onGoHome}
+              className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+              style={{background: 'rgba(255, 255, 255, 0.1)'}}
+              title="Home"
+            >
+              <Home className="w-5 h-5" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
