@@ -159,10 +159,11 @@ export default function EventListScreen({
             <div className="text-center mt-8">
               <button
                 onClick={onShowHistoricEvents}
-                className="bg-gradient-to-r from-[#8d0303] to-[#300505] hover:from-[#300505] hover:to-[#8d0303] text-white font-bold py-3 px-6 rounded-2xl text-sm transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2 mx-auto"
+                className="text-white p-4 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10 mx-auto"
+                style={{background: 'rgba(255, 255, 255, 0.1)'}}
+                title="Storico Eventi"
               >
-                <Calendar className="w-4 h-4" />
-                <span>📚 STORICO EVENTI</span>
+                <Calendar className="w-6 h-6" />
               </button>
             </div>
           )}
