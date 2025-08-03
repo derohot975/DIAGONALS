@@ -148,18 +148,18 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     });
 
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white relative">
-      {/* Header - Fixed */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 flex flex-col items-center pt-8 pb-6">
-        <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
-        <h1 className="text-xl font-bold">DIAGONALE</h1>
-        <h2 className="text-lg font-semibold mt-4 text-yellow-400">{event.name}</h2>
-        <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
-      </div>
+    <>
+      <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white">
+        {/* Header */}
+        <div className="flex-shrink-0 flex flex-col items-center pt-8 pb-6">
+          <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
+          <h1 className="text-xl font-bold">DIAGONALE</h1>
+          <h2 className="text-lg font-semibold mt-4 text-yellow-400">{event.name}</h2>
+          <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
+        </div>
 
-      {/* Scrollable Content - With Top Margin for Header */}
-      <div className="absolute inset-0 overflow-y-auto pt-48 pb-20">
-        <div className="px-4">
+        {/* Content Section */}
+        <div className="px-4 pb-24">
           <div className="mx-auto max-w-md">
             {/* Title Section */}
             <div className="mb-4">
@@ -170,8 +170,8 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
               </div>
             </div>
 
-            {/* Wine List */}
-            <div className="space-y-4">
+            {/* Scrollable Wine List Container */}
+            <div className="max-h-96 overflow-y-auto space-y-4">
               {eventWines.map((wine: Wine) => (
               <div
                 key={wine.id}
@@ -276,33 +276,33 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
             ))}
           </div>
 
-            {eventWines.length === 0 && (
-              <div className="bg-white rounded-3xl p-6 text-center">
-                <p className="text-gray-600">Nessun vino registrato per questo evento</p>
-              </div>
-            )}
-          </div>
+          {eventWines.length === 0 && (
+            <div className="bg-white rounded-3xl p-6 text-center">
+              <p className="text-gray-600">Nessun vino registrato per questo evento</p>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Navigation Buttons */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <button
-          onClick={onBack}
-          className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
-      </div>
-      
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={onHome}
-          className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-        >
-          <Home size={20} />
-        </button>
-      </div>
     </div>
+
+    {/* Navigation Buttons */}
+    <div className="fixed bottom-4 left-4 z-50">
+      <button
+        onClick={onBack}
+        className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
+      >
+        <ArrowLeft size={20} />
+      </button>
+    </div>
+    
+    <div className="fixed bottom-4 right-4 z-50">
+      <button
+        onClick={onHome}
+        className="w-12 h-12 bg-[hsl(229,73%,69%)] hover:bg-[hsl(229,73%,60%)] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
+      >
+        <Home size={20} />
+      </button>
+    </div>
+    </>
   );
 }
