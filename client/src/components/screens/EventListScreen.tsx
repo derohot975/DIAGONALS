@@ -154,19 +154,7 @@ export default function EventListScreen({
             </div>
           )}
 
-          {/* Storico Eventi Button */}
-          {completedEvents.length > 0 && (
-            <div className="text-center mt-8">
-              <button
-                onClick={onShowHistoricEvents}
-                className="text-white p-4 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10 mx-auto"
-                style={{background: 'rgba(255, 255, 255, 0.1)'}}
-                title="Storico Eventi"
-              >
-                <Calendar className="w-6 h-6" />
-              </button>
-            </div>
-          )}
+
 
 
 
@@ -180,17 +168,29 @@ export default function EventListScreen({
           )}
         </div>
         
-        {/* Pulsante Admin centrato in basso */}
+        {/* Pulsanti Admin e Storico Eventi in basso */}
         <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
-          {onShowAdmin && (
-            <button
-              onClick={onShowAdmin}
-              className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-              style={{background: 'rgba(255, 255, 255, 0.1)'}}
-            >
-              <Shield className="w-5 h-5" />
-            </button>
-          )}
+          <div className="flex items-center space-x-4">
+            {onShowAdmin && (
+              <button
+                onClick={onShowAdmin}
+                className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+                style={{background: 'rgba(255, 255, 255, 0.1)'}}
+              >
+                <Shield className="w-5 h-5" />
+              </button>
+            )}
+            {completedEvents.length > 0 && onShowHistoricEvents && (
+              <button
+                onClick={onShowHistoricEvents}
+                className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+                style={{background: 'rgba(255, 255, 255, 0.1)'}}
+                title="Storico Eventi"
+              >
+                <Calendar className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
       </div>
