@@ -80,10 +80,10 @@ export default function EventListScreen({
               
               {activeEvents.map(event => (
                 <div key={event.id} className="space-y-3">
-                  <div className="glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
+                  <div className="relative glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
                     {/* Date e Event Name - Data sopra, nome sotto */}
                     <div className="text-center mb-4">
-                      <p className="text-lg font-bold text-[#300505] mb-2">
+                      <p className="text-lg text-[#300505] mb-2">
                         {formatDate(event.date)}
                       </p>
                       <h3 className="event-name-script font-bold text-[#300505] leading-tight whitespace-nowrap overflow-hidden text-ellipsis text-base">
@@ -135,14 +135,14 @@ export default function EventListScreen({
                       )}
                     </div>
                     
-                    {/* PULSANTE MODIFICA VINO - Sotto il modal */}
+                    {/* PULSANTE MODIFICA VINO - Posizionato in alto a destra */}
                     {userHasRegisteredWineForEvent(event.id) && (
-                      <div className="mt-3 flex justify-center">
+                      <div className="absolute top-4 right-4">
                         <button
                           onClick={() => onEditWine(event.id)}
-                          className="text-sm bg-[#300505] hover:bg-[#8d0303] text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+                          className="text-[#300505] hover:text-[#8d0303] transition-colors"
                         >
-                          <Edit3 className="w-4 h-4" />
+                          <Edit3 className="w-5 h-5" />
                         </button>
                       </div>
                     )}
