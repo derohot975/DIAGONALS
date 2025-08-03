@@ -143,7 +143,7 @@ export default function AdminEventManagementScreen({
                       <p className="text-base text-gray-600 mb-2">
                         {formatDate(event.date)}
                       </p>
-                      <h3 className="event-name-script text-lg font-bold text-gray-800 mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{event.name}</h3>
+                      <h3 className="event-name-script text-sm font-bold text-gray-800 mb-1 leading-tight break-words">{event.name}</h3>
                     </div>
 
                     {/* Primary Action - Voting Control */}
