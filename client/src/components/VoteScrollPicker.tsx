@@ -27,7 +27,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
     onClose();
   };
 
-  // Auto-scroll to selected value when modal opens
+  // Auto-scroll to selected value when modal opens - ONLY ONCE
   useEffect(() => {
     if (isOpen && scrollRef.current) {
       const currentIndex = scores.indexOf(selectedScore);
@@ -42,45 +42,7 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
         }, 100);
       }
     }
-  }, [isOpen]);
-  
-  // Add scroll event listener for auto-snap
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (!scrollElement || !isOpen) return;
-    
-    let scrollTimeout: NodeJS.Timeout;
-    
-    const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        const itemHeight = 48;
-        const scrollTop = scrollElement.scrollTop;
-        const centerPosition = scrollTop + 116;
-        const nearestIndex = Math.round(centerPosition / itemHeight);
-        const targetScrollTop = nearestIndex * itemHeight;
-        
-        // Validate index bounds
-        if (nearestIndex >= 0 && nearestIndex < scores.length) {
-          scrollElement.scrollTo({
-            top: targetScrollTop,
-            behavior: 'smooth'
-          });
-          
-          const newScore = scores[nearestIndex];
-          if (typeof newScore === 'number') {
-            setSelectedScore(newScore);
-          }
-        }
-      }, 150);
-    };
-    
-    scrollElement.addEventListener('scroll', handleScroll);
-    return () => {
-      scrollElement.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, [isOpen, scores, setSelectedScore]);
+  }, [isOpen]); // SOLO quando si apre il modale
 
   if (!isOpen) return null;
 
@@ -113,7 +75,18 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
               paddingTop: '116px',
               paddingBottom: '116px'
             }}
-
+            onScroll={(e) => {
+              // SOLO lettura della posizione, NESSUN auto-scroll
+              const container = e.target as HTMLDivElement;
+              const itemHeight = 48;
+              const scrollTop = container.scrollTop;
+              const centerPosition = scrollTop + 116;
+              const selectedIndex = Math.round(centerPosition / itemHeight);
+              const newScore = scores[selectedIndex];
+              if (newScore !== undefined && typeof newScore === 'number') {
+                setSelectedScore(newScore);
+              }
+            }}
           >
             {scores.map((score, index) => (
               <div
