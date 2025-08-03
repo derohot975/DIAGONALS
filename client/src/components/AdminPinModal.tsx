@@ -39,7 +39,7 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 w-full max-w-sm mx-auto shadow-2xl border border-[#300505]/10">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-5 w-full max-w-xs mx-auto shadow-2xl border border-[#300505]/10">
         {/* Header */}
         <div className="flex items-center justify-end mb-6">
           <button
