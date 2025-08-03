@@ -14,6 +14,7 @@ import AdminEventManagementScreen from './components/screens/AdminEventManagemen
 import EventDetailsScreen from './components/screens/EventDetailsScreen';
 import EventResultsScreen from './components/screens/EventResultsScreen';
 import HistoricEventsScreen from './components/screens/HistoricEventsScreen';
+import PagellaScreen from './components/screens/PagellaScreen';
 import SimpleVotingScreen from './components/screens/SimpleVotingScreen';
 import AuthScreen from './components/screens/AuthScreen';
 
@@ -28,7 +29,7 @@ import ChangeAdminPinModal from './components/modals/ChangeAdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
-type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents';
+type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -614,6 +615,11 @@ function App() {
     setCurrentScreen('historicEvents');
   };
 
+  const handleShowPagella = (eventId: number) => {
+    setSelectedEventId(eventId);
+    setCurrentScreen('pagella');
+  };
+
   const handleShowAddUserModal = () => {
     setShowAddUserModal(true);
   };
@@ -959,7 +965,16 @@ function App() {
             events={events as WineEvent[]}
             users={users}
             onShowEventResults={handleShowEventResults}
+            onShowPagella={handleShowPagella}
             onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('events')}
+          />
+        );
+      case 'pagella':
+        return (
+          <PagellaScreen
+            event={currentEvent}
+            onGoBack={() => setCurrentScreen('historicEvents')}
             onGoHome={() => setCurrentScreen('events')}
           />
         );

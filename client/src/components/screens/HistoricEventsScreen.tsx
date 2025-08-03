@@ -8,6 +8,7 @@ interface HistoricEventsScreenProps {
   events: WineEvent[];
   users: User[];
   onShowEventResults: (eventId: number) => void;
+  onShowPagella: (eventId: number) => void;
   onGoBack: () => void;
   onGoHome: () => void;
 }
@@ -16,6 +17,7 @@ export default function HistoricEventsScreen({
   events, 
   users, 
   onShowEventResults,
+  onShowPagella,
   onGoBack,
   onGoHome
 }: HistoricEventsScreenProps) {
@@ -68,7 +70,7 @@ export default function HistoricEventsScreen({
                       Report
                     </button>
                     <button
-                      onClick={() => {/* TODO: Implementare funzione pagella */}}
+                      onClick={() => onShowPagella(event.id)}
                       className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg text-sm font-medium transition-colors"
                       title="Visualizza Pagella"
                     >
