@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, ArrowLeft, Save, Copy, Trash2 } from 'lucide-react';
+import { Home, ArrowLeft, Save, Copy } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
 
@@ -31,11 +31,7 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
     }
   };
 
-  const handleClear = () => {
-    if (confirm('Sei sicuro di voler cancellare tutto il contenuto?')) {
-      setContent('');
-    }
-  };
+
 
   // Carica il contenuto salvato al mount
   useState(() => {
@@ -67,15 +63,24 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
       <div className="flex-1 overflow-hidden px-4 pb-20">
         <div className="max-w-4xl mx-auto h-full">
           <div className="h-full flex flex-col">
-            {/* Toolbar */}
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex space-x-2">
+            {/* Text Area Container */}
+            <div className="relative flex-1">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Scrivi qui le tue note sull'evento o incolla un testo copiato in precedenza..."
+                className="w-full h-full p-4 bg-white border border-gray-300 rounded-lg text-gray-800 text-base leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ minHeight: '500px' }}
+              />
+              
+              {/* Action Buttons - Inside textarea, bottom right */}
+              <div className="absolute bottom-4 right-4 flex space-x-2">
                 <button
                   onClick={handleSave}
-                  className={`p-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`p-2 rounded-full shadow-lg transition-colors ${
                     isSaved 
-                      ? 'bg-green-200 text-green-800' 
-                      : 'bg-blue-200 hover:bg-blue-300 text-blue-800'
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-blue-500 hover:bg-blue-600 text-white'
                   }`}
                   title={isSaved ? 'Salvato!' : 'Salva'}
                 >
@@ -84,33 +89,14 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
                 
                 <button
                   onClick={handleCopy}
-                  className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium transition-colors"
+                  className="p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full shadow-lg transition-colors"
                   disabled={!content.trim()}
                   title="Copia"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
-                
-                <button
-                  onClick={handleClear}
-                  className="p-2 bg-red-200 hover:bg-red-300 text-red-800 rounded-lg text-sm font-medium transition-colors"
-                  disabled={!content.trim()}
-                  title="Cancella"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
-
             </div>
-
-            {/* Text Area */}
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Scrivi qui le tue note sull'evento o incolla un testo copiato in precedenza..."
-              className="flex-1 w-full p-4 bg-white border border-gray-300 rounded-lg text-gray-800 text-base leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              style={{ minHeight: '400px' }}
-            />
           </div>
         </div>
       </div>
