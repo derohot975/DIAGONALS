@@ -137,17 +137,16 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                     <div className="ml-12">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
-                          <div>
-                            <h3 className="font-bold text-lg text-gray-800 uppercase">{result?.contributor || 'SCONOSCIUTO'}</h3>
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2">
+                              <h3 className="font-bold text-lg text-gray-800 uppercase">{result?.contributor || 'SCONOSCIUTO'}</h3>
+                              {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
+                            </div>
                             <p className="text-sm text-gray-600">{result?.name || 'Vino senza nome'}</p>
                           </div>
-                          {index === 0 && <Crown className="w-5 h-5 text-[hsl(43,96%,56%)]" />}
                         </div>
                         <div className="flex items-center space-x-2">
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-[hsl(43,96%,56%)]" />
-                            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
-                          </div>
+                          <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
                           {expandedWines.has(result.id) ? (
                             <ChevronUp className="w-4 h-4 text-gray-400" />
                           ) : (
@@ -225,19 +224,22 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                 ))}
               </div>
               
-              {/* Pulsante Esporta alla fine */}
-              <div className="flex justify-center mt-6">
-                <button 
-                  onClick={handleExport}
-                  className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-colors"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Condividi</span>
-                </button>
-              </div>
+
             </>
           )}
         </div>
+      </div>
+      
+      {/* Pulsante Condividi fisso in fondo */}
+      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
+        <button 
+          onClick={handleExport}
+          className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+          style={{background: 'rgba(255, 255, 255, 0.1)'}}
+          title="Condividi"
+        >
+          <Download className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
