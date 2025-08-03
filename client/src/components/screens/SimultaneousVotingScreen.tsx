@@ -148,7 +148,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     });
 
   return (
-    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-600 via-purple-700 to-blue-800 text-white">
       {/* Header */}
       <div className="flex-shrink-0 flex flex-col items-center pt-8 pb-6">
         <img src={diagoLogo} alt="DIAGONALE" className="w-16 h-16 mb-2 filter brightness-0 invert" />
@@ -157,114 +157,119 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
         <p className="text-sm text-white mt-1 font-bold">{formatEventDate(event.date)}</p>
       </div>
 
-      {/* Scrollable Voting Section */}
-      <div className="flex-1 overflow-y-auto px-4 pb-24">
+      {/* Title Section */}
+      <div className="flex-shrink-0 px-4 pb-4">
         <div className="mx-auto max-w-md">
-          <div className="bg-white rounded-3xl p-6 mb-4">
-            <h3 className="text-center text-lg font-semibold mb-4 text-gray-800">
+          <div className="bg-white rounded-3xl p-6">
+            <h3 className="text-center text-lg font-semibold text-gray-800">
               Seleziona Vino per Votazione
             </h3>
           </div>
+        </div>
+      </div>
 
-          {/* Wine Voting Boxes - Now outside the fixed container */}
+      {/* Scrollable Wine List Section */}
+      <div className="flex-1 overflow-y-auto px-4 pb-20">
+        <div className="mx-auto max-w-md">
           <div className="space-y-4">
             {eventWines.map((wine: Wine) => (
               <div
-              key={wine.id}
-              className={`
-                bg-white border-2 rounded-2xl p-4 transition-all duration-200 cursor-pointer
-                ${selectedWineId === wine.id ? 'border-[#8d0303] shadow-lg' : 'border-gray-200 shadow-sm hover:border-gray-300'}
-              `}
-              onClick={() => setSelectedWineId(wine.id)}
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-sm text-gray-800">
-                    Vino di <span className="text-[#300505]">{getWineOwner(wine.userId)}</span>
-                  </h4>
-                  <p className="text-xs text-gray-600">
-                    {wine.type} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}
-                  </p>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  {/* Vote Score Box */}
-                  <div
-                    className={`
-                      bg-[#8d0303] rounded-full text-center cursor-pointer select-none transition-all duration-200
-                      ${selectedWineId === wine.id 
-                        ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-red-300' 
-                        : 'px-4 py-2 min-w-[80px] shadow-lg'
-                      }
-                    `}
-                    onWheel={(e) => handleWheelChange(wine.id, e)}
-                    onTouchStart={(e) => {
-                      if (selectedWineId === wine.id && e.touches.length === 1) {
-                        e.preventDefault();
-                        const currentScore = votes[wine.id] || 1;
-                        setIsDragging(true);
-                        setDragStartY(e.touches[0].clientY);
-                        setDragStartScore(currentScore);
-                        setTempScore(currentScore);
-                      }
-                    }}
-                    onTouchMove={(e) => {
-                      if (selectedWineId === wine.id && isDragging && e.touches.length === 1) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const currentY = e.touches[0].clientY;
-                        const deltaY = dragStartY - currentY;
-                        
-                        // iPhone-style: 20px movement = 0.5 score change
-                        const scoreChange = Math.round((deltaY / 20) * 2) / 2; // Round to nearest 0.5
-                        const newScore = Math.max(1, Math.min(10, dragStartScore + scoreChange));
-                        
-                        setTempScore(newScore);
-                      }
-                    }}
-                    onTouchEnd={() => {
-                      if (selectedWineId === wine.id && isDragging && tempScore !== null) {
-                        handleVote(wine.id, tempScore);
-                        setIsDragging(false);
-                        setTempScore(null);
-                      }
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedWineId(wine.id);
-                    }}
-                  >
-                    <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
-                      {selectedWineId === wine.id && isDragging && tempScore !== null 
-                        ? tempScore.toFixed(1) 
-                        : (votes[wine.id] || 1.0).toFixed(1)}
-                    </span>
+                key={wine.id}
+                className={`
+                  bg-white border-2 rounded-2xl p-4 transition-all duration-200 cursor-pointer
+                  ${selectedWineId === wine.id ? 'border-[#8d0303] shadow-lg' : 'border-gray-200 shadow-sm hover:border-gray-300'}
+                `}
+                onClick={() => setSelectedWineId(wine.id)}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm text-gray-800">
+                      Vino di <span className="text-[#300505]">{getWineOwner(wine.userId)}</span>
+                    </h4>
+                    <p className="text-xs text-gray-600">
+                      {wine.type} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}
+                    </p>
                   </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    {/* Vote Score Box */}
+                    <div
+                      className={`
+                        bg-[#8d0303] rounded-full text-center cursor-pointer select-none transition-all duration-200
+                        ${selectedWineId === wine.id 
+                          ? 'px-6 py-3 min-w-[100px] scale-110 shadow-xl ring-4 ring-red-300' 
+                          : 'px-4 py-2 min-w-[80px] shadow-lg'
+                        }
+                      `}
+                      onWheel={(e) => handleWheelChange(wine.id, e)}
+                      onTouchStart={(e) => {
+                        if (selectedWineId === wine.id && e.touches.length === 1) {
+                          e.preventDefault();
+                          const currentScore = votes[wine.id] || 1;
+                          setIsDragging(true);
+                          setDragStartY(e.touches[0].clientY);
+                          setDragStartScore(currentScore);
+                          setTempScore(currentScore);
+                        }
+                      }}
+                      onTouchMove={(e) => {
+                        if (selectedWineId === wine.id && isDragging && e.touches.length === 1) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          
+                          const currentY = e.touches[0].clientY;
+                          const deltaY = dragStartY - currentY;
+                          
+                          // iPhone-style: 20px movement = 0.5 score change
+                          const scoreChange = Math.round((deltaY / 20) * 2) / 2; // Round to nearest 0.5
+                          const newScore = Math.max(1, Math.min(10, dragStartScore + scoreChange));
+                          
+                          setTempScore(newScore);
+                        }
+                      }}
+                      onTouchEnd={() => {
+                        if (selectedWineId === wine.id && isDragging && tempScore !== null) {
+                          handleVote(wine.id, tempScore);
+                          setIsDragging(false);
+                          setTempScore(null);
+                        }
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedWineId(wine.id);
+                      }}
+                    >
+                      <span className={`font-bold text-white ${selectedWineId === wine.id ? 'text-xl' : 'text-lg'}`}>
+                        {selectedWineId === wine.id && isDragging && tempScore !== null 
+                          ? tempScore.toFixed(1) 
+                          : (votes[wine.id] || 1.0).toFixed(1)}
+                      </span>
+                    </div>
 
-                  {/* Scroll Icon */}
-                  <div
-                    className={`
-                      flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-200 p-2 rounded-lg min-w-[48px] min-h-[48px]
-                      ${selectedWineId === wine.id 
-                        ? 'opacity-100 scale-110 bg-red-100' 
-                        : 'opacity-60 scale-95 bg-gray-100'
-                      }
-                    `}
-                    onWheel={(e) => handleWheelChange(wine.id, e)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedWineId(wine.id);
-                    }}
-                  >
-                    <ChevronUp 
-                      size={16} 
-                      className="text-[#300505] -mb-1" 
-                    />
-                    <ChevronDown 
-                      size={16} 
-                      className="text-[#300505] -mt-1" 
-                    />
+                    {/* Scroll Icon */}
+                    <div
+                      className={`
+                        flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-200 p-2 rounded-lg min-w-[48px] min-h-[48px]
+                        ${selectedWineId === wine.id 
+                          ? 'opacity-100 scale-110 bg-red-100' 
+                          : 'opacity-60 scale-95 bg-gray-100'
+                        }
+                      `}
+                      onWheel={(e) => handleWheelChange(wine.id, e)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedWineId(wine.id);
+                      }}
+                    >
+                      <ChevronUp 
+                        size={16} 
+                        className="text-[#300505] -mb-1" 
+                      />
+                      <ChevronDown 
+                        size={16} 
+                        className="text-[#300505] -mt-1" 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
