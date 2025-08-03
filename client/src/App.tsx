@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './hooks/useAuth';
 import { useMutations } from './hooks/useMutations';
+import { apiRequest } from './lib/queryClient';
 
 import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 
