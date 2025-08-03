@@ -163,8 +163,8 @@ export default function EventListScreen({
                 <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303]">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
+                      <p className="text-sm text-gray-300 mb-1">{formatDate(event.date)}</p>
                       <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
-                      <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
                     </div>
                     <div className="flex items-center">
                       <button
