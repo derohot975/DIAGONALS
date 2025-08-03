@@ -36,24 +36,20 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-4">
+      {/* Fixed Header - Logo and Title */}
+      <div className="sticky top-0 z-10 text-center py-4" style={{background: 'linear-gradient(135deg, #300505 0%, #8d0303 100%)'}}>
         <img 
           src={diagoLogo} 
           alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
+          className="mx-auto mb-2 w-16 h-auto logo-filter drop-shadow-lg" 
         />
-      </div>
-
-      {/* Title */}
-      <div className="flex-shrink-0 text-center pb-6">
-        <h2 className="pagellone-tommy-font text-2xl font-bold text-yellow-200">
+        <h2 className="pagellone-tommy-font text-xl font-bold text-yellow-200">
           Pagellone di Tommy
         </h2>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-hidden px-4 pb-20">
+      <div className="flex-1 overflow-hidden px-4 pb-20 pt-4">
         <div className="max-w-4xl mx-auto h-full">
           <div className="h-full flex flex-col">
             {/* Text Area Container */}
