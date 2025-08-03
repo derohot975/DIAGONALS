@@ -918,6 +918,7 @@ function App() {
             currentUser={currentUser}
             onBack={() => setCurrentScreen('events')}
             onHome={() => setCurrentScreen('events')}
+            onShowAdmin={() => setCurrentScreen('admin')}
           />
         ) : null;
       case 'eventDetails':
