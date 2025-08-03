@@ -209,7 +209,8 @@ export default function EventListScreen({
           {onShowAdmin && (
             <button
               onClick={onShowAdmin}
-              className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
+              className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
+              style={{background: 'rgba(255, 255, 255, 0.1)'}}
             >
               <Shield className="w-5 h-5" />
             </button>

@@ -143,8 +143,16 @@ export default function SimpleVotingScreen({
             className="w-20 h-auto logo-filter drop-shadow-lg" 
           />
 
-          {/* Spacer for symmetry */}
-          <div className="w-10 h-10"></div>
+          {/* Admin Button */}
+          {onShowAdmin && (
+            <button
+              onClick={onShowAdmin}
+              className="flex items-center justify-center w-10 h-10 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
+              style={{background: 'rgba(255, 255, 255, 0.1)'}}
+            >
+              <Shield size={20} />
+            </button>
+          )}
         </div>
         
         {/* Event Info */}
@@ -247,17 +255,7 @@ export default function SimpleVotingScreen({
         wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
       />
 
-      {/* Admin Button - Fixed Bottom Right */}
-      {onShowAdmin && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={onShowAdmin}
-            className="bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white p-3 rounded-full shadow-lg transition-all"
-          >
-            <Shield className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+
 
     </div>
   );
