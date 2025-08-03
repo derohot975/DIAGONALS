@@ -42,7 +42,38 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
         }, 100);
       }
     }
-  }, [isOpen]); // SOLO quando si apre il modale
+  }, [isOpen]);
+
+  // Auto-snap to nearest value when scrolling stops
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement || !isOpen) return;
+    
+    let scrollTimeout: NodeJS.Timeout;
+    
+    const handleScrollEnd = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const itemHeight = 48;
+        const scrollTop = scrollElement.scrollTop;
+        const nearestIndex = Math.round(scrollTop / itemHeight);
+        const targetScrollTop = nearestIndex * itemHeight;
+        
+        if (nearestIndex >= 0 && nearestIndex < scores.length) {
+          scrollElement.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    };
+    
+    scrollElement.addEventListener('scroll', handleScrollEnd);
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScrollEnd);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isOpen, scores]);
 
   if (!isOpen) return null;
 
@@ -76,16 +107,17 @@ export function VoteScrollPicker({ isOpen, onClose, onVote, currentVote, wineNam
               paddingBottom: '126px'
             }}
             onScroll={(e) => {
-              // SOLO lettura della posizione, NESSUN auto-scroll
               const container = e.target as HTMLDivElement;
               const itemHeight = 48;
               const scrollTop = container.scrollTop;
-              // La posizione centrale è a metà dell'altezza visibile (132px / 2 = 66px dal top)
-              const centerPosition = scrollTop + 132; // 264px / 2 = 132px dal top del container
-              const selectedIndex = Math.round(centerPosition / itemHeight);
-              const newScore = scores[selectedIndex];
-              if (newScore !== undefined && typeof newScore === 'number' && selectedIndex >= 0 && selectedIndex < scores.length) {
-                setSelectedScore(newScore);
+              // Centro del picker: padding + metà altezza visibile = 126 + (264-252)/2 = 126 + 6 = 132
+              const selectedIndex = Math.round(scrollTop / itemHeight);
+              
+              if (selectedIndex >= 0 && selectedIndex < scores.length) {
+                const newScore = scores[selectedIndex];
+                if (typeof newScore === 'number') {
+                  setSelectedScore(newScore);
+                }
               }
             }}
           >
