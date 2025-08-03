@@ -121,25 +121,23 @@ export default function AdminEventManagementScreen({
                   <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in relative">
                     
                     {/* Action Buttons - Top Right */}
-                    <div className="absolute top-4 right-4 flex space-x-2">
-                      <button
-                        onClick={() => onEditEvent(event)}
-                        className="p-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-all duration-200 shadow-sm"
-                        title="Modifica evento"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => onDeleteEvent(event.id)}
-                        className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all duration-200 shadow-sm"
-                        title="Elimina evento"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => onEditEvent(event)}
+                      className="absolute top-4 right-16 p-2 text-gray-700 hover:text-gray-900 transition-all duration-200"
+                      title="Modifica evento"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onDeleteEvent(event.id)}
+                      className="absolute top-4 right-4 p-2 text-red-600 hover:text-red-800 transition-all duration-200"
+                      title="Elimina evento"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
 
                     {/* Event Header */}
-                    <div className="text-center mb-4 pr-20">
+                    <div className="text-center mb-4">
                       <p className="text-base text-gray-600 mb-2">
                         {formatDate(event.date)}
                       </p>
