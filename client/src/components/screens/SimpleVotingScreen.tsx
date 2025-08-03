@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Home, ChevronUp, ChevronDown, Settings } from "lucide-react";
+import { useLocation } from 'wouter';
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 import diagoLogo from "@assets/diagologo.png";
@@ -119,17 +120,38 @@ export default function SimpleVotingScreen({
   const selectedWineVote = selectedWine ? getUserVoteForWine(selectedWine.id) : undefined;
   const selectedWineContributor = selectedWine ? users.find(u => u.id === selectedWine.userId) : undefined;
 
+  const [, setLocation] = useLocation();
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
       <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#300505'}}>
-        {/* Logo */}
-        <div className="flex justify-center pb-4">
+        {/* Navigation Bar */}
+        <div className="flex justify-between items-center px-4 pb-4">
+          {/* Home Button */}
+          <button
+            onClick={onHome}
+            className="flex items-center justify-center w-12 h-12 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+          >
+            <Home size={24} />
+          </button>
+
+          {/* Logo */}
           <img 
             src={diagoLogo} 
             alt="DIAGO Logo" 
             className="w-20 h-auto logo-filter drop-shadow-lg" 
           />
+
+          {/* Admin Button */}
+          <button
+            onClick={() => setLocation('/admin')}
+            className="flex items-center justify-center w-12 h-12 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all"
+            style={{background: 'rgba(255, 255, 255, 0.1)'}}
+          >
+            <Settings size={24} />
+          </button>
         </div>
         
         {/* Event Info */}
