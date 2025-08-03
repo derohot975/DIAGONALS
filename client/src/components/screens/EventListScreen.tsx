@@ -182,6 +182,8 @@ export default function EventListScreen({
             </div>
           )}
 
+
+
           {/* Empty State */}
           {events.length === 0 && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
