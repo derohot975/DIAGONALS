@@ -41,7 +41,7 @@ export default function InstallPrompt() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     // For iOS, show manual instructions after delay
-    if (isIOSDevice && !window.navigator.standalone) {
+    if (isIOSDevice && !(window.navigator as any).standalone) {
       setTimeout(() => {
         setShowInstallPrompt(true);
       }, 5000);

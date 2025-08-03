@@ -5,9 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
+import { getWineOwner, formatEventDate } from '../../lib/utils';
 import diagoLogo from "@assets/diagologo.png";
-import { format } from 'date-fns';
-import { it } from 'date-fns/locale';
 
 interface VotingScreenProps {
   event: WineEvent;
@@ -84,7 +83,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
       });
     },
     onError: (error: any) => {
-      console.error("Vote submission error:", error);
+      // Vote submission error logged for debugging
       toast({
         title: "Errore",
         description: "Impossibile salvare il voto. Riprova.",
@@ -113,20 +112,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     handleVote(wineId, newScore);
   };
 
-  const getWineOwner = (userId: number) => {
-    return users.find((user: User) => user.id === userId)?.name || "Sconosciuto";
-  };
-
-  const formatEventDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      const formatted = format(date, 'd MMMM yyyy', { locale: it });
-      // Capitalize first letter of month
-      return formatted.replace(/(\d+ )([a-z])/, (match, day, firstLetter) => day + firstLetter.toUpperCase());
-    } catch {
-      return dateString; // Fallback to original string if parsing fails
-    }
-  };
+  // Using shared utility function for consistency
 
   // Filter and sort wines for this event
   const eventWines = wines
@@ -184,7 +170,7 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
                 <div className="flex justify-between items-center">
                   <div className="flex-1">
                     <h4 className="font-semibold text-sm text-gray-800">
-                      Vino di <span className="text-[#300505]">{getWineOwner(wine.userId)}</span>
+                      Vino di <span className="text-[#300505]">{getWineOwner(wine.userId, users)}</span>
                     </h4>
                     <p className="text-xs text-gray-600">
                       {wine.type} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}
