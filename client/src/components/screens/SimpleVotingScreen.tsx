@@ -121,7 +121,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
-      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#8d0303'}}>
+      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#722F37'}}>
         {/* Logo */}
         <div className="flex justify-center pb-4">
           <img 
