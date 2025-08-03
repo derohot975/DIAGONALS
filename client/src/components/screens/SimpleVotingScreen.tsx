@@ -121,7 +121,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Combined */}
-      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#722F37'}}>
+      <div className="sticky top-0 z-50 pt-8 pb-4" style={{background: '#4A1C1C'}}>
         {/* Logo */}
         <div className="flex justify-center pb-4">
           <img 
@@ -174,7 +174,7 @@ export default function SimpleVotingScreen({
                     {/* Left Side - Wine Info */}
                     <div className="flex-1">
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
-                        Vino di <span className="text-[#300505]">{contributor}</span>
+                        <span className="text-[#300505]">{contributor.toUpperCase()}</span>
                       </h3>
                       <div className="flex items-center text-gray-600 text-sm">
                         <span>{wine.type || 'Vino'} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}</span>
