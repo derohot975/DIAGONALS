@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rock+Salt&family=Shadows+Into+Light&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -254,6 +254,15 @@
   font-family: 'Rock Salt', cursive;
   font-weight: 400;
   letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  line-height: 1.2;
+}
+
+/* Pagellone Tommy font */
+.pagellone-tommy-font {
+  font-family: 'Shadows Into Light', cursive;
+  font-weight: 400;
+  letter-spacing: 0.5px;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
   line-height: 1.2;
 }
