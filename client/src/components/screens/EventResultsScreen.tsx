@@ -108,9 +108,8 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-4xl mx-auto space-y-4">
-        <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-[hsl(270,50%,65%)] mb-2">Classifica Finale</h2>
+            <h2 className="text-2xl font-bold text-yellow-200 mb-2">Classifica Finale</h2>
           </div>
           
           {results.length === 0 ? (
@@ -240,7 +239,6 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
           )}
         </div>
       </div>
-    </div>
     </div>
   );
 }
