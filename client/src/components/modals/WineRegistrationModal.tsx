@@ -60,7 +60,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     ).join(' ');
   };
 
-  // Function to format alcohol percentage (replace comma with dot, limit to 1 decimal)
+  // Function to format alcohol percentage (replace comma with dot, limit to reasonable values)
   const formatAlcoholValue = (value: string) => {
     // Remove any non-numeric characters except comma and dot
     let cleaned = value.replace(/[^0-9.,]/g, '');
@@ -82,12 +82,23 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
       formatted = decimal ? `${integer}.${decimal.charAt(0)}` : `${integer}.`;
     }
     
+    // Limit to reasonable alcohol values (0-50%)
+    const numValue = parseFloat(formatted);
+    if (!isNaN(numValue) && numValue > 50) {
+      return '50';
+    }
+    
     return formatted;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && alcohol) {
+    
+    // Validate all required fields including alcohol as number
+    const alcoholValue = parseFloat(alcohol);
+    const isValidAlcohol = !isNaN(alcoholValue) && alcoholValue > 0;
+    
+    if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && isValidAlcohol) {
       onRegisterWine({
         type,
         name: name.trim(), // Nome vino già maiuscolo dal campo
@@ -96,7 +107,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
         year: parseInt(year),
         origin: origin.trim(),
         price: parseFloat(price),
-        alcohol: parseFloat(alcohol)
+        alcohol: alcoholValue
       });
       setType('');
       setName('');
