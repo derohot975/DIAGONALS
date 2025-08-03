@@ -47,9 +47,6 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    /* Fisso il viewport per mobile */
-    position: fixed;
-    width: 100%;
   }
 
   body {
@@ -60,7 +57,7 @@
     height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Previeni scroll dell'intera pagina */
+    overflow-x: hidden; /* Solo orizzontale nascosto */
     /* Elimina spazi bianchi su mobile */
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -69,9 +66,6 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    /* Fisso dimensioni */
-    position: fixed;
-    width: 100%;
   }
 
   #root {
