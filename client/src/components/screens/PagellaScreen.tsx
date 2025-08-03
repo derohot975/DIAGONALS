@@ -58,10 +58,9 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
 
       {/* Title */}
       <div className="flex-shrink-0 text-center pb-6">
-        <h2 className="text-2xl font-bold text-yellow-200 mb-2">
-          Pagella Evento
+        <h2 className="text-2xl font-bold text-yellow-200">
+          Pagellone di Tommy
         </h2>
-        <p className="text-yellow-100 text-sm">{event.name}</p>
       </div>
 
       {/* Content Area */}
@@ -73,38 +72,35 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
               <div className="flex space-x-2">
                 <button
                   onClick={handleSave}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 ${
+                  className={`p-2 rounded-lg text-sm font-medium transition-colors ${
                     isSaved 
                       ? 'bg-green-200 text-green-800' 
                       : 'bg-blue-200 hover:bg-blue-300 text-blue-800'
                   }`}
+                  title={isSaved ? 'Salvato!' : 'Salva'}
                 >
                   <Save className="w-4 h-4" />
-                  <span>{isSaved ? 'Salvato!' : 'Salva'}</span>
                 </button>
                 
                 <button
                   onClick={handleCopy}
-                  className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1"
+                  className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium transition-colors"
                   disabled={!content.trim()}
+                  title="Copia"
                 >
                   <Copy className="w-4 h-4" />
-                  <span>Copia</span>
                 </button>
                 
                 <button
                   onClick={handleClear}
-                  className="px-3 py-2 bg-red-200 hover:bg-red-300 text-red-800 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1"
+                  className="p-2 bg-red-200 hover:bg-red-300 text-red-800 rounded-lg text-sm font-medium transition-colors"
                   disabled={!content.trim()}
+                  title="Cancella"
                 >
                   <Trash2 className="w-4 h-4" />
-                  <span>Cancella</span>
                 </button>
               </div>
-              
-              <div className="text-sm text-gray-300">
-                {content.length} caratteri
-              </div>
+
             </div>
 
             {/* Text Area */}
