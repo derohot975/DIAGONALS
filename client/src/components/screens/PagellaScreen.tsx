@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, ArrowLeft, Save, Clipboard } from 'lucide-react';
+import { Home, ArrowLeft, Save, Copy } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
 
@@ -83,7 +83,7 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
                   className="p-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg transition-colors"
                   title="Incolla"
                 >
-                  <Clipboard className="w-4 h-4" />
+                  <Copy className="w-4 h-4" />
                 </button>
                 
                 <button
