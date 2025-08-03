@@ -463,16 +463,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/wines", async (req, res) => {
     try {
+      console.log('Wine creation - original request body:', req.body);
+      
       // Trasforma i campi numerici per la compatibilità
       const requestData = { ...req.body };
       if (requestData.alcohol !== undefined && requestData.alcohol !== null) {
+        console.log('Original alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
         requestData.alcohol = typeof requestData.alcohol === 'number' ? requestData.alcohol.toString() : requestData.alcohol;
+        console.log('Transformed alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
       }
       if (requestData.price !== undefined && requestData.price !== null) {
         requestData.price = typeof requestData.price === 'number' ? requestData.price.toString() : requestData.price;
       }
       
+      console.log('Wine creation - processed request data:', requestData);
+      
       const wineData = insertWineSchema.parse(requestData);
+      console.log('Wine creation - final validated data:', wineData);
+      
       const wine = await storage.createWine(wineData);
       res.status(201).json(wine);
     } catch (error) {
