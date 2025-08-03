@@ -1,5 +1,5 @@
 import { Calendar, BarChart3, Shield, Edit3 } from 'lucide-react';
-import { formatDate } from '../../lib/utils';
+import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 import { User, WineEvent, Wine, Vote } from '@shared/schema';
@@ -37,10 +37,7 @@ export default function EventListScreen({
   onVoteForWine,
   onEditWine
 }: EventListScreenProps) {
-  const getCreatorName = (createdBy: number) => {
-    const user = users.find(u => u.id === createdBy);
-    return user?.name || 'Unknown';
-  };
+
 
   // Verifica se l'utente ha già registrato un vino per un evento specifico
   const userHasRegisteredWineForEvent = (eventId: number) => {
@@ -86,7 +83,7 @@ export default function EventListScreen({
                     {/* Date e Event Name - Data sopra, nome sotto */}
                     <div className="text-center mb-4">
                       <p className="text-lg text-[#300505] mb-2">
-                        {formatDate(event.date)}
+                        {formatEventDate(event.date)}
                       </p>
                       <h3 className="event-name-script font-bold text-[#300505] leading-tight break-words text-center text-sm">
                         {event.name}

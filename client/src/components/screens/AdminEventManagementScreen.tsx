@@ -1,7 +1,7 @@
 import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine as WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from 'lucide-react';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
-import { formatDate } from '../../lib/utils';
+import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AdminEventManagementScreenProps {
@@ -33,10 +33,7 @@ export default function AdminEventManagementScreen({
   onGoHome,
   onGoBackToAdmin
 }: AdminEventManagementScreenProps) {
-  const getCreatorName = (createdBy: number) => {
-    const user = users.find(u => u.id === createdBy);
-    return user?.name || 'Unknown';
-  };
+
 
   // Component to check voting completion status
   const VotingCompletionChecker = ({ eventId }: { eventId: number }) => {
@@ -141,7 +138,7 @@ export default function AdminEventManagementScreen({
                     {/* Event Header */}
                     <div className="text-center mb-4">
                       <p className="text-base text-gray-600 mb-2">
-                        {formatDate(event.date)}
+                        {formatEventDate(event.date)}
                       </p>
                       <h3 className="event-name-script text-sm font-bold text-gray-800 mb-1 leading-tight break-words">{event.name}</h3>
                     </div>
@@ -197,7 +194,7 @@ export default function AdminEventManagementScreen({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
-                      <p className="text-sm text-gray-300">{formatDate(event.date)}</p>
+                      <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <button

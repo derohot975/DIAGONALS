@@ -1,6 +1,6 @@
 import { X, Trophy, Users, Wine, BarChart3, Star } from 'lucide-react';
 import { EventReportData } from '@shared/schema';
-import { formatDate } from '../../lib/utils';
+import { formatEventDate } from '../../lib/utils';
 
 interface EventReportModalProps {
   isOpen: boolean;
@@ -29,7 +29,7 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
             <Trophy className="w-8 h-8" />
             <div>
               <h2 className="event-name-script text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{eventInfo.name}</h2>
-              <p className="text-amber-100">{formatDate(eventInfo.date)} • Report Finale</p>
+              <p className="text-amber-100">{formatEventDate(eventInfo.date)} • Report Finale</p>
             </div>
           </div>
         </div>

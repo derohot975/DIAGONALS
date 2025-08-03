@@ -1,5 +1,5 @@
 import { BarChart3, Home, ArrowLeft, StickyNote } from 'lucide-react';
-import { formatDate } from '../../lib/utils';
+import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
 import { User, WineEvent } from '@shared/schema';
@@ -24,10 +24,7 @@ export default function HistoricEventsScreen({
   // Filtra solo gli eventi completati
   const completedEvents = events.filter(event => event.status === 'completed');
 
-  const getCreatorName = (createdBy: number) => {
-    const user = users.find(u => u.id === createdBy);
-    return user?.name || 'Unknown';
-  };
+
 
   return (
     <div className="flex-1 flex flex-col">
@@ -57,7 +54,7 @@ export default function HistoricEventsScreen({
               <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303] shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-gray-300 mb-1">{formatDate(event.date)}</p>
+                    <p className="text-sm text-gray-300 mb-1">{formatEventDate(event.date)}</p>
                     <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
                   </div>
                   <div className="flex flex-col items-end space-y-2">

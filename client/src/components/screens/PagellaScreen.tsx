@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Home, ArrowLeft, Save } from 'lucide-react';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
@@ -16,7 +16,6 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
   if (!event) return null;
 
   const handleSave = () => {
-    // Salva nel localStorage per ora
     localStorage.setItem(`pagella_${event.id}`, content);
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
@@ -27,12 +26,12 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
 
 
   // Carica il contenuto salvato al mount
-  useState(() => {
+  useEffect(() => {
     const saved = localStorage.getItem(`pagella_${event.id}`);
     if (saved) {
       setContent(saved);
     }
-  });
+  }, [event.id]);
 
   return (
     <div className="flex-1 flex flex-col">
