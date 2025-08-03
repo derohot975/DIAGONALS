@@ -1,4 +1,4 @@
-import { Calendar, BarChart3, Shield, LogOut } from 'lucide-react';
+import { Calendar, BarChart3, Shield, Edit3 } from 'lucide-react';
 import { formatDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -13,7 +13,7 @@ interface EventListScreenProps {
   onShowEventDetails: (eventId: number) => void;
   onShowEventResults: (eventId: number) => void;
   onShowAdmin?: () => void;
-  onLogout?: () => void;
+
   onRegisterWine: (eventId: number) => void;
   onParticipateEvent: (eventId: number) => void;
   onVoteForWine: (wineId: number, score: number, hasLode: boolean) => void;
@@ -29,7 +29,7 @@ export default function EventListScreen({
   onShowEventDetails, 
   onShowEventResults,
   onShowAdmin,
-  onLogout,
+
   onRegisterWine,
   onParticipateEvent,
   onVoteForWine,
@@ -140,10 +140,9 @@ export default function EventListScreen({
                       <div className="mt-3 flex justify-center">
                         <button
                           onClick={() => onEditWine(event.id)}
-                          className="text-sm bg-[#300505] hover:bg-[#8d0303] text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-1"
+                          className="text-sm bg-[#300505] hover:bg-[#8d0303] text-white px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
                         >
-                          <span>🔧</span>
-                          <span>Modifica il tuo vino</span>
+                          <Edit3 className="w-4 h-4" />
                         </button>
                       </div>
                     )}
@@ -193,19 +192,8 @@ export default function EventListScreen({
           )}
         </div>
         
-        {/* Pulsanti in basso */}
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex justify-between">
-          {/* Pulsante Logout a sinistra */}
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition-all"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          )}
-          
-          {/* Pulsante Admin a destra */}
+        {/* Pulsante Admin centrato in basso */}
+        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
           {onShowAdmin && (
             <button
               onClick={onShowAdmin}

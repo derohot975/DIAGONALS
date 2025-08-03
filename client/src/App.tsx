@@ -887,7 +887,7 @@ function App() {
             onShowEventDetails={handleShowEventDetails}
             onShowEventResults={handleShowEventResults}
             onShowAdmin={handleShowAdmin}
-            onLogout={handleLogout}
+
             onRegisterWine={handleShowWineRegistration}
             onParticipateEvent={handleParticipateEvent}
             onVoteForWine={handleVoteForWine}
