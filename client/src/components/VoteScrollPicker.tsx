@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from 'react';
+import { useState, useRef, useEffect, memo, useMemo } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -12,11 +12,14 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
   const scrollRef = useRef<HTMLDivElement>(null);
   
-  // Generate scores from 0.0 to 10.0 in 0.5 increments
-  const scores: number[] = [];
-  for (let i = 0.0; i <= 10.0; i += 0.5) {
-    scores.push(Number(i.toFixed(1)));
-  }
+  // Generate scores from 0.0 to 10.0 in 0.5 increments - memoized
+  const scores = useMemo(() => {
+    const scoreArray: number[] = [];
+    for (let i = 0.0; i <= 10.0; i += 0.5) {
+      scoreArray.push(Number(i.toFixed(1)));
+    }
+    return scoreArray;
+  }, []);
 
   const handleScoreSelect = (score: number) => {
     setSelectedScore(score);

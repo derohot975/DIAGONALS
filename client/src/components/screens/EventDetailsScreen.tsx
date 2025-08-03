@@ -1,6 +1,8 @@
 import { Plus, EyeOff, Star, Award, Eye, ArrowLeft, Home } from 'lucide-react';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
-import { formatPrice, calculateProgress } from '../../lib/utils';
+import { formatPrice } from '../../lib/utils';
+import { VotingGrid } from '../optimized/VotingGrid';
+import { useEventLogic } from '../../hooks/useEventLogic';
 import diagoLogo from '@assets/diagologo.png';
 
 interface EventDetailsScreenProps {
@@ -34,42 +36,17 @@ export default function EventDetailsScreen({
 }: EventDetailsScreenProps) {
   if (!event || !currentUser) return null;
 
-  const getUserVoteForWine = (wineId: number) => {
-    return votes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
-  };
+  // Use optimized event logic hook
+  const { 
+    eventWines, 
+    userHasRegisteredWine, 
+    votingIsActive, 
+    getUserVoteForWine, 
+    getWineContributor,
+    getEventProgress 
+  } = useEventLogic({ event, wines, votes, users, currentUser });
 
-  const getWineContributor = (userId: number) => {
-    return users.find(u => u.id === userId)?.name || 'Unknown';
-  };
-
-  // Controlla se l'utente ha già registrato un vino per questo evento
-  const userHasRegisteredWine = wines.some(wine => wine.userId === currentUser.id);
-  
-  // Controlla se le votazioni sono attive
-  const votingIsActive = event.votingStatus === 'active';
-
-  // DEBUG: Log per verificare la logica
-  // Debug info removed for performance
-
-  const progress = calculateProgress(wines, votes);
-
-  const ScoreButton = ({ score, wineId, currentScore, onScore }: { 
-    score: number; 
-    wineId: number; 
-    currentScore?: number; 
-    onScore: (score: number) => void; 
-  }) => (
-    <button
-      onClick={() => onScore(score)}
-      className={`score-button px-2 py-1 rounded text-sm font-medium transition-all ${
-        currentScore === score 
-          ? 'active' 
-          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-      }`}
-    >
-      {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-    </button>
-  );
+  const progress = getEventProgress();
 
   return (
     <div className="flex-1 flex flex-col">
@@ -98,7 +75,7 @@ export default function EventDetailsScreen({
 
           {/* PULSANTE UNICO CONDIZIONALE */}
           <div className="mt-6">
-            {wines.filter(wine => wine.userId === currentUser.id).length === 0 ? (
+            {!userHasRegisteredWine ? (
               <button
                 onClick={onShowWineRegistrationModal}
                 className="w-full bg-[#8d0303] hover:bg-[#300505] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
@@ -122,7 +99,7 @@ export default function EventDetailsScreen({
             )}
           </div>
           
-          {wines.length === 0 ? (
+          {eventWines.length === 0 ? (
             <div className="text-center py-12">
               <Plus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500 text-lg">Nessun vino registrato</p>
@@ -131,7 +108,7 @@ export default function EventDetailsScreen({
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {wines.map(wine => {
+                {eventWines.map(wine => {
                   const userVote = getUserVoteForWine(wine.id);
                   const contributor = getWineContributor(wine.userId);
                   
@@ -143,7 +120,7 @@ export default function EventDetailsScreen({
                         </h3>
                         <div className="flex items-center space-x-2">
                           <span className="bg-[hsl(43,96%,56%)] text-white px-2 py-1 rounded-full text-xs">
-                            {formatPrice(wine.price)}
+                            {formatPrice(parseFloat(wine.price))}
                           </span>
                           <Eye className="w-4 h-4 text-gray-600" />
                         </div>
@@ -165,53 +142,10 @@ export default function EventDetailsScreen({
                           )}
                         </div>
                         
-                        <div className="grid grid-cols-5 gap-1 mb-2">
-                          {[1, 1.5, 2, 2.5, 3].map(score => (
-                            <ScoreButton
-                              key={score}
-                              score={score}
-                              wineId={wine.id}
-                              currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, false)}
-                            />
-                          ))}
-                        </div>
-                        
-                        <div className="grid grid-cols-5 gap-1 mb-2">
-                          {[3.5, 4, 4.5, 5, 5.5].map(score => (
-                            <ScoreButton
-                              key={score}
-                              score={score}
-                              wineId={wine.id}
-                              currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, false)}
-                            />
-                          ))}
-                        </div>
-                        
-                        <div className="grid grid-cols-5 gap-1 mb-2">
-                          {[6, 6.5, 7, 7.5, 8].map(score => (
-                            <ScoreButton
-                              key={score}
-                              score={score}
-                              wineId={wine.id}
-                              currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, false)}
-                            />
-                          ))}
-                        </div>
-                        
-                        <div className="grid grid-cols-4 gap-1">
-                          {[8.5, 9, 9.5, 10].map(score => (
-                            <ScoreButton
-                              key={score}
-                              score={score}
-                              wineId={wine.id}
-                              currentScore={parseFloat(userVote?.score?.toString() || '0')}
-                              onScore={(score) => onVoteForWine(wine.id, score, false)}
-                            />
-                          ))}
-                        </div>
+                        <VotingGrid
+                          currentScore={parseFloat(userVote?.score?.toString() || '0')}
+                          onScore={(score) => onVoteForWine(wine.id, score, false)}
+                        />
                         
                         <div className="text-center text-xs text-gray-500 mt-2">
                           Voti da 1 a 10 con step 0.5
