@@ -61,18 +61,14 @@ export default function SimultaneousVotingScreen({ event, currentUser, onBack, o
     }
   }, [existingVotes, currentUser.id]);
 
-  // Submit vote mutation
+  // Submit vote mutation using consistent apiRequest
   const submitVoteMutation = useMutation({
     mutationFn: async (voteData: VoteData) => {
-      return fetch("/api/votes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventId: event.id,
-          wineId: voteData.wineId,
-          userId: currentUser.id,
-          score: voteData.score.toString(),
-        }),
+      return apiRequest("POST", "/api/votes", {
+        eventId: event.id,
+        wineId: voteData.wineId,
+        userId: currentUser.id,
+        score: voteData.score.toString(),
       }).then(res => res.json());
     },
     onSuccess: (data, variables) => {

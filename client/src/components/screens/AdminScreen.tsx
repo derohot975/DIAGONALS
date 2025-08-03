@@ -1,7 +1,7 @@
 import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight, Key } from 'lucide-react';
 // CACHE BREAKER v2.1
 import { User } from '@shared/schema';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AdminScreenProps {
@@ -18,6 +18,12 @@ interface AdminScreenProps {
 
 export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack, onGoHome, onChangeAdminPin }: AdminScreenProps) {
   const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(false);
+
+  // Memoize non-admin users to prevent recalculating on every render
+  const nonAdminUsers = useMemo(() => 
+    users.filter(user => !user.isAdmin), 
+    [users]
+  );
 
   useEffect(() => {
     const saved = localStorage.getItem('diagonale_unique_session_enabled');
@@ -93,17 +99,17 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
             <div className="mt-8 bg-[#955A5A] rounded-2xl p-4 border border-[#8d0303]">
               <div className="text-center mb-4">
                 <h3 className="text-white font-bold text-sm uppercase tracking-wide">
-                  {users.filter(user => !user.isAdmin).length} UTENTI REGISTRATI
+                  {nonAdminUsers.length} UTENTI REGISTRATI
                 </h3>
               </div>
               
-              {users.filter(user => !user.isAdmin).length === 0 ? (
+              {nonAdminUsers.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   Nessun utente registrato
                 </p>
               ) : (
                 <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {users.filter(user => !user.isAdmin).map(user => (
+                  {nonAdminUsers.map(user => (
                     <div
                       key={user.id}
                       className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100"
