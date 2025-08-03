@@ -530,6 +530,7 @@ function App() {
         year: wineData.year,
         origin: wineData.origin,
         price: wineData.price.toString(),
+        alcohol: wineData.alcohol || 0,
         eventId: selectedEventId,
         userId: currentUser.id,
       });
