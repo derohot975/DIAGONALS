@@ -14,19 +14,24 @@ export const useAuth = () => {
     
     try {
       const response = await apiRequest('POST', '/api/auth/login', { pin });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        setAuthError(data.message || 'Errore durante il login');
-        return null;
-      }
-      
       const data = await response.json();
       toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
       return data.user;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setAuthError('Errore di connessione');
+      
+      // Extract message from error thrown by apiRequest
+      if (error.message && error.message.includes('401:')) {
+        try {
+          const errorText = error.message.split('401: ')[1];
+          const errorData = JSON.parse(errorText);
+          setAuthError(errorData.message || 'Errore durante il login');
+        } catch (parseError) {
+          setAuthError('Errore durante il login');
+        }
+      } else {
+        setAuthError('Errore di connessione');
+      }
       return null;
     } finally {
       setAuthLoading(false);
@@ -39,19 +44,24 @@ export const useAuth = () => {
     
     try {
       const response = await apiRequest('POST', '/api/auth/register', { name, pin });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        setAuthError(data.message || 'Errore durante la registrazione');
-        return null;
-      }
-      
       const data = await response.json();
       toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
       return data.user;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      setAuthError('Errore di connessione');
+      
+      // Extract message from error thrown by apiRequest
+      if (error.message && error.message.includes('409:')) {
+        try {
+          const errorText = error.message.split('409: ')[1];
+          const errorData = JSON.parse(errorText);
+          setAuthError(errorData.message || 'Errore durante la registrazione');
+        } catch (parseError) {
+          setAuthError('Errore durante la registrazione');
+        }
+      } else {
+        setAuthError('Errore di connessione');
+      }
       return null;
     } finally {
       setAuthLoading(false);
