@@ -87,10 +87,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      // Check if user already exists
+      // Check if user already exists by name
       const existingUser = await storage.getUserByName(name);
       if (existingUser) {
         res.status(409).json({ message: "Nome utente già esistente" });
+        return;
+      }
+
+      // Check if PIN already exists
+      const existingPinUser = await storage.authenticateUserByPin(pin);
+      if (existingPinUser) {
+        res.status(409).json({ message: "PIN già esistente, inserire PIN differente" });
         return;
       }
 
