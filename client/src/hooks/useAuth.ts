@@ -14,16 +14,18 @@ export const useAuth = () => {
     
     try {
       const response = await apiRequest('POST', '/api/auth/login', { pin });
-      const data = await response.json();
       
       if (!response.ok) {
+        const data = await response.json();
         setAuthError(data.message || 'Errore durante il login');
         return null;
       }
       
+      const data = await response.json();
       toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
       return data.user;
     } catch (error) {
+      console.error('Login error:', error);
       setAuthError('Errore di connessione');
       return null;
     } finally {
@@ -37,16 +39,18 @@ export const useAuth = () => {
     
     try {
       const response = await apiRequest('POST', '/api/auth/register', { name, pin });
-      const data = await response.json();
       
       if (!response.ok) {
+        const data = await response.json();
         setAuthError(data.message || 'Errore durante la registrazione');
         return null;
       }
       
+      const data = await response.json();
       toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
       return data.user;
     } catch (error) {
+      console.error('Registration error:', error);
       setAuthError('Errore di connessione');
       return null;
     } finally {
