@@ -194,7 +194,7 @@ export default function AuthScreen({
 
               {/* Errore */}
               {error && (
-                <div className="text-red-600 text-sm bg-red-50 p-2 rounded-lg">
+                <div className="text-red-600 text-sm bg-red-50 p-2 rounded-lg text-center font-bold">
                   {error}
                 </div>
               )}
