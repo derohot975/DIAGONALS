@@ -97,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if PIN already exists
       const existingPinUser = await storage.authenticateUserByPin(pin);
       if (existingPinUser) {
-        res.status(409).json({ message: "PIN già esistente, inserire PIN differente" });
+        res.status(409).json({ message: "PIN già esistente!" });
         return;
       }
 
