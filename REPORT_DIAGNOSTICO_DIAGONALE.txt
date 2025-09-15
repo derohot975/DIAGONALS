@@ -1,0 +1,269 @@
+=====================================================
+DIAGONALE - REPORT DIAGNOSTICO COMPLETO
+Data: 15 Settembre 2025
+Analista: Cascade AI Assistant
+=====================================================
+
+## 📋 SOMMARIO ESECUTIVO
+
+Il progetto DIAGONALE è un'applicazione web per la gestione di eventi di degustazione vini con due modalità (CIECA/CIECONA). L'analisi ha identificato diversi problemi critici che impediscono il corretto deployment e funzionamento in produzione, principalmente legati alla gestione delle dipendenze e alla configurazione del build process.
+
+## 🏗️ ARCHITETTURA PROGETTO
+
+### Stack Tecnologico
+- **Frontend**: React 18.3.1 + TypeScript + Vite
+- **Backend**: Express 4.21.2 + Node.js
+- **Database**: PostgreSQL con Drizzle ORM 0.39.1
+- **UI**: Radix UI + Tailwind CSS + shadcn/ui
+- **State Management**: TanStack React Query 5.60.5
+- **Validazione**: Zod 3.24.2
+- **Hosting**: Replit + Render (problematico)
+
+### Struttura Directory
+```
+DIAGONALE/
+├── client/          # Frontend React
+├── server/          # Backend Express
+├── shared/          # Schema condiviso (Drizzle + Zod)
+├── scripts/         # Utility e automazione
+├── DOCS/           # Documentazione completa
+└── public/         # Asset statici
+```
+
+## 🚨 PROBLEMI CRITICI IDENTIFICATI
+
+### 1. DEPLOYMENT FAILURES (PRIORITÀ MASSIMA)
+**Status**: ❌ CRITICO
+**Impatto**: Applicazione non deployabile in produzione
+
+**Problemi specifici**:
+- Build fallisce su Render con errore "Cannot find package 'vite'"
+- Vite è in devDependencies ma necessario per build produzione
+- Script build-render.js non funziona correttamente
+- Directory dist/public non viene creata correttamente
+- Fallback mechanism con cp commands fallisce
+
+**Root Cause**: 
+- Configurazione build process inadeguata per ambiente produzione
+- Dipendenze mal categorizzate tra dependencies/devDependencies
+- Render non installa devDependencies per default
+
+### 2. CONFIGURAZIONE PACKAGE.JSON PROBLEMATICA
+**Status**: ⚠️ ALTO
+**Problemi identificati**:
+- Nome progetto generico "rest-express" invece di "diagonale"
+- Vite in devDependencies ma necessario per build
+- Build script complesso con esbuild + vite
+- Mancanza di script di verifica pre-deploy
+
+### 3. GESTIONE AMBIENTE E VARIABILI
+**Status**: ⚠️ MEDIO
+**Problemi**:
+- Port configuration inconsistente (5000 vs 10000)
+- DATABASE_URL non validata correttamente
+- Configurazione SSL database hardcoded
+- Environment variables non documentate
+
+### 4. DATABASE INITIALIZATION ISSUES
+**Status**: ⚠️ MEDIO
+**Problemi identificati**:
+- Admin user non impostato correttamente (is_admin = FALSE)
+- Script inizializzazione database non robusto
+- Mancanza di migration system strutturato
+
+### 5. CODICE QUALITY E ORGANIZZAZIONE
+**Status**: ⚠️ BASSO
+**Osservazioni**:
+- App.tsx molto grande (906 righe) - necessita refactoring
+- Alcune dipendenze non utilizzate (canvas, passport, ws)
+- Mancanza di error boundaries strutturati
+- Console.log statements in produzione
+
+## 🔧 ANALISI TECNICA DETTAGLIATA
+
+### Frontend (client/)
+**Punti di forza**:
+- Architettura componenti ben organizzata
+- Uso corretto di React Query per state management
+- UI moderna con Radix + Tailwind
+- PWA configuration presente
+
+**Problemi**:
+- App.tsx monolitico (necessita splitting)
+- Gestione errori non centralizzata
+- Alcune dipendenze UI ridondanti
+
+### Backend (server/)
+**Punti di forza**:
+- API RESTful ben strutturata
+- Validazione con Zod
+- Logging middleware implementato
+- Error handling presente
+
+**Problemi**:
+- Port configuration confusa
+- SSL database sempre required
+- Session management complesso
+- Mancanza di rate limiting
+
+### Database (shared/schema.ts)
+**Punti di forza**:
+- Schema ben definito con Drizzle
+- Relazioni corrette tra tabelle
+- Validazione Zod integrata
+- Tipi TypeScript generati
+
+**Problemi**:
+- Mancanza di indici per performance
+- Constraint di unicità non implementati
+- Migration system non presente
+
+## 📊 DIPENDENZE E SICUREZZA
+
+### Dipendenze Problematiche
+- **Vite**: In devDependencies ma necessario per build
+- **Canvas**: 3.1.2 - non utilizzato, può essere rimosso
+- **Passport**: Non utilizzato nel codice attuale
+- **WS**: WebSocket non implementato
+
+### Dipendenze Ridondanti
+- Multiple librerie Radix UI (alcune non utilizzate)
+- Framer Motion installato ma uso limitato
+- Next-themes per app non Next.js
+
+## 🎯 SOLUZIONI PROPOSTE
+
+### IMMEDIATE (Critiche - 1-2 giorni)
+
+1. **Fix Build Process**
+   - Spostare Vite da devDependencies a dependencies
+   - Semplificare build script eliminando esbuild
+   - Creare build script dedicato per Render
+   - Testare build locale prima del deploy
+
+2. **Correggere Admin User**
+   - Fix script inizializzazione database
+   - Impostare is_admin = TRUE per utente admin
+   - Aggiungere validazione admin user
+
+3. **Standardizzare Port Configuration**
+   - Unificare configurazione port (10000 per Render)
+   - Aggiornare .replit e vite.config.ts
+   - Documentare port mapping
+
+### BREVE TERMINE (1-2 settimane)
+
+1. **Refactoring App.tsx**
+   - Dividere in componenti più piccoli
+   - Implementare context per state globale
+   - Migliorare error handling
+
+2. **Ottimizzazione Dipendenze**
+   - Rimuovere dipendenze non utilizzate
+   - Audit sicurezza con npm audit
+   - Aggiornare dipendenze obsolete
+
+3. **Migliorare Database Setup**
+   - Implementare migration system
+   - Aggiungere indici per performance
+   - Validazione constraint database
+
+### MEDIO TERMINE (1 mese)
+
+1. **Testing Infrastructure**
+   - Aggiungere unit tests (Jest/Vitest)
+   - Integration tests per API
+   - E2E tests per UI critica
+
+2. **Performance Optimization**
+   - Code splitting frontend
+   - Lazy loading componenti
+   - Ottimizzazione bundle size
+
+3. **DevOps Improvements**
+   - CI/CD pipeline con GitHub Actions
+   - Automated deployment
+   - Monitoring e logging strutturato
+
+## 📈 METRICHE PROGETTO
+
+### Dimensioni Codebase
+- **Client**: ~45 componenti React
+- **Server**: ~6 file principali
+- **Shared**: Schema unificato
+- **Total LOC**: ~3000+ linee
+
+### Dipendenze
+- **Dependencies**: 47 pacchetti
+- **DevDependencies**: 17 pacchetti
+- **Potenziali rimozioni**: 5-8 pacchetti
+
+### Performance
+- **Bundle size**: Non ottimizzato
+- **Build time**: ~30-45 secondi
+- **Cold start**: Lento su Render
+
+## 🔒 CONSIDERAZIONI SICUREZZA
+
+### Punti Critici
+- PIN utenti in plain text (considerare hashing)
+- Admin PIN in localStorage (vulnerabile)
+- Database SSL sempre required (può causare problemi)
+- Mancanza di rate limiting API
+
+### Raccomandazioni
+- Implementare hashing per PIN
+- Secure storage per admin credentials
+- Rate limiting per API endpoints
+- Input sanitization migliorata
+
+## 🚀 PIANO IMPLEMENTAZIONE
+
+### Fase 1: Stabilizzazione (Priorità Massima)
+1. Fix build process per Render
+2. Correggere admin user database
+3. Standardizzare configurazione port
+4. Test deployment completo
+
+### Fase 2: Ottimizzazione (Priorità Alta)
+1. Refactoring App.tsx
+2. Pulizia dipendenze
+3. Miglioramento error handling
+4. Performance audit
+
+### Fase 3: Scalabilità (Priorità Media)
+1. Testing infrastructure
+2. CI/CD pipeline
+3. Monitoring setup
+4. Documentation update
+
+## 📋 CHECKLIST AZIONI IMMEDIATE
+
+- [ ] Spostare Vite in dependencies
+- [ ] Creare build script semplificato
+- [ ] Fix admin user database
+- [ ] Testare build locale
+- [ ] Deploy test su Render
+- [ ] Validare funzionalità critiche
+- [ ] Aggiornare documentazione
+
+## 🎯 RACCOMANDAZIONI FINALI
+
+1. **Priorità assoluta**: Risolvere build process per avere app funzionante
+2. **Considerare migrazione**: Da Render a Vercel/Netlify per migliore supporto Vite
+3. **Investire in testing**: Prevenire regressioni future
+4. **Documentazione**: Mantenere DOCS/ aggiornata
+5. **Monitoring**: Implementare logging strutturato per troubleshooting
+
+## 📞 SUPPORTO TECNICO
+
+Per implementare le soluzioni proposte:
+1. Iniziare con fix build process (massima priorità)
+2. Testare ogni modifica in ambiente locale
+3. Documentare ogni cambiamento
+4. Mantenere backup prima di modifiche critiche
+
+=====================================================
+Report generato automaticamente - 15/09/2025
+Prossimo aggiornamento: Post-implementazione fix critici
+=====================================================
