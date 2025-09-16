@@ -6,8 +6,6 @@ import { ArrowLeft, Home, ChevronUp, ChevronDown, Shield } from "lucide-react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 import diagoLogo from "@assets/diagologo.png";
-import { format } from 'date-fns';
-import { it } from 'date-fns/locale';
 import { VoteScrollPicker } from "../VoteScrollPicker";
 import AdminPinModal from "../AdminPinModal";
 
@@ -97,7 +95,11 @@ export default function SimpleVotingScreen({
   const formatEventDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      const formatted = format(date, 'd MMMM yyyy', { locale: it });
+      const formatted = date.toLocaleDateString('it-IT', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
       // Capitalize first letter of month
       return formatted.replace(/(\d+ )([a-z])/, (match, day, firstLetter) => day + firstLetter.toUpperCase());
     } catch {
