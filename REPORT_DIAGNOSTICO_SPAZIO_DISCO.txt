@@ -1,0 +1,276 @@
+================================================================================
+                    REPORT DIAGNOSTICO SPAZIO DISCO - PROGETTO DIAGONALE
+                              Analisi Approfondita File Grossi
+================================================================================
+
+Data: 16/09/2025 14:45
+Progetto: DIAGONALE Wine Tasting App v1.0.0
+Dimensione Totale Progetto: 449MB
+
+================================================================================
+                           RIEPILOGO DISTRIBUZIONE SPAZIO
+================================================================================
+
+📊 BREAKDOWN PRINCIPALE:
+────────────────────────────────────────────────────────────────────────────
+• node_modules/          272MB (60.6%) - Dipendenze NPM
+• .git/                  169MB (37.6%) - Repository Git e storico
+• Backup_Automatico/     3.7MB (0.8%)  - Sistema backup
+• Codice sorgente        ~4MB (0.9%)   - Client, server, shared, docs
+• Altri file             ~0.3MB (0.1%) - Config, assets
+
+================================================================================
+                        ANALISI DETTAGLIATA FILE GROSSI (>1MB)
+================================================================================
+
+🔧 1. DIPENDENZE SVILUPPO E BUILD (NECESSARIE)
+────────────────────────────────────────────────────────────────────────────
+
+• ESBUILD (47.7MB totali - 5 istanze duplicate)
+  ├─ ./node_modules/esbuild/bin/esbuild (10MB)
+  ├─ ./node_modules/vite/node_modules/esbuild/bin/esbuild (9.8MB)
+  ├─ ./node_modules/tsx/node_modules/esbuild/bin/esbuild (9.7MB)
+  ├─ ./node_modules/drizzle-kit/node_modules/esbuild/bin/esbuild (9.7MB)
+  └─ ./node_modules/@esbuild-kit/core-utils/node_modules/esbuild/bin/esbuild (9.5MB)
+  
+  STATUS: ✅ NECESSARIO MA DUPLICATO
+  FUNZIONE: Bundler JavaScript ultra-veloce per build e dev
+  UTILIZZO: Vite, tsx, drizzle-kit dipendono da esbuild
+  PROBLEMA: 5 copie duplicate dello stesso binario
+  OTTIMIZZAZIONE: Possibile deduplicate con npm dedupe
+
+• TYPESCRIPT (15.5MB totali)
+  ├─ ./node_modules/typescript/lib/typescript.js (8.5MB)
+  ├─ ./node_modules/typescript/lib/tsc.js (5.8MB)
+  └─ ./node_modules/typescript/lib/lib.dom.d.ts (1.2MB)
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Compilatore TypeScript e definizioni tipi
+  UTILIZZO: Tutto il progetto è in TypeScript
+  PAGINE: Tutte le pagine client/ e server/
+
+• LIGHTNINGCSS (8.8MB)
+  └─ ./node_modules/lightningcss-darwin-x64/lightningcss.darwin-x64.node
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: CSS processor ultra-veloce per TailwindCSS
+  UTILIZZO: TailwindCSS build system
+
+• TAILWINDCSS (6.8MB totali)
+  ├─ ./node_modules/tailwindcss/peers/index.js (4.3MB)
+  └─ ./node_modules/@tailwindcss/oxide-darwin-x64/tailwindcss-oxide.darwin-x64.node (2.5MB)
+  
+  STATUS: ✅ UTILIZZATO ATTIVAMENTE
+  FUNZIONE: Framework CSS utility-first
+  UTILIZZO: Tutto il sistema di styling dell'app
+  PAGINE: Tutte le pagine e componenti UI
+
+• DRIZZLE-KIT (7.2MB totali)
+  ├─ ./node_modules/drizzle-kit/bin.cjs (3.0MB)
+  ├─ ./node_modules/drizzle-kit/api.mjs (1.6MB)
+  └─ ./node_modules/drizzle-kit/api.js (1.6MB)
+  
+  STATUS: ✅ UTILIZZATO
+  FUNZIONE: Database toolkit e migrazioni
+  UTILIZZO: Gestione schema database PostgreSQL
+
+• VITE (2.0MB)
+  └─ ./node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Build tool e dev server
+  UTILIZZO: Sistema build principale del progetto
+
+• ROLLUP (2.3MB)
+  └─ ./node_modules/@rollup/rollup-darwin-x64/rollup.darwin-x64.node
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Module bundler utilizzato da Vite
+  UTILIZZO: Build produzione
+
+🎨 2. LIBRERIE UI E ICONE (UTILIZZATE)
+────────────────────────────────────────────────────────────────────────────
+
+• LUCIDE-REACT (12.4MB totali)
+  ├─ ./node_modules/lucide-react/dist/umd/lucide-react.js.map (4.2MB)
+  ├─ ./node_modules/lucide-react/dist/cjs/lucide-react.js.map (4.1MB)
+  ├─ ./node_modules/lucide-react/dist/umd/lucide-react.min.js.map (3.6MB)
+  ├─ ./node_modules/lucide-react/dist/lucide-react.d.ts (1.9MB)
+  ├─ ./node_modules/lucide-react/dynamicIconImports.d.ts (1.8MB)
+  └─ ./node_modules/.vite/deps/lucide-react.js (1.1MB)
+  
+  STATUS: ✅ UTILIZZATO ATTIVAMENTE
+  FUNZIONE: Libreria icone SVG per React
+  UTILIZZO: Icone in tutti i componenti UI
+  PAGINE: 24 file utilizzano lucide-react:
+    • AdminScreen.tsx, AuthScreen.tsx
+    • EventListScreen.tsx, EventDetailsScreen.tsx
+    • SimpleVotingScreen.tsx, SimultaneousVotingScreen.tsx
+    • Tutti i modali (AddUserModal, CreateEventModal, etc.)
+    • Componenti UI (dialog, select, checkbox, etc.)
+
+• REACT-DOM (1.0MB)
+  └─ ./node_modules/react-dom/umd/react-dom.development.js
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: React DOM renderer
+  UTILIZZO: Rendering dell'intera applicazione React
+
+📅 3. LIBRERIE UTILITY (UTILIZZATE PARZIALMENTE)
+────────────────────────────────────────────────────────────────────────────
+
+• DATE-FNS (5.6MB totali)
+  ├─ ./node_modules/date-fns/locale/cdn.js.map (2.1MB)
+  ├─ ./node_modules/date-fns/locale/cdn.min.js.map (1.5MB)
+  └─ ./node_modules/.vite/deps/date-fns_locale.js.map (1.8MB)
+  
+  STATUS: ⚠️ UTILIZZATO MA NON OTTIMIZZATO
+  FUNZIONE: Libreria manipolazione date JavaScript
+  UTILIZZO: Solo in SimpleVotingScreen.tsx (2 import)
+  OTTIMIZZAZIONE: Tree-shaking per importare solo funzioni necessarie
+
+• BABEL PARSER (1.3MB)
+  └─ ./node_modules/@babel/parser/lib/index.js.map
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Parser JavaScript per build tools
+  UTILIZZO: Dipendenza di Vite e altri build tools
+
+• JITI (3.4MB totali)
+  ├─ ./node_modules/@tailwindcss/node/node_modules/jiti/dist/babel.cjs (1.8MB)
+  └─ ./node_modules/jiti/dist/babel.js (1.6MB)
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Runtime TypeScript loader
+  UTILIZZO: TailwindCSS config loading
+
+🗄️ 4. REPOSITORY GIT (169MB - 37.6% del totale)
+────────────────────────────────────────────────────────────────────────────
+
+• Git Objects (35MB+ - 24 file principali)
+  ├─ ./.git/objects/9c/7a464e17b13ab814f836bf3e8921c1afc9f5c8 (3.4MB)
+  ├─ ./.git/objects/56/62e37cc0f9b7ddedfc291d41381266c6eecbaa (2.5MB)
+  ├─ ./.git/objects/4d/14d698687f529835f50ac8bf997b8d8984d44d (2.3MB)
+  └─ ... altri 21 file da 1.0MB a 1.6MB
+  
+  STATUS: ✅ NECESSARI MA OTTIMIZZABILI
+  FUNZIONE: Storico versioni, commit, branches
+  UTILIZZO: Version control del progetto
+  PROBLEMA: Repository molto pesante per dimensioni progetto
+  OTTIMIZZAZIONE: 
+    • git gc --aggressive (garbage collection)
+    • git prune (rimuovi oggetti orfani)
+    • Considerare git filter-branch per storia pesante
+
+💾 5. SISTEMA BACKUP (3.7MB)
+────────────────────────────────────────────────────────────────────────────
+
+• Backup Automatici (3 file)
+  ├─ ./Backup_Automatico/BACKUP_16092025_1440.tar.gz (1.2MB)
+  ├─ ./Backup_Automatico/BACKUP_16092025_1436.tar.gz (1.2MB)
+  └─ ./Backup_Automatico/BACKUP_16092025_1431.tar.gz (1.2MB)
+  
+  STATUS: ✅ UTILIZZATO
+  FUNZIONE: Sistema backup automatico implementato
+  UTILIZZO: Sicurezza e rollback per modifiche
+
+🔍 6. CACHE E BUILD ARTIFACTS
+────────────────────────────────────────────────────────────────────────────
+
+• Vite Cache (5.3MB totali)
+  ├─ ./node_modules/.vite/deps/lucide-react.js.map (2.6MB)
+  ├─ ./node_modules/.vite/deps/date-fns_locale.js.map (1.8MB)
+  ├─ ./node_modules/.vite/deps/chunk-RPCDYKBN.js.map (1.4MB)
+  └─ ./node_modules/.vite/deps/lucide-react.js (1.1MB)
+  
+  STATUS: ✅ NECESSARIO
+  FUNZIONE: Cache pre-bundled dependencies per dev server
+  UTILIZZO: Performance sviluppo Vite
+
+================================================================================
+                              ANALISI PROBLEMATICHE
+================================================================================
+
+🚨 PROBLEMI IDENTIFICATI:
+────────────────────────────────────────────────────────────────────────────
+
+1. ESBUILD DUPLICATO (47.7MB)
+   • 5 copie dello stesso binario in node_modules diversi
+   • Possibile risparmio: ~38MB con deduplicate
+   • Soluzione: npm dedupe
+
+2. REPOSITORY GIT PESANTE (169MB)
+   • 37.6% dello spazio totale occupato da .git
+   • Storico molto pesante per progetto di queste dimensioni
+   • Possibile risparmio: 50-100MB con cleanup
+
+3. DATE-FNS NON OTTIMIZZATO (5.6MB)
+   • Utilizzato solo in 1 file con 2 import
+   • Include tutte le localizzazioni
+   • Possibile risparmio: ~4MB con tree-shaking
+
+⚠️ OTTIMIZZAZIONI POSSIBILI:
+────────────────────────────────────────────────────────────────────────────
+
+1. IMMEDIATE (Risparmio: ~140MB):
+   • git gc --aggressive: ~50-100MB
+   • npm dedupe: ~38MB
+   • Pulizia cache Vite: ~5MB
+
+2. MEDIE (Risparmio: ~4MB):
+   • Tree-shaking date-fns
+   • Rimozione source maps non necessarie in produzione
+
+3. AVANZATE:
+   • Shallow clone del repository
+   • Bundle analysis per ottimizzazioni produzione
+
+================================================================================
+                                CONCLUSIONI
+================================================================================
+
+📊 DISTRIBUZIONE SPAZIO ATTUALE:
+────────────────────────────────────────────────────────────────────────────
+• Dipendenze necessarie: ~200MB (44.5%)
+• Repository Git: 169MB (37.6%) - OTTIMIZZABILE
+• Dipendenze duplicate: ~48MB (10.7%) - OTTIMIZZABILE  
+• Cache e artifacts: ~25MB (5.6%)
+• Codice sorgente: ~4MB (0.9%)
+• Backup: 3.7MB (0.8%)
+
+🎯 RACCOMANDAZIONI PRIORITARIE:
+────────────────────────────────────────────────────────────────────────────
+
+1. ALTA PRIORITÀ - Git Repository Cleanup:
+   • Comando: git gc --aggressive --prune=now
+   • Risparmio stimato: 50-100MB
+   • Rischio: Basso (operazione standard)
+
+2. ALTA PRIORITÀ - Deduplicate NPM:
+   • Comando: npm dedupe
+   • Risparmio stimato: ~38MB (esbuild duplicati)
+   • Rischio: Basso (operazione standard)
+
+3. MEDIA PRIORITÀ - Date-fns Tree-shaking:
+   • Modifica import per funzioni specifiche
+   • Risparmio stimato: ~4MB
+   • Rischio: Medio (richiede test)
+
+🚀 RISULTATO ATTESO POST-OTTIMIZZAZIONE:
+────────────────────────────────────────────────────────────────────────────
+• Dimensione attuale: 449MB
+• Dimensione post-cleanup: ~300-350MB
+• Risparmio totale: 100-150MB (22-33%)
+
+✅ STATO ATTUALE DIPENDENZE:
+────────────────────────────────────────────────────────────────────────────
+• Tutte le dipendenze > 1MB sono utilizzate e necessarie
+• Nessuna dipendenza inutile rilevata
+• Ottimizzazioni precedenti (canvas, recharts, react-icons) efficaci
+
+================================================================================
+Report generato automaticamente il 16/09/2025 alle 14:45
+Progetto: DIAGONALE Wine Tasting App
+Analisi: File > 1MB su totale 449MB
+Stato: DIAGNOSTICA COMPLETATA - NESSUNA MODIFICA ESEGUITA
+================================================================================
