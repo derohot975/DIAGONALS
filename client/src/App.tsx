@@ -2,23 +2,22 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './hooks/useAuth';
-import { useMutations } from './hooks/useMutations';
+import { useSession } from './hooks/useSession';
+import { useUserMutations } from './hooks/useUserMutations';
+import { useEventMutations } from './hooks/useEventMutations';
+import { useWineMutations } from './hooks/useWineMutations';
+import * as uiHandlers from './handlers/uiHandlers';
+import * as userHandlers from './handlers/userHandlers';
+import * as eventHandlers from './handlers/eventHandlers';
 import { apiRequest } from './lib/queryClient';
+import { isLoadingState } from './lib/utils';
+import AppShell from './components/AppShell';
+import ScreenRouter from './components/ScreenRouter';
 
 import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 
 // Components
 import SplashScreen from './components/screens/SplashScreen';
-
-import AdminScreen from './components/screens/AdminScreen';
-import EventListScreen from './components/screens/EventListScreen';
-import AdminEventManagementScreen from './components/screens/AdminEventManagementScreen';
-import EventDetailsScreen from './components/screens/EventDetailsScreen';
-import EventResultsScreen from './components/screens/EventResultsScreen';
-import HistoricEventsScreen from './components/screens/HistoricEventsScreen';
-import PagellaScreen from './components/screens/PagellaScreen';
-import SimpleVotingScreen from './components/screens/SimpleVotingScreen';
-import AuthScreen from './components/screens/AuthScreen';
 
 import AddUserModal from './components/modals/AddUserModal';
 import EditUserModal from './components/modals/EditUserModal';
@@ -37,16 +36,13 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [currentScreen, setCurrentScreen] = useState<Screen>('auth');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
 
   // Forza sempre il reset all'autenticazione quando l'app si ricarica
   useEffect(() => {
     setCurrentUser(null);
     setCurrentScreen('auth');
-    setSessionId(null);
   }, []);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  const [sessionError, setSessionError] = useState<string | null>(null);
   
   // Modal states
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -68,21 +64,46 @@ function App() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Session management hook
+  const {
+    sessionId,
+    sessionError,
+    setSessionError,
+    loginMutation,
+    logoutMutation,
+    handleUserSelect,
+    handleLogout: sessionHandleLogout
+  } = useSession(currentUser, setCurrentUser, setCurrentScreen);
+  
   // Custom hooks for better organization
   const { authLoading, authError, setAuthError, handleLogin, handleRegister } = useAuth();
-  const { 
-    createUserMutation, updateUserMutation, deleteUserMutation,
-    createEventMutation, updateEventMutation, deleteEventMutation,
-    createWineMutation, updateWineMutation, voteMutation
-  } = useMutations();
+  
+  // Domain-specific mutation hooks
+  const { createUserMutation, updateUserMutation, deleteUserMutation } = useUserMutations();
+  const { createWineMutation, updateWineMutation, voteMutation } = useWineMutations();
+  const {
+    createEventMutation,
+    updateEventMutation,
+    deleteEventMutation,
+    updateEventStatusMutation,
+    activateVotingMutation,
+    deactivateVotingMutation,
+    setCurrentWineMutation,
+    nextWineMutation,
+    stopVotingMutation,
+    completeEventMutation,
+    viewReportMutation,
+  } = useEventMutations({
+    currentUser,
+    selectedEventId,
+    setReportData,
+    setShowReportModal
+  });
 
   // Logout function
   const handleLogout = () => {
-    setCurrentUser(null);
-    setCurrentScreen('auth');
-    setSessionId(null);
+    sessionHandleLogout();
     setAuthError(null);
-    toast({ title: 'Logout effettuato', description: 'Arrivederci!' });
   };
 
   // Authentication functions - using custom hook
@@ -123,7 +144,6 @@ function App() {
       if (!userExists) {
         // User validation: clearing localStorage for non-existent user
         setCurrentUser(null);
-        setSessionId(null);
         setCurrentScreen('auth');
         toast({ 
           title: 'Utente non trovato', 
@@ -132,7 +152,7 @@ function App() {
         });
       }
     }
-  }, [users, currentUser, setCurrentUser, setSessionId, toast]);
+  }, [users, currentUser, setCurrentUser, toast]);
 
   const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery<WineEvent[]>({
     queryKey: ['/api/events'],
@@ -159,251 +179,13 @@ function App() {
 
 
 
-  // Import mutations from custom hook, keeping only unused specific ones
-  const updateEventStatusMutation = useMutation({
-    mutationFn: async ({ eventId, status }: { eventId: number; status: string }) => {
-      const response = await fetch(`/api/events/${eventId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      if (selectedEventId) {
-        queryClient.invalidateQueries({ queryKey: ['/api/events/' + selectedEventId + '/results'] });
-      }
-      toast({ title: 'Evento completato!' });
-    },
-    onError: () => {
-      toast({ title: 'Errore nell\'aggiornamento dell\'evento', variant: 'destructive' });
-    },
-  });
+  // All mutations now provided by domain-specific hooks
 
-  const activateVotingMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      const response = await apiRequest('PATCH', `/api/events/${eventId}`, { votingStatus: 'voting' });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '🗳️ Votazioni attivate!', 
-        description: 'I partecipanti possono ora votare i vini registrati.'
-      });
-    },
-    onError: () => {
-      toast({ title: 'Errore nell\'attivazione delle votazioni', variant: 'destructive' });
-    },
-  });
 
-  const deactivateVotingMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      const response = await apiRequest('PATCH', `/api/events/${eventId}`, { votingStatus: 'registration' });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '📋 Votazioni disattivate!', 
-        description: 'Tornato alla modalità registrazione vini.'
-      });
-    },
-    onError: () => {
-      toast({ title: 'Errore nella disattivazione delle votazioni', variant: 'destructive' });
-    },
-  });
-
-  // Sequential voting mutations
-  const setCurrentWineMutation = useMutation({
-    mutationFn: async ({ eventId, wineId }: { eventId: number; wineId: number }) => {
-      const response = await apiRequest('PATCH', `/api/events/${eventId}/current-wine`, { wineId });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '🍷 Vino selezionato per votazione!', 
-        description: 'I partecipanti possono ora votare questo vino.'
-      });
-    },
-    onError: () => {
-      toast({ title: 'Errore nella selezione del vino', variant: 'destructive' });
-    },
-  });
-
-  const nextWineMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      const response = await apiRequest('POST', `/api/events/${eventId}/next-wine`, {});
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '➡️ Passato al vino successivo!', 
-        description: 'Votazione per il vino precedente completata.'
-      });
-    },
-    onError: () => {
-      toast({ title: 'Errore nel passaggio al vino successivo', variant: 'destructive' });
-    },
-  });
-
-  const stopVotingMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      const response = await apiRequest('PATCH', `/api/events/${eventId}/current-wine`, { wineId: null });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '⏹️ Votazione interrotta!', 
-        description: 'Nessun vino è attualmente in votazione.'
-      });
-    },
-    onError: () => {
-      toast({ title: 'Errore nell\'interruzione della votazione', variant: 'destructive' });
-    },
-  });
-
-  // Event completion mutations
-  const completeEventMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      if (!currentUser) {
-        throw new Error('User not found');
-      }
-      const response = await apiRequest('POST', `/api/events/${eventId}/complete`, {
-        userId: currentUser.id
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '🎉 Evento completato!', 
-        description: 'Il report finale è stato generato con successo.'
-      });
-    },
-    onError: (error: any) => {
-      const message = error?.message || 'Errore nel completamento dell\'evento';
-      toast({ title: message, variant: 'destructive' });
-    },
-  });
-
-  const viewReportMutation = useMutation({
-    mutationFn: async (eventId: number) => {
-      const response = await apiRequest('GET', `/api/events/${eventId}/report`);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setReportData(data);
-      setShowReportModal(true);
-    },
-    onError: () => {
-      toast({ title: 'Errore nel recupero del report', variant: 'destructive' });
-    },
-  });
-
-  // Session management mutations
-  const loginMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      // Get unique session setting from localStorage (default: false)
-      const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') === 'true';
-      
-      const response = await fetch(`/api/users/${userId}/login`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Unique-Session-Enabled': uniqueSessionEnabled.toString()
-        },
-        body: JSON.stringify({}),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const text = await response.text();
-        const error = new Error(`${response.status}: ${text}`);
-        (error as any).status = response.status;
-        throw error;
-      }
-      
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setCurrentUser(data.user);
-      setSessionId(data.sessionId);
-      setSessionError(null);
-      setCurrentScreen('events');
-      
-      // FORZA REFRESH CACHE WINES QUANDO CAMBIA UTENTE
-      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
-      
-      toast({ title: 'Accesso effettuato con successo!' });
-    },
-    onError: (error: any) => {
-      if (error.status === 409) {
-        setSessionError("Utente già connesso da un altro dispositivo. Disconnetti prima di continuare.");
-      } else {
-        setSessionError("Errore durante l'accesso. Riprova.");
-      }
-      toast({ title: 'Errore accesso', variant: 'destructive' });
-    },
-  });
-
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      if (currentUser) {
-        const response = await apiRequest('POST', `/api/users/${currentUser.id}/logout`, {});
-        return response.json();
-      }
-    },
-    onSuccess: () => {
-      setCurrentUser(null);
-      setSessionId(null);
-      setSessionError(null);
-      setCurrentScreen('home');
-      toast({ title: 'Disconnesso con successo!' });
-    },
-  });
-
-  // Heartbeat to keep session alive
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (currentUser && sessionId) {
-      interval = setInterval(async () => {
-        try {
-          const response = await apiRequest('POST', `/api/users/${currentUser.id}/heartbeat`, {
-            sessionId: sessionId
-          });
-          
-          if (!response.ok) {
-            // Session expired or invalid
-            setCurrentUser(null);
-            setSessionId(null);
-            setCurrentScreen('home');
-            toast({ title: 'Sessione scaduta. Ricollegati.', variant: 'destructive' });
-          }
-        } catch (error) {
-          // Heartbeat failed silently
-        }
-      }, 60000); // Every minute
-    }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [currentUser, sessionId, toast]);
-
-  // Event handlers
-  const handleUserSelect = (user: User) => {
-    setSessionError(null);
-    loginMutation.mutate(user.id);
-  };
+  // Event handlers - handleUserSelect now provided by useSession hook
 
   const handleAddUser = (name: string, isAdmin: boolean) => {
-    createUserMutation.mutate({ name, isAdmin });
+    userHandlers.addUser({ createUserMutation }, name, isAdmin);
   };
 
   // Admin PIN protection functions
@@ -436,28 +218,67 @@ function App() {
   };
 
   const handleShowHistoricEvents = () => {
-    setCurrentScreen('historicEvents');
+    uiHandlers.showHistoricEvents({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleShowPagella = (eventId: number) => {
-    setSelectedEventId(eventId);
-    setCurrentScreen('pagella');
+    eventHandlers.showPagella({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
   };
 
   const handleShowAddUserModal = () => {
-    setShowAddUserModal(true);
+    uiHandlers.showAddUserModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleShowCreateEventModal = () => {
-    setShowCreateEventModal(true);
+    uiHandlers.showCreateEventModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleShowAdminEvents = () => {
-    setCurrentScreen('adminEvents');
+    uiHandlers.showAdminEvents({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleShowChangeAdminPin = () => {
-    setShowChangeAdminPinModal(true);
+    uiHandlers.showChangeAdminPin({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleChangeAdminPin = (newPin: string) => {
@@ -567,19 +388,30 @@ function App() {
   };
 
   const handleShowEventDetails = (eventId: number) => {
-    setSelectedEventId(eventId);
-    setCurrentScreen('eventDetails');
+    eventHandlers.showEventDetails({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
   };
 
   const handleShowEventResults = (eventId: number) => {
-    setSelectedEventId(eventId);
-    setCurrentScreen('eventResults');
+    eventHandlers.showEventResults({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
   };
 
   const handleShowWineRegistration = (eventId: number) => {
-    setEditingWine(null); // Reset editing wine for new registration
-    setSelectedEventId(eventId);
-    setShowWineRegistrationModal(true);
+    eventHandlers.showWineRegistration({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
   };
 
   const handleEditWine = (eventId: number) => {
@@ -660,13 +492,23 @@ function App() {
   };
 
   const handleShowResults = (eventId: number) => {
-    setSelectedEventId(eventId);
-    setCurrentScreen('eventResults');
+    eventHandlers.showResults({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
   };
 
   const handleShowEditUserModal = (user: User) => {
-    setEditingUser(user);
-    setShowEditUserModal(true);
+    uiHandlers.showEditUserModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    }, user);
   };
 
   const handleUpdateUser = (id: number, name: string, isAdmin: boolean) => {
@@ -684,132 +526,8 @@ function App() {
   // Get current event
   const currentEvent = selectedEventId ? events.find((e: WineEvent) => e.id === selectedEventId) || null : null;
 
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 'auth':
-        return (
-          <AuthScreen
-            onLogin={onLogin}
-            onRegister={onRegister}
-            onGoBack={() => setCurrentScreen('auth')}
-            onShowAdmin={handleShowAdmin}
-            isLoading={authLoading}
-            error={authError}
-          />
-        );
 
-      case 'admin':
-        return (
-          <AdminScreen
-            users={users}
-            onShowAddUserModal={handleShowAddUserModal}
-            onShowCreateEventModal={handleShowCreateEventModal}
-            onShowEventList={handleShowAdminEvents}
-            onShowEditUserModal={handleShowEditUserModal}
-            onDeleteUser={handleDeleteUser}
-            onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('events')}
-            onChangeAdminPin={handleShowChangeAdminPin}
-          />
-        );
-      case 'events':
-        return (
-          <EventListScreen
-            events={events as WineEvent[]}
-            users={users}
-            currentUser={currentUser}
-            wines={wines}
-            votes={votes}
-            onShowEventDetails={handleShowEventDetails}
-            onShowEventResults={handleShowEventResults}
-            onShowAdmin={handleShowAdmin}
-
-            onRegisterWine={handleShowWineRegistration}
-            onParticipateEvent={handleParticipateEvent}
-            onVoteForWine={handleVoteForWine}
-            onEditWine={handleEditWine}
-            onShowHistoricEvents={handleShowHistoricEvents}
-          />
-        );
-      case 'adminEvents':
-        return (
-          <AdminEventManagementScreen
-            events={events as WineEvent[]}
-            users={users}
-            wines={wines}
-            onGoBack={() => setCurrentScreen('admin')}
-            onEditEvent={handleEditEvent}
-            onDeleteEvent={handleDeleteEvent}
-            onActivateVoting={handleActivateVoting}
-            onDeactivateVoting={handleDeactivateVoting}
-            onCompleteEvent={handleCompleteEvent}
-            onViewReport={handleViewReport}
-            onGoHome={() => setCurrentScreen('events')}
-            onGoBackToAdmin={() => setCurrentScreen('admin')}
-          />
-        );
-      case 'voting':
-        return currentEvent && currentUser ? (
-          <SimpleVotingScreen
-            event={currentEvent}
-            currentUser={currentUser}
-            onBack={() => setCurrentScreen('events')}
-            onHome={() => setCurrentScreen('events')}
-            onShowAdmin={() => setCurrentScreen('admin')}
-          />
-        ) : null;
-      case 'eventDetails':
-        return (
-          <EventDetailsScreen
-            event={currentEvent}
-            wines={wines}
-            votes={votes}
-            users={users}
-            currentUser={currentUser}
-            onShowWineRegistrationModal={() => setShowWineRegistrationModal(true)}
-            onVoteForWine={handleVoteForWine}
-            onCompleteEvent={handleCompleteEvent}
-            onShowResults={handleShowResults}
-            onParticipateEvent={handleParticipateEvent}
-            onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('events')}
-          />
-        );
-      case 'eventResults':
-        return (
-          <EventResultsScreen
-            event={currentEvent}
-            results={results}
-            onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('events')}
-          />
-        );
-      case 'historicEvents':
-        return (
-          <HistoricEventsScreen
-            events={events as WineEvent[]}
-            users={users}
-            onShowEventResults={handleShowEventResults}
-            onShowPagella={handleShowPagella}
-            onGoBack={() => setCurrentScreen('events')}
-            onGoHome={() => setCurrentScreen('events')}
-          />
-        );
-      case 'pagella':
-        return (
-          <PagellaScreen
-            event={currentEvent}
-            onGoBack={() => setCurrentScreen('historicEvents')}
-            onGoHome={() => setCurrentScreen('events')}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  if (usersLoading || eventsLoading) {
+  if (isLoadingState(usersLoading, eventsLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="glass-effect rounded-2xl shadow-2xl p-8 text-center">
@@ -826,8 +544,46 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      {renderScreen()}
+    <AppShell>
+      <ScreenRouter
+        currentScreen={currentScreen}
+        currentUser={currentUser}
+        currentEvent={currentEvent}
+        users={users}
+        events={events}
+        wines={wines}
+        votes={votes}
+        results={results}
+        authLoading={authLoading}
+        authError={authError}
+        onLogin={onLogin}
+        onRegister={onRegister}
+        setCurrentScreen={setCurrentScreen}
+        handleShowAdmin={handleShowAdmin}
+        handleShowHistoricEvents={handleShowHistoricEvents}
+        handleShowEventDetails={handleShowEventDetails}
+        handleShowEventResults={handleShowEventResults}
+        handleShowWineRegistration={handleShowWineRegistration}
+        handleShowResults={handleShowResults}
+        handleShowPagella={handleShowPagella}
+        handleShowAddUserModal={handleShowAddUserModal}
+        handleShowCreateEventModal={handleShowCreateEventModal}
+        handleShowAdminEvents={handleShowAdminEvents}
+        handleShowChangeAdminPin={handleShowChangeAdminPin}
+        handleShowEditUserModal={handleShowEditUserModal}
+        handleParticipateEvent={handleParticipateEvent}
+        handleVoteForWine={handleVoteForWine}
+        handleEditWine={handleEditWine}
+        handleEditEvent={handleEditEvent}
+        handleDeleteEvent={handleDeleteEvent}
+        handleActivateVoting={handleActivateVoting}
+        handleDeactivateVoting={handleDeactivateVoting}
+        handleCompleteEvent={handleCompleteEvent}
+        handleViewReport={handleViewReport}
+        handleUpdateUser={handleUpdateUser}
+        handleDeleteUser={handleDeleteUser}
+        setShowWineRegistrationModal={setShowWineRegistrationModal}
+      />
       
       {/* Modals */}
       <AddUserModal
@@ -898,7 +654,7 @@ function App() {
       {currentScreen === 'home' && !currentUser && <InstallPrompt />}
 
 
-    </div>
+    </AppShell>
   );
 }
 

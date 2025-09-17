@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Delete } from 'lucide-react';
+import { X, Delete } from '@/components/icons';
 
 interface AdminPinModalProps {
   isOpen: boolean;

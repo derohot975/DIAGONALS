@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X } from '@/components/icons';
 import { useState, useEffect } from 'react';
 import { WineEvent } from '@shared/schema';
 

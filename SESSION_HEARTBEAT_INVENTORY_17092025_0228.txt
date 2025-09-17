@@ -1,0 +1,207 @@
+================================================================================
+                    SESSION & HEARTBEAT INVENTORY - PROGETTO DIAGONALE
+================================================================================
+Data Analisi: 17/09/2025 - 02:28
+Operatore: Cascade AI Assistant
+Tipo Intervento: Analisi SOLA-LETTURA per mappatura session/heartbeat (Step 6-pre/🔁)
+
+================================================================================
+1) RIASSUNTO ESECUTIVO
+================================================================================
+
+VARIABILI SESSION/HEARTBEAT TROVATE:
+• 3 variabili session principali (sessionId, sessionError, uniqueSessionEnabled)
+• 1 timer heartbeat (setInterval 60 secondi)
+• 24 punti di lettura session-related
+• 8 punti di scrittura session state
+• 13 invalidateQueries correlate a session/heartbeat
+
+RISCHI PRINCIPALI IDENTIFICATI:
+⚠️  DOPPI TIMER: Nessun controllo per evitare multiple istanze heartbeat
+⚠️  RACE CONDITION: setState multipli in sequenza nel heartbeat failure (righe 385-387)
+⚠️  INVALIDATE RIDONDANTI: 13 chiamate invalidateQueries, alcune potenzialmente duplicate
+⚠️  CLEANUP TIMING: clearInterval solo su unmount, non su logout/session change
+
+================================================================================
+2) TABELLE INVENTARIO
+================================================================================
+
+2.1) SESSION VARIABLES
+| Nome                    | Tipo           | Inizializzatore | File:Riga | Uso        | Note                           |
+|------------------------|----------------|-----------------|-----------|------------|--------------------------------|
+| sessionId              | string \| null | null            | App:42    | L/S/Dep    | Stato principale sessione      |
+| sessionError           | string \| null | null            | App:51    | L/S        | Errori UI sessione             |
+| uniqueSessionEnabled   | boolean        | localStorage    | App:314   | L          | Setting da localStorage        |
+| currentUser            | User \| null   | null            | App:41    | L/S/Dep    | Correlato a session (auth)     |
+
+2.2) HEARTBEAT TIMERS
+| Nome/Timer | Tipo     | Start/Stop trigger      | Cleanup        | File:Riga | Side-effects                    | Note                    |
+|------------|----------|-------------------------|----------------|-----------|--------------------------------|-------------------------|
+| interval   | Timeout  | currentUser && sessionId| clearInterval  | App:374   | API call, setState, toast      | Ogni 60 secondi         |
+|            |          | mount/dependency change | on unmount     | App:397   | invalidateQueries (indiretto)  | Nessun pause/resume     |
+
+================================================================================
+3) PUNTI DI INTEGRAZIONE
+================================================================================
+
+EFFECTS LEGATI:
+• useEffect reset iniziale (App:45-49)
+  - Dipendenze: [] (mount only)
+  - Scritture: setCurrentUser(null), setCurrentScreen('auth'), setSessionId(null)
+  
+• useEffect user validation (App:120-137)
+  - Dipendenze: [users, currentUser, setCurrentUser, setSessionId, toast]
+  - Letture: currentUser, users
+  - Scritture: setCurrentUser(null), setSessionId(null), setCurrentScreen('auth')
+  
+• useEffect heartbeat (App:373-399)
+  - Dipendenze: [currentUser, sessionId, toast]
+  - Timer: setInterval 60000ms
+  - API: POST /api/users/{id}/heartbeat
+  - Scritture su failure: setCurrentUser(null), setSessionId(null), setCurrentScreen('home')
+
+QUERY/MUTATIONS CORRELATE:
+• loginMutation (App:311-354)
+  - Trigger: handleUserSelect -> loginMutation.mutate
+  - API: POST /api/users/{id}/login
+  - onSuccess: setCurrentUser, setSessionId, setSessionError(null), invalidateQueries(['/api/wines'])
+  - onError: setSessionError con messaggio specifico
+  
+• logoutMutation (App:356-370)
+  - Trigger: handleLogout (non usato direttamente)
+  - API: POST /api/users/{id}/logout
+  - onSuccess: setCurrentUser(null), setSessionId(null), setSessionError(null)
+
+INVALIDATE QUERIES LEGATE A SESSION:
+1. App:96  - ['/api/users'] dopo onLogin success
+2. App:105 - ['/api/users'] dopo onRegister success  
+3. App:342 - ['/api/wines'] dopo login success (FORZA REFRESH CACHE)
+
+EVENT HANDLERS CHE MUTANO SESSION:
+• handleUserSelect (App:402-405)
+  - Trigger: user selection da UI
+  - Azioni: setSessionError(null), loginMutation.mutate(user.id)
+  
+• handleLogout (App:80-87)
+  - Trigger: logout button (non collegato direttamente)
+  - Azioni: setCurrentUser(null), setCurrentScreen('auth'), setSessionId(null)
+
+COMPONENTI CHE RICEVONO PROPS DA SESSION:
+• AuthScreen: riceve onLogin, onRegister, error (authError, non sessionError)
+• Tutti gli screen: ricevono currentUser come prop
+• Nessun componente riceve direttamente sessionId o sessionError
+
+================================================================================
+4) TIMELINE DI MOUNT (DEV)
+================================================================================
+
+ORDINE ESECUZIONE SINTETICO:
+0ms    - Component mount, useState inizializzazione
+0ms    - useEffect reset (dipendenze []) -> setState immediati
+0-5ms  - Render iniziale con stati resettati
+5-10ms - useQuery per users/events (staleTime/cache)
+10ms   - useEffect user validation (se users caricati)
+15ms   - useEffect heartbeat (se currentUser && sessionId presenti)
+60000ms- Primo heartbeat ping (se sessione attiva)
+
+POSSIBILI RITARDI:
+• Nessun setTimeout artificiale nel mount
+• Query cache può ridurre latenza (staleTime: 5min users, 2min wines)
+• Heartbeat non introduce ritardo al mount (parte solo se già autenticato)
+
+CONDIZIONI CHE POSTICIPANO RENDER UTILE:
+• usersLoading || eventsLoading -> loading screen
+• showSplash (3 secondi) -> splash screen
+• currentScreen === 'auth' && !currentUser -> auth screen
+
+================================================================================
+5) CRITERI DI SUCCESSO - CHECKLIST
+================================================================================
+
+NESSUN CAMBIO FIRME/PROPS NECESSARIO:
+✅ currentUser: già passato come prop a tutti gli screen
+✅ sessionId: non passato come prop (uso interno)
+✅ sessionError: non passato come prop (uso interno)
+✅ handleUserSelect: firma stabile (user: User) => void
+
+STESSI SIDE-EFFECTS PRESERVABILI:
+✅ API calls: POST /login, /logout, /heartbeat mantenibili
+✅ setState sequence: ordine preservabile in hook
+✅ invalidateQueries: chiavi e timing mantenibili
+✅ Toast notifications: messaggi e timing identici
+
+NESSUN RITARDO AGGIUNTIVO AL MOUNT:
+✅ Hook può essere chiamato nello stesso punto di useEffect attuale
+✅ Dipendenze identiche: [currentUser, sessionId, toast]
+✅ Timer logic identica: setInterval/clearInterval
+
+DIPENDENZE E IMPORT STABILI:
+✅ apiRequest: già importato, riutilizzabile
+✅ useToast: già importato, riutilizzabile  
+✅ useQueryClient: già importato, riutilizzabile
+✅ Nessun ciclo di dipendenza previsto
+
+================================================================================
+6) APPENDICE - OCCORRENZE DETTAGLIATE
+================================================================================
+
+SESSION READS (24 occorrenze):
+App:42   - const [sessionId, setSessionId] = useState<string | null>(null);
+App:48   - setSessionId(null); [WRITE in reset effect]
+App:51   - const [sessionError, setSessionError] = useState<string | null>(null);
+App:85   - setSessionId(null); [WRITE in handleLogout]
+App:128  - setSessionId(null); [WRITE in user validation]
+App:137  - }, [users, currentUser, setCurrentUser, setSessionId, toast]); [DEPENDENCY]
+App:314  - const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') === 'true';
+App:320  - 'X-Unique-Session-Enabled': uniqueSessionEnabled.toString()
+App:337  - setSessionId(data.sessionId); [WRITE in login success]
+App:338  - setSessionError(null); [WRITE in login success]
+App:348  - setSessionError("Utente già connesso..."); [WRITE in login error]
+App:350  - setSessionError("Errore durante l'accesso..."); [WRITE in login error]
+App:365  - setSessionId(null); [WRITE in logout success]
+App:366  - setSessionError(null); [WRITE in logout success]
+App:376  - if (currentUser && sessionId) { [READ in heartbeat condition]
+App:380  - sessionId: sessionId [READ in heartbeat API call]
+App:386  - setSessionId(null); [WRITE in heartbeat failure]
+App:399  - }, [currentUser, sessionId, toast]); [DEPENDENCY]
+App:403  - setSessionError(null); [WRITE in handleUserSelect]
+
+HEARTBEAT READS/WRITES (3 occorrenze):
+App:372  - // Heartbeat to keep session alive [COMMENT]
+App:379  - const response = await apiRequest('POST', `/api/users/${currentUser.id}/heartbeat`, {
+App:391  - // Heartbeat failed silently [COMMENT]
+
+TIMER OPERATIONS (2 occorrenze):
+App:377  - interval = setInterval(async () => {
+App:397  - if (interval) clearInterval(interval);
+
+INVALIDATE QUERIES CORRELATE (13 occorrenze):
+App:96   - queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+App:105  - queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+App:175  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:177  - queryClient.invalidateQueries({ queryKey: ['/api/events/' + selectedEventId + '/results'] });
+App:192  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:209  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:227  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:244  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:261  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:284  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:342  - queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
+App:631  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+App:650  - queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+
+TODO PER CHIARIMENTI FUTURI:
+• Verificare se uniqueSessionEnabled dovrebbe essere reattivo (attualmente read-only da localStorage)
+• Valutare se il heartbeat dovrebbe pausare su tab non attiva (Page Visibility API)
+• Considerare debounce per setState multipli in heartbeat failure
+• Analizzare se alcune invalidateQueries sono ridondanti
+
+================================================================================
+FINE INVENTARIO - STEP 6-PRE COMPLETATO
+================================================================================
+
+PROSSIMO STEP: Estrazione hook useSession con:
+- sessionId, sessionError state management
+- loginMutation, logoutMutation
+- heartbeat timer con cleanup
+- Preservazione completa side-effects e timing

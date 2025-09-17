@@ -70,12 +70,44 @@ app.use((req, res, next) => {
   
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
+    // Check if headers have already been sent to avoid double response
+    if (res.headersSent) {
+      console.error('Error occurred after headers sent:', {
+        url: req.url,
+        method: req.method,
+        status,
+        message: process.env.NODE_ENV === 'development' ? err.stack : message
+      });
+      return;
+    }
+
+    // Send standardized error response
+    const errorResponse: any = {
+      ok: false,
+      error: {
+        code: status,
+        message: message
+      }
+    };
+
+    // In development, include stack trace for debugging
+    if (process.env.NODE_ENV === 'development') {
+      errorResponse.error.stack = err.stack;
+    }
+
+    res.status(status).json(errorResponse);
+
+    // Log error safely without crashing the process
+    console.error('Server error:', {
+      url: req.url,
+      method: req.method,
+      status,
+      message: process.env.NODE_ENV === 'development' ? err.stack : message
+    });
   });
 
   // importantly only setup vite in development and after
@@ -88,10 +120,9 @@ app.use((req, res, next) => {
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 10000 for Render deployment.
+  // Fallback to 3000 for consistent development/production behavior.
   // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '10000', 10);
+  const port = parseInt(process.env.PORT || '3000', 10);
   server.listen(port, '0.0.0.0', () => {
     log(`Server running on port ${port}`);
     log(`Environment: ${process.env.NODE_ENV || 'development'}`);

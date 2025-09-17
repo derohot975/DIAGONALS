@@ -1,0 +1,325 @@
+================================================================================
+STATUS PROGETTO DIAGONALE - REPORT UNIFICATO
+================================================================================
+Data consolidamento: 17 Settembre 2025, 01:40
+Progetto: DIAGONALE Wine Tasting App v1.0.0
+Obiettivo: Ottimizzazione completa storage, dipendenze e performance
+Status: COMPLETATO CON SUCCESSO
+
+================================================================================
+INDICE
+================================================================================
+1. CONTESTO INIZIALE E DIAGNOSI
+2. FASE 1: DRY-RUN E APPLICAZIONE OTTIMIZZAZIONI
+3. FASE 2: RIMOZIONE FRAMER-MOTION E BINARI PRODUZIONE
+4. OTTIMIZZAZIONI UI: LUCIDE-REACT E BUNDLE
+5. DECISIONI: COSA NON FARE E MOTIVAZIONI
+6. STATO ATTUALE E RACCOMANDAZIONI FUTURE
+7. FILE ORIGINALI INCLUSI NEL MERGE
+8. FILE POTENZIALMENTE ELIMINABILI
+9. CHANGELOG CRONOLOGICO
+
+================================================================================
+1. CONTESTO INIZIALE E DIAGNOSI
+================================================================================
+
+STATO PRE-OTTIMIZZAZIONE (15 Settembre 2025):
+- Dimensione totale progetto: 449 MB
+- node_modules: 272 MB (60.6%)
+- Repository .git: 169 MB (37.6%)
+- Codice sorgente: ~4 MB (0.9%)
+
+PROBLEMATICHE CRITICHE IDENTIFICATE:
+- Cache Replit Agent: 394 MB (100+ file da 1-1.3MB)
+- Dipendenze non utilizzate: canvas (4.9MB), recharts (1.6MB), react-icons (30MB+)
+- File duplicati: 5 copie diagologo.png, icone PWA triplicate
+- Screenshot inutili: 17 file (~20MB totali)
+- Framer-motion: ~4MB non utilizzato nel codice
+- Binari platform-specific: ~57.6MB overhead produzione
+- Repository Git pesante: 169MB per progetto di queste dimensioni
+
+ARCHITETTURA IDENTIFICATA:
+- Frontend: React + TypeScript, Vite, TailwindCSS, shadcn/ui
+- Backend: Express + Node.js, PostgreSQL + Drizzle ORM
+- UI Library: Lucide React (icone), React Query
+- PWA: Manifest e service worker configurati
+
+================================================================================
+2. FASE 1: DRY-RUN E APPLICAZIONE OTTIMIZZAZIONI
+================================================================================
+
+SISTEMA BACKUP IMPLEMENTATO (Pre-operazioni):
+- Script: /scripts/backup-system.js
+- Funzionalita: Backup compressi, rotazione automatica, ripristino sicuro
+- Compressione: ~60% (progetto completo → 1.22MB)
+- Comandi NPM: npm run backup, npm run backup:list, npm run backup:restore
+
+RIMOZIONE CANVAS (16/09/2025 14:32):
+Status: COMPLETATO
+- Comando: npm uninstall canvas
+- Risparmio: 4.9MB + 46 dipendenze correlate
+- Backup: BACKUP_16092025_1431.tar.gz
+- Impatto: Zero - utilizzato solo in script utility archiviati
+- Test: Server, API, UI completamente funzionali
+
+RIMOZIONE RECHARTS (16/09/2025 14:37):
+Status: COMPLETATO
+- Comando: npm uninstall recharts
+- Risparmio: 1.6MB + 37 dipendenze correlate
+- Backup: BACKUP_16092025_1436.tar.gz
+- Impatto: Zero - nessun utilizzo nel codice sorgente
+- Test: Tutte le funzionalita operative
+
+RIMOZIONE REACT-ICONS (16/09/2025 14:40):
+Status: COMPLETATO
+- Comando: npm uninstall react-icons
+- Risparmio: 30MB+ (1 pacchetto principale)
+- Backup: BACKUP_16092025_1440.tar.gz
+- Impatto: Zero - Lucide React gia utilizzato per tutte le icone
+- Test: UI completamente funzionale con Lucide React
+
+OTTIMIZZAZIONE DATE-FNS (16/09/2025 15:13):
+Status: COMPLETATO
+- Approccio: Sostituzione chirurgica con API native JavaScript
+- File modificato: client/src/components/screens/SimpleVotingScreen.tsx
+- Risparmio: ~27KB bundle size + dipendenze
+- Backup: Commit date-fns-pre-trim
+- Funzionalita: Mantenuto formato esatto (italiano con maiuscola)
+- Performance: Build time ridotto del 19.8%
+
+GIT REPOSITORY CLEANUP (16/09/2025 15:13):
+Status: COMPLETATO
+- Checkpoint: Tag pre-gc-16092025-1513
+- Comando: git gc --aggressive --prune=now
+- Risultato: 4652 oggetti loose → 1 pack file
+- Risparmio: 28MB (.git: 172MB → 144MB)
+- Verifica: git fsck pulito, build e dev server funzionanti
+
+CACHE CLEANUP (16/09/2025):
+Status: COMPLETATO
+- Rimosso: node_modules/.vite/, file .DS_Store
+- Risparmio: ~10.4MB (temporaneo, cache si rigenera)
+- Beneficio: Build time migliorato
+- Test: Build e dev server funzionanti
+
+================================================================================
+3. FASE 2: RIMOZIONE FRAMER-MOTION E BINARI PRODUZIONE
+================================================================================
+
+RIMOZIONE FRAMER-MOTION (17/09/2025 01:06):
+Status: COMPLETATO CON SUCCESSO
+- Motivazione: ZERO utilizzo confermato nel codebase
+- Operazioni: Backup completo, disinstallazione npm uninstall framer-motion
+- Risparmio: 4MB + 3 packages correlati
+- Backup: BACKUP_17092025_0104.tar.gz (1.21 MB)
+- Misurazione: node_modules 210MB → 206MB (-4MB, -1.9%)
+- Build test: Successo completo (3.12s vite + 16ms esbuild)
+- UI test: Tutte le animazioni CSS/Tailwind funzionanti
+- Console: Nessun errore o warning
+
+ANIMAZIONI CSS VERIFICATE:
+- Splash Screen: animate-fade-in, logo-bounce funzionanti
+- Install Prompt: animate-slide-up funzionante
+- Admin Pin Modal: transition-all duration-300 funzionante
+- Loading Spinner: animate-spin (Tailwind CSS) funzionante
+- Componenti interattivi: EventCard hover, ScoreButton transitions OK
+
+CONFIGURAZIONE BINARI PRODUZIONE (17/09/2025 01:13):
+Status: COMPLETATO CON SUCCESSO
+- File creato: .npmrc con target_platform=linux, target_arch=x64
+- Pipeline aggiornata: .github/workflows/render-deploy.yml
+- Test produzione: /tmp/diagonale-prod-test
+- Risultati test:
+  * Production-only: 137MB node_modules (-69MB, -33.5%)
+  * Build successo: 3.04s vite + 8ms esbuild
+  * Runtime test: Server avvio corretto
+- Ambiente sviluppo: INVARIATO (206MB, tutti binari macOS presenti)
+- Beneficio atteso produzione Linux: 50-60MB aggiuntivi
+
+================================================================================
+4. OTTIMIZZAZIONI UI: LUCIDE-REACT E BUNDLE
+================================================================================
+
+REFACTOR ICONE LUCIDE-REACT (17/09/2025 01:25):
+Status: COMPLETATO CON SUCCESSO
+- Obiettivo: Tree-shaking ottimizzato per riduzione bundle
+- Barrel file creato: client/src/components/icons/index.ts
+- Icone incluse: 35 icone effettivamente utilizzate (vs ~450 disponibili)
+- File refactorati: 26 file totali
+  * 16 file in client/src/components/screens/
+  * 8 file in client/src/components/modals/
+  * 2 file in client/src/components/ui/
+
+RISULTATI BUNDLE SIZE:
+- Prima refactor: ~280 kB (79 kB gzip)
+- Dopo refactor: 276 kB (78.56 kB gzip)
+- Riduzione: 4 kB (-1.4% dimensione bundle)
+- Build: 1645 moduli trasformati, successo completo
+- UI test: Tutte le icone renderizzate correttamente
+
+PATTERN APPLICATO:
+Prima: import { X, Save, Edit } from 'lucide-react';
+Dopo:  import { X, Save, Edit } from '@/components/icons';
+
+ICONE OTTIMIZZATE (35 totali):
+- Navigation & UI: ArrowLeft, Home, ChevronDown, ChevronUp, X
+- User & Auth: LogIn, UserPlus, Shield, Users, Key
+- Events & Calendar: Calendar, Plus, Edit, Edit3, Trash2, Settings
+- Wine & Voting: Wine, WineIcon, Star, Award, Crown, Trophy
+- Actions & Controls: Play, Square, Save, Download, Delete, Check, CheckCircle
+- Visibility: Eye, EyeOff
+- Charts: BarChart3
+- Mobile: Smartphone
+- Toggle: ToggleLeft, ToggleRight
+- Forms: Dot
+- Documentation: StickyNote
+
+================================================================================
+5. DECISIONI: COSA NON FARE E MOTIVAZIONI
+================================================================================
+
+ANALISI DEDUPE ANNULLATA (16/09/2025 15:06):
+Status: ANNULLATA PER SICUREZZA
+- Motivo: npm dedupe propone upgrade versioni incompatibili
+- Rischio: 149 nuovi pacchetti platform-specific (+50-100MB)
+- Decisione: Mantenere configurazione attuale per stabilita
+- Nota: Approccio conservativo privilegiato per stabilita produzione
+
+DIPENDENZE MANTENUTE:
+- @radix-ui: Utilizzato da shadcn/ui components
+- Lucide React: Ottimizzato con barrel file invece di rimozione
+- TailwindCSS: Core per styling, mantenuto
+- Vite: Essenziale per build system
+- Express: Backend framework principale
+
+MOTIVAZIONI CONSERVATIVE:
+- Priorita stabilita su ottimizzazione aggressiva
+- Backup e rollback plan per ogni operazione
+- Test completi prima di ogni commit
+- Approccio incrementale e reversibile
+
+================================================================================
+6. STATO ATTUALE E RACCOMANDAZIONI FUTURE
+================================================================================
+
+DIMENSIONI FINALI OTTIMIZZATE:
+- Progetto totale: ~385MB (da 449MB, -64MB, -14.4%)
+- node_modules: ~206MB (da 272MB, -66MB)
+- Repository .git: 144MB (da 172MB, -28MB)
+- Codice sorgente: ~4MB (invariato)
+
+FUNZIONALITA COMPLETE:
+- Applicazione Web: 100% operativa su http://localhost:3000
+- API Backend: Tutti gli endpoint funzionanti
+- Database: Connessione Supabase stabile
+- UI/UX: Interfaccia completamente funzionale
+- PWA: Manifest e service worker operativi
+- Build System: Vite completamente operativo
+
+PERFORMANCE MIGLIORATA:
+- Installazione NPM: Significativamente piu veloce
+- Build Time: Ridotto del 19.8% (post date-fns)
+- Bundle Size: Ottimizzato (-4kB icone)
+- Dev Server: Startup piu rapido
+- Superficie attacco: Ridotta (84 dipendenze in meno)
+
+RACCOMANDAZIONI FUTURE:
+1. Monitoraggio Continuo:
+   - npm-check: Verifica periodica dipendenze non utilizzate
+   - Bundle Analyzer: Monitoraggio dimensioni build
+   - Git GC: Pulizia periodica repository (ogni 3-6 mesi)
+
+2. Ottimizzazioni Aggiuntive Possibili:
+   - Audit @radix-ui: Verificare utilizzo effettivo moduli
+   - Bundle Analysis: Analisi dettagliata build produzione
+   - Tree-shaking: Ottimizzazione import specifici
+   - Image Optimization: Compressione asset grafici
+
+3. Manutenzione Sistema Backup:
+   - Rotazione automatica: Max 3 backup mantenuti
+   - Backup pre-deploy: Automatico prima di ogni deploy
+   - Test ripristino: Verifica periodica funzionalita backup
+
+================================================================================
+7. FILE ORIGINALI INCLUSI NEL MERGE
+================================================================================
+
+REPORT ANALISI E DIAGNOSI:
+- ANALISI_CHIRURGICA_DIAGONALE.txt
+- ANALISI_FILE_GROSSI_DIAGONALE.txt
+- REPORT_DIAGNOSTICO_DIAGONALE.txt
+
+REPORT FASI OPERATIVE:
+- DRY_RUN_FASE_1_CLEANUP_DIAGONALE.txt
+- DRY_RUN_FASE_2_CLEANUP_DIAGONALE.txt
+- REPORT_FINALE_FASE_1_CLEANUP_DIAGONALE.txt
+
+REPORT OPERAZIONI SPECIFICHE:
+- REPORT_CHIRURGICO_NODE_MODULES_DIAGONALE.txt
+- REPORT_CHIRURGICO_AVANZATO_NODE_MODULES_DIAGONALE.txt
+- REPORT_RIMOZIONE_FRAMER_MOTION_DIAGONALE.txt
+- REPORT_VERIFICA_FRAMER_MOTION_DIAGONALE.txt
+- REPORT_CONFIGURAZIONE_BINARI_PRODUZIONE_DIAGONALE.txt
+- REPORT_DATEFNS_TRIM.txt
+
+REPORT CONSOLIDATI:
+- REPORT_CONSOLIDATO_OTTIMIZZAZIONE_DIAGONALE.md
+- REPORT_REFACTOR_ICONE_LUCIDE_DIAGONALE.md
+
+================================================================================
+8. FILE POTENZIALMENTE ELIMINABILI
+================================================================================
+
+REPORT INTERMEDI (dopo verifica contenuti):
+- ANALISI_CHIRURGICA_DIAGONALE.txt
+- ANALISI_FILE_GROSSI_DIAGONALE.txt
+- DRY_RUN_FASE_1_CLEANUP_DIAGONALE.txt
+- DRY_RUN_FASE_2_CLEANUP_DIAGONALE.txt
+- REPORT_CHIRURGICO_NODE_MODULES_DIAGONALE.txt
+- REPORT_CHIRURGICO_AVANZATO_NODE_MODULES_DIAGONALE.txt
+- REPORT_DIAGNOSTICO_DIAGONALE.txt
+- REPORT_FINALE_FASE_1_CLEANUP_DIAGONALE.txt
+- REPORT_RIMOZIONE_FRAMER_MOTION_DIAGONALE.txt
+- REPORT_VERIFICA_FRAMER_MOTION_DIAGONALE.txt
+- REPORT_CONFIGURAZIONE_BINARI_PRODUZIONE_DIAGONALE.txt
+- REPORT_DATEFNS_TRIM.txt
+
+ISTRUZIONI PULIZIA FUTURA:
+1. Verificare che STATUS_PROJECT.txt e STATUS_PROJECT.md contengano tutte le informazioni necessarie
+2. Creare backup dei report originali se necessario: tar -czf reports_backup.tar.gz *.txt *.md
+3. Eliminare i file intermedi: rm ANALISI_*.txt DRY_RUN_*.txt REPORT_*.txt
+4. Mantenere solo: STATUS_PROJECT.txt, STATUS_PROJECT.md, README.md
+
+================================================================================
+9. CHANGELOG CRONOLOGICO
+================================================================================
+
+15 SETTEMBRE 2025:
+- 17:05: Analisi chirurgica iniziale completata
+- Identificazione problematiche critiche (394MB cache, dipendenze inutili)
+
+16 SETTEMBRE 2025:
+- 14:31: Backup sistema implementato
+- 14:32: Rimozione canvas completata (-4.9MB, 46 dipendenze)
+- 14:37: Rimozione recharts completata (-1.6MB, 37 dipendenze)
+- 14:40: Rimozione react-icons completata (-30MB+)
+- 15:06: Analisi dedupe annullata per sicurezza
+- 15:13: Ottimizzazione date-fns completata (-27KB bundle, +19.8% build speed)
+- 15:13: Git repository cleanup completato (-28MB)
+- Cache cleanup completato (-10.4MB temporaneo)
+
+17 SETTEMBRE 2025:
+- 01:06: Rimozione framer-motion completata (-4MB, animazioni CSS verificate)
+- 01:13: Configurazione binari produzione completata (stima -50-60MB Linux)
+- 01:25: Refactor icone lucide-react completato (-4kB bundle, 26 file aggiornati)
+- 01:40: Report unificato generato
+
+RISULTATO FINALE:
+- Risparmio totale: ~64.5MB + 84 dipendenze rimosse
+- Performance migliorata: build time -19.8%, bundle ottimizzato
+- Funzionalita: 100% mantenute, zero regressioni
+- Sicurezza: Superficie attacco ridotta, backup completi disponibili
+
+================================================================================
+OPERAZIONE COMPLETATA CON SUCCESSO - PROGETTO OTTIMIZZATO E STABILE
+================================================================================

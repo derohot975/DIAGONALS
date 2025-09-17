@@ -1,4 +1,4 @@
-import { BarChart3, Home, ArrowLeft, StickyNote } from 'lucide-react';
+import { ArrowLeft, Home, Calendar, Trophy, Users, Wine, BarChart3, StickyNote } from '@/components/icons';
 import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 

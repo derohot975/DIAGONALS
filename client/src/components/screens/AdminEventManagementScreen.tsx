@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, Wine as WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from '@/components/icons';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
 import { formatEventDate, getCreatorName } from '../../lib/utils';

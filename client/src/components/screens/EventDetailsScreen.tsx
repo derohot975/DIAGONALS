@@ -1,4 +1,4 @@
-import { Plus, EyeOff, Star, Award, Eye, ArrowLeft, Home } from 'lucide-react';
+import { Plus, EyeOff, Star, Award, Eye, ArrowLeft, Home, Trash2, Save } from '@/components/icons';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
 import { formatPrice } from '../../lib/utils';
 import { VotingGrid } from '../optimized/VotingGrid';

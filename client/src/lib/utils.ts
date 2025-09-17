@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
 // Shared utility functions
 export const getCreatorName = (createdBy: number, users: Array<{id: number, name: string}>) => {
   const user = users.find(u => u.id === createdBy);
@@ -24,4 +31,8 @@ export const calculateProgress = (totalUsers: number, votedUsers: number) => {
 
 export const formatPrice = (price: number) => {
   return `€${price.toFixed(2)}`;
+};
+
+export const isLoadingState = (usersLoading: boolean, eventsLoading: boolean) => {
+  return usersLoading || eventsLoading;
 };

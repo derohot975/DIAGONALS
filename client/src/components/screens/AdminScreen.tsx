@@ -1,4 +1,4 @@
-import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight, Key } from 'lucide-react';
+import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Settings, Home, ToggleLeft, ToggleRight, Key } from '@/components/icons';
 // CACHE BREAKER v2.1
 import { User } from '@shared/schema';
 import { useState, useEffect, useMemo } from 'react';

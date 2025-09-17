@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home, ChevronUp, ChevronDown, Shield } from "lucide-react";
+import { ArrowLeft, Home, ChevronUp, ChevronDown, Shield } from "@/components/icons";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 import diagoLogo from "@assets/diagologo.png";
@@ -255,7 +255,7 @@ export default function SimpleVotingScreen({
             voteMutation.mutate({ wineId: selectedWineId, score });
           }
         }}
-        currentVote={selectedWineId ? getUserVoteForWine(selectedWineId)?.score : undefined}
+        currentVote={selectedWineId ? Number(getUserVoteForWine(selectedWineId)?.score) : undefined}
         wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
       />
 

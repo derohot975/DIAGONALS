@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogIn, UserPlus, Shield } from 'lucide-react';
+import { LogIn, UserPlus, Shield } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
 
 interface AuthScreenProps {

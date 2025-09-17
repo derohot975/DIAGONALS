@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, ArrowLeft, Save } from 'lucide-react';
+import { Home, ArrowLeft, Save } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
 

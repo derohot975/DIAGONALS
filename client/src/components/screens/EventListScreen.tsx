@@ -1,4 +1,4 @@
-import { Calendar, BarChart3, Shield, Edit3 } from 'lucide-react';
+import { Calendar, BarChart3, Shield, Edit3 } from '@/components/icons';
 import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 

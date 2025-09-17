@@ -1,4 +1,4 @@
-import { X, Trophy, Users, Wine, BarChart3, Star } from 'lucide-react';
+import { X, Trophy, Users, WineIcon as Wine, BarChart3, Star } from '@/components/icons';
 import { EventReportData } from '@shared/schema';
 import { formatEventDate } from '../../lib/utils';
 

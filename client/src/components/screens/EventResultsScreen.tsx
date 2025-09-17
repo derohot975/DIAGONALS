@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, Crown, Star, Users, ArrowLeft, Home, ChevronDown, ChevronUp } from 'lucide-react';
+import { Download, Crown, Star, Users, ArrowLeft, Home, ChevronDown, ChevronUp } from '@/components/icons';
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import { formatPrice } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
