@@ -42,7 +42,10 @@
     margin: 0;
     padding: 0;
     background: #300505;
-    overflow-x: hidden;
+    overflow: hidden; /* Blocco scroll globale */
+    position: fixed; /* Previene bounce */
+    width: 100%;
+    height: 100%;
     /* Prevenzione zoom e stabilizzazione mobile */
     touch-action: manipulation;
     -webkit-touch-callout: none;
@@ -58,7 +61,7 @@
     height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* Solo orizzontale nascosto */
+    overflow: hidden; /* Blocco scroll globale */
     /* Elimina spazi bianchi su mobile */
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -88,10 +91,9 @@
   .scrollable-area {
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    height: 100%;
-    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch; /* Abilita inerzia su iOS */
+    overscroll-behavior-y: contain;  /* Isola lo scroll verticale */
+    touch-action: pan-y; /* Consente solo pan verticale */
   }
 
   /* Prevenzione zoom su input e bottoni */

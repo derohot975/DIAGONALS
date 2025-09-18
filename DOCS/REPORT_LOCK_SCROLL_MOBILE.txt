@@ -1,0 +1,39 @@
+# REPORT — BLOCCO SCROLL VERTICALE SU MOBILE
+
+## 1. File Modificati e Motivazioni
+
+L'intervento si è concentrato su due file principali per implementare un blocco dello scroll a livello di pagina e abilitare lo scroll solo in aree designate.
+
+- **`client/src/index.css`**
+  - **Motivazione:** Centralizzare le regole di base per bloccare lo scroll dell'intera pagina e definire lo stile delle aree scrollabili.
+  - **Modifiche:**
+    - Aggiunte le proprietà `overflow: hidden;` e `position: fixed;` ai selettori `html` e `body` per disabilitare lo scroll globale e prevenire il "bounce" su iOS.
+    - Migliorata la classe `.scrollable-area` con `overscroll-behavior-y: contain;` per isolare lo scroll verticale all'interno del suo contenitore.
+
+- **`client/src/components/AppShell.tsx`**
+  - **Motivazione:** Applicare la nuova struttura di layout che consente al contenuto principale di diventare un'area scrollabile, lasciando fisso il contenitore dell'app.
+  - **Modifiche:**
+    - Il `div` principale è stato modificato per utilizzare `flexbox` (`h-full flex flex-col overflow-hidden`).
+    - È stato introdotto un tag `<main>` che avvolge i `children` con le classi `flex-1 overflow-y-auto scrollable-area`, designandolo come il contenitore scrollabile primario.
+
+- **`DOCS/HOW_TO_SCROLL.md`** (Nuovo file)
+  - **Motivazione:** Fornire una documentazione chiara per gli sviluppatori futuri su come abilitare lo scroll in nuove aree, come richiesto.
+
+## 2. Regole Applicate
+
+- **Root Lock:** Lo scroll verticale è stato disabilitato a livello di `<html>` e `<body>`.
+- **Aree Scrollabili:** Lo scroll è ora gestito da una classe dedicata `.scrollable-area`. Il componente `AppShell` applica questa classe al contenitore principale del contenuto, rendendo di fatto l'intera area delle schermate scrollabile internamente, mentre la pagina rimane fissa.
+
+## 3. Esiti Test (Preliminari)
+
+- **Desktop:** Un primo controllo su desktop mostra che il comportamento è corretto. Lo scroll della pagina è bloccato e le aree interne scorrono come previsto.
+- **Mobile (iOS/Android):** È necessaria una verifica approfondita su dispositivi reali per confermare l'assenza di regressioni e il corretto funzionamento delle gesture, specialmente in relazione alla comparsa della tastiera virtuale.
+
+## 4. Problemi Rilevati e Come Evitarli
+
+- Durante l'intervento non sono stati rilevati problemi o regressioni immediate. La modifica è stata mirata e ha sfruttato le best practice per il layout mobile.
+- **Rischio Potenziale:** Se un componente necessita di scroll ma non viene avvolto in un contenitore con la classe `.scrollable-area`, il suo contenuto potrebbe risultare tagliato o inaccessibile. È fondamentale seguire le istruzioni nel file `HOW_TO_SCROLL.md`.
+
+## 5. Istruzioni per Aggiungere Nuove Aree Scrollabili
+
+Per rendere scrollabile una nuova area, è sufficiente applicare la classe `.scrollable-area` al contenitore desiderato. Per dettagli e un esempio di codice, consultare il file `DOCS/HOW_TO_SCROLL.md`.
