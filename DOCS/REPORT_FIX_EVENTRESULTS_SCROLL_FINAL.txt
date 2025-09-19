@@ -1,0 +1,128 @@
+# REPORT — FIX DEFINITIVO SCROLL EVENTRESULTS SCREEN
+
+## 1. CAUSA RADICE INDIVIDUATA
+
+**Categoria: B + A** - Lista NON scrollabile + Struttura flex inadeguata
+
+**Problema principale:**
+- EventResultsScreen utilizzava un Fragment (`<>`) come root, impedendo la corretta gerarchia flex
+- Il wrapper della lista non aveva `flex-1` per occupare lo spazio disponibile e abilitare lo scroll
+- Mancanza di struttura flex coerente tra AppShell e EventResultsScreen
+
+**Problemi secondari:**
+- Classi diagnostiche temporanee (bordi blu/verde) presenti nel codice
+- Padding-bottom non ottimizzato per la safe-area iOS
+
+## 2. FILE/RIGHE MODIFICATE E MOTIVAZIONI
+
+### A) client/src/components/screens/EventResultsScreen.tsx
+**Righe 83-84:** Aggiunto wrapper div con `h-full flex flex-col`
+- **Perché:** Necessario per creare una gerarchia flex compatibile con AppShell
+- **Prima:** `return (<>` (Fragment)
+- **Dopo:** `return (<div className="h-full flex flex-col">)`
+
+**Riga 95:** Aggiunto `flex-1` al wrapper della lista
+- **Perché:** Permette al contenitore di occupare tutto lo spazio disponibile e abilitare lo scroll
+- **Prima:** `className="px-4 scrollable-area min-h-0 diag-outline-list"`
+- **Dopo:** `className="flex-1 px-4 scrollable-area min-h-0"`
+
+**Riga 242:** Corretta chiusura del componente
+- **Perché:** Sostituito Fragment con div wrapper
+- **Prima:** `</>`
+- **Dopo:** `</div>`
+
+### B) client/src/components/AppShell.tsx
+**Riga 13:** Rimossa classe diagnostica
+- **Perché:** Pulizia post-fix delle classi temporanee
+- **Prima:** `className="h-full flex flex-col overflow-hidden min-h-0 diag-outline-root"`
+- **Dopo:** `className="h-full flex flex-col overflow-hidden min-h-0"`
+
+### C) client/src/index.css
+**Righe 198-207:** Rimosse classi diagnostiche temporanee
+- **Perché:** Pulizia post-fix, classi non più necessarie
+- **Rimosse:** `.diag-outline-root` e `.diag-outline-list`
+
+## 3. SOLUZIONE APPLICATA
+
+### Shell Fissa + Lista Scrollabile
+1. **AppShell:** Mantiene la struttura `h-full flex flex-col overflow-hidden`
+2. **EventResultsScreen:** Ora ha struttura flex compatibile `h-full flex flex-col`
+3. **Area Scrollabile:** Il wrapper della lista ha `flex-1 scrollable-area` per occupare lo spazio e scrollare
+4. **Padding Bottom:** Mantiene `calc(8rem + env(safe-area-inset-bottom))` per iOS safe-area
+5. **Min-h-0:** Applicato correttamente nella catena flex per sbloccare lo scroll
+
+### Gerarchia Finale
+```
+AppShell (h-full flex flex-col overflow-hidden)
+└── main (flex-1 min-h-0 overflow-y-auto scrollable-area)
+    └── EventResultsScreen (h-full flex flex-col)
+        ├── Header (flex-shrink-0)
+        └── Lista (flex-1 scrollable-area min-h-0) ← AREA SCROLLABILE
+```
+
+## 4. ESITI TEST
+
+### Test Locale (Browser Desktop)
+✅ **Pagina fissa:** Il body non scorre
+✅ **Lista scrollabile:** Il contenuto della lista scorre fluidamente
+✅ **Bottom-nav visibile:** I pulsanti sono sempre accessibili
+✅ **Nessuna linea rossa:** Classi diagnostiche rimosse
+✅ **Layout corretto:** Struttura flex funzionante
+
+### Test Mobile (Richiesto)
+🔄 **In attesa di verifica su dispositivi reali:**
+- iOS Safari + PWA
+- Android Chrome + PWA
+- Verifica bounce globale
+- Test tastiera virtuale
+- Controllo safe-area iOS
+
+## 5. CONFERME POST-FIX
+
+✅ **Classi diagnostiche rimosse:**
+- `.diag-outline-root` eliminata da AppShell.tsx e index.css
+- `.diag-outline-list` eliminata da EventResultsScreen.tsx e index.css
+
+✅ **Linea rossa rimossa:**
+- Nessuna linea rossa presente (era causata dalle classi diagnostiche)
+
+✅ **Struttura pulita:**
+- EventResultsScreen ora ha layout flex coerente
+- Nessun conflitto tra Fragment e struttura AppShell
+
+## 6. NOTE TECNICHE
+
+### Correzioni Applicate per Categoria
+- **A (Body scorre):** ✅ Struttura flex corretta in EventResultsScreen
+- **B (Lista non scorre):** ✅ Aggiunto flex-1 e scrollable-area al wrapper lista
+- **C (Bottom-nav coperta):** ✅ Padding-bottom con safe-area mantenuto
+- **D (Linea rossa):** ✅ Classi diagnostiche rimosse
+- **E (Bordo verde basso):** ✅ Flex-1 risolve l'altezza del contenitore
+- **F (Box fissi):** ✅ Nessun position sticky/fixed sui box utente
+
+### Architettura Scroll Finale
+- **Global Lock:** html/body con `overflow: hidden` (già presente)
+- **Shell Container:** AppShell con `overflow-hidden` e `min-h-0`
+- **Scroll Area:** Solo il wrapper lista con classe `scrollable-area`
+- **iOS Support:** Safe-area e touch scrolling abilitati
+
+## 7. PROSSIMI PASSI
+
+1. **Test su dispositivi reali** (iOS/Android)
+2. **Verifica PWA** (comportamento standalone)
+3. **Test tastiera virtuale** (nessun unlock scroll globale)
+4. **Commit finale** delle modifiche se i test sono positivi
+
+## 8. ROLLBACK (se necessario)
+
+Se i test falliscono, ripristinare:
+```bash
+git checkout HEAD~1 -- client/src/components/screens/EventResultsScreen.tsx
+git checkout HEAD~1 -- client/src/components/AppShell.tsx
+git checkout HEAD~1 -- client/src/index.css
+```
+
+---
+**Status:** ✅ IMPLEMENTAZIONE COMPLETATA - IN ATTESA DI VALIDAZIONE MOBILE
+**Data:** 19/09/2025 13:12
+**Commit:** Pronto per commit finale post-validazione

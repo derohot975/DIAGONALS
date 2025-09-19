@@ -10,7 +10,7 @@ interface AppShellProps {
  */
 function AppShell({ children }: AppShellProps) {
   return (
-    <div className="h-full flex flex-col overflow-hidden min-h-0 diag-outline-root">
+    <div className="h-full flex flex-col overflow-hidden min-h-0">
       <main className="flex-1 min-h-0 overflow-y-auto scrollable-area">
         {children}
       </main>

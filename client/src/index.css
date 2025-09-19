@@ -195,16 +195,6 @@
     drop-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
   }
 
-  /* CLASSI DIAGNOSTICHE TEMPORANEE */
-  .diag-outline-root {
-    outline: 2px solid blue !important;
-    outline-offset: -2px;
-  }
-  
-  .diag-outline-list {
-    outline: 2px solid green !important;
-    outline-offset: -2px;
-  }
 }
 
 @keyframes fadeIn {
