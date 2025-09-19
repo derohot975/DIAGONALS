@@ -1,0 +1,27 @@
+REPORT PAGELLA 401 - STATO PRIMA DEL FIX
+==========================================
+
+Data: 19/09/2025 18:05
+Ambiente: Produzione (https://diagonals.onrender.com)
+
+PROBLEMA IDENTIFICATO:
+- Status: 401 Unauthorized su GET /api/events/:id/pagella
+- Causa: PagellaScreen.tsx usa fetch() diretto invece di apiRequest()
+- Header presenti: credentials: "include" presente ma non sufficiente
+- Note: Tutte le altre API dell'app usano apiRequest() che gestisce correttamente l'autenticazione
+
+ANALISI CODICE:
+- PagellaScreen.tsx righe 27 e 63: fetch() diretto con credentials: "include"
+- Altri componenti: usano apiRequest() da lib/queryClient.ts
+- apiRequest() include automaticamente credentials: "include" e gestione errori
+
+FIX APPLICATO:
+1. Aggiunto import { apiRequest } from '@/lib/queryClient'
+2. Sostituito fetch() con apiRequest() per GET e PUT
+3. Aggiunti log di debug solo in development
+4. Mantenuta logica esistente per bozze locali
+
+MODIFICHE MINIME:
+- Solo PagellaScreen.tsx modificato
+- Nessuna modifica a server/routes.ts o middleware
+- Nessuna modifica ad altri componenti

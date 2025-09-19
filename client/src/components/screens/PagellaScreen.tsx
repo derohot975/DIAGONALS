@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Home, ArrowLeft, Save } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
 import { WineEvent } from '@shared/schema';
+import { apiRequest } from '@/lib/queryClient';
 
 interface PagellaScreenProps {
   event: WineEvent | null;
@@ -24,18 +25,28 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`/api/events/${event.id}/pagella`, { credentials: "include" });
+        const res = await apiRequest('GET', `/api/events/${event.id}/pagella`);
         const json = await res.json();
         const serverText = json?.data?.content ?? "";
         if (!cancelled) {
           if (serverText && serverText.length > 0) {
             setContent(serverText);
+            // Log solo in dev
+            if (import.meta.env.DEV) {
+              console.log('Pagella GET 200 - contenuto caricato dal server');
+            }
           } else {
             const draft = localStorage.getItem(draftKey);
             if (draft) setContent(draft);
+            if (import.meta.env.DEV) {
+              console.log('Pagella GET 200 - nessun contenuto server, caricata bozza locale');
+            }
           }
         }
-      } catch {
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.log('Pagella GET 401 o errore:', error);
+        }
         const draft = localStorage.getItem(draftKey);
         if (!cancelled && draft) setContent(draft);
       } finally {
@@ -57,17 +68,15 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
   const handleSave = async () => {
     // Prova a salvare su server (richiede admin/owner); in ogni caso teniamo la bozza locale
     try {
-      const res = await fetch(`/api/events/${event.id}/pagella`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ content }),
-      });
+      const res = await apiRequest('PUT', `/api/events/${event.id}/pagella`, { content });
       if (res.ok) {
         // sincronia bozza
         localStorage.setItem(draftKey, content);
         setIsSaved(true);
         setSaveMessage('Pagella pubblicata per tutti!');
+        if (import.meta.env.DEV) {
+          console.log('Pagella PUT 200 - pubblicata con successo');
+        }
         setTimeout(() => {
           setIsSaved(false);
           setSaveMessage('');
@@ -77,12 +86,18 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
         localStorage.setItem(draftKey, content);
         setIsSaved(true);
         setSaveMessage('Bozza salvata localmente (solo admin può pubblicare)');
+        if (import.meta.env.DEV) {
+          console.log('Pagella PUT non autorizzato - salvata bozza locale');
+        }
         setTimeout(() => {
           setIsSaved(false);
           setSaveMessage('');
         }, 4000);
       }
-    } catch {
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.log('Pagella PUT errore:', error);
+      }
       // offline/errore: la bozza rimane in locale
       localStorage.setItem(draftKey, content);
       setIsSaved(true);

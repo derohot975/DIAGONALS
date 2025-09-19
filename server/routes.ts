@@ -102,9 +102,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
       
       const pagella = await getPagellaByEventId(eventId);
+      
+      // Assicura che updated_at sia una ISO string
+      const responseData = pagella ? {
+        content: pagella.content || "",
+        updatedAt: pagella.updatedAt ? new Date(pagella.updatedAt).toISOString() : null,
+        authorUserId: pagella.authorUserId || null
+      } : {
+        content: "",
+        updatedAt: null,
+        authorUserId: null
+      };
+      
       return res.json({ 
         ok: true, 
-        data: pagella ?? { content: "", updatedAt: null, authorUserId: null } 
+        data: responseData
       });
     } catch (error) {
       console.error('Get pagella error:', error);
