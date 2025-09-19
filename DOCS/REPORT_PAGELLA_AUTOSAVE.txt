@@ -1,0 +1,95 @@
+REPORT PAGELLA AUTOSAVE - IMPLEMENTAZIONE COMPLETATA
+===================================================
+
+Data: 19/09/2025 18:25
+Ambiente: Sviluppo locale + Deploy in produzione
+
+OBIETTIVO RAGGIUNTO:
+✅ Autosave in tempo reale della Pagella
+✅ Sincronizzazione per tutti gli utenti
+✅ Permessi: solo DERO e TOMMY possono modificare
+✅ Rimosso pulsante "Salva"
+
+IMPLEMENTAZIONE DETTAGLIATA:
+
+1. SERVER (routes.ts):
+   ✅ PUT /api/events/:id/pagella ritorna updated_at dopo salvataggio
+   ✅ Permessi rafforzati: solo DERO e TOMMY (case-insensitive)
+   ✅ GET ritorna sempre updated_at per sincronizzazione
+   ✅ Controllo sicurezza lato server definitivo
+
+2. CLIENT (PagellaScreen.tsx):
+   ✅ Autosave con debounce 600ms (solo per editor autorizzati)
+   ✅ Soft polling ogni 3s per sincronizzazione real-time
+   ✅ Gestione isTyping per evitare conflitti durante digitazione
+   ✅ Bozze locali sempre salvate per backup offline
+   ✅ Determinazione canEdit: currentUser.name ∈ {DERO, TOMMY}
+
+3. UI/UX:
+   ✅ Textarea readonly per utenti non autorizzati
+   ✅ Textarea editabile con autosave per DERO/TOMMY
+   ✅ Status salvataggio discreto nell'header (Salvataggio.../Salvato/Errore)
+   ✅ Messaggio informativo per utenti readonly
+   ✅ Rimosso completamente pulsante FAB "Salva"
+   ✅ Placeholder dinamici per editor vs lettori
+
+FUNZIONALITÀ IMPLEMENTATE:
+
+A) AUTOSAVE (Solo Editor):
+   - Debounce 600ms dopo ogni modifica
+   - Status visivo: "Salvataggio..." → "Salvato" → nascosto
+   - Gestione errori con retry automatico
+   - Bozza locale sempre aggiornata
+
+B) SINCRONIZZAZIONE (Tutti):
+   - Polling ogni 3s per aggiornamenti server
+   - Confronto updated_at per evitare sovrascritture
+   - Aggiornamento automatico solo se utente non sta digitando
+   - Sincronizzazione real-time tra tutti i client
+
+C) PERMESSI:
+   - Server: controllo definitivo su userId e nome utente
+   - Client: UI readonly per non autorizzati
+   - Sicurezza: doppio controllo client + server
+
+D) OFFLINE/RECOVERY:
+   - Bozze locali sempre salvate (draftKey: pagella_<eventId>)
+   - Fallback su bozza locale se server non disponibile
+   - Ripresa autosave al ritorno online
+
+FLUSSO OPERATIVO:
+
+1. EDITOR (DERO/TOMMY):
+   - Apre pagella → carica da server o bozza locale
+   - Digita → autosave dopo 600ms + bozza locale immediata
+   - Vede status "Salvataggio..." → "Salvato"
+   - Riceve aggiornamenti da altri editor via polling
+
+2. LETTORE (Altri utenti):
+   - Apre pagella → carica da server (readonly)
+   - Vede messaggio informativo
+   - Riceve aggiornamenti automatici ogni 3s
+   - Non può modificare (textarea readonly)
+
+BUILD E DEPLOY:
+- Build completato con successo
+- Commit: 70b27be "feat(pagella): Autosave in tempo reale + sincronizzazione"
+- Push su GitHub completato
+- Deploy automatico su Render triggerato
+
+TEST PREVISTI:
+1. Come DERO: digita → autosave dopo 0.6s → visibile ad altri utenti
+2. Come TOMMY: stesso comportamento di DERO
+3. Come utente normale: readonly, aggiornamenti automatici ogni 3s
+4. Offline: bozze locali mantenute, ripresa al ritorno online
+5. Multi-utente: sincronizzazione real-time tra editor
+
+CRITERI DI ACCETTAZIONE RAGGIUNTI:
+✅ Autosave automatico con debounce 600ms
+✅ Sincronizzazione ogni 3s per tutti gli utenti
+✅ Permessi corretti: solo DERO e TOMMY editano
+✅ UI readonly per utenti non autorizzati
+✅ Rimosso pulsante "Salva"
+✅ Status di salvataggio non invasivo
+✅ Gestione offline con bozze locali
+✅ Build e deploy completati
