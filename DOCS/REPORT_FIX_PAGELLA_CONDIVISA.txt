@@ -1,0 +1,58 @@
+# REPORT — Pagellone condiviso
+Data: Fri Sep 19 15:23:06 CEST 2025
+
+## Cosa è stato fatto
+- Creata tabella `event_pagella` (auto-create at startup).
+- Aggiunte API:
+  - GET /api/events/:id/pagella (lettura per tutti gli utenti autenticati)
+  - PUT /api/events/:id/pagella (scrittura per admin/owner)
+- Aggiornata `PagellaScreen.tsx`:
+  - carica dal server; fallback su bozza locale
+  - salva su server; se non autorizzato, mantiene bozza locale
+  - bozza auto-sincronizzata in `localStorage`
+- Documentazione: DOCS/PAGELLA_SHARED_README.md
+
+## File modificati
+- `server/db/pagella.ts` (NUOVO): Helper database per gestione pagella
+- `server/index.ts`: Aggiunta inizializzazione tabella all'avvio
+- `server/routes.ts`: Aggiunti endpoint GET/PUT con middleware auth
+- `client/src/components/screens/PagellaScreen.tsx`: Logica API + bozza locale
+- `DOCS/PAGELLA_SHARED_README.md` (NUOVO): Documentazione funzionalità
+
+## Comportamento implementato
+1. **Caricamento**: Server-first, fallback localStorage
+2. **Auto-draft**: Salvataggio automatico bozza ogni 300ms
+3. **Salvataggio pubblico**: Solo admin può pubblicare per tutti
+4. **Messaggi informativi**: Feedback chiaro su tipo di salvataggio
+5. **Offline-ready**: Funziona anche senza connessione
+
+## Test suggeriti
+1) **Utente non admin**:
+   - apre la Pagella: deve vedere il testo pubblicato (se esiste)
+   - modifica e salva: deve ricevere messaggio "bozza salvata localmente" (se non autorizzato)
+2) **Admin**:
+   - modifica e salva: testo disponibile a tutti dopo refresh
+3) **Offline**:
+   - contenuto server non raggiungibile => mostra bozza locale se presente
+
+## Sicurezza implementata
+- Middleware `requireAuth` per tutti gli endpoint
+- Controllo `canEditPagella()` per scrittura (solo admin)
+- Validazione input (eventId numerico, content stringa)
+- Error handling completo con log server
+
+## Fallback e resilienza
+- Fetch API con try/catch completo
+- localStorage come backup sempre disponibile
+- Loading state durante caricamento iniziale
+- Messaggi utente informativi per ogni scenario
+
+## Rollback
+- Ripristinare i file modificati e rimuovere server/db/pagella.ts
+- La tabella `event_pagella` può essere lasciata: è innocua se non usata.
+
+## Estensioni future possibili
+- Controllo owner evento (non solo admin)
+- Versioning/history delle modifiche
+- Real-time sync tra utenti
+- Rich text editor invece di textarea semplice

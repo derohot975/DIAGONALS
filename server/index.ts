@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
+import { ensurePagellaTable } from "./db/pagella";
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,9 @@ app.use((req, res, next) => {
 (async () => {
   // Inizializza il database Supabase
   await initializeDatabase();
+  
+  // Garantisce la tabella per la Pagella senza richiedere migrazioni manuali
+  await ensurePagellaTable();
 
   // Serve PWA static files with correct MIME types in development
   if (app.get("env") === "development") {

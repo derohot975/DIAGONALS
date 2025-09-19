@@ -1,9 +1,10 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertWineEventSchema, insertWineSchema, insertVoteSchema, insertEventReportSchema, EventReportData, UserRanking, WineResultDetailed } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
+import { getPagellaByEventId, upsertPagella } from "./db/pagella";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // BEGIN DIAGONALE KEEP-ALIVE - Health endpoint
@@ -70,6 +71,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   // END DIAGONALE KEEP-ALIVE
+
+  // BEGIN DIAGONALE PAGELLA - Shared pagella endpoints
+  
+  // Helper: verifica autenticazione (riusa logica esistente se presente)
+  function requireAuth(req: Request, res: Response, next: any) {
+    // Per ora implementazione semplice - da adattare alla logica auth esistente
+    // Assumiamo che l'autenticazione sia gestita via session/cookie
+    const user = (req as any).user || (req as any).session?.user;
+    if (!user) return res.status(401).json({ error: "Unauthorized" });
+    (req as any).user = user;
+    next();
+  }
+
+  // Helper: verifica se l'utente può scrivere (admin o owner dell'evento)
+  async function canEditPagella(req: Request, eventId: number) {
+    const user = (req as any).user;
+    if (!user) return false;
+    if (user.isAdmin) return true;
+    // Per ora solo admin - estendibile per owner evento
+    return false;
+  }
+
+  // GET /api/events/:id/pagella — leggibile da tutti gli utenti autenticati
+  app.get("/api/events/:id/pagella", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const eventId = Number(req.params.id);
+      if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
+      
+      const pagella = await getPagellaByEventId(eventId);
+      return res.json({ 
+        ok: true, 
+        data: pagella ?? { content: "", updatedAt: null, authorUserId: null } 
+      });
+    } catch (error) {
+      console.error('Get pagella error:', error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // PUT /api/events/:id/pagella — scrivibile solo da admin/owner
+  app.put("/api/events/:id/pagella", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const eventId = Number(req.params.id);
+      if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
+      
+      const { content } = req.body ?? {};
+      if (typeof content !== "string") return res.status(400).json({ error: "content must be string" });
+      
+      const allowed = await canEditPagella(req, eventId);
+      if (!allowed) return res.status(403).json({ error: "Forbidden: only admin can edit pagella" });
+      
+      const user = (req as any).user;
+      await upsertPagella(eventId, content, user?.id ?? null);
+      return res.json({ ok: true });
+    } catch (error) {
+      console.error('Update pagella error:', error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  // END DIAGONALE PAGELLA
 
   // User routes
   app.get("/api/users", async (req, res) => {

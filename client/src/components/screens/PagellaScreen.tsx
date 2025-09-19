@@ -12,26 +12,98 @@ interface PagellaScreenProps {
 export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScreenProps) {
   const [content, setContent] = useState('');
   const [isSaved, setIsSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saveMessage, setSaveMessage] = useState('');
 
   if (!event) return null;
 
-  const handleSave = () => {
-    localStorage.setItem(`pagella_${event.id}`, content);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2000);
+  const draftKey = `pagellaDraft_${event.id}`;
+
+  // 1) carica da server; 2) se vuoto, prova bozza locale
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/events/${event.id}/pagella`, { credentials: "include" });
+        const json = await res.json();
+        const serverText = json?.data?.content ?? "";
+        if (!cancelled) {
+          if (serverText && serverText.length > 0) {
+            setContent(serverText);
+          } else {
+            const draft = localStorage.getItem(draftKey);
+            if (draft) setContent(draft);
+          }
+        }
+      } catch {
+        const draft = localStorage.getItem(draftKey);
+        if (!cancelled && draft) setContent(draft);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [event.id, draftKey]);
+
+  // Salva bozza ad ogni digit (non blocca nulla)
+  useEffect(() => {
+    if (loading) return; // Non salvare durante il caricamento iniziale
+    const t = setTimeout(() => {
+      try { localStorage.setItem(draftKey, content); } catch {}
+    }, 300);
+    return () => clearTimeout(t);
+  }, [content, draftKey, loading]);
+
+  const handleSave = async () => {
+    // Prova a salvare su server (richiede admin/owner); in ogni caso teniamo la bozza locale
+    try {
+      const res = await fetch(`/api/events/${event.id}/pagella`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ content }),
+      });
+      if (res.ok) {
+        // sincronia bozza
+        localStorage.setItem(draftKey, content);
+        setIsSaved(true);
+        setSaveMessage('Pagella pubblicata per tutti!');
+        setTimeout(() => {
+          setIsSaved(false);
+          setSaveMessage('');
+        }, 3000);
+      } else {
+        // mostra toast: non hai permessi per pubblicare, ma la bozza è salva sul dispositivo
+        localStorage.setItem(draftKey, content);
+        setIsSaved(true);
+        setSaveMessage('Bozza salvata localmente (solo admin può pubblicare)');
+        setTimeout(() => {
+          setIsSaved(false);
+          setSaveMessage('');
+        }, 4000);
+      }
+    } catch {
+      // offline/errore: la bozza rimane in locale
+      localStorage.setItem(draftKey, content);
+      setIsSaved(true);
+      setSaveMessage('Bozza salvata localmente (offline)');
+      setTimeout(() => {
+        setIsSaved(false);
+        setSaveMessage('');
+      }, 3000);
+    }
   };
 
-
-
-
-
-  // Carica il contenuto salvato al mount
-  useEffect(() => {
-    const saved = localStorage.getItem(`pagella_${event.id}`);
-    if (saved) {
-      setContent(saved);
-    }
-  }, [event.id]);
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center text-white/70">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/50 mx-auto mb-2"></div>
+          <p>Caricamento pagella…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col">
@@ -74,6 +146,13 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
                 >
                   <Save className="w-4 h-4" />
                 </button>
+                
+                {/* Save Message */}
+                {saveMessage && (
+                  <div className="absolute bottom-12 right-0 bg-black/80 text-white text-xs px-3 py-2 rounded-lg max-w-xs">
+                    {saveMessage}
+                  </div>
+                )}
               </div>
             </div>
           </div>
