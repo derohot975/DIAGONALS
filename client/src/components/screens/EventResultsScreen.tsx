@@ -92,7 +92,13 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 px-4 scrollable-area min-h-0" style={{paddingBottom: 'calc(8rem + env(safe-area-inset-bottom))'}}>
+      <div 
+        className="flex-1 px-4 scrollable-area min-h-0" 
+        style={{
+          maxHeight: 'calc(100dvh - 8rem - var(--bottom-nav-total))',
+          paddingBottom: 'var(--bottom-nav-total)'
+        }}
+      >
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-yellow-200 mb-2">Classifica Finale</h2>
@@ -208,6 +214,9 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                     </div>
                   </div>
                 ))}
+                
+                {/* Spacer per garantire spazio alla bottom-nav */}
+                <div className="h-20" style={{height: 'var(--bottom-nav-total)'}} aria-hidden="true"></div>
               </div>
               
 
@@ -217,7 +226,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       </div>
       
       {/* Pulsanti Condividi e Home fissi in fondo */}
-      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
+      <div className="fixed bottom-4 left-0 right-0 z-[9999] flex justify-center">
         <div className="flex items-center space-x-4">
           <button 
             onClick={handleExport}

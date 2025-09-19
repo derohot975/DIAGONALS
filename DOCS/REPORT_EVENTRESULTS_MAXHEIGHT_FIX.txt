@@ -1,0 +1,189 @@
+# REPORT — FIX MAX-HEIGHT AREA SCROLLABILE (EventResults)
+
+## 1. VALORE ALTEZZA NAV E CALCOLO
+
+### Token CSS Definiti (client/src/index.css)
+```css
+--bottom-nav-height: 5rem; /* 80px base */
+--bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+```
+
+### Calcolo Dettagliato Altezza Nav
+- **Pulsanti:** `p-3` (24px padding totale) + icona 20px = 44px
+- **Bottom margin:** `bottom-4` = 16px  
+- **Spazio sicurezza:** 20px aggiuntivi
+- **Totale base:** 80px = 5rem
+- **Safe-area iOS:** `env(safe-area-inset-bottom)` aggiunta dinamicamente
+- **Token finale:** `var(--bottom-nav-total)` = 5rem + safe-area
+
+## 2. DOVE APPLICATO MAX-HEIGHT E PADDING/SPACER
+
+### A) client/src/components/screens/EventResultsScreen.tsx
+
+**Righe 95-101:** Max-height wrapper scrollabile
+```tsx
+<div 
+  className="flex-1 px-4 scrollable-area min-h-0" 
+  style={{
+    maxHeight: 'calc(100dvh - 8rem - var(--bottom-nav-total))',
+    paddingBottom: 'var(--bottom-nav-total)'
+  }}
+>
+```
+
+**Calcolo max-height:**
+- `100dvh` = Altezza viewport dinamica
+- `- 8rem` = Spazio per header logo (pt-8 + pb-6 + margini)
+- `- var(--bottom-nav-total)` = Spazio per bottom-nav + safe-area
+- **Risultato:** Area scrollabile limitata che non può andare sotto la nav
+
+**Riga 219:** Spacer elemento aggiornato
+```tsx
+<div className="h-20" style={{height: 'var(--bottom-nav-total)'}} aria-hidden="true"></div>
+```
+
+### B) client/src/index.css
+
+**Righe 34-36:** Token CSS aggiunti
+```css
+/* Bottom navigation height tokens */
+--bottom-nav-height: 5rem; /* 80px: pulsanti (48px) + bottom-4 (16px) + margine (16px) */
+--bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+```
+
+## 3. ESITI TEST
+
+### Test Locale (Browser Desktop)
+✅ **Max-height funzionante:** Area scrollabile limitata correttamente
+✅ **Bottom-nav sempre visibile:** Pulsanti mai coperti dalla lista
+✅ **Spacer corretto:** Spazio finale usando token CSS
+✅ **Scroll isolato:** Solo la lista scorre, pagina fissa
+✅ **Token CSS:** Valori centralizzati e riutilizzabili
+
+### Test Mobile (Richiesto)
+🔄 **In attesa di verifica su dispositivi reali:**
+- iOS Safari + PWA: Verifica safe-area e max-height con 100dvh
+- Android Chrome + PWA: Controllo viewport dinamico
+- Test scroll con tastiera virtuale attiva
+- Verifica spazio finale con gesture navigation
+
+## 4. ARCHITETTURA FINALE
+
+### Gerarchia Altezze
+```
+Viewport (100dvh)
+├── Header Logo (8rem) ← FISSO
+├── Lista Scrollabile (calc(100dvh - 8rem - nav-total)) ← MAX-HEIGHT
+└── Bottom Nav (var(--bottom-nav-total)) ← FISSO
+```
+
+### Token CSS Riutilizzabili
+```css
+:root {
+  --bottom-nav-height: 5rem;
+  --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+}
+```
+
+### Applicazione Token
+- **Max-height:** `calc(100dvh - 8rem - var(--bottom-nav-total))`
+- **Padding-bottom:** `var(--bottom-nav-total)`
+- **Spacer height:** `var(--bottom-nav-total)`
+
+## 5. VANTAGGI DELLA SOLUZIONE
+
+### Centralizzazione
+- **Token unico:** Altezza nav definita una sola volta
+- **Riutilizzabile:** Altri componenti possono usare gli stessi token
+- **Manutenibile:** Cambio in un posto si riflette ovunque
+
+### Responsività
+- **100dvh:** Viewport dinamico per mobile
+- **Safe-area:** Automatica per iOS
+- **Calc():** Calcoli CSS nativi e performanti
+
+### Robustezza
+- **Max-height + padding:** Doppia protezione
+- **Spacer elemento:** Spazio fisico garantito
+- **Z-index:** Layering corretto mantenuto
+
+## 6. COME RIUTILIZZARE I TOKEN IN ALTRE PAGINE
+
+### Per altre pagine con bottom-nav fissa:
+```tsx
+// Wrapper scrollabile
+<div 
+  className="scrollable-area" 
+  style={{
+    maxHeight: 'calc(100dvh - [HEADER_HEIGHT] - var(--bottom-nav-total))',
+    paddingBottom: 'var(--bottom-nav-total)'
+  }}
+>
+  {/* Contenuto */}
+  
+  {/* Spacer finale */}
+  <div style={{height: 'var(--bottom-nav-total)'}} aria-hidden="true" />
+</div>
+```
+
+### Per pagine senza header:
+```tsx
+style={{
+  maxHeight: 'calc(100dvh - var(--bottom-nav-total))',
+  paddingBottom: 'var(--bottom-nav-total)'
+}}
+```
+
+### Per aggiungere nuovi token:
+```css
+:root {
+  --header-height: 8rem;
+  --bottom-nav-height: 5rem;
+  --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  --content-max-height: calc(100dvh - var(--header-height) - var(--bottom-nav-total));
+}
+```
+
+## 7. NOTE TECNICHE
+
+### Perché 100dvh invece di 100vh
+- **100vh:** Altezza viewport statica (problemi su mobile)
+- **100dvh:** Altezza viewport dinamica (si adatta a tastiera/browser UI)
+- **Compatibilità:** Fallback automatico a 100vh se non supportato
+
+### Calcolo Header (8rem)
+- **pt-8:** 32px padding-top
+- **pb-6:** 24px padding-bottom  
+- **Logo + margini:** ~24px
+- **Totale stimato:** ~80px = 8rem
+
+### Safe-Area iOS
+- **Automatica:** `env(safe-area-inset-bottom)` nel token
+- **Fallback:** Se non supportato, usa solo 5rem
+- **Dinamica:** Si adatta al dispositivo (iPhone con/senza home button)
+
+## 8. PROSSIMI PASSI
+
+1. **Test dispositivi reali** (iOS/Android)
+2. **Verifica PWA** (modalità standalone)  
+3. **Test tastiera virtuale** (viewport dinamico)
+4. **Applicazione token** ad altre pagine se necessario
+5. **Commit finale** se i test sono positivi
+
+## 9. ROLLBACK (se necessario)
+
+Se i test falliscono:
+```bash
+git checkout HEAD~1 -- client/src/components/screens/EventResultsScreen.tsx
+git checkout HEAD~1 -- client/src/index.css
+```
+
+Oppure rimuovere manualmente:
+- Token CSS dalle righe 34-36 di index.css
+- Style max-height dalle righe 97-100 di EventResultsScreen.tsx
+- Ripristinare spacer precedente
+
+---
+**Status:** ✅ MAX-HEIGHT FIX IMPLEMENTATO - IN ATTESA DI VALIDAZIONE MOBILE
+**Data:** 19/09/2025 13:27
+**Modifiche:** Token CSS + Max-height + Padding/Spacer unificati

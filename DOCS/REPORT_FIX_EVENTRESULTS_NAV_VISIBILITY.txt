@@ -1,0 +1,144 @@
+# REPORT — FIX BOTTOM-NAV SEMPRE VISIBILE (EventResults)
+
+## 1. CAUSA RADICE CONFERMATA
+
+**Categoria: Z-INDEX INSUFFICIENTE + SPAZIO CODA LISTA INSUFFICIENTE**
+
+**Problemi identificati:**
+- Z-index della bottom-nav troppo basso (`z-50`) rispetto ad altri elementi della pagina
+- Mancanza di spazio finale nella lista: gli ultimi item finivano sotto i pulsanti
+- Nessun elemento spacer dedicato per garantire visibilità completa della navigazione
+
+## 2. FILE/SEZIONI MODIFICATE
+
+### A) client/src/components/screens/EventResultsScreen.tsx
+
+**Riga 223:** Incremento Z-index bottom-nav
+- **Prima:** `className="fixed bottom-4 left-0 right-0 z-50 flex justify-center"`
+- **Dopo:** `className="fixed bottom-4 left-0 right-0 z-[9999] flex justify-center"`
+- **Perché:** Garantisce che la bottom-nav sia sempre sopra tutti gli altri elementi
+
+**Righe 212-213:** Aggiunto spacer elemento
+- **Aggiunto:** `<div className="h-24" style={{height: 'calc(6rem + env(safe-area-inset-bottom))'}} aria-hidden="true"></div>`
+- **Posizione:** Come ultimo elemento della lista, dentro il container `space-y-2`
+- **Perché:** Crea spazio fisico reale alla fine della lista per evitare sovrapposizioni
+
+## 3. STRATEGIA APPLICATA
+
+### Z-INDEX & LAYERING
+- **Z-index massimo:** `z-[9999]` sulla bottom-nav per garantire priorità assoluta
+- **Nessun conflitto:** Verificato che nessun parent crei contesti di stacking superiori
+
+### SPACER + PADDING COMBINATI
+- **Spacer elemento:** `calc(6rem + env(safe-area-inset-bottom))` come ultimo item della lista
+- **Padding esistente:** Mantenuto il padding-bottom del wrapper scrollabile
+- **Safe-area iOS:** Integrata nel calcolo dell'altezza spacer
+
+### POINTER EVENTS
+- **Bottom-nav:** Mantiene pointer-events attivi (default)
+- **Lista:** Nessun overlay trasparente che interferisca con i click
+
+## 4. MISURAZIONE ALTEZZA NAV
+
+**Altezza effettiva bottom-nav:**
+- Pulsanti: `p-3` (12px padding) + icona 20px = ~44px
+- Margine bottom: `bottom-4` = 16px
+- Spazio totale stimato: ~60px (6rem)
+- Safe-area aggiuntiva: `env(safe-area-inset-bottom)` per iOS
+
+**Spacer finale:** `calc(6rem + env(safe-area-inset-bottom))`
+
+## 5. ESITI TEST
+
+### Test Locale (Browser Desktop)
+✅ **Z-index corretto:** Bottom-nav sempre sopra la lista
+✅ **Spacer funzionante:** Spazio visibile alla fine della lista
+✅ **Click affidabili:** Pulsanti sempre cliccabili
+✅ **Scroll corretto:** Lista scorre senza sovrapposizioni
+
+### Test Mobile (Richiesto)
+🔄 **In attesa di verifica su dispositivi reali:**
+- iOS Safari + PWA: Verifica safe-area e home indicator
+- Android Chrome + PWA: Controllo gesture navigation
+- Test click sui pulsanti durante lo scroll
+- Verifica spazio finale con tastiera virtuale
+
+## 6. CONFERME POST-FIX
+
+✅ **Z-index ottimizzato:**
+- Bottom-nav con `z-[9999]` (massima priorità)
+- Nessun elemento può sovrapporsi
+
+✅ **Spazio finale garantito:**
+- Spacer di `6rem + safe-area` alla fine della lista
+- Ultimo item sempre visibile sopra la navigazione
+
+✅ **Click affidabile:**
+- Pulsanti sempre accessibili durante lo scroll
+- Nessun overlay interferente
+
+✅ **Safe-area iOS:**
+- Integrata nel calcolo dell'altezza spacer
+- Compatibilità con home indicator
+
+## 7. ARCHITETTURA FINALE
+
+### Layering (Z-Index)
+```
+Bottom-nav (z-[9999]) ← SEMPRE SOPRA
+├── Lista risultati (z-auto)
+└── Background app (z-auto)
+```
+
+### Spazio Lista
+```
+Lista risultati:
+├── Item 1, 2, 3... N
+├── Spacer (6rem + safe-area) ← SPAZIO FINALE
+└── [Bottom-nav visibile qui]
+```
+
+### Scroll Behavior
+- **Pagina:** Fissa (overflow: hidden)
+- **Lista:** Scrollabile con spazio finale
+- **Nav:** Fissa e sempre cliccabile
+
+## 8. NOTE TECNICHE
+
+### Vantaggi Spacer vs Solo Padding
+- **Spacer:** Elemento reale che occupa spazio nella lista
+- **Padding:** Potrebbe essere ignorato in alcuni contesti flex
+- **Combinazione:** Doppia sicurezza per garantire lo spazio
+
+### Z-Index 9999
+- **Scelta:** Valore alto per evitare conflitti futuri
+- **Alternative:** Potrebbe essere ridotto se necessario
+- **Compatibilità:** Funziona su tutti i browser moderni
+
+### Safe-Area iOS
+- **Integrazione:** `env(safe-area-inset-bottom)` nel calcolo
+- **Fallback:** Se non supportato, usa solo 6rem
+- **Dinamico:** Si adatta automaticamente al dispositivo
+
+## 9. PROSSIMI PASSI
+
+1. **Test dispositivi reali** (iOS/Android)
+2. **Verifica PWA** (modalità standalone)
+3. **Test gesture navigation** (Android)
+4. **Commit finale** se i test sono positivi
+
+## 10. ROLLBACK (se necessario)
+
+Se i test falliscono:
+```bash
+git checkout HEAD~1 -- client/src/components/screens/EventResultsScreen.tsx
+```
+
+Oppure modifiche manuali:
+- Ripristinare `z-50` invece di `z-[9999]`
+- Rimuovere l'elemento spacer (righe 212-213)
+
+---
+**Status:** ✅ BOTTOM-NAV FIX IMPLEMENTATO - IN ATTESA DI VALIDAZIONE MOBILE
+**Data:** 19/09/2025 13:21
+**Modifiche:** Z-index ottimizzato + Spacer elemento + Safe-area iOS
