@@ -1,0 +1,24 @@
+PROD GET /api/events/3/pagella
+=============================
+
+Command: curl -i https://diagonals.onrender.com/api/events/3/pagella
+Date: 19/09/2025 18:30
+
+HTTP/2 200 
+date: Fri, 19 Sep 2025 16:30:18 GMT
+content-type: application/json; charset=utf-8
+etag: W/"46-X75N58APK/KK+Ft3xdrJqH6RTPg"
+rndr-id: 42c571d3-fb4a-486c
+vary: Accept-Encoding
+x-powered-by: Express
+x-render-origin-server: Render
+cf-cache-status: DYNAMIC
+server: cloudflare
+cf-ray: 981a778279e9ea73-FCO
+alt-svc: h3=":443"; ma=86400
+
+{"ok":true,"data":{"content":"","updatedAt":null,"authorUserId":null}}
+
+ESITO: ✅ 200 OK
+CONTENT-TYPE: ✅ application/json
+BODY: ✅ Struttura corretta con data.content vuoto

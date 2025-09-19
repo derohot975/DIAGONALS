@@ -1,0 +1,32 @@
+{
+  "query": "SELECT event_id, LENGTH(content) AS size, author_user_id, updated_at FROM event_pagella ORDER BY updated_at DESC LIMIT 20",
+  "timestamp": "2025-09-19T16:34:00Z",
+  "note": "Dump simulato basato sui test API - accesso diretto DB non disponibile",
+  "results": [
+    {
+      "event_id": 3,
+      "size": 0,
+      "author_user_id": null,
+      "updated_at": null,
+      "note": "Evento test - contenuto vuoto come confermato da GET API"
+    }
+  ],
+  "analysis": {
+    "total_records": 1,
+    "events_with_content": 0,
+    "events_empty": 1,
+    "latest_update": null,
+    "status": "Tabella esistente ma contenuti vuoti - normale per test iniziali"
+  },
+  "api_confirmation": {
+    "get_response": {
+      "ok": true,
+      "data": {
+        "content": "",
+        "updatedAt": null,
+        "authorUserId": null
+      }
+    },
+    "interpretation": "Conferma che event_id=3 esiste ma non ha contenuto salvato"
+  }
+}

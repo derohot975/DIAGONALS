@@ -1,0 +1,43 @@
+LOCAL GET /api/events/3/pagella
+==============================
+
+PRIMO TEST (Server non riavviato):
+Command: curl -i http://localhost:3000/api/events/3/pagella
+Date: 19/09/2025 18:30
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-XPDV80vbMk4yY1/PADG4jYM4rSI"
+Date: Fri, 19 Sep 2025 16:30:20 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"Unauthorized"}
+
+ESITO PRIMO TEST: ❌ 401 Unauthorized
+
+---
+
+SECONDO TEST (Dopo restart server):
+Command: curl -i http://localhost:3000/api/events/3/pagella
+Date: 19/09/2025 18:31
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 70
+ETag: W/"46-X75N58APK/KK+Ft3xdrJqH6RTPg"
+Date: Fri, 19 Sep 2025 16:31:52 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"ok":true,"data":{"content":"","updatedAt":null,"authorUserId":null}}
+
+ESITO FINALE: ✅ 200 OK
+CONTENT-TYPE: ✅ application/json
+BODY: ✅ Struttura corretta, identica a produzione
+
+CAUSA CONFERMATA: Server dev non aveva ricaricato le modifiche server-side
+FIX APPLICATO: Restart server dev → Problema risolto

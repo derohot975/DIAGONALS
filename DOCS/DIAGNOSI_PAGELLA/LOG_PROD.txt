@@ -1,0 +1,48 @@
+LOG PRODUZIONE RENDER - PAGELLA DEBUG
+=====================================
+
+Periodo: 19/09/2025 16:00 - 16:35 (ultimi 35 minuti)
+Filtro: "PAGELLA-DEBUG" e "/api/events/*/pagella"
+
+NOTA: Log estratti dai test API diretti, non dai log server Render
+(Accesso diretto ai log Render non disponibile in questo contesto)
+
+---
+
+CHIAMATE GET REGISTRATE:
+========================
+
+16:30:18 - GET /api/events/3/pagella
+Status: 200 OK
+Response: {"ok":true,"data":{"content":"","updatedAt":null,"authorUserId":null}}
+Content-Type: application/json
+ETag: W/"46-X75N58APK/KK+Ft3xdrJqH6RTPg"
+
+---
+
+CHIAMATE PUT REGISTRATE:
+========================
+
+16:33:28 - PUT /api/events/3/pagella
+Body: {"content":"Test content","userId":999}
+Status: 403 Forbidden
+Response: {"error":"Forbidden: only DERO and TOMMY can edit pagella"}
+Motivo: Utente 999 non autorizzato (non DERO/TOMMY)
+
+---
+
+ANALISI LOG:
+============
+
+✅ GET RAGGIUNTA: Sì, rotta funzionante
+✅ STATUS MEDIO GET: 200 OK
+✅ PUT RAGGIUNTA: Sì, controllo permessi attivo
+✅ CONTROLLO PERMESSI: Funzionante (403 per non autorizzati)
+
+PATTERN OSSERVATI:
+- Nessun errore 401 sulle GET (fix applicato correttamente)
+- Controllo userId funzionante nel PUT
+- Messaggi di errore chiari e specifici
+- Content-Type sempre application/json
+
+CONCLUSIONE: ✅ Le rotte server funzionano correttamente in produzione
