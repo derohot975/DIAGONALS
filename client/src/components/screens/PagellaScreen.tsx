@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Home, ArrowLeft, Save } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
-import { WineEvent } from '@shared/schema';
+import { WineEvent, User } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
 interface PagellaScreenProps {
   event: WineEvent | null;
+  currentUser: User | null;
   onGoBack: () => void;
   onGoHome: () => void;
 }
 
-export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScreenProps) {
+export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }: PagellaScreenProps) {
   const [content, setContent] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -66,9 +67,23 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
   }, [content, draftKey, loading]);
 
   const handleSave = async () => {
-    // Prova a salvare su server (richiede admin/owner); in ogni caso teniamo la bozza locale
+    // Prova a salvare su server (richiede DERO/TOMMY); in ogni caso teniamo la bozza locale
+    if (!currentUser) {
+      localStorage.setItem(draftKey, content);
+      setIsSaved(true);
+      setSaveMessage('Bozza salvata localmente (login richiesto per pubblicare)');
+      setTimeout(() => {
+        setIsSaved(false);
+        setSaveMessage('');
+      }, 3000);
+      return;
+    }
+
     try {
-      const res = await apiRequest('PUT', `/api/events/${event.id}/pagella`, { content });
+      const res = await apiRequest('PUT', `/api/events/${event.id}/pagella`, { 
+        content, 
+        userId: currentUser.id 
+      });
       if (res.ok) {
         // sincronia bozza
         localStorage.setItem(draftKey, content);
@@ -85,7 +100,7 @@ export default function PagellaScreen({ event, onGoBack, onGoHome }: PagellaScre
         // mostra toast: non hai permessi per pubblicare, ma la bozza è salva sul dispositivo
         localStorage.setItem(draftKey, content);
         setIsSaved(true);
-        setSaveMessage('Bozza salvata localmente (solo admin può pubblicare)');
+        setSaveMessage('Bozza salvata localmente (solo DERO e TOMMY possono pubblicare)');
         if (import.meta.env.DEV) {
           console.log('Pagella PUT non autorizzato - salvata bozza locale');
         }

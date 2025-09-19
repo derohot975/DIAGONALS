@@ -213,6 +213,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
       return (
         <PagellaScreen
           event={currentEvent}
+          currentUser={currentUser}
           onGoBack={() => setCurrentScreen('historicEvents')}
           onGoHome={() => setCurrentScreen('events')}
         />

@@ -74,19 +74,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // BEGIN DIAGONALE PAGELLA - Shared pagella endpoints
   
-  // Helper: verifica autenticazione (riusa logica esistente se presente)
-  function requireAuth(req: Request, res: Response, next: any) {
-    // Per ora implementazione semplice - da adattare alla logica auth esistente
-    // Assumiamo che l'autenticazione sia gestita via session/cookie
-    const user = (req as any).user || (req as any).session?.user;
-    if (!user) return res.status(401).json({ error: "Unauthorized" });
-    (req as any).user = user;
-    next();
-  }
-
   // Helper: verifica se l'utente può scrivere (solo DERO e TOMMY)
-  async function canEditPagella(req: Request, eventId: number) {
-    const user = (req as any).user;
+  async function canEditPagella(userId: number) {
+    if (!userId) return false;
+    
+    const user = await storage.getUser(userId);
     if (!user || !user.name) return false;
     
     // Solo DERO e TOMMY possono modificare (case-insensitive)
@@ -95,8 +87,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return allowedUsers.includes(userName);
   }
 
-  // GET /api/events/:id/pagella — leggibile da tutti gli utenti autenticati
-  app.get("/api/events/:id/pagella", requireAuth, async (req: Request, res: Response) => {
+  // GET /api/events/:id/pagella — leggibile da tutti (come altre rotte di lettura)
+  app.get("/api/events/:id/pagella", async (req: Request, res: Response) => {
+    // Log diagnostici temporanei per produzione
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`[PAGELLA-DEBUG] GET /api/events/${req.params.id}/pagella - method: ${req.method}, path: ${req.path}`);
+    }
+    
     try {
       const eventId = Number(req.params.id);
       if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
@@ -124,20 +121,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PUT /api/events/:id/pagella — scrivibile solo da admin/owner
-  app.put("/api/events/:id/pagella", requireAuth, async (req: Request, res: Response) => {
+  // PUT /api/events/:id/pagella — scrivibile solo da DERO e TOMMY
+  app.put("/api/events/:id/pagella", async (req: Request, res: Response) => {
+    // Log diagnostici temporanei per produzione
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`[PAGELLA-DEBUG] PUT /api/events/${req.params.id}/pagella - method: ${req.method}, path: ${req.path}, userId: ${req.body.userId}`);
+    }
+    
     try {
       const eventId = Number(req.params.id);
       if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
       
-      const { content } = req.body ?? {};
+      const { content, userId } = req.body;
       if (typeof content !== "string") return res.status(400).json({ error: "content must be string" });
+      if (!userId) {
+        if (process.env.NODE_ENV === 'production') {
+          console.log(`[PAGELLA-DEBUG] PUT 400 - userId missing`);
+        }
+        return res.status(400).json({ error: "userId is required" });
+      }
       
-      const allowed = await canEditPagella(req, eventId);
-      if (!allowed) return res.status(403).json({ error: "Forbidden: only DERO and TOMMY can edit pagella" });
+      const allowed = await canEditPagella(userId);
+      if (!allowed) {
+        if (process.env.NODE_ENV === 'production') {
+          console.log(`[PAGELLA-DEBUG] PUT 403 - user ${userId} not allowed`);
+        }
+        return res.status(403).json({ error: "Forbidden: only DERO and TOMMY can edit pagella" });
+      }
       
-      const user = (req as any).user;
-      await upsertPagella(eventId, content, user?.id ?? null);
+      await upsertPagella(eventId, content, userId);
       return res.json({ ok: true });
     } catch (error) {
       console.error('Update pagella error:', error);
