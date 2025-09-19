@@ -226,7 +226,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       </div>
       
       {/* Pulsanti Condividi e Home fissi in fondo */}
-      <div className="fixed bottom-4 left-0 right-0 z-[9999] flex justify-center">
+      <div className="fixed left-0 right-0 z-[9999] flex justify-center" style={{bottom: 'var(--bottom-nav-offset)'}}>
         <div className="flex items-center space-x-4">
           <button 
             onClick={handleExport}

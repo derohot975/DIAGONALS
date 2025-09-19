@@ -166,7 +166,7 @@ export default function EventListScreen({
         </div>
         
         {/* Pulsanti Admin e Storico Eventi in basso */}
-        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
+        <div className="fixed left-0 right-0 z-50 flex justify-center" style={{bottom: 'var(--bottom-nav-offset)'}}>
           <div className="flex items-center space-x-4">
             {onShowAdmin && (
               <button
