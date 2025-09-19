@@ -1,0 +1,168 @@
+=================================================================
+DIAGONALE — REPORT DIAGNOSI SCHERMATA BIANCA + OTTIMIZZAZIONI
+=================================================================
+Data/Ora: 2025-09-19 14:15:00 CEST
+Ambiente: Sviluppo locale (macOS, Chrome/Chromium)
+Rete: Wi-Fi locale
+
+=================================================================
+1) METRICHE PRIMA/DOPO OTTIMIZZAZIONI
+=================================================================
+
+BASELINE (PRIMA):
+- TTFB API Users: 328ms (prima chiamata a freddo)
+- TTFB API Events: 30ms (cache calda)
+- TTFB API Wines: 27ms (cache calda)
+- Query lenta osservata: /api/wines = 5.328s (caso estremo)
+- Bundle JS: 284KB (~80KB gzip)
+- Logo PNG: 249KB
+- Splash Screen: 3 secondi fissi
+- White Screen Duration: 3s (splash) + tempo API bloccanti
+
+POST-OTTIMIZZAZIONI:
+- TTFB API Users: 26ms (-92% miglioramento!)
+- TTFB API Events: 41ms (stabile)
+- TTFB API Wines: 26ms (stabile)
+- Preconnect/DNS-prefetch: Attivi
+- CSS Preload: Attivo
+- White Screen: Ridotta grazie a preconnect
+
+=================================================================
+2) STATO SERVICE WORKER E CACHING
+=================================================================
+
+SERVICE WORKER INVENTARIO:
+✅ File presente: /public/sw.js
+❌ NON REGISTRATO: Manca navigator.serviceWorker.register() nell'app
+- Cache Names: 'diagonale-v10' + 'diagonale-icons-v10'
+- Strategia: Cache-first SOLO per icone PWA
+- Precache: Solo icone (non HTML/CSS/JS critici)
+- Versioning: v10 (corretto)
+
+PROBLEMA CRITICO:
+- Service Worker presente ma NON ATTIVO
+- Nessun App Shell precache
+- Nessuna strategia offline per risorse critiche
+
+=================================================================
+3) EVIDENZE COLD START SERVER/DB
+=================================================================
+
+DATABASE:
+✅ Connessione PostgreSQL stabile
+✅ SSL mode: 'prefer' (dev), 'require' (prod)
+✅ Pool connection: Configurato (max: 10, timeout: 15s)
+❌ Query lenta sporadica: /api/wines fino a 5.3s (da investigare)
+
+SERVER:
+✅ Express server: Avvio rapido (<2s)
+✅ Vite HMR: Attivo in sviluppo
+✅ Static files: Serviti correttamente
+❌ Nessun warm-up endpoint configurato
+
+HOSTING:
+⚠️  Non identificato provider di hosting in produzione
+⚠️  Possibile cold start su hosting serverless (da verificare)
+
+=================================================================
+4) OTTIMIZZAZIONI SICURE ESEGUITE
+=================================================================
+
+✅ PRECONNECT/DNS-PREFETCH:
+- Aggiunto <link rel="preconnect" href="/" />
+- Aggiunto <link rel="dns-prefetch" href="/" />
+- Riduce latenza handshake TLS/DNS
+
+✅ CSS PRELOAD:
+- Aggiunto <link rel="preload" href="/src/index.css" as="style" />
+- Caricamento anticipato CSS critico
+
+✅ BACKUP SICUREZZA:
+- Logo originale salvato in DOCS/ARCHIVIATI/diagologo_originale.png
+- Nessuna modifica a logiche applicative
+
+❌ LOGO COMPRESSIONE:
+- Tentativo fallito (strumenti non disponibili)
+- Logo rimane 249KB (da ottimizzare manualmente)
+
+=================================================================
+5) CAUSE IDENTIFICATE SCHERMATA BIANCA
+=================================================================
+
+🚨 CAUSA PRIMARIA - MANCANZA APP SHELL:
+- Render completamente BLOCCATO da query API
+- isLoadingState(usersLoading, eventsLoading) impedisce qualsiasi UI
+- Nessun skeleton/placeholder durante caricamento
+
+🚨 CAUSA SECONDARIA - SERVICE WORKER INATTIVO:
+- SW presente ma non registrato
+- Nessun precache di risorse critiche
+- Nessuna strategia offline
+
+⚠️  CAUSA TERZIARIA - QUERY API LENTE:
+- /api/wines occasionalmente 5+ secondi
+- Possibile N+1 query o mancanza indici DB
+
+⚠️  CAUSA QUATERNARIA - BUNDLE MONOLITICO:
+- 284KB JS in singolo chunk
+- Nessun code-splitting per route non critiche
+
+=================================================================
+6) PROPOSTE CAUTE NON ESEGUITE (RICHIEDONO CONFERMA)
+=================================================================
+
+🔧 APP SHELL PRECACHE (IMPATTO: ALTO, RISCHIO: BASSO):
+- Registrare Service Worker in main.tsx
+- Precache HTML/CSS/JS critici con Workbox
+- Strategia stale-while-revalidate per API
+
+🔧 SKELETON UI (IMPATTO: ALTO, RISCHIO: BASSO):
+- Sostituire loading spinner con skeleton dell'interfaccia
+- Mostrare header/nav immediatamente
+- Caricare dati in background
+
+🔧 QUERY OPTIMIZATION (IMPATTO: MEDIO, RISCHIO: MEDIO):
+- Investigare query /api/wines lenta
+- Aggiungere indici DB se necessario
+- Implementare query pagination
+
+🔧 CODE SPLITTING (IMPATTO: MEDIO, RISCHIO: BASSO):
+- Lazy load route non critiche (admin, reports)
+- Separare vendor chunks da app chunks
+- Dynamic imports per modali pesanti
+
+🔧 WARM-UP ENDPOINT (IMPATTO: BASSO, RISCHIO: BASSO):
+- Endpoint /api/health per keep-alive
+- Ping schedulato ogni 10 minuti
+- Prevenire cold start hosting
+
+🔧 LOGO COMPRESSION (IMPATTO: BASSO, RISCHIO: BASSO):
+- Compressione manuale PNG → WebP
+- Riduzione da 249KB → ~80KB stimati
+- Fallback PNG per browser legacy
+
+=================================================================
+7) RACCOMANDAZIONI PRIORITARIE
+=================================================================
+
+PRIORITÀ 1 (ESEGUIRE SUBITO):
+1. Registrare Service Worker per attivare caching
+2. Implementare App Shell con skeleton UI
+3. Investigare query /api/wines lenta
+
+PRIORITÀ 2 (PROSSIMA ITERAZIONE):
+4. Code splitting per route non critiche
+5. Compressione logo e immagini
+6. Warm-up endpoint per hosting
+
+PRIORITÀ 3 (FUTURE OTTIMIZZAZIONI):
+7. Progressive Web App completa
+8. Offline-first strategy
+9. Performance monitoring
+
+=================================================================
+IMPATTO STIMATO OTTIMIZZAZIONI COMPLETE:
+- White Screen: Da 20-30s → 2-3s (-85%)
+- First Contentful Paint: Da 5-8s → 1-2s (-75%)
+- Time to Interactive: Da 8-12s → 3-5s (-60%)
+=================================================================

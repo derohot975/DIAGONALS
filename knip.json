@@ -1,0 +1,13 @@
+{
+  "entry": [
+    "client/src/main.tsx",
+    "server/index.ts",
+    "scripts/**/*.js"
+  ],
+  "project": [
+    "client/**/*.ts",
+    "client/**/*.tsx",
+    "server/**/*.ts",
+    "shared/**/*.ts"
+  ]
+}
