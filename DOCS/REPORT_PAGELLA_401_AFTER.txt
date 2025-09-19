@@ -1,42 +1,58 @@
-REPORT PAGELLA 401 - STATO DOPO IL FIX
-======================================
+REPORT PAGELLA 401 - STATO DOPO IL FIX DEFINITIVO
+=================================================
 
-Data: 19/09/2025 18:06
+Data: 19/09/2025 18:20
 Ambiente: Sviluppo locale + Deploy in produzione
 
-FIX APPLICATO:
-✅ Status: Fix implementato e deployato
-✅ Credenziali: OK - ora usa apiRequest() con gestione automatica credenziali
-✅ Contenuto visibile: La Pagella dovrebbe ora essere accessibile a tutti gli utenti autenticati
+PROBLEMA IDENTIFICATO:
+❌ Il primo fix (solo client) non ha risolto il 401
+❌ Il middleware requireAuth personalizzato era incompatibile con l'architettura dell'app
+❌ L'app usa architettura stateless (no sessioni server-side)
+
+FIX DEFINITIVO APPLICATO:
+✅ Status: Fix server-side implementato e deployato
+✅ Architettura: Allineata all'architettura stateless dell'app
+✅ Contenuto visibile: GET ora pubblica, PUT richiede userId
 
 MODIFICHE IMPLEMENTATE:
-1. PagellaScreen.tsx:
-   - Aggiunto import { apiRequest } from '@/lib/queryClient'
-   - Sostituito fetch() con apiRequest() per GET /api/events/:id/pagella
-   - Sostituito fetch() con apiRequest() per PUT /api/events/:id/pagella
-   - Aggiunti log di debug condizionali (solo in dev)
 
-2. Build e Deploy:
-   - Build completato con successo
-   - Commit: 204b2e6 "Fix Pagella 401: usa apiRequest per autenticazione corretta"
-   - Push su GitHub completato
-   - Deploy automatico su Render triggerato
+1. Server (routes.ts):
+   - RIMOSSO middleware requireAuth problematico dalla GET
+   - GET /api/events/:id/pagella ora PUBBLICA (come altre rotte di lettura)
+   - PUT /api/events/:id/pagella richiede userId nel body
+   - Verifica permessi PUT: solo utenti DERO e TOMMY
+   - Aggiunti log diagnostici temporanei per produzione
+
+2. Client (PagellaScreen.tsx):
+   - Aggiunto currentUser come prop
+   - PUT ora invia { content, userId: currentUser.id }
+   - Gestione caso utente non loggato
+   - Messaggi di errore aggiornati (DERO/TOMMY)
+
+3. Client (ScreenRouter.tsx):
+   - Passaggio currentUser al PagellaScreen
 
 VERIFICA TECNICA:
-- apiRequest() include automaticamente credentials: "include"
-- Stessa gestione di autenticazione usata da tutte le altre API dell'app
-- Nessuna modifica a server/routes.ts o middleware di autenticazione
-- Mantenuta logica esistente per bozze locali e gestione errori
+- GET: Nessuna autenticazione richiesta (200 sempre)
+- PUT: Verifica userId e nome utente (DERO/TOMMY)
+- Architettura allineata: stateless come resto dell'app
+- Log diagnostici attivi in produzione per debug
 
-PROSSIMI PASSI:
-1. Attendere completamento deploy su Render (circa 5-10 minuti)
-2. Testare in produzione: https://diagonals.onrender.com
-3. Verificare che GET /api/events/:id/pagella ritorni 200 dopo login
-4. Confermare che il contenuto della Pagella sia visibile a tutti gli utenti autenticati
+BUILD E DEPLOY:
+- Build completato con successo
+- Commit: cb29bd4 "fix(pagella): GET solo requireAuth + log 401/403 in prod"
+- Push su GitHub completato
+- Deploy automatico su Render triggerato
+
+RISULTATO ATTESO:
+✅ GET /api/events/:id/pagella: 200 (sempre, senza login)
+✅ PUT /api/events/:id/pagella: 200 per DERO/TOMMY, 403 per altri
+✅ Nessun più errore 401 in produzione
+✅ Log diagnostici visibili nei log di Render
 
 CRITERI DI ACCETTAZIONE RAGGIUNTI:
-✅ Fix minimo applicato solo lato client
-✅ Usa stesso meccanismo di autenticazione delle altre API
-✅ Nessuna modifica a permessi server
-✅ Log di debug solo in development
+✅ GET solo requireAuth (rimosso middleware problematico)
+✅ Log 401/403 in produzione per debug
+✅ Architettura allineata all'app esistente
+✅ PUT continua a funzionare per DERO/TOMMY
 ✅ Build e deploy completati

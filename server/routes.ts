@@ -150,7 +150,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       await upsertPagella(eventId, content, userId);
-      return res.json({ ok: true });
+      
+      // Ritorna i dati aggiornati incluso updated_at
+      const updatedPagella = await getPagellaByEventId(eventId);
+      const responseData = updatedPagella ? {
+        content: updatedPagella.content || "",
+        updatedAt: updatedPagella.updatedAt ? new Date(updatedPagella.updatedAt).toISOString() : null,
+        authorUserId: updatedPagella.authorUserId || null
+      } : {
+        content: content,
+        updatedAt: new Date().toISOString(),
+        authorUserId: userId
+      };
+      
+      return res.json({ ok: true, data: responseData });
     } catch (error) {
       console.error('Update pagella error:', error);
       return res.status(500).json({ error: "Internal server error" });
