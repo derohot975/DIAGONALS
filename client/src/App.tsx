@@ -13,6 +13,10 @@ import { apiRequest } from './lib/queryClient';
 import { isLoadingState } from './lib/utils';
 import AppShell from './components/AppShell';
 import ScreenRouter from './components/ScreenRouter';
+// BEGIN DIAGONALE APP SHELL - Import LoadingSkeleton
+import LoadingSkeleton from './components/LoadingSkeleton';
+import { performanceTelemetry } from './lib/performanceTelemetry';
+// END DIAGONALE APP SHELL
 
 import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 
@@ -31,6 +35,25 @@ import InstallPrompt from './components/InstallPrompt';
 
 
 type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+
+// BEGIN DIAGONALE APP SHELL - Feature Flags
+const ENABLE_APP_SHELL = import.meta.env.VITE_ENABLE_APP_SHELL !== 'false'; // Default: true
+const ENABLE_APP_SHELL_ON_INTRO = import.meta.env.VITE_ENABLE_APP_SHELL_ON_INTRO === 'true'; // Default: false
+
+// Route che dovrebbero mostrare skeleton (data-heavy)
+const DATA_HEAVY_SCREENS: Screen[] = ['events', 'adminEvents', 'eventDetails', 'eventResults', 'voting', 'historicEvents', 'pagella', 'admin'];
+
+// Determina se la route corrente dovrebbe mostrare skeleton
+const shouldShowSkeleton = (currentScreen: Screen): boolean => {
+  // Se skeleton su intro è disabilitato e siamo su auth, non mostrare skeleton
+  if (!ENABLE_APP_SHELL_ON_INTRO && currentScreen === 'auth') {
+    return false;
+  }
+  
+  // Mostra skeleton solo per route data-heavy
+  return DATA_HEAVY_SCREENS.includes(currentScreen);
+};
+// END DIAGONALE APP SHELL
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -176,8 +199,19 @@ function App() {
     enabled: !!selectedEventId && currentScreen === 'eventResults',
   });
 
+  // BEGIN DIAGONALE APP SHELL - Performance telemetry for data loading
+  useEffect(() => {
+    if (!usersLoading && !eventsLoading && users.length > 0) {
+      performanceTelemetry.markFirstDataReceived();
+    }
+  }, [usersLoading, eventsLoading, users.length]);
 
-
+  useEffect(() => {
+    if (!usersLoading && !eventsLoading && !showSplash && currentScreen !== 'auth') {
+      performanceTelemetry.markAppReady();
+    }
+  }, [usersLoading, eventsLoading, showSplash, currentScreen]);
+  // END DIAGONALE APP SHELL
 
   // All mutations now provided by domain-specific hooks
 
@@ -527,16 +561,35 @@ function App() {
   const currentEvent = selectedEventId ? events.find((e: WineEvent) => e.id === selectedEventId) || null : null;
 
 
+  // BEGIN DIAGONALE APP SHELL - Scoped loading logic
   if (isLoadingState(usersLoading, eventsLoading)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass-effect rounded-2xl shadow-2xl p-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(270,50%,65%)] mx-auto mb-4"></div>
-          <p className="text-gray-600">Caricamento...</p>
-        </div>
-      </div>
-    );
+    if (ENABLE_APP_SHELL && shouldShowSkeleton(currentScreen)) {
+      // App Shell: Mostra skeleton solo per route data-heavy
+      performanceTelemetry.markAppShellReady();
+      return <LoadingSkeleton showLogo={true} showNavigation={true} />;
+    } else {
+      // Fallback per route intro/auth: loading minimale o null
+      if (currentScreen === 'auth') {
+        // Per auth/intro: nessun skeleton, solo loading discreto
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#300505] to-[#8d0303]">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white/50"></div>
+          </div>
+        );
+      } else {
+        // Comportamento originale per altre route
+        return (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="glass-effect rounded-2xl shadow-2xl p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(270,50%,65%)] mx-auto mb-4"></div>
+              <p className="text-gray-600">Caricamento...</p>
+            </div>
+          </div>
+        );
+      }
+    }
   }
+  // END DIAGONALE APP SHELL
 
   // Show splash screen for 3 seconds on app start
   if (showSplash) {

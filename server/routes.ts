@@ -443,17 +443,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Wine routes
   app.get("/api/wines", async (req, res) => {
+    // BEGIN DIAGONALE APP SHELL - Performance telemetry (non-invasive)
+    const startTime = Date.now();
+    // END DIAGONALE APP SHELL
+    
     try {
       const eventId = req.query.eventId ? parseInt(req.query.eventId as string) : null;
+      
+      // BEGIN DIAGONALE APP SHELL - Query timing and diagnostics
+      let wines;
+      let queryType;
+      const queryStart = Date.now();
+      
       if (eventId) {
-        const wines = await storage.getWinesByEventId(eventId);
-        res.json(wines);
+        queryType = 'getWinesByEventId';
+        wines = await storage.getWinesByEventId(eventId);
       } else {
+        queryType = 'getAllWines';
         // Return all wines for EventListScreen
-        const wines = await storage.getAllWines();
-        res.json(wines);
+        wines = await storage.getAllWines();
       }
+      
+      const queryDuration = Date.now() - queryStart;
+      const totalDuration = Date.now() - startTime;
+      
+      // Server-Timing header per diagnostica client-side
+      res.set('Server-Timing', `wines-query;dur=${queryDuration}, wines-total;dur=${totalDuration}`);
+      
+      // Log diagnostico (solo console, nessun tracking)
+      console.log(`🍷 /api/wines: ${queryType} | ${wines.length} righe | Query: ${queryDuration}ms | Total: ${totalDuration}ms`);
+      
+      // TODO PERFORMANCE: Se queryDuration > 1000ms, considerare:
+      // - Indice su wines.eventId per getWinesByEventId
+      // - Paginazione per getAllWines se wines.length > 100
+      // - Cache query frequenti con TTL breve
+      if (queryDuration > 1000) {
+        console.warn(`⚠️ /api/wines: Query lenta rilevata (${queryDuration}ms) - ${queryType}`);
+      }
+      // END DIAGONALE APP SHELL
+      
+      res.json(wines);
     } catch (error) {
+      // BEGIN DIAGONALE APP SHELL - Error timing
+      const errorDuration = Date.now() - startTime;
+      console.error(`❌ /api/wines: Errore dopo ${errorDuration}ms`, error);
+      // END DIAGONALE APP SHELL
       res.status(500).json({ message: "Failed to fetch wines" });
     }
   });
