@@ -84,13 +84,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   }
 
-  // Helper: verifica se l'utente può scrivere (admin o owner dell'evento)
+  // Helper: verifica se l'utente può scrivere (solo DERO e TOMMY)
   async function canEditPagella(req: Request, eventId: number) {
     const user = (req as any).user;
-    if (!user) return false;
-    if (user.isAdmin) return true;
-    // Per ora solo admin - estendibile per owner evento
-    return false;
+    if (!user || !user.name) return false;
+    
+    // Solo DERO e TOMMY possono modificare (case-insensitive)
+    const allowedUsers = ['DERO', 'TOMMY'];
+    const userName = user.name.toUpperCase();
+    return allowedUsers.includes(userName);
   }
 
   // GET /api/events/:id/pagella — leggibile da tutti gli utenti autenticati
@@ -120,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (typeof content !== "string") return res.status(400).json({ error: "content must be string" });
       
       const allowed = await canEditPagella(req, eventId);
-      if (!allowed) return res.status(403).json({ error: "Forbidden: only admin can edit pagella" });
+      if (!allowed) return res.status(403).json({ error: "Forbidden: only DERO and TOMMY can edit pagella" });
       
       const user = (req as any).user;
       await upsertPagella(eventId, content, user?.id ?? null);
