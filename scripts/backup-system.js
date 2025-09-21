@@ -28,8 +28,6 @@ const filesToBackup = [
   'drizzle.config.ts',
   'components.json',
   '.gitignore',
-  '.replit',
-  'replit.md',
   'README.md',
   '.env.development'
 ];
