@@ -29,6 +29,18 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
   const [price, setPrice] = useState('');
   const [alcohol, setAlcohol] = useState('');
 
+  // Helper to reset all form fields
+  const resetFormFields = () => {
+    setType('');
+    setName('');
+    setProducer('');
+    setGrape('');
+    setYear('');
+    setOrigin('');
+    setPrice('');
+    setAlcohol('');
+  };
+
   // Pre-compile fields when editing existing wine
   useEffect(() => {
     if (wine && isOpen) {
@@ -41,15 +53,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
       setPrice(wine.price?.toString() || '');
       setAlcohol(wine.alcohol?.toString() || '');
     } else if (isOpen && !wine) {
-      // Reset all fields when opening for new registration
-      setType('');
-      setName('');
-      setProducer('');
-      setGrape('');
-      setYear('');
-      setOrigin('');
-      setPrice('');
-      setAlcohol('');
+      resetFormFields();
     }
   }, [wine, isOpen]);
 
@@ -83,9 +87,10 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     }
     
     // Limit to reasonable alcohol values (0-50%)
+    const MAX_ALCOHOL_PERCENTAGE = 50;
     const numValue = parseFloat(formatted);
-    if (!isNaN(numValue) && numValue > 50) {
-      return '50';
+    if (!isNaN(numValue) && numValue > MAX_ALCOHOL_PERCENTAGE) {
+      return MAX_ALCOHOL_PERCENTAGE.toString();
     }
     
     return formatted;
@@ -101,7 +106,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && isValidAlcohol) {
       onRegisterWine({
         type,
-        name: name.trim(), // Nome vino già maiuscolo dal campo
+        name: name.trim(),
         producer: producer.trim(),
         grape: grape.trim(),
         year: parseInt(year),
@@ -109,14 +114,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
         price: parseFloat(price),
         alcohol: alcoholValue
       });
-      setType('');
-      setName('');
-      setProducer('');
-      setGrape('');
-      setYear('');
-      setOrigin('');
-      setPrice('');
-      setAlcohol('');
+      resetFormFields();
       onClose();
     }
   };
@@ -133,8 +131,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
           </div>
         </div>
       )}
-
-
       
       <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
@@ -205,7 +201,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 onChange={(e) => setYear(e.target.value)}
                 min="1900"
                 max="2025"
-
                 className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
@@ -240,7 +235,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={origin}
               onChange={(e) => setOrigin(capitalizeFirstLetter(e.target.value))}
-
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
