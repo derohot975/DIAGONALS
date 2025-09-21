@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home, ChevronUp, ChevronDown, Shield } from "@/components/icons";
+import { Home, Shield } from "@/components/icons";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 import diagoLogo from "@assets/diagologo.png";
@@ -28,8 +27,6 @@ export default function SimpleVotingScreen({
   const queryClient = useQueryClient();
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [showAdminPinModal, setShowAdminPinModal] = useState(false);
-
-
   // Fetch wines for this event
   const { data: wines = [] } = useQuery<Wine[]>({
     queryKey: ['/api/wines', event.id],
@@ -56,7 +53,6 @@ export default function SimpleVotingScreen({
   // Vote mutation
   const voteMutation = useMutation({
     mutationFn: async ({ wineId, score }: { wineId: number; score: number }) => {
-      // Vote data submission
       const response = await fetch('/api/votes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,13 +60,12 @@ export default function SimpleVotingScreen({
           eventId: event.id,
           wineId,
           userId: currentUser.id,
-          score: Number(score) // Ensure it's sent as number
+          score: Number(score)
         })
       });
       
       if (!response.ok) {
         const errorData = await response.json();
-        // Vote error handled
         throw new Error(errorData.message || 'Failed to vote');
       }
       
@@ -80,7 +75,6 @@ export default function SimpleVotingScreen({
       queryClient.invalidateQueries({ queryKey: ['/api/votes', event.id] });
     },
     onError: (error) => {
-      // Vote mutation error handled
       toast({
         title: "Errore nel salvare il voto",
         variant: "destructive"
@@ -116,14 +110,6 @@ export default function SimpleVotingScreen({
       voteMutation.mutate({ wineId: selectedWineId, score });
     }
   };
-
-  const handleOpenVotingModal = (wineId: number) => {
-    setSelectedWineId(wineId);
-  };
-
-  const selectedWine = wines.find(w => w.id === selectedWineId);
-  const selectedWineVote = selectedWine ? getUserVoteForWine(selectedWine.id) : undefined;
-  const selectedWineContributor = selectedWine ? users.find(u => u.id === selectedWine.userId) : undefined;
 
   return (
     <div className="flex-1 flex flex-col">
@@ -228,9 +214,6 @@ export default function SimpleVotingScreen({
                     </div>
 
                   </div>
-
-
-
                 </div>
               );
             })}
@@ -256,7 +239,10 @@ export default function SimpleVotingScreen({
           }
         }}
         currentVote={selectedWineId ? Number(getUserVoteForWine(selectedWineId)?.score) : undefined}
-        wineName={selectedWineId ? `Vino di ${getWineContributor(wines.find(w => w.id === selectedWineId)?.userId || 0).toUpperCase()}` : ''}
+        wineName={selectedWineId ? (() => {
+          const wine = wines.find(w => w.id === selectedWineId);
+          return wine ? `Vino di ${getWineContributor(wine.userId).toUpperCase()}` : '';
+        })() : ''}
       />
 
       {/* Admin PIN Modal */}
