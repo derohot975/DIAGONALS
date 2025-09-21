@@ -82,27 +82,28 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
 
   return (
     <div className="h-full flex flex-col">
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
-        />
+      {/* Fixed Header - Logo + Title */}
+      <div className="sticky top-0 z-10 flex-shrink-0" style={{background: '#300505'}}>
+        <div className="flex justify-center pt-8 pb-4">
+          <img 
+            src={diagoLogo} 
+            alt="DIAGO Logo" 
+            className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
+          />
+        </div>
+        <div className="text-center pb-6">
+          <h2 className="text-2xl font-bold text-yellow-200 mb-2">Classifica Finale</h2>
+        </div>
       </div>
 
       {/* Scrollable Content */}
       <div 
-        className="flex-1 px-4 scrollable-area min-h-0" 
+        className="flex-1 px-4 scrollable-area min-h-0 overflow-y-auto" 
         style={{
-          maxHeight: 'calc(100dvh - 8rem - var(--bottom-nav-total))',
           paddingBottom: 'var(--bottom-nav-total)'
         }}
       >
         <div className="max-w-4xl mx-auto space-y-4">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-yellow-200 mb-2">Classifica Finale</h2>
-          </div>
           
           {results.length === 0 ? (
             <div className="text-center py-12">

@@ -123,15 +123,6 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      {/* Nome utente sopra il modale */}
-      {currentUser && (
-        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 z-60">
-          <div className="glass-effect rounded-xl px-6 py-2 shadow-lg">
-            <span className="text-white font-bold text-lg">{currentUser.name}</span>
-          </div>
-        </div>
-      )}
-      
       <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-[hsl(270,50%,65%)]">
