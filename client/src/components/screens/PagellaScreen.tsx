@@ -136,7 +136,7 @@ export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }
     }
   }, [canEdit, draftKey, performAutosave]);
 
-  // Soft polling ogni 3s per sincronizzazione
+  // Soft polling ogni 10s per sincronizzazione (lettori)
   useEffect(() => {
     if (loading) return;
     
@@ -152,7 +152,7 @@ export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }
           }
         }
       }
-    }, 3000);
+    }, 10000);
     
     return () => {
       if (pollingIntervalRef.current) {
