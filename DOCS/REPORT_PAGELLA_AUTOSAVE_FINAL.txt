@@ -1,0 +1,100 @@
+REPORT PAGELLA AUTOSAVE - IMPLEMENTAZIONE INTERROTTA
+===================================================
+
+Data: 21/09/2025 14:21
+Status: ❌ FERMATA CAUTELATIVA - PROBLEMA CRITICO IDENTIFICATO
+
+OBIETTIVO ORIGINALE:
+- Popolare Pagella in produzione per evento id=3
+- Implementare autosave per DERO/TOMMY
+- Readonly + polling per altri utenti
+
+ESITO FASE 1 - SEED CONTENUTO IN PRODUZIONE:
+============================================
+
+PRE-CHECK:
+✅ Git status: Clean
+✅ DERO User ID: 2 (confermato)
+✅ Event ID: 3 (target confermato)
+
+TENTATIVO 1:
+Command: curl -i -X PUT -H "Content-Type: application/json" -d '{"content":"[SEED DI TEST] Pagellone condiviso attivo. Ultimo aggiornamento automatico in tempo reale.","userId":2}' https://diagonals.onrender.com/api/events/3/pagella
+
+Response PUT:
+HTTP/2 200 
+{"ok":true,"data":{"content":"[SEED DI TEST] Pagellone condiviso attivo. Ultimo aggiornamento automatico in tempo reale.","updatedAt":"2025-09-21T12:20:54.617Z","authorUserId":2}}
+
+Verifica GET:
+curl -s https://diagonals.onrender.com/api/events/3/pagella
+{"ok":true,"data":{"content":"","updatedAt":null,"authorUserId":null}}
+
+TENTATIVO 2:
+Command: curl -X PUT [...] '{"content":"[TEST 2] Secondo tentativo seed Pagella","userId":2}' [...]
+
+Response PUT:
+{"ok":true,"data":{"content":"[TEST 2] Secondo tentativo seed Pagella","updatedAt":"2025-09-21T12:21:15.948Z","authorUserId":2}}
+
+Verifica GET (dopo 2s):
+{"ok":true,"data":{"content":"","updatedAt":null,"authorUserId":null}}
+
+PROBLEMA CRITICO IDENTIFICATO:
+==============================
+
+❌ INCONSISTENZA DATABASE/API:
+- PUT ritorna 200 con dati corretti (content, updatedAt, authorUserId)
+- GET immediato successivo ritorna sempre contenuto vuoto
+- Indica problema nella persistenza database o cache
+
+POSSIBILI CAUSE:
+1. Funzione upsertPagella() non salva effettivamente nel DB
+2. Problema di transazione database non committata
+3. Cache/CDN che serve dati obsoleti
+4. Problema di connessione database in produzione
+5. Tabella event_pagella non sincronizzata
+
+AZIONE INTRAPRESA:
+==================
+
+✅ FERMATA CAUTELATIVA come richiesto
+- Non procedo con implementazione client
+- Non modifico codice esistente
+- Problema deve essere risolto lato server prima
+
+RACCOMANDAZIONI:
+================
+
+1. INVESTIGAZIONE SERVER:
+   - Verificare funzione upsertPagella() in server/db/pagella.ts
+   - Controllare log database in produzione
+   - Verificare transazioni e commit
+
+2. TEST DATABASE:
+   - Connessione diretta a PostgreSQL produzione
+   - Query manuale su tabella event_pagella
+   - Verifica se record vengono effettivamente inseriti
+
+3. FIX PRIORITARIO:
+   - Risolvere persistenza database prima di procedere
+   - Test completo PUT/GET in produzione
+   - Solo dopo fix: riprendere implementazione autosave
+
+STATO FINALE:
+=============
+
+❌ IMPLEMENTAZIONE INTERROTTA
+❌ Seed produzione FALLITO (problema server)
+⏸️  Fasi 2-7 SOSPESE fino a fix database
+✅ Nessuna modifica al codice client (cautela mantenuta)
+
+ROLLBACK NECESSARIO: Nessuno (nessuna modifica effettuata)
+PROSSIMO STEP: Fix server-side upsertPagella() e test database
+
+FILE COINVOLTI DA INVESTIGARE:
+- server/db/pagella.ts (funzione upsertPagella)
+- server/routes.ts (endpoint PUT pagella)
+- Database produzione (tabella event_pagella)
+
+CONCLUSIONE:
+============
+Implementazione sospesa per problema critico server-side.
+Necessario fix database prima di procedere con autosave client.

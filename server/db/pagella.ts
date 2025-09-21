@@ -20,7 +20,8 @@ export async function getPagellaByEventId(eventId: number) {
     WHERE event_id = ${eventId}
     LIMIT 1;
   `);
-  return (res as any).rows?.[0] ?? null;
+  
+  return (res as any)[0] ?? null;
 }
 
 export async function upsertPagella(eventId: number, content: string, authorUserId: number | null) {
