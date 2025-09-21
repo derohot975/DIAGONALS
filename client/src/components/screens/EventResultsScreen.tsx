@@ -83,8 +83,8 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
   return (
     <div className="h-full flex flex-col">
       {/* Fixed Header - Logo + Title */}
-      <div className="sticky top-0 z-10 flex-shrink-0" style={{background: '#300505'}}>
-        <div className="flex justify-center pt-8 pb-4">
+      <div className="sticky top-0 z-20 flex-shrink-0 pt-[env(safe-area-inset-top)]" style={{background: '#300505'}}>
+        <div className="flex justify-center pt-4 pb-4">
           <img 
             src={diagoLogo} 
             alt="DIAGO Logo" 
