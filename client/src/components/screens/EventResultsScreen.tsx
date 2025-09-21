@@ -100,8 +100,8 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div 
         className="px-4 scrollable-area overflow-y-auto" 
         style={{
-          height: 'calc(100dvh - 160px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
-          maxHeight: 'calc(100dvh - 160px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          height: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
+          maxHeight: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
         }}
       >
         <div className="max-w-4xl mx-auto space-y-4">
