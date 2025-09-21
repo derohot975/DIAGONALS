@@ -155,7 +155,12 @@ export default function SimpleVotingScreen({
       </div>
 
       {/* Scrollable Wine List */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div 
+        className="overflow-y-auto px-4 py-4" 
+        style={{
+          height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        }}
+      >
         <div className="max-w-sm mx-auto">
           <div className="space-y-3">
             {wines

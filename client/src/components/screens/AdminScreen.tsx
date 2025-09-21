@@ -54,7 +54,12 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div 
+        className="overflow-y-auto px-4 pb-4" 
+        style={{
+          height: 'calc(100dvh - 120px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        }}
+      >
         <div className="w-full max-w-md mx-auto">
           <div className="space-y-2">
             {/* 1. GESTISCI EVENTI */}

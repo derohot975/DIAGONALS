@@ -60,7 +60,12 @@ export default function EventDetailsScreen({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div 
+        className="overflow-y-auto px-4 pb-4" 
+        style={{
+          height: 'calc(100dvh - 120px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        }}
+      >
         <div className="max-w-4xl mx-auto space-y-4">
         <div className="glass-effect rounded-2xl shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">

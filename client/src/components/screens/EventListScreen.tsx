@@ -69,7 +69,12 @@ export default function EventListScreen({
       )}
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div 
+        className="overflow-y-auto px-4 pb-4" 
+        style={{
+          height: 'calc(100dvh - 140px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        }}
+      >
         <div className="max-w-2xl mx-auto space-y-6">
         
           {/* Active Events */}
