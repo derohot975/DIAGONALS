@@ -3,8 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertWineEventSchema, insertWineSchema, insertVoteSchema, insertEventReportSchema, EventReportData, UserRanking, WineResultDetailed } from "@shared/schema";
 import { z } from "zod";
-import { nanoid } from "nanoid";
 import { getPagellaByEventId, upsertPagella } from "./db/pagella";
+
+// Internal constants
+const ROUNDING_PRECISION = 10;
+const UNKNOWN_CONTRIBUTOR = 'Unknown';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // BEGIN DIAGONALE KEEP-ALIVE - Health endpoint
@@ -89,11 +92,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // GET /api/events/:id/pagella — leggibile da tutti (come altre rotte di lettura)
   app.get("/api/events/:id/pagella", async (req: Request, res: Response) => {
-    // Log diagnostici temporanei per produzione
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`[PAGELLA-DEBUG] GET /api/events/${req.params.id}/pagella - method: ${req.method}, path: ${req.path}`);
-    }
-    
     try {
       const eventId = Number(req.params.id);
       if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
@@ -123,11 +121,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // PUT /api/events/:id/pagella — scrivibile solo da DERO e TOMMY
   app.put("/api/events/:id/pagella", async (req: Request, res: Response) => {
-    // Log diagnostici temporanei per produzione
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`[PAGELLA-DEBUG] PUT /api/events/${req.params.id}/pagella - method: ${req.method}, path: ${req.path}, userId: ${req.body.userId}`);
-    }
-    
     try {
       const eventId = Number(req.params.id);
       if (!Number.isFinite(eventId)) return res.status(400).json({ error: "Invalid event id" });
@@ -135,17 +128,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { content, userId } = req.body;
       if (typeof content !== "string") return res.status(400).json({ error: "content must be string" });
       if (!userId) {
-        if (process.env.NODE_ENV === 'production') {
-          console.log(`[PAGELLA-DEBUG] PUT 400 - userId missing`);
-        }
         return res.status(400).json({ error: "userId is required" });
       }
       
       const allowed = await canEditPagella(userId);
       if (!allowed) {
-        if (process.env.NODE_ENV === 'production') {
-          console.log(`[PAGELLA-DEBUG] PUT 403 - user ${userId} not allowed`);
-        }
         return res.status(403).json({ error: "Forbidden: only DERO and TOMMY can edit pagella" });
       }
       
@@ -320,9 +307,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", async (req, res) => {
     try {
-      console.log('Creating event with data:', req.body);
       const eventData = insertWineEventSchema.parse(req.body);
-      console.log('Parsed event data:', eventData);
       
       // Verify user exists before creating event
       const user = await storage.getUser(eventData.createdBy);
@@ -331,12 +316,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
       const event = await storage.createWineEvent(eventData);
-      console.log('Created event:', event);
       res.status(201).json(event);
     } catch (error) {
       console.error('Event creation error:', error);
       if (error instanceof z.ZodError) {
-        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid event data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to create event", error: String(error) });
@@ -361,7 +344,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      console.log('Updating event:', id, 'with data:', req.body);
       const eventData = insertWineEventSchema.partial().parse(req.body);
       const event = await storage.updateWineEvent(id, eventData);
       if (!event) {
@@ -382,14 +364,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      console.log('Attempting to delete event:', id);
       const success = await storage.deleteWineEvent(id);
       if (!success) {
-        console.log('Event not found or delete failed:', id);
         res.status(404).json({ message: "Event not found" });
         return;
       }
-      console.log('Event deleted successfully:', id);
       res.json({ message: "Event deleted successfully" });
     } catch (error) {
       console.error('Delete event error:', error);
@@ -430,7 +409,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(event);
     } catch (error) {
-      console.error('Voting status update error:', error);
       res.status(500).json({ message: "Failed to update voting status" });
     }
   });
@@ -445,7 +423,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json({ votingStatus: event.votingStatus || 'not_started' });
     } catch (error) {
-      console.error('Get voting status error:', error);
       res.status(500).json({ message: "Failed to get voting status" });
     }
   });
@@ -457,7 +434,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const completionStatus = await storage.checkEventVotingComplete(id);
       res.json(completionStatus);
     } catch (error) {
-      console.error('Check voting completion error:', error);
       res.status(500).json({ message: "Failed to check voting completion" });
     }
   });
@@ -512,14 +488,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         return {
           ...wine,
-          averageScore: Math.round(averageScore * 10) / 10,
-          totalScore: Math.round(totalScore * 10) / 10,
+          averageScore: Math.round(averageScore * ROUNDING_PRECISION) / ROUNDING_PRECISION,
+          totalScore: Math.round(totalScore * ROUNDING_PRECISION) / ROUNDING_PRECISION,
           totalVotes: wineVotes.length,
           lodeCount: 0, // Legacy field
-          contributor: contributor?.name || 'Unknown',
+          contributor: contributor?.name || UNKNOWN_CONTRIBUTOR,
           votes: wineVotes.map(vote => ({
             userId: vote.userId,
-            userName: allUsers.find(u => u.id === vote.userId)?.name || 'Unknown',
+            userName: allUsers.find(u => u.id === vote.userId)?.name || UNKNOWN_CONTRIBUTOR,
             score: parseFloat(vote.score.toString())
           })),
           position: 0 // Will be set after sorting
@@ -540,8 +516,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           userId: participant.id,
           userName: participant.name,
-          totalScore: Math.round(totalScore * 10) / 10,
-          averageScore: Math.round(averageScore * 10) / 10,
+          totalScore: Math.round(totalScore * ROUNDING_PRECISION) / ROUNDING_PRECISION,
+          averageScore: Math.round(averageScore * ROUNDING_PRECISION) / ROUNDING_PRECISION,
           votesGiven: userVotes.length,
           position: 0 // Will be set after sorting
         };
@@ -562,7 +538,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalWines: wines.length,
           totalVotes: votes.length,
           averageScore: votes.length > 0 ? 
-            Math.round((votes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0) / votes.length) * 10) / 10 : 0
+            Math.round((votes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0) / votes.length) * ROUNDING_PRECISION) / ROUNDING_PRECISION : 0
         }
       };
 
@@ -601,7 +577,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const reportData: EventReportData = JSON.parse(report.reportData);
       res.json(reportData);
     } catch (error) {
-      console.error('Get report error:', error);
       res.status(500).json({ message: "Failed to get report" });
     }
   });
@@ -635,13 +610,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Server-Timing header per diagnostica client-side
       res.set('Server-Timing', `wines-query;dur=${queryDuration}, wines-total;dur=${totalDuration}`);
       
-      // Log diagnostico (solo console, nessun tracking)
-      console.log(`🍷 /api/wines: ${queryType} | ${wines.length} righe | Query: ${queryDuration}ms | Total: ${totalDuration}ms`);
-      
-      // TODO PERFORMANCE: Se queryDuration > 1000ms, considerare:
-      // - Indice su wines.eventId per getWinesByEventId
-      // - Paginazione per getAllWines se wines.length > 100
-      // - Cache query frequenti con TTL breve
+      // Performance monitoring for slow queries
       if (queryDuration > 1000) {
         console.warn(`⚠️ /api/wines: Query lenta rilevata (${queryDuration}ms) - ${queryType}`);
       }
@@ -649,10 +618,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(wines);
     } catch (error) {
-      // BEGIN DIAGONALE APP SHELL - Error timing
-      const errorDuration = Date.now() - startTime;
-      console.error(`❌ /api/wines: Errore dopo ${errorDuration}ms`, error);
-      // END DIAGONALE APP SHELL
       res.status(500).json({ message: "Failed to fetch wines" });
     }
   });
@@ -682,9 +647,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const wine = await storage.createWine(wineData);
       res.status(201).json(wine);
     } catch (error) {
-      console.error('Wine creation error:', error);
       if (error instanceof z.ZodError) {
-        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid wine data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to create wine" });
@@ -696,17 +659,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       
-      console.log('Original request body:', req.body);
-      
       // Trasforma il campo alcohol se presente
       const requestData = { ...req.body };
       if (requestData.alcohol !== undefined && requestData.alcohol !== null) {
-        console.log('Original alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
         requestData.alcohol = typeof requestData.alcohol === 'number' ? requestData.alcohol.toString() : requestData.alcohol;
-        console.log('Transformed alcohol value:', requestData.alcohol, 'Type:', typeof requestData.alcohol);
       }
-      
-      console.log('Processed request data:', requestData);
       
       // Creo uno schema di update specifico che gestisce correttamente l'alcohol
       const updateWineSchema = z.object({
@@ -727,7 +684,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const wineData = updateWineSchema.parse(requestData);
-      console.log('Final validated data:', wineData);
       
       const wine = await storage.updateWine(id, wineData);
       if (!wine) {
@@ -736,17 +692,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(wine);
     } catch (error) {
-      console.error('Wine update error:', error);
       if (error instanceof z.ZodError) {
-        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid wine data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to update wine" });
       }
     }
   });
-
-
 
   // Vote routes
   app.get("/api/votes", async (req, res) => {
@@ -775,17 +727,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/votes", async (req, res) => {
     try {
-      console.log('Received vote data:', req.body);
-      
       // Ensure score is a number
       const voteData = {
         ...req.body,
         score: Number(req.body.score)
       };
       
-      console.log('Processed vote data:', voteData);
       const validatedData = insertVoteSchema.parse(voteData);
-      console.log('Validated vote data:', validatedData);
       
       // Check if user already voted for this wine
       const existingVote = await storage.getUserVoteForWine(validatedData.userId, validatedData.wineId);
@@ -799,9 +747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(201).json(vote);
       }
     } catch (error) {
-      console.error('Vote creation error:', error);
       if (error instanceof z.ZodError) {
-        console.error('Validation errors:', error.errors);
         res.status(400).json({ message: "Invalid vote data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to create vote" });
@@ -818,8 +764,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch votes" });
     }
   });
-
-
 
   app.get("/api/events/:eventId/results", async (req, res) => {
     try {
@@ -846,10 +790,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         return {
           ...wine,
-          averageScore: Math.round(averageScore * 10) / 10,
+          averageScore: Math.round(averageScore * ROUNDING_PRECISION) / ROUNDING_PRECISION,
           totalVotes: wineVotes.length,
-          contributor: contributor?.name || "Unknown",
-          votes: voteDetails // Aggiungi i dettagli dei voti
+          contributor: contributor?.name || UNKNOWN_CONTRIBUTOR,
+          votes: voteDetails
         };
       }).sort((a, b) => b.averageScore - a.averageScore);
       
