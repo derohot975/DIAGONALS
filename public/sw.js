@@ -7,8 +7,11 @@ const STATIC_CACHE = `diagonale-static-${CACHE_VERSION}`;
 
 // Cache delle icone PWA
 const ICON_URLS = [
-  '/pwa-icon-1753573265.png?v=10',
   '/apple-touch-icon.png',
+  '/icon-96x96.png?v=10',
+  '/icon-144x144.png?v=10',
+  '/icon-192x192.png?v=10',
+  '/icon-512x512.png?v=10',
   '/manifest.json?v=10'
 ];
 
