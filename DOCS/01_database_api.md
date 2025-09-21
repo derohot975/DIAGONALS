@@ -1,6 +1,10 @@
 
 # 📊 Database Schema & API Endpoints
 
+**Ultimo aggiornamento:** 21 Settembre 2025  
+**Versione:** v1.0.0 - Schema stabile  
+**Database:** PostgreSQL + Drizzle ORM
+
 ## 🗄️ Database Schema
 
 ### Tables Overview

@@ -1,34 +1,12 @@
-# STATUS PROGETTO DIAGONALE - REPORT UNIFICATO
+# STATUS PROGETTO DIAGONALE
 
-**Data consolidamento:** 17 Settembre 2025, 01:40  
+**Ultimo aggiornamento:** 21 Settembre 2025, 01:40  
 **Progetto:** DIAGONALE Wine Tasting App v1.0.0  
 **Obiettivo:** Ottimizzazione completa storage, dipendenze e performance  
 **Status:** ✅ **COMPLETATO CON SUCCESSO**
 
 ---
-
-## 📋 INDICE
-
-1. [CONTESTO INIZIALE E DIAGNOSI](#1-contesto-iniziale-e-diagnosi)
-2. [FASE 1: DRY-RUN E APPLICAZIONE OTTIMIZZAZIONI](#2-fase-1-dry-run-e-applicazione-ottimizzazioni)
-3. [FASE 2: RIMOZIONE FRAMER-MOTION E BINARI PRODUZIONE](#3-fase-2-rimozione-framer-motion-e-binari-produzione)
-4. [OTTIMIZZAZIONI UI: LUCIDE-REACT E BUNDLE](#4-ottimizzazioni-ui-lucide-react-e-bundle)
-5. [DECISIONI: COSA NON FARE E MOTIVAZIONI](#5-decisioni-cosa-non-fare-e-motivazioni)
-6. [STATO ATTUALE E RACCOMANDAZIONI FUTURE](#6-stato-attuale-e-raccomandazioni-future)
-7. [FILE ORIGINALI INCLUSI NEL MERGE](#7-file-originali-inclusi-nel-merge)
-8. [FILE POTENZIALMENTE ELIMINABILI](#8-file-potenzialmente-eliminabili)
-9. [CHANGELOG CRONOLOGICO](#9-changelog-cronologico)
-
----
-
-## 1. CONTESTO INIZIALE E DIAGNOSI
-
-### 📊 Stato Pre-Ottimizzazione (15 Settembre 2025)
-
-| Componente | Dimensione | Percentuale |
-|------------|------------|-------------|
-| **Progetto totale** | 449 MB | 100% |
-| node_modules | 272 MB | 60.6% |
+{{ ... }}
 | Repository .git | 169 MB | 37.6% |
 | Codice sorgente | ~4 MB | 0.9% |
 
@@ -42,6 +20,17 @@
 - **Binari platform-specific:** ~57.6MB overhead produzione
 - **Repository Git pesante:** 169MB per progetto di queste dimensioni
 
+### ⚠️ Problemi Risolti
+- ✅ **RISOLTO:** TypeScript errors eliminati (use-toast fallback)
+- ✅ **RISOLTO:** Asset cleanup completato (diagonale-logo.svg rimosso)
+- ✅ **RISOLTO:** UI overlap issues (results screen padding)
+- ✅ **RISOLTO:** Modal scroll bleeding
+
+### ⚠️ Problemi Residui
+- Alcune query potrebbero essere lente con >100 vini
+- Asset duplicati: diagologo.png (2 copie necessarie per pattern diversi)
+- Performance: Possibili ottimizzazioni React.memo su liste lunghecate
+
 ### 🏗️ Architettura Identificata
 
 - **Frontend:** React + TypeScript, Vite, TailwindCSS, shadcn/ui
@@ -53,67 +42,29 @@
 
 ## 2. FASE 1: DRY-RUN E APPLICAZIONE OTTIMIZZAZIONI
 
-### 💾 Sistema Backup Implementato (Pre-operazioni)
+{{ ... }}
+- **Decisione:** Mantenere configurazione attuale per stabilità
 
-- **Script:** `/scripts/backup-system.js`
-- **Funzionalità:** Backup compressi, rotazione automatica, ripristino sicuro
-- **Compressione:** ~60% (progetto completo → 1.22MB)
-- **Comandi NPM:** `npm run backup`, `npm run backup:list`, `npm run backup:restore`
+### ✅ Dipendenze Mantenute
 
-### 🗑️ Rimozioni Dipendenze
+- **@radix-ui:** Utilizzato da shadcn/ui components
+- **Lucide React:** Ottimizzato con barrel file invece di rimozione
+- **TailwindCSS:** Core per styling, mantenuto
+- **Vite:** Essenziale per build system
+- **Express:** Backend framework principale
 
-#### Canvas (16/09/2025 14:32)
-- ✅ **Status:** COMPLETATO
-- **Comando:** `npm uninstall canvas`
-- **Risparmio:** 4.9MB + 46 dipendenze correlate
-- **Backup:** `BACKUP_16092025_1431.tar.gz`
-- **Impatto:** Zero - utilizzato solo in script utility archiviati
+### 🛡️ Motivazioni Conservative
 
-#### Recharts (16/09/2025 14:37)
-- ✅ **Status:** COMPLETATO
-- **Comando:** `npm uninstall recharts`
-- **Risparmio:** 1.6MB + 37 dipendenze correlate
-- **Backup:** `BACKUP_16092025_1436.tar.gz`
-- **Impatto:** Zero - nessun utilizzo nel codice sorgente
-
-#### React-icons (16/09/2025 14:40)
-- ✅ **Status:** COMPLETATO
-- **Comando:** `npm uninstall react-icons`
-- **Risparmio:** 30MB+ (1 pacchetto principale)
-- **Backup:** `BACKUP_16092025_1440.tar.gz`
-- **Impatto:** Zero - Lucide React già utilizzato per tutte le icone
-
-### ⚡ Ottimizzazione date-fns (16/09/2025 15:13)
-
-- ✅ **Status:** COMPLETATO
-- **Approccio:** Sostituzione chirurgica con API native JavaScript
-- **File modificato:** `client/src/components/screens/SimpleVotingScreen.tsx`
-- **Risparmio:** ~27KB bundle size + dipendenze
-- **Backup:** Commit `date-fns-pre-trim`
-- **Performance:** Build time ridotto del **19.8%**
-
-### 🧹 Git Repository Cleanup (16/09/2025 15:13)
-
-- ✅ **Status:** COMPLETATO
-- **Checkpoint:** Tag `pre-gc-16092025-1513`
-- **Comando:** `git gc --aggressive --prune=now`
-- **Risultato:** 4652 oggetti loose → 1 pack file
-- **Risparmio:** **28MB** (.git: 172MB → 144MB)
-
-### 🗂️ Cache Cleanup (16/09/2025)
-
-- ✅ **Status:** COMPLETATO
-- **Rimosso:** `node_modules/.vite/`, file `.DS_Store`
-- **Risparmio:** ~10.4MB (temporaneo, cache si rigenera)
-- **Beneficio:** Build time migliorato
+- **Priorità stabilità** su ottimizzazione aggressiva
+- **Backup e rollback plan** per ogni operazione
+- **Test completi** prima di ogni commit
+- **Approccio incrementale** e reversibile
 
 ---
 
 ## 3. FASE 2: RIMOZIONE FRAMER-MOTION E BINARI PRODUZIONE
 
-### 🎬 Rimozione Framer-Motion (17/09/2025 01:06)
-
-- ✅ **Status:** COMPLETATO CON SUCCESSO
+{{ ... }}
 - **Motivazione:** ZERO utilizzo confermato nel codebase
 - **Risparmio:** 4MB + 3 packages correlati
 - **Backup:** `BACKUP_17092025_0104.tar.gz` (1.21 MB)

@@ -1,6 +1,10 @@
 
 # ⚙️ Configurazione Sviluppo
 
+**Ultimo aggiornamento:** 21 Settembre 2025  
+**Ambiente:** Development ottimizzato  
+**Build System:** Vite + TypeScript strict mode
+
 ## 🔄 Hot Reload & Development Server
 
 ### Vite Configuration

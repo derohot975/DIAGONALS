@@ -1,6 +1,9 @@
 
 # 🏗️ Struttura Progetto
 
+**Ultimo aggiornamento:** 21 Settembre 2025  
+**Versione:** v1.0.0 - Post Ottimizzazione
+
 ## 📁 Mappa Directory
 
 ```
@@ -14,11 +17,11 @@ DIAGONALE/
 │   │   ├── components/        # Componenti React organizzati
 │   │   │   ├── screens/       # Schermate principali app
 │   │   │   ├── modals/        # Finestre modali
-│   │   │   ├── ui/            # Componenti UI base (shadcn)
+│   │   │   ├── ui/            # Componenti UI base (vuota - cleanup completato)
 │   │   │   └── optimized/     # Componenti ottimizzati performance
 │   │   ├── hooks/             # Custom React hooks
 │   │   ├── lib/               # Utilities e configurazioni
-│   │   ├── assets/            # Immagini e risorse statiche
+│   │   ├── assets/            # Immagini e risorse statiche (cleanup completato)
 │   │   ├── App.tsx            # Componente root applicazione
 │   │   ├── main.tsx           # Entry point React
 │   │   └── index.css          # Stili globali e variabili CSS
