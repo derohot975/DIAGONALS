@@ -1,9 +1,26 @@
 import * as React from "react"
 
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "@/components/ui/toast"
+// Internal toast types (fallback implementation)
+type ToastActionElement = React.ReactElement
+
+interface ToastProps {
+  variant?: 'default' | 'destructive'
+  className?: string
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: ToastActionElement
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+// Development warning (shown once)
+let hasWarnedOnce = false
+function warnInDev() {
+  if (process.env.NODE_ENV === 'development' && !hasWarnedOnce) {
+    console.warn('[useToast] Using fallback implementation - no UI toast component available')
+    hasWarnedOnce = true
+  }
+}
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -140,6 +157,7 @@ function dispatch(action: Action) {
 type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
+  warnInDev() // Warn in development that this is a fallback
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -155,7 +173,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       },
     },
