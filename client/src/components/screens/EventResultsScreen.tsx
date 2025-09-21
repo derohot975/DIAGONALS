@@ -98,9 +98,9 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
 
       {/* Scrollable Content */}
       <div 
-        className="flex-1 px-4 scrollable-area min-h-0 overflow-y-auto" 
+        className="flex-1 px-4 scrollable-area min-h-0 overflow-y-auto pb-32" 
         style={{
-          paddingBottom: 'var(--bottom-nav-total)'
+          paddingBottom: 'calc(var(--bottom-nav-total, 80px) + env(safe-area-inset-bottom, 0px) + 32px)'
         }}
       >
         <div className="max-w-4xl mx-auto space-y-4">
