@@ -701,6 +701,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/wines/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteWine(id);
+      if (!deleted) {
+        res.status(404).json({ message: "Wine not found" });
+        return;
+      }
+      res.json({ message: "Wine deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete wine" });
+    }
+  });
+
+  // Remove user from event (admin only, non-completed events only)
+  app.delete("/api/events/:eventId/participants/:userId", async (req, res) => {
+    try {
+      const eventId = parseInt(req.params.eventId);
+      const userId = parseInt(req.params.userId);
+      
+      // Get event to check status
+      const event = await storage.getWineEvent(eventId);
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+      
+      // Security: Only allow removal from non-completed events
+      if (event.status === 'completed') {
+        res.status(403).json({ message: "Cannot remove participants from completed events" });
+        return;
+      }
+      
+      // Find user's wine for this event
+      const wines = await storage.getWinesByEventId(eventId);
+      const userWine = wines.find(wine => wine.userId === userId);
+      
+      if (!userWine) {
+        res.status(404).json({ message: "User not participating in this event" });
+        return;
+      }
+      
+      // Delete the wine (removes participation)
+      const deleted = await storage.deleteWine(userWine.id);
+      if (!deleted) {
+        res.status(500).json({ message: "Failed to remove participant" });
+        return;
+      }
+      
+      // Get user info for response
+      const user = await storage.getUser(userId);
+      const userName = user?.name || 'Unknown';
+      
+      res.json({ 
+        message: `Participant ${userName} removed from event successfully`,
+        removedWine: {
+          id: userWine.id,
+          name: userWine.name,
+          userName: userName
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove participant from event" });
+    }
+  });
+
+  // Get event participants (users only, no wine details)
+  app.get("/api/events/:eventId/participants", async (req, res) => {
+    try {
+      const eventId = parseInt(req.params.eventId);
+      
+      const wines = await storage.getWinesByEventId(eventId);
+      const users = await storage.getAllUsers();
+      
+      const participants = wines.map(wine => {
+        const user = users.find(u => u.id === wine.userId);
+        return {
+          userId: wine.userId,
+          userName: user?.name || 'Unknown',
+          registeredAt: wine.createdAt
+        };
+      });
+      
+      res.json(participants);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch event participants" });
+    }
+  });
+
   // Vote routes
   app.get("/api/votes", async (req, res) => {
     try {
