@@ -10,6 +10,7 @@ const ROUNDING_PRECISION = 10;
 const UNKNOWN_CONTRIBUTOR = 'Unknown';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
   // BEGIN DIAGONALE KEEP-ALIVE - Health endpoint
   let healthCallCount = 0;
   

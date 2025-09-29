@@ -45,6 +45,8 @@ app.use((req, res, next) => {
   // Garantisce la tabella per la Pagella senza richiedere migrazioni manuali
   await ensurePagellaTable();
 
+  const server = await registerRoutes(app);
+
   // Serve PWA static files with correct MIME types in development
   if (app.get("env") === "development") {
     const path = await import("path");
@@ -71,8 +73,6 @@ app.use((req, res, next) => {
       }
     }));
   }
-  
-  const server = await registerRoutes(app);
 
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -114,6 +114,10 @@ app.use((req, res, next) => {
     });
   });
 
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
