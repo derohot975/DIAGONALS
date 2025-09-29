@@ -1,4 +1,4 @@
-import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, WineIcon, BarChart3, Settings, CheckCircle, Home, Shield, X } from '@/components/icons';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from '@/components/icons';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatEventDate, getCreatorName } from '../../lib/utils';
@@ -63,7 +63,9 @@ function ParticipantsManager({ eventId }: { eventId: number }) {
   });
 
   const handleRemoveParticipant = (userId: number, userName: string) => {
-    if (confirm(`Sei sicuro di voler rimuovere ${userName} dall'evento?`)) {
+    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler rimuovere ${userName} dall'evento?\n\n• Il suo vino verrà eliminato definitivamente\n• Non potrà più partecipare alle votazioni\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione?`;
+    
+    if (confirm(confirmMessage)) {
       removeParticipantMutation.mutate(userId);
     }
   };
@@ -86,15 +88,14 @@ function ParticipantsManager({ eventId }: { eventId: number }) {
           ) : (
             <div className="space-y-2">
               {participants.map((participant) => (
-                <div key={participant.userId} className="flex items-center justify-between bg-white rounded px-2 py-1">
-                  <span className="text-sm font-medium">{participant.userName}</span>
+                <div key={participant.userId} className="flex items-center justify-between bg-white rounded px-3 py-2">
+                  <span className="text-sm font-medium text-gray-800">{participant.userName}</span>
                   <button
                     onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
                     disabled={removeParticipantMutation.isPending}
-                    className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 disabled:opacity-50"
-                    title={`Rimuovi ${participant.userName}`}
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <X className="w-4 h-4" />
+                    {removeParticipantMutation.isPending ? 'Rimozione...' : 'Elimina'}
                   </button>
                 </div>
               ))}
