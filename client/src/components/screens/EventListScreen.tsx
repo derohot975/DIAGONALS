@@ -170,20 +170,19 @@ export default function EventListScreen({
             </div>
           )}
         </div>
-        
-        <BottomNavBar 
-          onShowAdmin={onShowAdmin}
-          centerButtons={completedEvents.length > 0 && onShowHistoricEvents ? [{
-            id: 'historic',
-            icon: <Calendar className="w-5 h-5" />,
-            onClick: onShowHistoricEvents,
-            title: 'Storico Eventi',
-            variant: 'glass'
-          }] : []}
-          layout="center"
-        />
-
       </div>
+      
+      <BottomNavBar 
+        onShowAdmin={onShowAdmin}
+        centerButtons={completedEvents.length > 0 && onShowHistoricEvents ? [{
+          id: 'historic',
+          icon: <Calendar className="w-5 h-5" />,
+          onClick: onShowHistoricEvents,
+          title: 'Storico Eventi',
+          variant: 'glass'
+        }] : []}
+        layout="center"
+      />
     </div>
   );
 }
