@@ -1,4 +1,4 @@
-import { Trophy, WineIcon as Wine } from '@/components/icons';
+// Removed decorative icons for cleaner UI
 import { EventReportData } from '@shared/schema';
 import { formatEventDate } from '../../lib/utils';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -28,8 +28,7 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
 
       {/* Event Info Header */}
       <div className="flex-shrink-0 text-center mb-6">
-        <div className="flex items-center justify-center space-x-3 mb-2">
-          <Trophy className="w-8 h-8 text-yellow-400" />
+        <div className="mb-2">
           <h1 className="event-name-script text-2xl font-bold text-white">
             {eventInfo.name}
           </h1>
@@ -49,8 +48,7 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
         <div className="max-w-4xl mx-auto">
           {/* Wine Rankings */}
           <div className="mb-6">
-            <div className="flex items-center space-x-2 mb-4">
-              <Wine className="w-5 h-5 text-red-400" />
+            <div className="mb-4">
               <h2 className="text-lg font-semibold text-white">Classifica Vini</h2>
             </div>
             

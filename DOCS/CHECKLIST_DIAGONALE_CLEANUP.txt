@@ -1,0 +1,215 @@
+═══════════════════════════════════════════════════════════════════════════════
+🧪 CHECKLIST DIAGONALE - PULIZIA ICONE + STABILITÀ SCROLL (STEP 6)
+═══════════════════════════════════════════════════════════════════════════════
+Data: 30/09/2025 16:24
+Scope: Test manuali per pulizia icone e stabilità bottom bar
+Status: READY FOR TESTING
+
+──────────────────────────────────────────────────────────────────────────────
+🔧 SETUP TESTING
+──────────────────────────────────────────────────────────────────────────────
+
+PREREQUISITI:
+✅ App avviata in locale: npm run dev
+✅ Browser DevTools aperto (Console + Elements)
+- [ ] Test su Chrome/Safari desktop + mobile simulator
+- [ ] Navigazione completa tra tutte le pagine
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST PULIZIA ICONE DECORATIVE
+──────────────────────────────────────────────────────────────────────────────
+
+ICONE RIMOSSE:
+- [ ] EventReportScreen: nessuna icona Trophy nel header evento
+- [ ] EventReportScreen: nessuna icona Wine nel titolo "Classifica Vini"
+- [ ] HistoricEventsScreen: bottone "Report" solo testo (no BarChart3)
+- [ ] HistoricEventsScreen: bottone "Pagella" solo testo (no StickyNote)
+- [ ] HistoricEventsScreen: empty state senza icona BarChart3
+
+LAYOUT STABILITY:
+- [ ] Nessun layout shift dopo rimozione icone
+- [ ] Spaziature mantenute correttamente
+- [ ] Bottoni funzionali: touch targets ≥44px
+- [ ] Text-only buttons: leggibili e chiari
+- [ ] Semantic clarity: funzione bottoni evidente
+
+ICONE PRESERVATE (FUNZIONALI):
+- [ ] Bottom bar: Home, Back, Admin icons presenti
+- [ ] Logo Diagonale: preservato in tutte le pagine
+- [ ] Modal close: X button funzionante
+- [ ] Navigation: solo icone con onClick/interaction
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST BOTTOM BAR SEMPRE LIBERA
+──────────────────────────────────────────────────────────────────────────────
+
+PAGINE UTENTE:
+- [ ] EventListScreen: bottom bar visibile durante scroll
+- [ ] EventDetailsScreen: bottom bar mai coperta da contenuti
+- [ ] SimpleVotingScreen: bottom bar libera durante scroll vini
+- [ ] EventReportScreen: bottom bar visibile con scroll classifica
+- [ ] HistoricEventsScreen: bottom bar accessibile con scroll eventi
+
+PAGINE ADMIN:
+- [ ] AdminScreen: bottom bar visibile
+- [ ] AdminEventManagementScreen: bottom bar mai sovrapposta
+- [ ] Tutte le viste admin: bottom bar sempre accessibile
+
+Z-INDEX & OVERLAP:
+- [ ] Bottom bar z-50: sempre sopra contenuti
+- [ ] Nessun contenuto copre la bottom bar
+- [ ] Nessuna sovrapposizione anomala
+- [ ] Scroll smooth senza conflitti z-index
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST SCROLL GOVERNANCE
+──────────────────────────────────────────────────────────────────────────────
+
+TITOLI/HEADER FISSI:
+- [ ] Logo Diagonale: sempre fisso in alto
+- [ ] Titoli sezioni: non scrollano con contenuto
+- [ ] Header eventi: fissi durante scroll
+- [ ] Toolbar/controls: fissi quando presenti
+
+SOLO LISTE/CARD SCROLLANO:
+- [ ] EventReportScreen: solo wine list scrolla
+- [ ] HistoricEventsScreen: solo events list scrolla
+- [ ] SimpleVotingScreen: solo wine cards scrollano
+- [ ] EventDetailsScreen: solo wine grid scrolla
+- [ ] AdminEventManagementScreen: solo event list scrolla
+
+STABILITÀ SCROLL:
+- [ ] Nessun drift al touch durante scroll
+- [ ] Contenitori fissi: non si muovono
+- [ ] Smooth scrolling: fluido su mobile
+- [ ] Altezze calcolate: corrette per ogni pagina
+
+──────────────────────────────────────────────────────────────────────────────
+📱 TEST MOBILE & TOUCH
+──────────────────────────────────────────────────────────────────────────────
+
+MOBILE BEHAVIOR:
+- [ ] iOS Safari: bottom bar sempre visibile
+- [ ] Android Chrome: scroll stabile
+- [ ] Touch scroll: solo su liste/card
+- [ ] No accidental touches: bottom bar protetta
+
+SAFE AREA:
+- [ ] iOS notch: safe area rispettata
+- [ ] Android gesture: navigation bar compatibility
+- [ ] Bottom bar offset: corretto su tutti i device
+- [ ] Content padding: appropriato per safe area
+
+PERFORMANCE:
+- [ ] Scroll performance: fluido 60fps
+- [ ] Touch responsiveness: immediata
+- [ ] Memory usage: stabile durante scroll
+- [ ] Battery impact: minimale
+
+──────────────────────────────────────────────────────────────────────────────
+🔄 TEST REGRESSIONI
+──────────────────────────────────────────────────────────────────────────────
+
+FUNZIONALITÀ ESISTENTI:
+- [ ] Navigation: tutti i bottoni funzionano
+- [ ] Modali: apertura/chiusura corretta
+- [ ] Forms: input e submit funzionali
+- [ ] API calls: tutte le chiamate funzionano
+- [ ] State management: stato preservato
+
+LAYOUT & STYLING:
+- [ ] Colori: invariati dopo cleanup
+- [ ] Typography: fonts e sizes corretti
+- [ ] Spacing: padding/margins preservati
+- [ ] Responsive: layout adattivo funzionante
+- [ ] Animations: transizioni smooth
+
+BOTTOM BAR RULE:
+- [ ] Home sempre slot sinistro
+- [ ] Admin sempre slot destro
+- [ ] Hide-on-current: Home nascosto se in events/home
+- [ ] Hide-on-current: Admin nascosto se in admin
+- [ ] Layout stabile: spazi riservati mantenuti
+
+──────────────────────────────────────────────────────────────────────────────
+⚡ TEST PERFORMANCE & QUALITY
+──────────────────────────────────────────────────────────────────────────────
+
+BUILD & BUNDLE:
+- [ ] TypeScript: 0 errori
+- [ ] ESLint: 0 warning
+- [ ] Bundle size: ~240KB (no regression)
+- [ ] Build time: <4s
+
+RUNTIME:
+- [ ] App startup: <2s
+- [ ] Page transitions: <300ms
+- [ ] Scroll performance: smooth
+- [ ] Memory leaks: none after 10min uso
+
+CONSOLE & LOGS:
+- [ ] Console errors: 0
+- [ ] Console warnings: 0
+- [ ] Network errors: 0
+- [ ] Performance warnings: 0
+
+ACCESSIBILITY:
+- [ ] Screen reader: navigation chiara
+- [ ] Keyboard navigation: funzionante
+- [ ] Focus management: corretto
+- [ ] Color contrast: mantenuto
+
+──────────────────────────────────────────────────────────────────────────────
+🧪 TEST SPECIFICI CLEANUP
+──────────────────────────────────────────────────────────────────────────────
+
+SCENARIO 1 - ICON REMOVAL:
+- [ ] EventReportScreen: header più pulito senza Trophy
+- [ ] Classifica vini: titolo chiaro senza Wine icon
+- [ ] Bottoni Historic: "Report" e "Pagella" text-only
+- [ ] Empty state: testo chiaro senza icona grande
+
+SCENARIO 2 - BOTTOM BAR STABILITY:
+- [ ] Scroll lungo su EventReport: bottom bar sempre visibile
+- [ ] Switch rapido tra pagine: bottom bar stabile
+- [ ] Modal apertura: bottom bar non interferisce
+- [ ] Keyboard mobile: bottom bar non coperta
+
+SCENARIO 3 - SCROLL GOVERNANCE:
+- [ ] EventReport: header fisso, wine list scrolla
+- [ ] HistoricEvents: logo fisso, events scrollano
+- [ ] SimpleVoting: header fisso, cards scrollano
+- [ ] Nessuna pagina: scroll completo della pagina
+
+──────────────────────────────────────────────────────────────────────────────
+✅ CHECKLIST COMPLETION
+──────────────────────────────────────────────────────────────────────────────
+
+SIGN-OFF CRITERIA:
+- [ ] Tutti i test pulizia icone PASSED
+- [ ] Tutti i test bottom bar PASSED
+- [ ] Tutti i test scroll governance PASSED
+- [ ] Tutti i test performance PASSED
+- [ ] Console pulita
+- [ ] Build TypeScript clean
+
+TESTING NOTES:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+BUGS FOUND:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+FINAL APPROVAL:
+- [ ] STEP 6 CLEANUP + STABILITY PASSED - Ready for Step 7
+- [ ] Tester: ________________
+- [ ] Date: ________________
+
+═══════════════════════════════════════════════════════════════════════════════
+🏁 FINE CHECKLIST - STEP 6 CLEANUP + STABILITY TESTING
+═══════════════════════════════════════════════════════════════════════════════

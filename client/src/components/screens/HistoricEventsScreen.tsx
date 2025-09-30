@@ -1,4 +1,4 @@
-import { ArrowLeft, Home, Calendar, Trophy, Users, Wine, BarChart3, StickyNote } from '@/components/icons';
+// Removed unused decorative icon imports
 import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -60,16 +60,14 @@ export default function HistoricEventsScreen({
               <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303] shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-gray-300 mb-1">{formatEventDate(event.date)}</p>
                     <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
                   </div>
                   <div className="flex flex-col items-end space-y-2">
                     <button
                       onClick={() => onShowEventResults(event.id)}
-                      className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                      className="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-blue-800 rounded-lg text-sm font-medium transition-colors"
                       title="Visualizza Report"
                     >
-                      <BarChart3 className="w-4 h-4 inline mr-1" />
                       Report
                     </button>
                     <button
@@ -77,7 +75,6 @@ export default function HistoricEventsScreen({
                       className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg text-sm font-medium transition-colors"
                       title="Visualizza Pagella"
                     >
-                      <StickyNote className="w-4 h-4 inline mr-1" />
                       Pagella
                     </button>
                   </div>
@@ -87,7 +84,6 @@ export default function HistoricEventsScreen({
           ) : (
             /* Empty State */
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
-              <BarChart3 className="w-20 h-20 text-gray-400 mx-auto mb-6" />
               <h2 className="text-2xl font-bold text-gray-600 mb-4">Nessun Evento Completato</h2>
               <p className="text-gray-500 text-lg">Gli eventi completati appariranno qui per consultare i report</p>
             </div>
