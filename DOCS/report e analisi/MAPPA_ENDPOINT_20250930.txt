@@ -1,0 +1,34 @@
+MAPPA ENDPOINT SERVER - DIAGONALE WINE APP
+Data: 30 Settembre 2025
+
+=== ENDPOINT IMPLEMENTATI ===
+
+EVENTS:
+GET    /api/events                                    → events.ts:9
+POST   /api/events                                    → events.ts:18
+GET    /api/events/:id                                → events.ts:40
+PATCH  /api/events/:id                                → events.ts:54
+DELETE /api/events/:id                                → events.ts:74
+GET    /api/events/:eventId/participants              → events.ts:216 ✅ AGGIUNTO
+DELETE /api/events/:eventId/participants/:userId     → events.ts:234 ✅ AGGIUNTO
+
+PAGELLA:
+GET    /api/events/:id/pagella                        → reports.ts:28
+PUT    /api/events/:id/pagella                        → reports.ts:~60
+
+VOTES:
+GET    /api/votes?eventId=X                           → votes.ts:12
+POST   /api/votes                                     → votes.ts:23
+
+WINES:
+GET    /api/wines?eventId=X                           → wines.ts:~10
+POST   /api/wines                                     → wines.ts:~25
+
+USERS:
+GET    /api/users                                     → users.ts:~10
+
+=== STATUS ===
+✅ Tutti gli endpoint richiesti implementati
+✅ Endpoint partecipanti aggiunti recentemente
+✅ Storage.deleteVote implementato
+✅ Zero lacune critiche identificate
