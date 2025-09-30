@@ -1,0 +1,211 @@
+═══════════════════════════════════════════════════════════════════════════════
+🧪 CHECKLIST DIAGONALE - VALIDAZIONE MODALI STANDARDIZZATI
+═══════════════════════════════════════════════════════════════════════════════
+Data: 30/09/2025 15:32
+Scope: Test manuali per BaseModal e modali refactorizzati
+Status: READY FOR TESTING
+
+──────────────────────────────────────────────────────────────────────────────
+🔧 SETUP TESTING
+──────────────────────────────────────────────────────────────────────────────
+
+PREREQUISITI:
+- [ ] App avviata in locale: npm run dev
+- [ ] Browser DevTools aperto (Console + Elements)
+- [ ] Test su Chrome/Safari desktop + mobile simulator
+- [ ] Screen reader disponibile (opzionale)
+
+MODALI DA TESTARE:
+✅ AddUserModal (Admin → Aggiungi Utente)
+✅ ChangeAdminPinModal (Admin → Modifica PIN)
+✅ CreateEventModal (Admin → Nuovo Evento)
+✅ EditEventModal (Admin → Modifica Evento)
+🔄 EditUserModal (da completare)
+🔄 WineRegistrationModal (da completare)
+🔄 EventReportModal (da completare)
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST FUNZIONALI BASE
+──────────────────────────────────────────────────────────────────────────────
+
+APERTURA/CHIUSURA MODALI:
+- [ ] Click su trigger button → modale si apre
+- [ ] Click su backdrop (area scura) → modale si chiude
+- [ ] Click su X button (header) → modale si chiude
+- [ ] Tasto ESC → modale si chiude
+- [ ] onOpenChange callback → viene chiamato correttamente
+
+FOCUS MANAGEMENT:
+- [ ] Apertura modale → focus va sul primo elemento focusabile
+- [ ] Tab key → focus cicla solo dentro il modale
+- [ ] Shift+Tab → focus cicla all'indietro
+- [ ] Chiusura modale → focus torna al trigger button
+- [ ] Nessun focus "escape" fuori dal modale
+
+BODY SCROLL LOCK:
+- [ ] Apertura modale → scroll della pagina bloccato
+- [ ] Scroll wheel su modale → solo contenuto interno scrolla
+- [ ] Chiusura modale → scroll della pagina ripristinato
+- [ ] Multiple modali → scroll management corretto
+
+──────────────────────────────────────────────────────────────────────────────
+📱 TEST MOBILE & TOUCH
+──────────────────────────────────────────────────────────────────────────────
+
+LAYOUT STABILITY:
+- [ ] Modale centrato perfettamente su schermo
+- [ ] Nessun "drift" durante touch/swipe
+- [ ] Contenuto non si muove al touch del backdrop
+- [ ] Safe area iOS rispettata (no overlap con notch)
+- [ ] Android gesture navigation compatibile
+
+TOUCH TARGETS:
+- [ ] Bottoni ≥44x44px (ispeziona con DevTools)
+- [ ] Icone ≥20x20px con padding adeguato
+- [ ] Hit area bottoni facilmente toccabile
+- [ ] Nessun false positive su touch accidentali
+
+KEYBOARD MOBILE:
+- [ ] Apertura keyboard → modale si adatta
+- [ ] Input focus → keyboard non copre campo
+- [ ] Chiusura keyboard → layout si ripristina
+- [ ] Scroll interno funziona con keyboard aperta
+
+──────────────────────────────────────────────────────────────────────────────
+🎨 TEST VISUAL & STYLING
+──────────────────────────────────────────────────────────────────────────────
+
+ICONE STANDARDIZZATE:
+- [ ] Icone outline moderne (no filled)
+- [ ] Sfondo trasparente (no container/box)
+- [ ] Dimensioni corrette: 20px (w-5 h-5) standard
+- [ ] Colore via currentColor (eredita dal parent)
+- [ ] Hover states: solo opacity/color change
+
+LAYOUT CONSISTENCY:
+- [ ] Header: titolo + close button allineati
+- [ ] Content: padding consistente, scroll interno
+- [ ] Footer: bottoni allineati, spaziatura uniforme
+- [ ] Colors: tema wine preserved (#8d0303, #300505)
+- [ ] Typography: font sizes e weights consistenti
+
+Z-INDEX MANAGEMENT:
+- [ ] Modale sopra tutto (z-50)
+- [ ] No overlap con BottomNavBar
+- [ ] Multiple modali: stacking corretto
+- [ ] Backdrop sempre dietro al contenuto
+
+──────────────────────────────────────────────────────────────────────────────
+📋 TEST SPECIFICI PER MODALE
+──────────────────────────────────────────────────────────────────────────────
+
+✅ AddUserModal:
+- [ ] Input nome: uppercase automatico
+- [ ] Validation: nome richiesto
+- [ ] Submit: crea utente e chiude modale
+- [ ] Cancel: chiude senza salvare
+- [ ] Form reset: campo svuotato dopo submit
+
+✅ ChangeAdminPinModal:
+- [ ] Step 1: inserimento PIN corrente (000)
+- [ ] Step 2: inserimento nuovo PIN (3 cifre)
+- [ ] Step 3: conferma nuovo PIN
+- [ ] Number pad: tutti i numeri funzionano
+- [ ] Delete button: rimuove ultima cifra
+- [ ] Error states: PIN errato, mismatch
+- [ ] Success: salva nuovo PIN
+
+✅ CreateEventModal:
+- [ ] Input nome: testo libero
+- [ ] Input data: date picker funzionante
+- [ ] Validation: nome e data richiesti
+- [ ] Submit: crea evento e chiude
+- [ ] Form reset: campi svuotati dopo submit
+
+✅ EditEventModal:
+- [ ] Pre-populate: campi riempiti con dati esistenti
+- [ ] Modifica nome: testo aggiornabile
+- [ ] Modifica data: date picker aggiornabile
+- [ ] Submit: salva modifiche e chiude
+- [ ] Cancel: chiude senza salvare modifiche
+
+──────────────────────────────────────────────────────────────────────────────
+🔍 TEST EDGE CASES
+──────────────────────────────────────────────────────────────────────────────
+
+ERROR HANDLING:
+- [ ] Network error durante submit → modale rimane aperto
+- [ ] Validation error → modale mostra errore
+- [ ] Loading state → preventCloseWhileSubmitting funziona
+- [ ] Timeout → graceful degradation
+
+PERFORMANCE:
+- [ ] Apertura rapida (< 100ms perceived)
+- [ ] Chiusura smooth senza lag
+- [ ] No memory leaks (DevTools Memory tab)
+- [ ] Event listeners cleanup corretto
+
+ACCESSIBILITY:
+- [ ] Screen reader: annuncia apertura modale
+- [ ] aria-modal="true" presente
+- [ ] aria-labelledby punta al titolo
+- [ ] aria-describedby punta alla descrizione (se presente)
+- [ ] Keyboard only navigation completa
+
+──────────────────────────────────────────────────────────────────────────────
+🚨 REGRESSION TESTING
+──────────────────────────────────────────────────────────────────────────────
+
+NESSUNA REGRESSIONE VISIVA:
+- [ ] Colori identici al design originale
+- [ ] Spaziature e padding invariati
+- [ ] Font sizes e weights preservati
+- [ ] Border radius e shadows consistenti
+- [ ] Gradient backgrounds mantenuti
+
+NESSUNA REGRESSIONE FUNZIONALE:
+- [ ] Tutti i flussi utente funzionano identicamente
+- [ ] Form validation rules invariate
+- [ ] Submit behavior identico
+- [ ] Error messages identici
+- [ ] Success states identici
+
+NESSUNA REGRESSIONE PERFORMANCE:
+- [ ] Bundle size non aumentato significativamente
+- [ ] Render time non peggiorato
+- [ ] Memory usage stabile
+- [ ] No nuovi console errors/warnings
+
+──────────────────────────────────────────────────────────────────────────────
+✅ CHECKLIST COMPLETION
+──────────────────────────────────────────────────────────────────────────────
+
+SIGN-OFF CRITERIA:
+- [ ] Tutti i test funzionali PASSED
+- [ ] Tutti i test mobile PASSED
+- [ ] Tutti i test visual PASSED
+- [ ] Tutti i test specifici PASSED
+- [ ] Nessuna regressione rilevata
+- [ ] Performance accettabile
+- [ ] Build TypeScript clean (0 errori)
+
+TESTING NOTES:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+BUGS FOUND:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+FINAL APPROVAL:
+- [ ] QA PASSED - Ready for production
+- [ ] Tester: ________________
+- [ ] Date: ________________
+
+═══════════════════════════════════════════════════════════════════════════════
+🏁 FINE CHECKLIST - MODAL STANDARDIZATION TESTING
+═══════════════════════════════════════════════════════════════════════════════

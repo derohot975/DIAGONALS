@@ -174,7 +174,7 @@ export default function AuthScreen({
                           <button
                             type="button"
                             onClick={onShowAdmin}
-                            className="w-14 h-14 bg-white border-2 border-red-300 text-red-600 text-xl font-bold rounded-full hover:bg-red-50 hover:border-red-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                            className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-400 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
                           >
                             <Settings className="w-5 h-5" />
                           </button>
