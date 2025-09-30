@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, memo, useMemo } from 'react';
+import BaseModal from './ui/BaseModal';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -99,19 +100,42 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
     };
   }, [isOpen, scores]);
 
-  if (!isOpen) return null;
+  const title = (
+    <div className="text-center">
+      <div className="text-xl font-normal text-white">Vota il vino di</div>
+      <div className="text-lg font-bold text-yellow-400 mt-1">
+        {wineName.replace('Vino di ', '').toUpperCase()}
+      </div>
+    </div>
+  );
+
+  const footer = (
+    <div className="flex space-x-3">
+      <button
+        onClick={onClose}
+        className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-4 rounded-xl font-medium transition-colors"
+      >
+        Annulla
+      </button>
+      <button
+        onClick={handleConfirm}
+        className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black py-3 px-4 rounded-xl font-bold transition-colors"
+      >
+        Conferma {selectedScore}
+      </button>
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden" style={{background: '#300505'}}>
-        
-        {/* Header */}
-        <div className="p-6" style={{background: '#300505'}}>
-          <h3 className="text-xl font-normal text-center text-white">Vota il vino di</h3>
-          <p className="text-lg font-bold text-center text-yellow-400 mt-1">
-            {wineName.replace('Vino di ', '').toUpperCase()}
-          </p>
-        </div>
+    <BaseModal
+      open={isOpen}
+      onOpenChange={onClose}
+      title={title}
+      size="sm"
+      footer={footer}
+      headerClassName="bg-[#300505] text-center"
+      className="rounded-3xl overflow-hidden bg-[#300505]"
+    >
 
         {/* iOS-Style Scroll Picker */}
         <div className="relative h-64 overflow-hidden" style={{background: '#300505'}}>
@@ -174,24 +198,6 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
             ))}
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="p-4 flex gap-3" style={{background: '#300505'}}>
-          <button
-            onClick={onClose}
-            className="flex-1 py-3 px-4 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600"
-          >
-            Annulla
-          </button>
-          <button
-            onClick={handleConfirm}
-            className="flex-1 py-3 px-4 text-black rounded-xl font-semibold hover:bg-yellow-300"
-            style={{background: '#FFD700'}}
-          >
-            Conferma {typeof selectedScore === 'number' ? (selectedScore % 1 === 0 ? selectedScore.toString() : selectedScore.toFixed(1)) : '0'}
-          </button>
-        </div>
-      </div>
-    </div>
+    </BaseModal>
   );
 });

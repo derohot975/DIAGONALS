@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { User, WineEvent } from "@shared/schema";
 
-import VotingHeaderBar from "./vote/components/VotingHeaderBar";
 import EventInfo from "./vote/components/EventInfo";
 import WineList from "./vote/components/WineList";
 import AdminPinModalBridge from "./vote/modals/AdminPinModalBridge";
 import VoteScrollPickerBridge from "./vote/modals/VoteScrollPickerBridge";
+import BottomNavBar from "../navigation/BottomNavBar";
 import { useVotingLogic } from "./vote/hooks/useVotingLogic";
 
 interface SimpleVotingScreenProps {
@@ -34,16 +34,8 @@ export default function SimpleVotingScreen({
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Fixed Header - Combined */}
+      {/* Fixed Header - Event Info Only */}
       <div className="sticky top-0 z-50 pt-2 pb-4" style={{background: '#300505'}}>
-        {/* Navigation Bar */}
-        <VotingHeaderBar 
-          onHome={onHome}
-          onShowAdmin={onShowAdmin}
-          onAdminClick={() => setShowAdminPinModal(true)}
-        />
-        
-        {/* Event Info */}
         <EventInfo event={event} />
       </div>
 
@@ -83,6 +75,14 @@ export default function SimpleVotingScreen({
             onShowAdmin();
           }
         }}
+      />
+
+      {/* Bottom Navigation */}
+      <BottomNavBar 
+        onGoBack={onBack}
+        onGoHome={onHome}
+        onShowAdmin={onShowAdmin}
+        layout="sides"
       />
 
     </div>
