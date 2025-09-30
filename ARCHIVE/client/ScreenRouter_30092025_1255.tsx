@@ -1,36 +1,27 @@
-import { Suspense, memo } from 'react';
-import { User, WineEvent, Wine, Vote, WineResultDetailed } from '@shared/schema';
-import LoadingSkeleton from './LoadingSkeleton';
+import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 
-// Lazy-loaded components for better performance
-import {
-  AuthScreen,
-  AdminScreen,
-  EventListScreen,
-  AdminEventManagementScreen,
-  EventDetailsScreen,
-  EventResultsScreen,
-  HistoricEventsScreen,
-  PagellaScreen,
-  SimpleVotingScreen,
-} from './screens.lazy';
+// Components
+import AuthScreen from './screens/AuthScreen';
+import AdminScreen from './screens/AdminScreen';
+import EventListScreen from './screens/EventListScreen';
+import AdminEventManagementScreen from './screens/AdminEventManagementScreen';
+import EventDetailsScreen from './screens/EventDetailsScreen';
+import EventResultsScreen from './screens/EventResultsScreen';
+import HistoricEventsScreen from './screens/HistoricEventsScreen';
+import PagellaScreen from './screens/PagellaScreen';
+import SimpleVotingScreen from './screens/SimpleVotingScreen';
 
-export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
 
-export interface ScreenRouterProps {
-  // Current state
+interface ScreenRouterProps {
   currentScreen: Screen;
   currentUser: User | null;
   currentEvent: WineEvent | null;
-  
-  // Data arrays
   users: User[];
   events: WineEvent[];
   wines: Wine[];
   votes: Vote[];
   results: WineResultDetailed[];
-  
-  // Auth state
   authLoading: boolean;
   authError: string | null;
   
@@ -109,14 +100,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
   handleDeleteUser,
   setShowWineRegistrationModal,
 }) => {
-  return (
-    <Suspense fallback={<LoadingSkeleton showLogo={true} showNavigation={true} />}>
-      {renderScreen()}
-    </Suspense>
-  );
-
-  function renderScreen() {
-    switch (currentScreen) {
+  switch (currentScreen) {
     case 'auth':
       return (
         <AuthScreen
@@ -146,7 +130,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
     case 'events':
       return (
         <EventListScreen
-          events={events}
+          events={events as WineEvent[]}
           users={users}
           currentUser={currentUser}
           wines={wines}
@@ -164,7 +148,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
     case 'adminEvents':
       return (
         <AdminEventManagementScreen
-          events={events}
+          events={events as WineEvent[]}
           users={users}
           wines={wines}
           onGoBack={() => setCurrentScreen('admin')}
@@ -217,7 +201,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
     case 'historicEvents':
       return (
         <HistoricEventsScreen
-          events={events}
+          events={events as WineEvent[]}
           users={users}
           onShowEventResults={handleShowEventResults}
           onShowPagella={handleShowPagella}
@@ -237,8 +221,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
 
     default:
       return null;
-    }
   }
 };
 
-export default memo(ScreenRouter);
+export default ScreenRouter;

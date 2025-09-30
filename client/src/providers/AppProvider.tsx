@@ -1,15 +1,6 @@
 import { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-// Create a stable query client instance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '../lib/queryClient';
 
 interface AppProviderProps {
   children: ReactNode;
