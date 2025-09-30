@@ -28,7 +28,7 @@ import EditUserModal from './components/modals/EditUserModal';
 import CreateEventModal from './components/modals/CreateEventModal';
 import EditEventModal from './components/modals/EditEventModal';
 import WineRegistrationModal from './components/modals/WineRegistrationModal';
-import EventReportModal from './components/modals/EventReportModal';
+import EventReportScreen from './components/screens/EventReportScreen';
 import AdminPinModal from './components/AdminPinModal';
 import ChangeAdminPinModal from './components/modals/ChangeAdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
@@ -328,7 +328,11 @@ function App() {
   };
 
   const handleViewReport = (eventId: number) => {
-    viewReportMutation.mutate(eventId);
+    viewReportMutation.mutate(eventId, {
+      onSuccess: () => {
+        router.setCurrentScreen('eventReport');
+      }
+    });
   };
 
   const handleActivateVoting = async (eventId: number) => {
@@ -430,6 +434,7 @@ function App() {
         wines={wines}
         votes={votes}
         results={results}
+        reportData={appState.reportData}
         authLoading={authLoading}
         authError={authError}
         onLogin={onLogin}
@@ -505,14 +510,6 @@ function App() {
         wine={appState.editingWine}
       />
 
-      <EventReportModal
-        isOpen={appState.showReportModal}
-        onClose={() => {
-          appState.setShowReportModal(false);
-          appState.setReportData(null);
-        }}
-        reportData={appState.reportData}
-      />
 
       <AdminPinModal
         isOpen={appState.showAdminPinModal}

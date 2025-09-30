@@ -1,5 +1,5 @@
 import { Suspense, memo } from 'react';
-import { User, WineEvent, Wine, Vote, WineResultDetailed } from '@shared/schema';
+import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 import LoadingSkeleton from './LoadingSkeleton';
 
 // Lazy-loaded components for better performance
@@ -10,12 +10,13 @@ import {
   AdminEventManagementScreen,
   EventDetailsScreen,
   EventResultsScreen,
+  EventReportScreen,
   HistoricEventsScreen,
   PagellaScreen,
   SimpleVotingScreen,
 } from './screens.lazy';
 
-export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'eventReport' | 'voting' | 'historicEvents' | 'pagella';
 
 export interface ScreenRouterProps {
   // Current state
@@ -29,6 +30,7 @@ export interface ScreenRouterProps {
   wines: Wine[];
   votes: Vote[];
   results: WineResultDetailed[];
+  reportData: EventReportData | null;
   
   // Auth state
   authLoading: boolean;
@@ -79,6 +81,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
   wines,
   votes,
   results,
+  reportData,
   authLoading,
   authError,
   onLogin,
@@ -211,6 +214,14 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
           event={currentEvent}
           results={results}
           onGoBack={() => setCurrentScreen('events')}
+          onGoHome={() => setCurrentScreen('events')}
+        />
+      );
+    case 'eventReport':
+      return (
+        <EventReportScreen
+          reportData={reportData}
+          onGoBack={() => setCurrentScreen('eventResults')}
           onGoHome={() => setCurrentScreen('events')}
         />
       );

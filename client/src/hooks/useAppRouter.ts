@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '@shared/schema';
 
-export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'eventReport' | 'voting' | 'historicEvents' | 'pagella';
 
 export interface AppRouter {
   currentScreen: Screen;

@@ -11,3 +11,4 @@ export const EventResultsScreen = lazy(() => import('./screens/EventResultsScree
 export const HistoricEventsScreen = lazy(() => import('./screens/HistoricEventsScreen'));
 export const PagellaScreen = lazy(() => import('./screens/PagellaScreen'));
 export const SimpleVotingScreen = lazy(() => import('./screens/SimpleVotingScreen'));
+export const EventReportScreen = lazy(() => import('./screens/EventReportScreen'));

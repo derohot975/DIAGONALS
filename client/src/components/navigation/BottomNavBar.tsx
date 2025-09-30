@@ -23,6 +23,9 @@ interface BottomNavBarProps {
   
   // Style variants
   variant?: 'solid' | 'glass' | 'transparent';
+  
+  // Current screen for conditional display
+  currentScreen?: string;
 }
 
 export default function BottomNavBar({
@@ -31,7 +34,8 @@ export default function BottomNavBar({
   onShowAdmin,
   centerButtons = [],
   layout = 'sides',
-  variant = 'solid'
+  variant = 'solid',
+  currentScreen
 }: BottomNavBarProps) {
   
   // Button style variants - icone trasparenti senza sfondo
@@ -52,6 +56,10 @@ export default function BottomNavBar({
     }
   };
 
+  // Apply definitive rule: Home always left, Admin always right
+  const shouldShowHome = onGoHome && currentScreen !== 'events' && currentScreen !== 'home';
+  const shouldShowAdmin = onShowAdmin && currentScreen !== 'admin';
+
   // Layout: sides (Home left, Admin right, center buttons in middle)
   if (layout === 'sides') {
     return (
@@ -59,24 +67,24 @@ export default function BottomNavBar({
         className="fixed left-0 right-0 z-50 flex items-center justify-between px-4"
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
-        {/* Left side - Home/Back */}
-        <div className="flex items-center space-x-3">
+        {/* Left side - Reserved for Home (or Back if present) */}
+        <div className="flex items-center space-x-3 min-w-[48px]">
           {onGoBack && (
             <button
               onClick={onGoBack}
               className={getButtonStyles('primary')}
               title="Indietro"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-6 h-6" />
             </button>
           )}
-          {onGoHome && !onGoBack && (
+          {shouldShowHome && !onGoBack && (
             <button
               onClick={onGoHome}
               className={getButtonStyles('primary')}
               title="Home"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-6 h-6" />
             </button>
           )}
         </div>
@@ -97,24 +105,24 @@ export default function BottomNavBar({
           </div>
         )}
 
-        {/* Right side - Admin */}
-        <div className="flex items-center space-x-3">
-          {onGoHome && onGoBack && (
+        {/* Right side - Reserved for Admin */}
+        <div className="flex items-center space-x-3 min-w-[48px] justify-end">
+          {shouldShowHome && onGoBack && (
             <button
               onClick={onGoHome}
               className={getButtonStyles('primary')}
               title="Home"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-6 h-6" />
             </button>
           )}
-          {onShowAdmin && (
+          {shouldShowAdmin && (
             <button
               onClick={onShowAdmin}
               className={getButtonStyles('admin')}
               title="Admin"
             >
-              <Shield className="w-5 h-5" />
+              <Shield className="w-6 h-6" />
             </button>
           )}
         </div>
@@ -125,10 +133,10 @@ export default function BottomNavBar({
   // Layout: center (all buttons centered)
   if (layout === 'center') {
     const allButtons = [
-      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-5 h-5" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
+      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
       ...centerButtons,
-      ...(onGoHome ? [{ id: 'home', icon: <Home className="w-5 h-5" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
-      ...(onShowAdmin ? [{ id: 'admin', icon: <Shield className="w-5 h-5" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
+      ...(shouldShowHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
+      ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
     ];
 
     return (
