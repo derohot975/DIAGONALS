@@ -1,4 +1,5 @@
-import { X, Trophy, Users, WineIcon as Wine, BarChart3, Star } from '@/components/icons';
+import { Trophy, Users, WineIcon as Wine, BarChart3, Star } from '@/components/icons';
+import BaseModal from '../ui/BaseModal';
 import { EventReportData } from '@shared/schema';
 import { formatEventDate } from '../../lib/utils';
 
@@ -9,33 +10,45 @@ interface EventReportModalProps {
 }
 
 export default function EventReportModal({ isOpen, onClose, reportData }: EventReportModalProps) {
-  if (!isOpen || !reportData) return null;
+  if (!reportData) return null;
 
   const { eventInfo, userRankings, wineResults, summary } = reportData;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white p-6 relative">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          
-          <div className="flex items-center space-x-3">
-            <Trophy className="w-8 h-8" />
-            <div>
-              <h2 className="event-name-script text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{eventInfo.name}</h2>
-              <p className="text-amber-100">{formatEventDate(eventInfo.date)} • Report Finale</p>
-            </div>
-          </div>
-        </div>
+  const title = (
+    <div className="flex items-center space-x-3">
+      <Trophy className="w-8 h-8" />
+      <div>
+        <div className="event-name-script text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{eventInfo.name}</div>
+        <div className="text-amber-100">{formatEventDate(eventInfo.date)} • Report Finale</div>
+      </div>
+    </div>
+  );
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+  const footer = (
+    <div className="flex justify-between items-center">
+      <div className="text-sm text-gray-500">
+        Report generato il {new Date().toLocaleDateString('it-IT')}
+      </div>
+      <button
+        onClick={onClose}
+        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+      >
+        Chiudi
+      </button>
+    </div>
+  );
+
+  return (
+    <BaseModal
+      open={isOpen}
+      onOpenChange={onClose}
+      title={title}
+      size="xl"
+      footer={footer}
+      headerClassName="bg-gradient-to-r from-amber-500 to-yellow-600 text-white"
+    >
+
+      <div className="overflow-y-auto">
           {/* Wine Rankings Only */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
@@ -87,21 +100,7 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
-          <div className="text-sm text-gray-500">
-            Report generato il {new Date().toLocaleDateString('it-IT')}
-          </div>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-          >
-            Chiudi
-          </button>
-        </div>
       </div>
-    </div>
+    </BaseModal>
   );
 }

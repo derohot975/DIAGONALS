@@ -1,5 +1,5 @@
-import { X } from '@/components/icons';
 import { useState, useEffect } from 'react';
+import BaseModal from '../ui/BaseModal';
 import { Wine } from '@shared/schema';
 
 interface WineRegistrationModalProps {
@@ -57,19 +57,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     }
   }, [wine, isOpen]);
 
-  // Block body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  // Body scroll lock is handled by BaseModal
 
   // Function to capitalize first letter of each word
   const capitalizeFirstLetter = (str: string) => {
@@ -133,21 +121,37 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
     }
   };
 
-  if (!isOpen) return null;
+  const footer = (
+    <div className="flex space-x-3">
+      <button
+        type="button"
+        onClick={onClose}
+        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+      >
+        Annulla
+      </button>
+      <button
+        type="submit"
+        form="wine-registration-form"
+        className="flex-1 bg-[#8d0303] hover:bg-[#300505] text-white px-4 py-3 rounded-lg transition-colors font-medium"
+      >
+        {wine ? 'Salva Modifiche' : 'Registra Vino'}
+      </button>
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-[hsl(270,50%,65%)]">
-            🍷 {wine ? 'Modifica Vino' : 'Registra Vino'}
-          </h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <BaseModal
+      open={isOpen}
+      onOpenChange={onClose}
+      title={`🍷 ${wine ? 'Modifica Vino' : 'Registra Vino'}`}
+      size="lg"
+      footer={footer}
+      headerClassName="text-[hsl(270,50%,65%)]"
+      className="glass-effect"
+    >
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <form id="wine-registration-form" onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tipologia</label>
             <select
@@ -245,23 +249,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
             />
           </div>
           
-          <div className="flex space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
-            >
-              Annulla
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-[#8d0303] hover:bg-[#300505] text-white px-4 py-3 rounded-lg transition-colors font-medium"
-            >
-              Registrati
-            </button>
-          </div>
         </form>
-      </div>
-    </div>
+    </BaseModal>
   );
 }

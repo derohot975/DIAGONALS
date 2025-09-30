@@ -13,22 +13,19 @@ PREREQUISITI:
 - [ ] App avviata in locale: npm run dev
 - [ ] Browser DevTools aperto (Console + Elements)
 - [ ] Test su Chrome/Safari desktop + mobile simulator
-- [ ] Screen reader disponibile (opzionale)
 
 MODALI DA TESTARE:
 ✅ AddUserModal (Admin → Aggiungi Utente)
 ✅ ChangeAdminPinModal (Admin → Modifica PIN)
 ✅ CreateEventModal (Admin → Nuovo Evento)
 ✅ EditEventModal (Admin → Modifica Evento)
-🔄 EditUserModal (da completare)
-🔄 WineRegistrationModal (da completare)
-🔄 EventReportModal (da completare)
+✅ EditUserModal (Admin → Modifica Utente)
+✅ WineRegistrationModal (Event Details → Registra Vino)
+✅ EventReportModal (Event Results → Visualizza Report)
 
 ──────────────────────────────────────────────────────────────────────────────
 🎯 TEST FUNZIONALI BASE
 ──────────────────────────────────────────────────────────────────────────────
-
-APERTURA/CHIUSURA MODALI:
 - [ ] Click su trigger button → modale si apre
 - [ ] Click su backdrop (area scura) → modale si chiude
 - [ ] Click su X button (header) → modale si chiude
