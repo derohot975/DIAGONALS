@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useMemo } from "react";
 import { User, Wine, WineEvent, Vote } from "@shared/schema";
 
 interface UseVotingLogicProps {
@@ -74,8 +75,33 @@ export function useVotingLogic({ event, currentUser }: UseVotingLogicProps) {
     return users.find(u => u.id === userId)?.name || 'Sconosciuto';
   };
 
+  // Ordinamento dinamico wines: Bollicine → Bianchi → Rossi → Varie → gradazione crescente → anno crescente
+  const sortedWines = useMemo(() => {
+    const typeOrder = { 'Bollicina': 0, 'Bianco': 1, 'Rosso': 2, 'Altro': 3 };
+    
+    return [...wines].sort((a, b) => {
+      // 1. Tipologia
+      const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 99;
+      const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 99;
+      if (typeA !== typeB) return typeA - typeB;
+      
+      // 2. Gradazione alcolica (crescente, noti prima di ignoti)
+      const alcoholA = typeof a.alcohol === 'number' ? a.alcohol : 999;
+      const alcoholB = typeof b.alcohol === 'number' ? b.alcohol : 999;
+      if (alcoholA !== alcoholB) return alcoholA - alcoholB;
+      
+      // 3. Anno (crescente, noti prima di ignoti)
+      const yearA = a.year ?? 9999;
+      const yearB = b.year ?? 9999;
+      if (yearA !== yearB) return yearA - yearB;
+      
+      // 4. Fallback: ID per stabilità
+      return a.id - b.id;
+    });
+  }, [wines]);
+
   return {
-    wines,
+    wines: sortedWines,
     users,
     votes,
     voteMutation,

@@ -83,10 +83,11 @@ export function useSession(
       }
     },
     onSuccess: () => {
+      cleanupHeartbeat();
       setCurrentUser(null);
       setSessionId(null);
       setSessionError(null);
-      setCurrentScreen('home');
+      setCurrentScreen('auth');
       toast({ title: 'Disconnesso con successo!' });
     },
   });
@@ -117,10 +118,10 @@ export function useSession(
         });
         
         if (!response.ok) {
-          // Session expired or invalid - preserve exact same setState sequence
+          // Session expired or invalid - only logout if truly expired (not on route change)
           setCurrentUser(null);
           setSessionId(null);
-          setCurrentScreen('home');
+          setCurrentScreen('auth');
           toast({ title: 'Sessione scaduta. Ricollegati.', variant: 'destructive' });
         }
       } catch (error) {
@@ -149,6 +150,7 @@ export function useSession(
   };
 
   const handleLogout = () => {
+    cleanupHeartbeat();
     setCurrentUser(null);
     setCurrentScreen('auth');
     setSessionId(null);
