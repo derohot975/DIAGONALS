@@ -1,9 +1,9 @@
-import { Star } from '@/components/icons';
+import { Star, Download } from '@/components/icons';
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import ResultsHeader from './results/components/ResultsHeader';
 import ResultCard from './results/components/ResultCard';
 import CollapsibleDetails from './results/components/CollapsibleDetails';
-import ShareButtonBar from './results/components/ShareButtonBar';
+import BottomNavBar from '../navigation/BottomNavBar';
 import { useResultsStats } from './results/hooks/useResultsStats';
 import { useResultsExpansion } from './results/hooks/useResultsExpansion';
 import { handleExport } from './results/utils/shareFormatter';
@@ -77,8 +77,17 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
         </div>
       </div>
       
-      {/* Pulsanti Condividi e Home fissi in fondo */}
-      <ShareButtonBar onExport={handleExportClick} onGoHome={onGoHome} />
+      <BottomNavBar 
+        onGoHome={onGoHome}
+        centerButtons={[{
+          id: 'export',
+          icon: <Download className="w-5 h-5" />,
+          onClick: handleExportClick,
+          title: 'Condividi',
+          variant: 'glass'
+        }]}
+        layout="center"
+      />
     </div>
   );
 }

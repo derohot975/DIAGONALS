@@ -1,6 +1,7 @@
 import { Calendar, BarChart3, Shield, Edit3 } from '@/components/icons';
 import { formatEventDate, getCreatorName } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
+import BottomNavBar from '../navigation/BottomNavBar';
 
 import { User, WineEvent, Wine, Vote } from '@shared/schema';
 
@@ -170,30 +171,17 @@ export default function EventListScreen({
           )}
         </div>
         
-        {/* Pulsanti Admin e Storico Eventi in basso */}
-        <div className="fixed left-0 right-0 z-50 flex justify-center" style={{bottom: 'var(--bottom-nav-offset)'}}>
-          <div className="flex items-center space-x-4">
-            {onShowAdmin && (
-              <button
-                onClick={onShowAdmin}
-                className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-                style={{background: 'rgba(255, 255, 255, 0.1)'}}
-              >
-                <Shield className="w-5 h-5" />
-              </button>
-            )}
-            {completedEvents.length > 0 && onShowHistoricEvents && (
-              <button
-                onClick={onShowHistoricEvents}
-                className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-                style={{background: 'rgba(255, 255, 255, 0.1)'}}
-                title="Storico Eventi"
-              >
-                <Calendar className="w-5 h-5" />
-              </button>
-            )}
-          </div>
-        </div>
+        <BottomNavBar 
+          onShowAdmin={onShowAdmin}
+          centerButtons={completedEvents.length > 0 && onShowHistoricEvents ? [{
+            id: 'historic',
+            icon: <Calendar className="w-5 h-5" />,
+            onClick: onShowHistoricEvents,
+            title: 'Storico Eventi',
+            variant: 'glass'
+          }] : []}
+          layout="center"
+        />
 
       </div>
     </div>

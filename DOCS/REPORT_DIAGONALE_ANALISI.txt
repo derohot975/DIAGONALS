@@ -1,0 +1,264 @@
+═══════════════════════════════════════════════════════════════════════════════
+📊 REPORT DIAGONALE - ANALISI STRUTTURALE & DIAGNOSI COMPLETA
+═══════════════════════════════════════════════════════════════════════════════
+Data: 30/09/2025 15:09
+Versione: v1.0.0 - Produzione stabile
+Analista: Cascade AI Assistant
+
+──────────────────────────────────────────────────────────────────────────────
+📁 STRUTTURA NAVIGAZIONE & LAYOUT
+──────────────────────────────────────────────────────────────────────────────
+
+✅ BOTTOM BAR NAVIGATION - STATUS: OTTIMALE
+• Implementazione: CSS custom con variabili CSS native
+• Altezza fissa: --bottom-nav-height: 5.5rem (88px)
+• Safe area: --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom))
+• Offset: --bottom-nav-offset: calc(1.75rem + env(safe-area-inset-bottom))
+• Posizionamento: fixed bottom con z-index appropriato
+• Mobile-first: supporto completo per notch/safe-area iOS
+
+⚠️ PATTERN NAVIGAZIONE - INCONSISTENZA RILEVATA
+• Navigazione principale: gestita tramite useAppRouter hook
+• Bottoni navigazione: sparsi in diversi componenti screen-specific
+• NavButtons.tsx: presente solo in event-details/ e pagella/
+• Mancanza di componente bottom-bar unificato
+• Ogni screen implementa i propri bottoni di navigazione
+
+🔍 COMPONENTI NAVIGAZIONE IDENTIFICATI:
+1. event-details/components/NavButtons.tsx (32 righe)
+2. pagella/components/PagellaNavigation.tsx (26 righe)
+3. results/components/ShareButtonBar.tsx (bottoni condivisione)
+4. Navigazione inline in altri screen (EventListScreen, AdminScreen, etc.)
+
+──────────────────────────────────────────────────────────────────────────────
+🎨 GESTIONE ICONE & STILI
+──────────────────────────────────────────────────────────────────────────────
+
+✅ SISTEMA ICONE - STATUS: MODERNO E COERENTE
+• Libreria principale: Lucide React (tree-shaking ottimizzato)
+• Barrel export: /components/icons/index.ts (68 icone selezionate)
+• Sistema fallback: Iconify + unplugin-icons (Tabler/Lucide)
+• CSS dedicato: /styles/icons.css (166 righe)
+
+✅ STILE ICONE - STANDARD OUTLINE MODERNO
+• Stroke width: 2px (standard), varianti 1-2.5px
+• Dimensioni: 16px-32px con classi utility
+• Colore: currentColor per ereditarietà
+• Transizioni: 0.2s ease-in-out
+• Stati interattivi: hover scale(1.1), active scale(0.95)
+
+✅ VARIANTI DIMENSIONI DISPONIBILI:
+• icon-xs: 16px (stroke 2.5)
+• icon-sm: 20px (stroke 2)
+• icon-md: 24px (stroke 2) - default
+• icon-lg: 28px (stroke 1.5)
+• icon-xl: 32px (stroke 1.5)
+
+✅ COLORI TEMATICI WINE-SPECIFIC:
+• --wine-primary: #300505
+• --wine-secondary: #8d0303
+• --wine-accent: hsl(0, 84.2%, 60.2%)
+• --wine-gold: hsl(43, 96%, 56%)
+
+──────────────────────────────────────────────────────────────────────────────
+🔄 SINCRONIZZAZIONE & STATO GLOBALE
+──────────────────────────────────────────────────────────────────────────────
+
+✅ ARCHITETTURA STATO - STATUS: MODULARE E SCALABILE
+• Hook principale: useAppState.ts (104 righe)
+• Gestione sessioni: useSession.ts (169 righe)
+• Router: useAppRouter.ts
+• Effetti: useAppEffects.ts
+• Navigazione: useAppNavigation.ts
+
+✅ GESTIONE CACHE - REACT QUERY
+• Stale time: 5min eventi, 2min vini
+• Invalidazione automatica su mutazioni
+• RefetchOnWindowFocus: false (ottimizzazione mobile)
+• Query keys strutturate: ['/api/endpoint', params]
+
+⚠️ PUNTI CRITICI SINCRONIZZAZIONE:
+1. REFRESH NOME UTENTE:
+   - Causa: mancanza di invalidazione cache users dopo login
+   - Soluzione: queryClient.invalidateQueries({ queryKey: ['/api/users'] }) già presente
+   - Possibile race condition tra login e fetch users
+
+2. INVIO WHATSAPP:
+   - Causa: Web Share API dipende da user gesture
+   - Implementazione: ShareButtonBar.tsx usa navigator.share()
+   - Limitazione: funziona solo su mobile con gesture utente
+
+3. VOTAZIONI:
+   - Gestione real-time: polling ogni 60s tramite heartbeat
+   - Cache invalidation: automatica su vote mutation
+   - Possibile lag: 60s max per aggiornamenti cross-user
+
+✅ HEARTBEAT SYSTEM - ROBUSTO
+• Intervallo: 60 secondi
+• Cleanup automatico: useRef per prevenire memory leak
+• Session validation: automatica disconnessione su scadenza
+• Error handling: silenzioso per network issues
+
+──────────────────────────────────────────────────────────────────────────────
+🗂️ MODALI - IMPLEMENTAZIONE & STABILITÀ
+──────────────────────────────────────────────────────────────────────────────
+
+✅ MODALI IDENTIFICATI (7 totali):
+1. AddUserModal.tsx
+2. ChangeAdminPinModal.tsx
+3. CreateEventModal.tsx
+4. EditEventModal.tsx
+5. EditUserModal.tsx
+6. EventReportModal.tsx
+7. WineRegistrationModal.tsx
+
+⚠️ IMPLEMENTAZIONE - PATTERN MISTO
+• NO Dialog component unificato (shadcn/ui non utilizzato per modali)
+• Pattern custom: fixed inset-0 + bg-black/50 backdrop
+• Gestione stato: useAppState hook centralizzato
+• Z-index: 50 (standard, potenziali conflitti)
+
+✅ STABILITÀ LAYOUT:
+• Positioning: fixed inset-0 (stabile)
+• Overflow: max-h-[90vh] + overflow-y-auto
+• Mobile: responsive con p-4 padding
+• Backdrop: click-to-close implementato
+• Scroll: contenuto interno scrollabile
+
+⚠️ AREE DI MIGLIORAMENTO:
+• Mancanza di focus trap
+• No animazioni enter/exit
+• Pattern inconsistente tra modali
+• Gestione ESC key non unificata
+
+──────────────────────────────────────────────────────────────────────────────
+🔐 PERSISTENZA LOGIN & SESSIONI
+──────────────────────────────────────────────────────────────────────────────
+
+✅ SISTEMA AUTENTICAZIONE - ROBUSTO
+• Metodo: PIN-based (4 cifre)
+• Sessioni: server-side con sessionId
+• Heartbeat: 60s per mantenere sessione attiva
+• Unique session: opzionale (localStorage toggle)
+
+✅ PERSISTENZA DATI:
+• Admin PIN: localStorage 'diagonale_admin_pin' (default: '000')
+• Unique session: localStorage 'diagonale_unique_session_enabled'
+• Pagella drafts: localStorage per backup locale
+• Session validation: automatica su app start
+
+✅ GESTIONE LOGOUT:
+• Automatico: su session expiry (heartbeat fail)
+• Manuale: button logout + cleanup completo
+• Cross-device: unique session enforcement opzionale
+• State cleanup: currentUser, sessionId, screen reset
+
+⚠️ EDGE CASES IDENTIFICATI:
+1. User deletion: validazione automatica in useAppEffects
+2. Network issues: heartbeat failure handling
+3. Multiple tabs: unique session conflict resolution
+4. localStorage full: graceful fallback implementato
+
+──────────────────────────────────────────────────────────────────────────────
+⚠️ WARNING & AREE DI RISCHIO
+──────────────────────────────────────────────────────────────────────────────
+
+🔴 ALTA PRIORITÀ:
+1. NAVIGAZIONE FRAMMENTATA
+   - Bottoni nav sparsi in componenti diversi
+   - Mancanza di BottomNavBar unificato
+   - Inconsistenza UX tra screen
+
+2. MODALI NON STANDARDIZZATI
+   - Pattern implementazione diversi
+   - Mancanza di Dialog component base
+   - Z-index potenziali conflitti
+
+🟡 MEDIA PRIORITÀ:
+3. REFRESH ISSUES
+   - Race condition potenziali su login
+   - Cache invalidation timing
+   - Cross-user update lag (60s)
+
+4. MOBILE UX
+   - Safe area handling completo ma complesso
+   - Web Share API dependency su user gesture
+   - Touch interaction edge cases
+
+🟢 BASSA PRIORITÀ:
+5. PERFORMANCE
+   - Bundle size ottimizzato (296KB JS)
+   - Tree shaking attivo
+   - Lazy loading non implementato
+
+6. ACCESSIBILITÀ
+   - Focus management nei modali
+   - Keyboard navigation
+   - Screen reader support
+
+──────────────────────────────────────────────────────────────────────────────
+✅ PARTI COERENTI & STABILI
+──────────────────────────────────────────────────────────────────────────────
+
+🟢 ECCELLENTI:
+• Sistema icone Lucide + CSS custom
+• Hook architecture modulare
+• React Query cache management
+• Session management + heartbeat
+• CSS variables + mobile-first
+• TypeScript coverage completo
+
+🟢 BUONE:
+• Modali funzionali (pattern migliorabile)
+• State management centralizzato
+• Error handling robusto
+• Performance ottimizzata
+
+🟢 STABILI:
+• Backend API routes modulari
+• Database schema Drizzle
+• PWA implementation completa
+• Build system Vite ottimizzato
+
+──────────────────────────────────────────────────────────────────────────────
+📋 RACCOMANDAZIONI OPERATIVE
+──────────────────────────────────────────────────────────────────────────────
+
+🎯 PRIORITÀ 1 - NAVIGAZIONE UNIFICATA:
+• Creare BottomNavBar.tsx component unificato
+• Standardizzare pattern navigazione cross-screen
+• Implementare navigation context/hook dedicato
+
+🎯 PRIORITÀ 2 - MODALI STANDARDIZZATI:
+• Creare BaseModal.tsx component
+• Implementare Dialog component shadcn/ui
+• Unificare pattern z-index e animazioni
+
+🎯 PRIORITÀ 3 - SYNC OPTIMIZATION:
+• Ridurre heartbeat interval per real-time feel
+• Implementare WebSocket per updates istantanei
+• Ottimizzare cache invalidation strategy
+
+──────────────────────────────────────────────────────────────────────────────
+📊 METRICHE FINALI
+──────────────────────────────────────────────────────────────────────────────
+
+• Architettura: 8.5/10 (modulare, scalabile)
+• Performance: 9/10 (ottimizzata, bundle size eccellente)
+• UX Consistency: 7/10 (navigazione frammentata)
+• Code Quality: 9/10 (TypeScript, hook pattern)
+• Mobile Support: 8.5/10 (PWA completa, safe area)
+• Maintainability: 9/10 (moduli separati, documentato)
+
+SCORE COMPLESSIVO: 8.5/10 - ECCELLENTE con aree di miglioramento identificate
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ✅ ANALISI COMPLETATA - Report diagnostico generato
+2. 🎯 READY FOR: Prompt unico per primo intervento operativo
+3. 🔧 FOCUS: Unificazione navigazione bottom bar
+4. 📱 TARGET: UX consistency migliorata
+
+App pronta per interventi chirurgici mirati mantenendo stabilità esistente.

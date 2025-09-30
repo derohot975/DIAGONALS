@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LogIn, UserPlus, Shield } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
+import BottomNavBar from '../navigation/BottomNavBar';
 
 interface AuthScreenProps {
   onLogin: (name: string, pin: string) => void;
@@ -247,18 +248,7 @@ export default function AuthScreen({
         </div>
       </div>
 
-      {/* Pulsante Admin Centralizzato */}
-      {onShowAdmin && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-          <button
-            onClick={onShowAdmin}
-            className="text-white p-3 rounded-full shadow-lg transition-all hover:bg-white hover:bg-opacity-10"
-            style={{background: 'rgba(255, 255, 255, 0.1)'}}
-          >
-            <Shield className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+      <BottomNavBar onShowAdmin={onShowAdmin} layout="center" />
     </div>
   );
 }

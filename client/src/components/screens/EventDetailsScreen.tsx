@@ -3,7 +3,7 @@ import { useEventLogic } from '../../hooks/useEventLogic';
 import EventContainer from './event-details/components/EventContainer';
 import WinesGrid from './event-details/components/WinesGrid';
 import ProgressBar from './event-details/components/ProgressBar';
-import NavButtons from './event-details/components/NavButtons';
+import BottomNavBar from '../navigation/BottomNavBar';
 
 interface EventDetailsScreenProps {
   event: WineEvent | null;
@@ -84,7 +84,7 @@ export default function EventDetailsScreen({
         </div>
       </div>
       
-      <NavButtons onGoBack={onGoBack} onGoHome={onGoHome} />
+      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="sides" />
     </div>
   );
 }

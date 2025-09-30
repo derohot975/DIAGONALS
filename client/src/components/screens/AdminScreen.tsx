@@ -3,6 +3,7 @@ import { UserPlus, Users, Shield, Calendar, ArrowLeft, Plus, Edit, Trash2, Setti
 import { User } from '@shared/schema';
 import { useState, useEffect, useMemo } from 'react';
 import diagoLogo from '@assets/diagologo.png';
+import BottomNavBar from '../navigation/BottomNavBar';
 
 interface AdminScreenProps {
   users: User[];
@@ -148,19 +149,7 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
         </div>
       </div>
 
-      {/* Fixed Home Button - Center Bottom */}
-      {onGoHome && (
-        <div className="fixed left-1/2 transform -translate-x-1/2 z-50" style={{bottom: 'var(--bottom-nav-offset)'}}>
-          <button
-            onClick={onGoHome}
-            className="flex items-center justify-center w-12 h-12 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-all shadow-lg"
-            style={{background: 'rgba(255, 255, 255, 0.1)'}}
-            title="Torna alla Home"
-          >
-            <Home size={24} />
-          </button>
-        </div>
-      )}
+      <BottomNavBar onGoHome={onGoHome} layout="center" />
     </div>
   );
 }

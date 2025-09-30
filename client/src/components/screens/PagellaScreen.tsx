@@ -3,7 +3,7 @@ import { usePagellaPermissions } from './pagella/hooks/usePagellaPermissions';
 import { usePagellaLogic } from './pagella/hooks/usePagellaLogic';
 import PagellaHeader from './pagella/components/PagellaHeader';
 import PagellaEditor from './pagella/components/PagellaEditor';
-import PagellaNavigation from './pagella/components/PagellaNavigation';
+import BottomNavBar from '../navigation/BottomNavBar';
 
 interface PagellaScreenProps {
   event: WineEvent | null;
@@ -41,7 +41,7 @@ export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }
         canEdit={canEdit} 
         onContentChange={handleContentChange} 
       />
-      <PagellaNavigation onGoBack={onGoBack} onGoHome={onGoHome} />
+      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="center" />
     </div>
   );
 }
