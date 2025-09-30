@@ -19,6 +19,13 @@ export default function ParticipantsManager({ eventId }: ParticipantsManagerProp
     registeredAt: string;
   }>>({
     queryKey: ['/api/events', eventId, 'participants'],
+    queryFn: async () => {
+      const response = await fetch(`/api/events/${eventId}/participants`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch participants');
+      }
+      return response.json();
+    },
     enabled: showParticipants,
   });
 

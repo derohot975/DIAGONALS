@@ -40,6 +40,7 @@ export interface IStorage {
   getVote(id: number): Promise<Vote | undefined>;
   createVote(vote: InsertVote): Promise<Vote>;
   updateVote(id: number, score: number): Promise<Vote | undefined>;
+  deleteVote(id: number): Promise<boolean>;
   getVotesByEventId(eventId: number): Promise<Vote[]>;
   getVotesByWineId(wineId: number): Promise<Vote[]>;
   getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
@@ -254,6 +255,14 @@ export class DatabaseStorage implements IStorage {
       .where(eq(votes.id, id))
       .returning();
     return vote || undefined;
+  }
+
+  async deleteVote(id: number): Promise<boolean> {
+    const result = await db
+      .delete(votes)
+      .where(eq(votes.id, id))
+      .returning();
+    return result.length > 0;
   }
 
   async getVotesByEventId(eventId: number): Promise<Vote[]> {

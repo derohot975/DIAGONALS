@@ -47,32 +47,53 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
     }
   }, [isOpen]);
 
-  // Auto-snap to nearest value when scrolling stops
+  // Auto-snap to nearest value when scrolling stops - Mobile optimized
   useEffect(() => {
     const scrollElement = scrollRef.current;
     if (!scrollElement || !isOpen) return;
     
     let scrollTimeout: NodeJS.Timeout;
+    let isUserScrolling = false;
     
     const handleScrollEnd = () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
+        if (!isUserScrolling) return;
+        
         const itemHeight = 48;
         const scrollTop = scrollElement.scrollTop;
         const nearestIndex = Math.round(scrollTop / itemHeight);
         const targetScrollTop = nearestIndex * itemHeight;
         
         if (nearestIndex >= 0 && nearestIndex < scores.length) {
+          isUserScrolling = false;
           scrollElement.scrollTo({
             top: targetScrollTop,
             behavior: 'smooth'
           });
+          // Update selected score
+          setSelectedScore(scores[nearestIndex]);
         }
-      }, 100);
+      }, 150);
     };
     
-    scrollElement.addEventListener('scroll', handleScrollEnd);
+    const handleScrollStart = () => {
+      isUserScrolling = true;
+      clearTimeout(scrollTimeout);
+    };
+    
+    // Mobile-first: prioritize touch events
+    scrollElement.addEventListener('touchstart', handleScrollStart, { passive: true });
+    scrollElement.addEventListener('touchmove', handleScrollStart, { passive: true });
+    scrollElement.addEventListener('touchend', handleScrollEnd, { passive: true });
+    
+    // Fallback for desktop
+    scrollElement.addEventListener('scroll', handleScrollEnd, { passive: true });
+    
     return () => {
+      scrollElement.removeEventListener('touchstart', handleScrollStart);
+      scrollElement.removeEventListener('touchmove', handleScrollStart);
+      scrollElement.removeEventListener('touchend', handleScrollEnd);
       scrollElement.removeEventListener('scroll', handleScrollEnd);
       clearTimeout(scrollTimeout);
     };

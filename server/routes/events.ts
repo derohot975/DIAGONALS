@@ -211,3 +211,59 @@ eventsRouter.get("/:eventId/results", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch results" });
   }
 });
+
+// Participants routes
+eventsRouter.get("/:eventId/participants", async (req: Request, res: Response) => {
+  try {
+    const eventId = parseInt(req.params.eventId);
+    const participants = await storage.getUsersByEventId(eventId);
+    
+    // Format participants with registration date
+    const formattedParticipants = participants.map(user => ({
+      userId: user.id,
+      userName: user.name,
+      registeredAt: new Date().toISOString() // For now, use current date
+    }));
+    
+    res.json(formattedParticipants);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch participants" });
+  }
+});
+
+eventsRouter.delete("/:eventId/participants/:userId", async (req: Request, res: Response) => {
+  try {
+    const eventId = parseInt(req.params.eventId);
+    const userId = parseInt(req.params.userId);
+    
+    // First, delete the user's wine for this event
+    const wines = await storage.getWinesByEventId(eventId);
+    const userWine = wines.find(wine => wine.userId === userId);
+    
+    if (userWine) {
+      // Delete all votes for this wine
+      const votes = await storage.getVotesByEventId(eventId);
+      const wineVotes = votes.filter(vote => vote.wineId === userWine.id);
+      
+      for (const vote of wineVotes) {
+        await storage.deleteVote(vote.id);
+      }
+      
+      // Delete the wine
+      await storage.deleteWine(userWine.id);
+    }
+    
+    // Also delete any votes the user made for other wines
+    const allVotes = await storage.getVotesByEventId(eventId);
+    const userVotes = allVotes.filter(vote => vote.userId === userId);
+    
+    for (const vote of userVotes) {
+      await storage.deleteVote(vote.id);
+    }
+    
+    res.json({ message: "Partecipante rimosso con successo dall'evento" });
+  } catch (error) {
+    console.error('Remove participant error:', error);
+    res.status(500).json({ message: "Errore nella rimozione del partecipante" });
+  }
+});
