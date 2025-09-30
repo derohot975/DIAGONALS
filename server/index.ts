@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import { createServer } from "http";
+import router from "./routes/index";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
 import { ensurePagellaTable } from "./db/pagella";
@@ -72,7 +73,10 @@ app.use((req, res, next) => {
     }));
   }
   
-  const server = await registerRoutes(app);
+  // Mount all routes
+  app.use(router);
+  
+  const server = createServer(app);
 
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
