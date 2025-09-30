@@ -34,21 +34,21 @@ export default function BottomNavBar({
   variant = 'solid'
 }: BottomNavBarProps) {
   
-  // Button style variants
+  // Button style variants - icone trasparenti senza sfondo
   const getButtonStyles = (buttonVariant: BottomNavButton['variant'] = 'primary') => {
-    const baseStyles = "p-3 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center";
+    const baseStyles = "p-3 transition-all duration-200 flex items-center justify-center";
     
     switch (buttonVariant) {
       case 'primary':
-        return `${baseStyles} bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white`;
+        return `${baseStyles} text-white hover:text-white/80`;
       case 'secondary':
-        return `${baseStyles} bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm`;
+        return `${baseStyles} text-white/70 hover:text-white`;
       case 'glass':
-        return `${baseStyles} text-white hover:bg-white hover:bg-opacity-10 bg-white bg-opacity-10`;
+        return `${baseStyles} text-white/80 hover:text-white`;
       case 'admin':
-        return `${baseStyles} bg-red-600 hover:bg-red-700 text-white`;
+        return `${baseStyles} text-red-400 hover:text-red-300`;
       default:
-        return `${baseStyles} bg-[hsl(229,73%,69%)] hover:bg-[hsl(270,50%,65%)] text-white`;
+        return `${baseStyles} text-white hover:text-white/80`;
     }
   };
 

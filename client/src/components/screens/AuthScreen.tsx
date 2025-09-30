@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { LogIn, UserPlus, Shield } from '@/components/icons';
+import { LogIn, UserPlus, Shield, Settings } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
-import BottomNavBar from '../navigation/BottomNavBar';
 
 interface AuthScreenProps {
   onLogin: (name: string, pin: string) => void;
@@ -152,8 +151,14 @@ export default function AuthScreen({
                           </button>
                         ))}
                         
-                        {/* Empty space */}
-                        <div></div>
+                        {/* Tasto C (Cancella) */}
+                        <button
+                          type="button"
+                          onClick={handleDeletePin}
+                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                        >
+                          C
+                        </button>
                         
                         {/* Zero */}
                         <button
@@ -164,14 +169,16 @@ export default function AuthScreen({
                           0
                         </button>
                         
-                        {/* Delete */}
-                        <button
-                          type="button"
-                          onClick={handleDeletePin}
-                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
-                        >
-                          ⌫
-                        </button>
+                        {/* Tasto Admin */}
+                        {onShowAdmin && (
+                          <button
+                            type="button"
+                            onClick={onShowAdmin}
+                            className="w-14 h-14 bg-white border-2 border-red-300 text-red-600 text-xl font-bold rounded-full hover:bg-red-50 hover:border-red-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                          >
+                            <Settings className="w-5 h-5" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </>
@@ -248,7 +255,6 @@ export default function AuthScreen({
         </div>
       </div>
 
-      <BottomNavBar onShowAdmin={onShowAdmin} layout="center" />
     </div>
   );
 }
