@@ -1,24 +1,24 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './hooks/useAuth';
 import { useSession } from './hooks/useSession';
 import { useUserMutations } from './hooks/useUserMutations';
 import { useEventMutations } from './hooks/useEventMutations';
 import { useWineMutations } from './hooks/useWineMutations';
-import { useAppRouter } from './hooks/useAppRouter';
-import { useAppState } from './hooks/useAppState';
-import { useAppNavigation } from './hooks/useAppNavigation';
-import { useAppEffects } from './hooks/useAppEffects';
+import * as uiHandlers from './handlers/uiHandlers';
 import * as userHandlers from './handlers/userHandlers';
+import * as eventHandlers from './handlers/eventHandlers';
 import { apiRequest } from './lib/queryClient';
 import { isLoadingState } from './lib/utils';
-import { performanceTelemetry } from './lib/performanceTelemetry';
 import AppShell from './components/AppShell';
 import ScreenRouter from './components/ScreenRouter';
+// BEGIN DIAGONALE APP SHELL - Import LoadingSkeleton
 import LoadingSkeleton from './components/LoadingSkeleton';
+import { performanceTelemetry } from './lib/performanceTelemetry';
+// END DIAGONALE APP SHELL
 
-import { User, WineEvent, Wine, Vote, WineResultDetailed } from '@shared/schema';
+import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 
 // Components
 import SplashScreen from './components/screens/SplashScreen';
@@ -34,8 +34,7 @@ import ChangeAdminPinModal from './components/modals/ChangeAdminPinModal';
 import InstallPrompt from './components/InstallPrompt';
 
 
-import { EventReportData } from '@shared/schema';
-import { Screen } from './hooks/useAppRouter';
+type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
 
 // BEGIN DIAGONALE APP SHELL - Feature Flags
 const ENABLE_APP_SHELL = import.meta.env.VITE_ENABLE_APP_SHELL !== 'false'; // Default: true
@@ -57,12 +56,33 @@ const shouldShowSkeleton = (currentScreen: Screen): boolean => {
 // END DIAGONALE APP SHELL
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [currentScreen, setCurrentScreen] = useState<Screen>('auth');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  // Custom hooks for state management
-  const router = useAppRouter(currentUser);
-  const appState = useAppState();
-  const navigation = useAppNavigation(router.setCurrentScreen, appState);
+  // Forza sempre il reset all'autenticazione quando l'app si ricarica
+  useEffect(() => {
+    setCurrentUser(null);
+    setCurrentScreen('auth');
+  }, []);
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  
+  // Modal states
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [showEditEventModal, setShowEditEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<WineEvent | null>(null);
+  const [showWineRegistrationModal, setShowWineRegistrationModal] = useState(false);
+  const [editingWine, setEditingWine] = useState<Wine | null>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState<EventReportData | null>(null);
+  
+  // Admin PIN protection
+  const [showAdminPinModal, setShowAdminPinModal] = useState(false);
+  const [pendingAdminAction, setPendingAdminAction] = useState<string | null>(null);
+  const [showChangeAdminPinModal, setShowChangeAdminPinModal] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -76,7 +96,7 @@ function App() {
     logoutMutation,
     handleUserSelect,
     handleLogout: sessionHandleLogout
-  } = useSession(currentUser, setCurrentUser, router.setCurrentScreen);
+  } = useSession(currentUser, setCurrentUser, setCurrentScreen);
   
   // Custom hooks for better organization
   const { authLoading, authError, setAuthError, handleLogin, handleRegister } = useAuth();
@@ -98,15 +118,64 @@ function App() {
     viewReportMutation,
   } = useEventMutations({
     currentUser,
-    selectedEventId: appState.selectedEventId,
-    setReportData: appState.setReportData,
-    setShowReportModal: appState.setShowReportModal
+    selectedEventId,
+    setReportData,
+    setShowReportModal
   });
+
+  // Logout function
+  const handleLogout = () => {
+    sessionHandleLogout();
+    setAuthError(null);
+  };
+
+  // Authentication functions - using custom hook
+  const onLogin = async (name: string, pin: string) => {
+    const user = await handleLogin(name, pin);
+    if (user) {
+      setCurrentUser(user);
+      setCurrentScreen('events');
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    }
+  };
+
+  const onRegister = async (name: string, pin: string) => {
+    const user = await handleRegister(name, pin);
+    if (user) {
+      setCurrentUser(user);
+      setCurrentScreen('events');
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    }
+  };
+
+  // Auto-login if user exists in localStorage
+  useEffect(() => {
+    if (currentUser && currentScreen === 'auth') {
+      setCurrentScreen('events');
+    }
+  }, [currentUser, currentScreen]);
 
   // Queries
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ['/api/users'],
   });
+
+  // Validate currentUser still exists in database
+  useEffect(() => {
+    if (currentUser && users.length > 0) {
+      const userExists = users.find(u => u.id === currentUser.id);
+      if (!userExists) {
+        // User validation: clearing localStorage for non-existent user
+        setCurrentUser(null);
+        setCurrentScreen('auth');
+        toast({ 
+          title: 'Utente non trovato', 
+          description: 'Riseleziona il tuo utente dalla lista.',
+          variant: 'destructive' 
+        });
+      }
+    }
+  }, [users, currentUser, setCurrentUser, toast]);
 
   const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery<WineEvent[]>({
     queryKey: ['/api/events'],
@@ -121,61 +190,49 @@ function App() {
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({
-    queryKey: ['/api/votes?eventId=' + appState.selectedEventId],
-    enabled: !!appState.selectedEventId,
+    queryKey: ['/api/votes?eventId=' + selectedEventId],
+    enabled: !!selectedEventId,
   });
 
   const { data: results = [] } = useQuery<WineResultDetailed[]>({
-    queryKey: ['/api/events/' + appState.selectedEventId + '/results'],
-    enabled: !!appState.selectedEventId && router.currentScreen === 'eventResults',
+    queryKey: ['/api/events/' + selectedEventId + '/results'],
+    enabled: !!selectedEventId && currentScreen === 'eventResults',
   });
 
-  // App effects hook
-  useAppEffects({
-    currentUser,
-    setCurrentUser,
-    setCurrentScreen: router.setCurrentScreen,
-    users,
-    usersLoading,
-    eventsLoading,
-    showSplash: router.showSplash,
-    currentScreen: router.currentScreen
-  });
-
-  // Logout function
-  const handleLogout = () => {
-    sessionHandleLogout();
-    setAuthError(null);
-  };
-
-  // Authentication functions - using custom hook
-  const onLogin = async (name: string, pin: string) => {
-    const user = await handleLogin(name, pin);
-    if (user) {
-      setCurrentUser(user);
-      router.setCurrentScreen('events');
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+  // BEGIN DIAGONALE APP SHELL - Performance telemetry for data loading
+  useEffect(() => {
+    if (!usersLoading && !eventsLoading && users.length > 0) {
+      performanceTelemetry.markFirstDataReceived();
     }
-  };
+  }, [usersLoading, eventsLoading, users.length]);
 
-  const onRegister = async (name: string, pin: string) => {
-    const user = await handleRegister(name, pin);
-    if (user) {
-      setCurrentUser(user);
-      router.setCurrentScreen('events');
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+  useEffect(() => {
+    if (!usersLoading && !eventsLoading && !showSplash && currentScreen !== 'auth') {
+      performanceTelemetry.markAppReady();
     }
-  };
+  }, [usersLoading, eventsLoading, showSplash, currentScreen]);
+  // END DIAGONALE APP SHELL
 
-  // Event handlers
+  // All mutations now provided by domain-specific hooks
+
+
+  // Event handlers - handleUserSelect now provided by useSession hook
+
   const handleAddUser = (name: string, isAdmin: boolean) => {
     userHandlers.addUser({ createUserMutation }, name, isAdmin);
   };
 
   // Admin PIN protection functions
+  const requireAdminPin = (action: string, callback: () => void) => {
+    setPendingAdminAction(action);
+    setShowAdminPinModal(true);
+    // Store the callback temporarily for execution after PIN validation
+    (window as any).pendingAdminCallback = callback;
+  };
+
   const handleAdminPinSuccess = () => {
-    appState.setShowAdminPinModal(false);
-    appState.setPendingAdminAction(null);
+    setShowAdminPinModal(false);
+    setPendingAdminAction(null);
     // Execute the pending admin action
     if ((window as any).pendingAdminCallback) {
       (window as any).pendingAdminCallback();
@@ -184,9 +241,78 @@ function App() {
   };
 
   const handleAdminPinClose = () => {
-    appState.setShowAdminPinModal(false);
-    appState.setPendingAdminAction(null);
+    setShowAdminPinModal(false);
+    setPendingAdminAction(null);
     (window as any).pendingAdminCallback = null;
+  };
+
+  // Protected admin actions
+  const handleShowAdmin = () => {
+    requireAdminPin('admin-access', () => setCurrentScreen('admin'));
+  };
+
+  const handleShowHistoricEvents = () => {
+    uiHandlers.showHistoricEvents({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
+  };
+
+  const handleShowPagella = (eventId: number) => {
+    eventHandlers.showPagella({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
+  };
+
+  const handleShowAddUserModal = () => {
+    uiHandlers.showAddUserModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
+  };
+
+  const handleShowCreateEventModal = () => {
+    uiHandlers.showCreateEventModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
+  };
+
+  const handleShowAdminEvents = () => {
+    uiHandlers.showAdminEvents({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
+  };
+
+  const handleShowChangeAdminPin = () => {
+    uiHandlers.showChangeAdminPin({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    });
   };
 
   const handleChangeAdminPin = (newPin: string) => {
@@ -196,7 +322,7 @@ function App() {
       title: 'PIN Admin Modificato', 
       description: 'Il PIN admin è stato aggiornato con successo.' 
     });
-    appState.setShowChangeAdminPinModal(false);
+    setShowChangeAdminPinModal(false);
   };
 
   const handleCreateEvent = (name: string, date: string, mode: string) => {
@@ -209,6 +335,11 @@ function App() {
 
   const handleUpdateEvent = (id: number, name: string, date: string, mode: string) => {
     updateEventMutation.mutate({ id, eventData: { name, date, mode } });
+  };
+
+  const handleEditEvent = (event: WineEvent) => {
+    setEditingEvent(event);
+    setShowEditEventModal(true);
   };
 
   const handleDeleteEvent = (eventId: number) => {
@@ -227,12 +358,12 @@ function App() {
     price: number;
     alcohol?: number;
   }) => {
-    if (!currentUser || !appState.selectedEventId) return;
+    if (!currentUser || !selectedEventId) return;
     
-    if (appState.editingWine) {
+    if (editingWine) {
       // Update existing wine
       updateWineMutation.mutate({
-        id: appState.editingWine.id,
+        id: editingWine.id,
         wineData: {
           type: wineData.type,
           name: wineData.name,
@@ -255,12 +386,12 @@ function App() {
         origin: wineData.origin,
         price: wineData.price.toString(),
         alcohol: wineData.alcohol || 0,
-        eventId: appState.selectedEventId,
+        eventId: selectedEventId,
         userId: currentUser.id,
       });
     }
     
-    appState.setEditingWine(null); // Reset editing state
+    setEditingWine(null); // Reset editing state
   };
 
   const handleVoteForWine = (wineId: number, score: number, hasLode: boolean = false) => {
@@ -290,32 +421,57 @@ function App() {
     stopVotingMutation.mutate(eventId);
   };
 
-  // Navigation functions now handled by useAppNavigation hook
+  const handleShowEventDetails = (eventId: number) => {
+    eventHandlers.showEventDetails({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
+  };
+
+  const handleShowEventResults = (eventId: number) => {
+    eventHandlers.showEventResults({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
+  };
+
+  const handleShowWineRegistration = (eventId: number) => {
+    eventHandlers.showWineRegistration({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
+  };
 
   const handleEditWine = (eventId: number) => {
     // Trova il vino dell'utente corrente per questo evento
     const userWine = wines.find(w => w.eventId === eventId && w.userId === currentUser?.id);
     if (userWine) {
-      appState.setEditingWine(userWine);
+      setEditingWine(userWine);
     }
-    appState.setSelectedEventId(eventId);
-    appState.setShowWineRegistrationModal(true);
+    setSelectedEventId(eventId);
+    setShowWineRegistrationModal(true);
   };
 
   const handleParticipateEvent = (eventId: number) => {
     const event = events.find((e: WineEvent) => e.id === eventId);
     if (!event) return;
     
-    appState.setSelectedEventId(eventId);
+    setSelectedEventId(eventId);
     
     // Reindirizza alla pagina corretta basata sullo stato delle votazioni
     if (event.votingStatus === 'active') {
-      router.setCurrentScreen('voting');
+      setCurrentScreen('voting');
     } else if (event.votingStatus === 'completed') {
-      router.setCurrentScreen('eventResults');
+      setCurrentScreen('eventResults');
     } else {
       // votingStatus === 'not_started' - mostra dettagli evento
-      router.setCurrentScreen('eventDetails');
+      setCurrentScreen('eventDetails');
     }
   };
 
@@ -369,10 +525,30 @@ function App() {
     }
   };
 
+  const handleShowResults = (eventId: number) => {
+    eventHandlers.showResults({
+      setSelectedEventId,
+      setCurrentScreen,
+      setEditingWine,
+      setShowWineRegistrationModal
+    }, eventId);
+  };
+
+  const handleShowEditUserModal = (user: User) => {
+    uiHandlers.showEditUserModal({
+      setCurrentScreen,
+      setShowAddUserModal,
+      setShowCreateEventModal,
+      setShowChangeAdminPinModal,
+      setEditingUser,
+      setShowEditUserModal
+    }, user);
+  };
+
   const handleUpdateUser = (id: number, name: string, isAdmin: boolean) => {
     updateUserMutation.mutate({ id, userData: { name, isAdmin } });
-    appState.setShowEditUserModal(false);
-    appState.setEditingUser(null);
+    setShowEditUserModal(false);
+    setEditingUser(null);
   };
 
   const handleDeleteUser = (userId: number) => {
@@ -382,17 +558,18 @@ function App() {
   };
 
   // Get current event
-  const currentEvent = appState.selectedEventId ? events.find((e: WineEvent) => e.id === appState.selectedEventId) || null : null;
+  const currentEvent = selectedEventId ? events.find((e: WineEvent) => e.id === selectedEventId) || null : null;
+
 
   // BEGIN DIAGONALE APP SHELL - Scoped loading logic
   if (isLoadingState(usersLoading, eventsLoading)) {
-    if (ENABLE_APP_SHELL && shouldShowSkeleton(router.currentScreen)) {
+    if (ENABLE_APP_SHELL && shouldShowSkeleton(currentScreen)) {
       // App Shell: Mostra skeleton solo per route data-heavy
       performanceTelemetry.markAppShellReady();
       return <LoadingSkeleton showLogo={true} showNavigation={true} />;
     } else {
       // Fallback per route intro/auth: loading minimale o null
-      if (router.currentScreen === 'auth') {
+      if (currentScreen === 'auth') {
         // Per auth/intro: nessun skeleton, solo loading discreto
         return (
           <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#300505] to-[#8d0303]">
@@ -415,14 +592,14 @@ function App() {
   // END DIAGONALE APP SHELL
 
   // Show splash screen for 3 seconds on app start
-  if (router.showSplash) {
-    return <SplashScreen onFinish={() => router.setShowSplash(false)} />;
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
   return (
     <AppShell>
       <ScreenRouter
-        currentScreen={router.currentScreen}
+        currentScreen={currentScreen}
         currentUser={currentUser}
         currentEvent={currentEvent}
         users={users}
@@ -434,23 +611,23 @@ function App() {
         authError={authError}
         onLogin={onLogin}
         onRegister={onRegister}
-        setCurrentScreen={router.setCurrentScreen}
-        handleShowAdmin={navigation.handleShowAdmin}
-        handleShowHistoricEvents={navigation.handleShowHistoricEvents}
-        handleShowEventDetails={navigation.handleShowEventDetails}
-        handleShowEventResults={navigation.handleShowEventResults}
-        handleShowWineRegistration={navigation.handleShowWineRegistration}
-        handleShowResults={navigation.handleShowResults}
-        handleShowPagella={navigation.handleShowPagella}
-        handleShowAddUserModal={navigation.handleShowAddUserModal}
-        handleShowCreateEventModal={navigation.handleShowCreateEventModal}
-        handleShowAdminEvents={navigation.handleShowAdminEvents}
-        handleShowChangeAdminPin={navigation.handleShowChangeAdminPin}
-        handleShowEditUserModal={navigation.handleShowEditUserModal}
+        setCurrentScreen={setCurrentScreen}
+        handleShowAdmin={handleShowAdmin}
+        handleShowHistoricEvents={handleShowHistoricEvents}
+        handleShowEventDetails={handleShowEventDetails}
+        handleShowEventResults={handleShowEventResults}
+        handleShowWineRegistration={handleShowWineRegistration}
+        handleShowResults={handleShowResults}
+        handleShowPagella={handleShowPagella}
+        handleShowAddUserModal={handleShowAddUserModal}
+        handleShowCreateEventModal={handleShowCreateEventModal}
+        handleShowAdminEvents={handleShowAdminEvents}
+        handleShowChangeAdminPin={handleShowChangeAdminPin}
+        handleShowEditUserModal={handleShowEditUserModal}
         handleParticipateEvent={handleParticipateEvent}
         handleVoteForWine={handleVoteForWine}
         handleEditWine={handleEditWine}
-        handleEditEvent={navigation.handleEditEvent}
+        handleEditEvent={handleEditEvent}
         handleDeleteEvent={handleDeleteEvent}
         handleActivateVoting={handleActivateVoting}
         handleDeactivateVoting={handleDeactivateVoting}
@@ -458,76 +635,76 @@ function App() {
         handleViewReport={handleViewReport}
         handleUpdateUser={handleUpdateUser}
         handleDeleteUser={handleDeleteUser}
-        setShowWineRegistrationModal={appState.setShowWineRegistrationModal}
+        setShowWineRegistrationModal={setShowWineRegistrationModal}
       />
       
       {/* Modals */}
       <AddUserModal
-        isOpen={appState.showAddUserModal}
-        onClose={() => appState.setShowAddUserModal(false)}
+        isOpen={showAddUserModal}
+        onClose={() => setShowAddUserModal(false)}
         onAddUser={handleAddUser}
       />
       
       <EditUserModal
-        isOpen={appState.showEditUserModal}
+        isOpen={showEditUserModal}
         onClose={() => {
-          appState.setShowEditUserModal(false);
-          appState.setEditingUser(null);
+          setShowEditUserModal(false);
+          setEditingUser(null);
         }}
-        user={appState.editingUser}
+        user={editingUser}
         onUpdateUser={handleUpdateUser}
       />
       
       <CreateEventModal
-        isOpen={appState.showCreateEventModal}
-        onClose={() => appState.setShowCreateEventModal(false)}
+        isOpen={showCreateEventModal}
+        onClose={() => setShowCreateEventModal(false)}
         onCreateEvent={handleCreateEvent}
       />
       
       <EditEventModal
-        isOpen={appState.showEditEventModal}
+        isOpen={showEditEventModal}
         onClose={() => {
-          appState.setShowEditEventModal(false);
-          appState.setEditingEvent(null);
+          setShowEditEventModal(false);
+          setEditingEvent(null);
         }}
         onUpdateEvent={handleUpdateEvent}
-        event={appState.editingEvent}
+        event={editingEvent}
       />
 
       <WineRegistrationModal
-        isOpen={appState.showWineRegistrationModal}
+        isOpen={showWineRegistrationModal}
         onClose={() => {
-          appState.setShowWineRegistrationModal(false);
-          appState.setEditingWine(null);
+          setShowWineRegistrationModal(false);
+          setEditingWine(null);
         }}
         currentUser={currentUser}
         onRegisterWine={handleRegisterWine}
-        wine={appState.editingWine}
+        wine={editingWine}
       />
 
       <EventReportModal
-        isOpen={appState.showReportModal}
+        isOpen={showReportModal}
         onClose={() => {
-          appState.setShowReportModal(false);
-          appState.setReportData(null);
+          setShowReportModal(false);
+          setReportData(null);
         }}
-        reportData={appState.reportData}
+        reportData={reportData}
       />
 
       <AdminPinModal
-        isOpen={appState.showAdminPinModal}
+        isOpen={showAdminPinModal}
         onClose={handleAdminPinClose}
         onSuccess={handleAdminPinSuccess}
       />
 
       <ChangeAdminPinModal
-        isOpen={appState.showChangeAdminPinModal}
-        onClose={() => appState.setShowChangeAdminPinModal(false)}
+        isOpen={showChangeAdminPinModal}
+        onClose={() => setShowChangeAdminPinModal(false)}
         onSuccess={handleChangeAdminPin}
       />
 
       {/* Install Prompt - Only show on home screen when not logged in */}
-      {router.currentScreen === 'home' && !currentUser && <InstallPrompt />}
+      {currentScreen === 'home' && !currentUser && <InstallPrompt />}
 
 
     </AppShell>
