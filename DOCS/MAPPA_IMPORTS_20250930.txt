@@ -1,0 +1,111 @@
+# MAPPA IMPORTS SCREENS PRINCIPALI - DIAGONALE
+# Data: 30 Settembre 2025
+# Analisi dipendenze tra screens e layer condivisi
+
+## MATRICE IMPORT SCREENS → LAYER
+
+### AuthScreen.tsx
+IN:  useState, LogIn, UserPlus, Shield (icons), diagologo.png
+OUT: AuthScreen (default export)
+DEPS: React hooks, assets, icons
+COUPLING: BASSO (solo UI dependencies)
+
+### AdminScreen.tsx  
+IN:  useState, useEffect, useMemo, User (schema), icons (8), diagologo.png
+OUT: AdminScreen (default export)
+DEPS: React hooks, shared schema, assets, icons
+COUPLING: BASSO (minimal business logic)
+
+### EventListScreen.tsx
+IN:  formatEventDate, getCreatorName (utils), User, WineEvent, Wine, Vote (schema), icons (3), diagologo.png
+OUT: EventListScreen (default export)  
+DEPS: Utility functions, shared schema, assets, icons
+COUPLING: MEDIO (business logic utils)
+
+### AdminEventManagementScreen.tsx ⚠️
+IN:  useQuery, useMutation, useQueryClient (react-query), apiRequest (lib), useToast, formatEventDate, getCreatorName (utils), WineEvent, User, Wine (schema), icons (12), diagologo.png
+OUT: AdminEventManagementScreen (default export)
+DEPS: React Query, custom lib, utils, schema, many icons, assets
+COUPLING: ALTO (direct API calls, complex dependencies)
+
+### EventDetailsScreen.tsx
+IN:  useEventLogic (custom hook), formatPrice (utils), VotingGrid (optimized), WineEvent, Wine, Vote, User (schema), icons (7), diagologo.png
+OUT: EventDetailsScreen (default export)
+DEPS: Custom hook, utils, optimized components, schema, icons, assets  
+COUPLING: MEDIO (usa hook custom ma ancora dipendenze dirette)
+
+### SimpleVotingScreen.tsx ⚠️
+IN:  useState, useQuery, useMutation, useQueryClient (react-query), useToast, VoteScrollPicker, AdminPinModal, User, Wine, WineEvent, Vote (schema), icons (2), diagologo.png
+OUT: SimpleVotingScreen (default export)
+DEPS: React Query, custom components, schema, icons, assets
+COUPLING: ALTO (direct API calls, no custom hooks)
+
+### EventResultsScreen.tsx
+IN:  useState, formatPrice (utils), WineEvent, WineResultDetailed (schema), icons (6), diagologo.png
+OUT: EventResultsScreen (default export)
+DEPS: React hooks, utils, schema, icons, assets
+COUPLING: MEDIO (logica export embedded)
+
+### HistoricEventsScreen.tsx
+IN:  formatEventDate, getCreatorName (utils), User, WineEvent (schema), icons (7), diagologo.png  
+OUT: HistoricEventsScreen (default export)
+DEPS: Utility functions, schema, icons, assets
+COUPLING: BASSO (solo presentation logic)
+
+### PagellaScreen.tsx
+IN:  useState, useEffect, useRef, useCallback, apiRequest (lib), WineEvent, User (schema), icons (2), diagologo.png
+OUT: PagellaScreen (default export)
+DEPS: React hooks, custom lib, schema, icons, assets
+COUPLING: MEDIO (direct API calls, complex state management)
+
+### SplashScreen.tsx
+IN:  useEffect, diagologo.png
+OUT: SplashScreen (default export)
+DEPS: React hooks, assets
+COUPLING: MINIMO (single responsibility)
+
+## ANALISI ACCOPPIAMENTI
+
+### ALTO ACCOPPIAMENTO (⚠️ Priorità)
+- AdminEventManagementScreen: 12+ imports, API dirette, logica complessa
+- SimpleVotingScreen: API dirette, no hook custom, mutations inline
+
+### MEDIO ACCOPPIAMENTO  
+- EventDetailsScreen: Hook custom ma ancora dipendenze miste
+- EventListScreen: Business logic utils embedded
+- EventResultsScreen: Export logic embedded
+- PagellaScreen: API dirette, state management complesso
+
+### BASSO ACCOPPIAMENTO (✅ Ottimali)
+- AuthScreen: Solo UI dependencies
+- AdminScreen: Minimal business logic  
+- HistoricEventsScreen: Solo presentation
+- SplashScreen: Single responsibility
+
+## LAYER CONDIVISI PIÙ UTILIZZATI
+
+### icons/ (utilizzato da tutte le screens)
+- Dipendenza universale, ben centralizzata
+- Range: 2-12 icons per screen
+
+### diagologo.png (utilizzato da tutte le screens)  
+- Asset condiviso, consistente branding
+
+### shared/schema (utilizzato da 8/10 screens)
+- User, WineEvent, Wine, Vote, WineResultDetailed
+- Buona centralizzazione tipi
+
+### lib/utils (utilizzato da 5/10 screens)
+- formatEventDate, getCreatorName, formatPrice
+- Potenziale per maggiore riuso
+
+### React Query (utilizzato da 2/10 screens)
+- AdminEventManagementScreen, SimpleVotingScreen
+- Accoppiamento diretto = problema modularità
+
+## RACCOMANDAZIONI IMPORT
+
+1. **Ridurre API dirette:** Estrarre in hook custom
+2. **Centralizzare utils:** Espandere lib/utils per maggiore riuso  
+3. **Hook layer:** Aumentare uso hook custom vs direct imports
+4. **Component layer:** Estrarre componenti riusabili da screens complesse

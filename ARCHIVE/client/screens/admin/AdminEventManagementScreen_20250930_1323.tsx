@@ -1,10 +1,11 @@
-import { Calendar, Edit, Trash2, Play, Square, BarChart3, CheckCircle, Home, Shield } from '@/components/icons';
+import { Calendar, ArrowLeft, Edit, Trash2, Play, Square, Users, WineIcon, BarChart3, Settings, CheckCircle, Home, Shield } from '@/components/icons';
 import { WineEvent, User, Wine } from '@shared/schema';
-import { formatEventDate } from '../../lib/utils';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { formatEventDate, getCreatorName } from '../../lib/utils';
+import { apiRequest } from '../../lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 import diagoLogo from '@assets/diagologo.png';
-import ParticipantsManager from './admin/components/ParticipantsManager';
-import VotingCompletionChecker from './admin/components/VotingCompletionChecker';
-import { useAdminEventManagement } from './admin/hooks/useAdminEventManagement';
 
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
@@ -21,6 +22,91 @@ interface AdminEventManagementScreenProps {
   onGoBackToAdmin?: () => void;
 }
 
+// Participants Manager Component
+function ParticipantsManager({ eventId }: { eventId: number }) {
+  const [showParticipants, setShowParticipants] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch participants
+  const { data: participants = [], isLoading } = useQuery<Array<{
+    userId: number;
+    userName: string;
+    registeredAt: string;
+  }>>({
+    queryKey: ['/api/events', eventId, 'participants'],
+    enabled: showParticipants,
+  });
+
+  // Remove participant mutation
+  const removeParticipantMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest('DELETE', `/api/events/${eventId}/participants/${userId}`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events', eventId, 'participants'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+      toast({ 
+        title: '✅ Partecipante rimosso', 
+        description: data.message 
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: '❌ Errore', 
+        description: 'Impossibile rimuovere il partecipante', 
+        variant: 'destructive' 
+      });
+    },
+  });
+
+  const handleRemoveParticipant = (userId: number, userName: string) => {
+    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler rimuovere ${userName} dall'evento?\n\n• Il suo vino verrà eliminato definitivamente\n• Non potrà più partecipare alle votazioni\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione?`;
+    
+    if (confirm(confirmMessage)) {
+      removeParticipantMutation.mutate(userId);
+    }
+  };
+
+  return (
+    <div className="mt-3">
+      <button
+        onClick={() => setShowParticipants(!showParticipants)}
+        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+      >
+        {showParticipants ? '▼ Nascondi partecipanti' : '▶ Gestisci partecipanti'}
+      </button>
+
+      {showParticipants && (
+        <div className="mt-2 bg-gray-50 rounded-lg p-3 max-h-40 overflow-y-auto">
+          {isLoading ? (
+            <p className="text-sm text-gray-500">Caricamento...</p>
+          ) : participants.length === 0 ? (
+            <p className="text-sm text-gray-500">Nessun partecipante</p>
+          ) : (
+            <div className="space-y-2">
+              {participants.map((participant) => (
+                <div key={participant.userId} className="flex items-center justify-between bg-white rounded px-3 py-2">
+                  <span className="text-sm font-medium text-gray-800">{participant.userName}</span>
+                  <button
+                    onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
+                    disabled={removeParticipantMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {removeParticipantMutation.isPending ? 'Rimozione...' : 'Elimina'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminEventManagementScreen({ 
   events, 
   users,
@@ -35,11 +121,64 @@ export default function AdminEventManagementScreen({
   onGoHome,
   onGoBackToAdmin
 }: AdminEventManagementScreenProps) {
-  // Use custom hook for business logic
-  const { getParticipantsCount, activeEvents, completedEvents } = useAdminEventManagement({
-    events,
-    wines,
-  });
+
+
+  // Component to check voting completion status
+  const VotingCompletionChecker = ({ eventId }: { eventId: number }) => {
+    const { data: completionStatus } = useQuery<{
+      isComplete: boolean;
+      totalParticipants: number;
+      totalWines: number;
+      votesReceived: number;
+    }>({
+      queryKey: ['/api/events', eventId, 'voting-complete'],
+      enabled: true,
+      refetchInterval: 5000, // Check every 5 seconds
+    });
+
+    if (!completionStatus) return null;
+
+    return completionStatus.isComplete ? (
+      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2 text-green-700">
+            <CheckCircle className="w-5 h-5" />
+            <span className="text-sm font-medium">Tutti hanno votato! Pronto per conclusione</span>
+          </div>
+          <button
+            onClick={() => onCompleteEvent(eventId)}
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            Concludi Evento
+          </button>
+        </div>
+        <div className="mt-2 text-xs text-green-600">
+          {completionStatus.votesReceived} voti su {completionStatus.totalParticipants} partecipanti × {completionStatus.totalWines} vini
+        </div>
+      </div>
+    ) : (
+      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div className="flex items-center space-x-2 text-yellow-700">
+          <BarChart3 className="w-5 h-5" />
+          <span className="text-sm font-medium">Votazioni in corso...</span>
+        </div>
+        <div className="mt-1 text-xs text-yellow-600">
+          {completionStatus.votesReceived} voti ricevuti - Mancano {(completionStatus.totalParticipants * completionStatus.totalWines) - completionStatus.votesReceived} voti
+        </div>
+      </div>
+    );
+  };
+
+  // Calcola il numero di partecipanti per evento (utenti che hanno registrato vini)
+  const getParticipantsCount = (eventId: number) => {
+    if (!wines || !Array.isArray(wines)) return 0;
+    const eventWines = wines.filter(wine => wine.eventId === eventId);
+    const uniqueUsers = new Set(eventWines.map(wine => wine.userId));
+    return uniqueUsers.size;
+  };
+
+  const activeEvents = events.filter(event => event.status === 'registration' || event.status === 'active');
+  const completedEvents = events.filter(event => event.status === 'completed');
 
   return (
     <div className="flex-1 flex flex-col">
@@ -115,7 +254,7 @@ export default function AdminEventManagementScreen({
 
                     {/* Voting Completion Status - Show only when voting is active or completed */}
                     {event.votingStatus === 'completed' && (
-                      <VotingCompletionChecker eventId={event.id} onCompleteEvent={onCompleteEvent} />
+                      <VotingCompletionChecker eventId={event.id} />
                     )}
 
                     {/* Participants Count - Below Voting Button */}
