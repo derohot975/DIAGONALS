@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useRef, memo, useCallback } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -16,6 +16,9 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
   wineName 
 }: VoteScrollPickerProps) {
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
+  const [useScrollMode, setUseScrollMode] = useState<boolean>(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isScrollingRef = useRef<boolean>(false);
 
   // Generate scores from 0.0 to 10.0 in 0.5 increments
   const scores: number[] = [];
@@ -40,6 +43,47 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     }
   }, [isOpen]);
 
+  // Auto-scroll to selected value in scroll mode
+  useEffect(() => {
+    if (isOpen && useScrollMode && scrollRef.current) {
+      const currentIndex = scores.indexOf(selectedScore);
+      if (currentIndex !== -1) {
+        const itemHeight = 60;
+        const containerHeight = 300;
+        const scrollTop = currentIndex * itemHeight - containerHeight / 2 + itemHeight / 2;
+        
+        setTimeout(() => {
+          if (scrollRef.current) {
+            isScrollingRef.current = true;
+            scrollRef.current.scrollTop = Math.max(0, scrollTop);
+            setTimeout(() => {
+              isScrollingRef.current = false;
+            }, 200);
+          }
+        }, 100);
+      }
+    }
+  }, [isOpen, selectedScore, scores, useScrollMode]);
+
+  // Scroll handler for scroll mode
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current || isScrollingRef.current || !useScrollMode) return;
+    
+    const container = scrollRef.current;
+    const itemHeight = 60;
+    const containerHeight = 300;
+    const scrollTop = container.scrollTop;
+    const centerPosition = scrollTop + containerHeight / 2;
+    const selectedIndex = Math.round(centerPosition / itemHeight);
+    
+    if (selectedIndex >= 0 && selectedIndex < scores.length) {
+      const newScore = scores[selectedIndex];
+      if (typeof newScore === 'number' && newScore !== selectedScore) {
+        setSelectedScore(newScore);
+      }
+    }
+  }, [scores, selectedScore, useScrollMode]);
+
   const handleConfirm = () => {
     onVote(selectedScore);
     onClose();
@@ -47,6 +91,28 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
 
   const handleScoreSelect = (score: number) => {
     setSelectedScore(score);
+    
+    // In scroll mode, scroll to selected item
+    if (useScrollMode && scrollRef.current) {
+      const index = scores.indexOf(score);
+      const itemHeight = 60;
+      const containerHeight = 300;
+      const scrollTop = index * itemHeight - containerHeight / 2 + itemHeight / 2;
+      
+      isScrollingRef.current = true;
+      scrollRef.current.scrollTo({
+        top: Math.max(0, scrollTop),
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 300);
+    }
+  };
+
+  const toggleMode = () => {
+    setUseScrollMode(!useScrollMode);
   };
 
   if (!isOpen) return null;
@@ -66,27 +132,74 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           <div className="text-xl font-bold mt-1">
             {wineName.replace('Vino di ', '').toUpperCase()}
           </div>
+          
+          {/* Mode Toggle */}
+          <button
+            onClick={toggleMode}
+            className="mt-3 px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition-colors"
+          >
+            {useScrollMode ? '📱 Scroll' : '🔢 Grid'}
+          </button>
         </div>
 
-        {/* Score Grid */}
+        {/* Score Selection */}
         <div className="p-6">
-          <div className="grid grid-cols-4 gap-3 max-h-80 overflow-y-auto">
-            {scores.map((score) => (
-              <button
-                key={score}
-                onClick={() => handleScoreSelect(score)}
-                className={`
-                  h-12 rounded-xl font-semibold transition-all duration-200
-                  ${selectedScore === score 
-                    ? 'bg-red-100 border-2 border-red-800 text-red-950 scale-105 shadow-lg' 
-                    : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400'
-                  }
-                `}
+          {useScrollMode ? (
+            /* Scroll Mode */
+            <div className="relative">
+              {/* Selection indicator */}
+              <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-10"></div>
+              
+              {/* Scrollable scores */}
+              <div 
+                ref={scrollRef}
+                className="h-80 overflow-y-scroll scrollbar-hide"
+                onScroll={handleScroll}
+                style={{
+                  scrollSnapType: 'y mandatory',
+                  touchAction: 'pan-y',
+                  overscrollBehavior: 'contain',
+                  WebkitOverflowScrolling: 'touch'
+                }}
               >
-                {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-              </button>
-            ))}
-          </div>
+                <div className="py-32">
+                  {scores.map((score) => (
+                    <div
+                      key={score}
+                      className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                        selectedScore === score 
+                          ? 'text-2xl font-black text-red-950 relative z-20' 
+                          : 'text-lg font-medium text-gray-600 hover:text-red-800 relative z-20'
+                      }`}
+                      style={{ scrollSnapAlign: 'center' }}
+                      onClick={() => handleScoreSelect(score)}
+                    >
+                      {score % 1 === 0 ? score.toString() : score.toFixed(1)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Grid Mode (Fallback) */
+            <div className="grid grid-cols-4 gap-3 max-h-80 overflow-y-auto">
+              {scores.map((score) => (
+                <button
+                  key={score}
+                  onClick={() => handleScoreSelect(score)}
+                  className={`
+                    h-12 rounded-xl font-semibold transition-all duration-200
+                    ${selectedScore === score 
+                      ? 'bg-red-100 border-2 border-red-800 text-red-950 scale-105 shadow-lg' 
+                      : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400'
+                    }
+                  `}
+                >
+                  {score % 1 === 0 ? score.toString() : score.toFixed(1)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Footer */}
