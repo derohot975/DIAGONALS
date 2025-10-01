@@ -1,7 +1,7 @@
 import { Star, Eye } from '@/components/icons';
 import { Wine, Vote } from '@shared/schema';
-import { formatPrice } from '../../../../lib/utils';
-import { VotingGrid } from '../../../optimized/VotingGrid';
+import { formatPrice } from '@/lib/utils';
+import { VotingGrid } from '@/components/optimized/VotingGrid';
 
 interface WineCardProps {
   wine: Wine;

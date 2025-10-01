@@ -221,7 +221,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
       return (
         <EventReportScreen
           reportData={reportData}
-          onGoBack={() => setCurrentScreen('eventResults')}
+          onGoBack={() => setCurrentScreen('adminEvents')}
           onGoHome={() => setCurrentScreen('events')}
         />
       );

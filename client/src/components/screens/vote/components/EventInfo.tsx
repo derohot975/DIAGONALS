@@ -1,5 +1,5 @@
 import { WineEvent } from "@shared/schema";
-import diagoLogo from '../../../../assets/diagologo.png';
+import diagoLogo from '@assets/diagologo.png';
 
 interface EventInfoProps {
   event: WineEvent;

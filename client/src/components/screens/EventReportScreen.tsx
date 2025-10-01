@@ -1,6 +1,6 @@
 // Removed decorative icons for cleaner UI
 import { EventReportData } from '@shared/schema';
-import { formatEventDate } from '../../lib/utils';
+import { formatEventDate } from '@/lib/utils';
 import BottomNavBar from '../navigation/BottomNavBar';
 import diagoLogo from '@assets/diagologo.png';
 

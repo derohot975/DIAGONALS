@@ -1,5 +1,5 @@
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
-import { useEventLogic } from '../../hooks/useEventLogic';
+import { useEventLogic } from '@/hooks/useEventLogic';
 import EventContainer from './event-details/components/EventContainer';
 import WinesGrid from './event-details/components/WinesGrid';
 import ProgressBar from './event-details/components/ProgressBar';

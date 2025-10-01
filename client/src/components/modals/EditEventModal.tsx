@@ -56,8 +56,9 @@ export default function EditEventModal({ isOpen, onClose, onUpdateEvent, event }
       title="Modifica Evento"
       size="md"
       footer={footer}
-      headerClassName="bg-gradient-to-r from-[#8d0303] to-[#300505] text-white"
+      headerClassName="bg-gradient-to-r from-[#8d0303] to-[#300505] text-white text-center"
       className="glass-effect"
+      showCloseButton={false}
     >
         
       <form id="edit-event-form" onSubmit={handleSubmit} className="space-y-4">

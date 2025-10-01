@@ -145,14 +145,14 @@ export default function BaseModal({
         {/* Header */}
         {(title || showCloseButton) && (
           <div className={`
-            flex items-center justify-between p-6 border-b border-gray-200
+            ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-6 border-b border-gray-200
             ${headerClassName}
           `}>
-            <div className="flex-1 min-w-0">
+            <div className={showCloseButton ? "flex-1 min-w-0" : "text-center"}>
               {title && (
                 <h2 
                   id="modal-title"
-                  className="text-xl font-bold text-gray-900 truncate"
+                  className="text-xl font-bold text-white truncate"
                 >
                   {title}
                 </h2>

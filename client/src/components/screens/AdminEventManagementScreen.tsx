@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { Edit, Trash2, Square, Play, Calendar, Star, BarChart3 } from '@/components/icons';
-import { formatEventDate } from '../../lib/utils';
+import { formatEventDate } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 import ParticipantsManager from './admin/components/ParticipantsManager';
 import VotingCompletionChecker from './admin/components/VotingCompletionChecker';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '../../lib/queryClient';
+import { apiRequest } from '@/lib/queryClient';
 
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
@@ -97,6 +97,17 @@ export default function AdminEventManagementScreen({
     }));
   };
 
+  const handleDeleteEventWithConfirm = (event: WineEvent) => {
+    const participantsCount = getParticipantsCount(event.id);
+    const winesText = participantsCount === 1 ? 'vino' : 'vini';
+    
+    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler eliminare l'evento "${event.name}"?\n\n• Verranno eliminati ${participantsCount} ${winesText} dal database\n• Tutti i voti associati andranno persi\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione definitiva?`;
+    
+    if (confirm(confirmMessage)) {
+      onDeleteEvent(event.id);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header Section */}
@@ -156,7 +167,7 @@ export default function AdminEventManagementScreen({
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => onDeleteEvent(event.id)}
+                        onClick={() => handleDeleteEventWithConfirm(event)}
                         className="p-2 text-red-600 hover:text-red-800 transition-all duration-200"
                         title="Elimina evento"
                       >

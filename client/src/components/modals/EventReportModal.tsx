@@ -1,7 +1,7 @@
 import { Trophy, Users, WineIcon as Wine, BarChart3, Star } from '@/components/icons';
 import BaseModal from '../ui/BaseModal';
 import { EventReportData } from '@shared/schema';
-import { formatEventDate } from '../../lib/utils';
+import { formatEventDate } from '@/lib/utils';
 
 interface EventReportModalProps {
   isOpen: boolean;

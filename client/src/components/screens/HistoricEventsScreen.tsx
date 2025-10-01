@@ -1,5 +1,5 @@
 // Removed unused decorative icon imports
-import { formatEventDate, getCreatorName } from '../../lib/utils';
+import { formatEventDate, getCreatorName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 

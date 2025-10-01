@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { WineEvent } from '@shared/schema';
-import { formatEventDate } from '../../lib/utils';
+import { formatEventDate } from '@/lib/utils';
 
 interface EventCardProps {
   event: WineEvent;

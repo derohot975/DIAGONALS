@@ -78,6 +78,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       </div>
       
       <BottomNavBar 
+        onGoBack={onGoBack}
         onGoHome={onGoHome}
         centerButtons={[{
           id: 'export',
