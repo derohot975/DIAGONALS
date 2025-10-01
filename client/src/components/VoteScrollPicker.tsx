@@ -143,8 +143,6 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
   };
 
 
-  if (!isOpen) return null;
-
   // Cleanup animation frame on unmount
   useEffect(() => {
     return () => {
@@ -160,6 +158,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
       onClose();
     }
   }, [onClose]);
+
+  if (!isOpen) return null;
 
   return (
     <div 
