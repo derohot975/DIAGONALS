@@ -6,7 +6,12 @@ interface PagellaEditorProps {
 
 export default function PagellaEditor({ content, canEdit, onContentChange }: PagellaEditorProps) {
   return (
-    <div className="flex-1 overflow-hidden px-4 pb-20 pt-4">
+    <div 
+      className="overflow-y-auto px-4 pt-4" 
+      style={{
+        height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+      }}
+    >
       <div className="max-w-4xl mx-auto h-full">
         <div className="h-full flex flex-col">
           {/* Messaggio informativo per utenti non editor */}
