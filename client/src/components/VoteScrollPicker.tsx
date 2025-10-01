@@ -59,6 +59,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
       document.body.style.overflow = 'hidden';
       return () => {
         document.body.style.overflow = '';
+        // Cleanup scroll timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
       };
     }
   }, [isOpen]);
@@ -80,6 +84,37 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
       }
     }
   }, [isOpen, selectedScore, scores]);
+
+  // Sync selection with scroll position (optimized to prevent flicker)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current || isScrollingRef.current) return;
+    
+    // Clear previous timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // Throttle to prevent excessive updates
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (!scrollRef.current) return;
+      
+      const container = scrollRef.current;
+      const itemHeight = 64;
+      const containerHeight = 320;
+      const scrollTop = container.scrollTop;
+      const centerPosition = scrollTop + containerHeight / 2;
+      const selectedIndex = Math.round(centerPosition / itemHeight);
+      
+      if (selectedIndex >= 0 && selectedIndex < scores.length) {
+        const newScore = scores[selectedIndex];
+        if (typeof newScore === 'number' && newScore !== selectedScore) {
+          setSelectedScore(newScore);
+        }
+      }
+    }, 100); // 100ms throttle
+  }, [scores, selectedScore]);
 
   if (!isOpen) return null;
 
@@ -121,6 +156,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
             <div 
               ref={scrollRef}
               className="h-80 overflow-y-scroll scrollbar-hide"
+              onScroll={handleScroll}
               style={{
                 scrollSnapType: 'y mandatory',
                 touchAction: 'pan-y',
