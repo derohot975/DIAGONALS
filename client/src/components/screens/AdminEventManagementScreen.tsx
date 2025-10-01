@@ -175,7 +175,7 @@ export default function AdminEventManagementScreen({
                     {/* Dropdown partecipanti nel container */}
                     {showParticipants[event.id] && (
                       <div className="mt-4 bg-gray-50 rounded-lg p-3 border">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Partecipanti</h4>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">⭐ PARTECIPANTI ⭐</h4>
                         {getParticipants(event.id).length === 0 ? (
                           <p className="text-sm text-gray-500">Nessun partecipante</p>
                         ) : (
