@@ -92,7 +92,7 @@ export default function HistoricEventsScreen({
         </div>
       </div>
       
-      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="center" />
+      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="sides" />
     </div>
   );
 }

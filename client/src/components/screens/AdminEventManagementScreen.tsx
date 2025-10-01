@@ -53,16 +53,23 @@ export default function AdminEventManagementScreen({
         />
       </div>
 
+      {/* Title */}
+      <div className="flex-shrink-0 text-center pb-6">
+        <h2 className="text-lg text-yellow-200">Gestione Eventi</h2>
+      </div>
+
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-20">
+      <div 
+        className="overflow-y-auto px-4 pb-4" 
+        style={{
+          height: 'calc(100dvh - 140px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        }}
+      >
         <div className="space-y-6 max-w-4xl mx-auto">
           
           {/* Active Events - New Modern Layout */}
           {activeEvents.length > 0 && (
             <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-lg text-yellow-200 mb-2">Gestione Eventi</h2>
-              </div>
               
               {activeEvents.map(event => (
                 <div key={event.id} className="relative overflow-hidden">
@@ -187,13 +194,7 @@ export default function AdminEventManagementScreen({
 
       <BottomNavBar 
         onGoHome={onGoHome}
-        centerButtons={onGoBackToAdmin ? [{
-          id: 'admin',
-          icon: <Shield className="w-5 h-5" />,
-          onClick: onGoBackToAdmin,
-          title: 'Torna all\'Admin',
-          variant: 'glass'
-        }] : []}
+        onShowAdmin={onGoBackToAdmin}
         layout="center"
       />
     </div>
