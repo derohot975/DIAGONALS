@@ -101,10 +101,11 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
       const scrollTop = container.scrollTop;
       const paddingTop = 128; // py-32 = 128px top padding
       
-      // Calculate which item is in the center of the selection box
+      // Calculate which item is in the center of the selection box - correzione precisione
       const centerPosition = scrollTop + containerHeight / 2;
       const adjustedPosition = centerPosition - paddingTop;
-      const selectedIndex = Math.round(adjustedPosition / itemHeight);
+      // Aggiunge offset di metà item per centratura precisa
+      const selectedIndex = Math.round((adjustedPosition - itemHeight / 2) / itemHeight);
       
       if (selectedIndex >= 0 && selectedIndex < scores.length) {
         const newScore = scores[selectedIndex];
