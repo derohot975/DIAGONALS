@@ -1,5 +1,5 @@
 // Removed unused decorative icon imports
-import { formatEventDate, getCreatorName } from '@/lib/utils';
+import { formatEventDate, getCreatorName, formatEventName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 
@@ -60,7 +60,7 @@ export default function HistoricEventsScreen({
               <div key={event.id} className="bg-[#300505] rounded-xl p-4 border border-[#8d0303] shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
+                    <h3 className="font-semibold text-sm text-white break-words leading-tight">{formatEventName(event.name)}</h3>
                     <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
                   </div>
                   <div className="flex items-center space-x-2">

@@ -1,5 +1,5 @@
 import { Calendar, BarChart3, Shield, Edit3 } from '@/components/icons';
-import { formatEventDate, getCreatorName } from '@/lib/utils';
+import { formatEventDate, getCreatorName, formatEventName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 
@@ -92,7 +92,7 @@ export default function EventListScreen({
                         {formatEventDate(event.date)}
                       </p>
                       <h3 className="event-name-standard font-bold text-[#300505] leading-tight break-words text-center text-sm">
-                        {event.name}
+                        {formatEventName(event.name)}
                       </h3>
                       
                       {/* MESSAGGIO SUCCESSO - DENTRO IL MODAL SOTTO IL NOME */}

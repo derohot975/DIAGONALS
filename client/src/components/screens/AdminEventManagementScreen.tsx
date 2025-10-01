@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { WineEvent, User, Wine } from '@shared/schema';
 import { Edit, Trash2, Square, Play, Calendar, Star, BarChart3 } from '@/components/icons';
-import { formatEventDate } from '@/lib/utils';
+import { formatEventDate, formatEventName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 import ParticipantsManager from './admin/components/ParticipantsManager';
@@ -101,7 +101,7 @@ export default function AdminEventManagementScreen({
     const participantsCount = getParticipantsCount(event.id);
     const winesText = participantsCount === 1 ? 'vino' : 'vini';
     
-    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler eliminare l'evento "${event.name}"?\n\n• Verranno eliminati ${participantsCount} ${winesText} dal database\n• Tutti i voti associati andranno persi\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione definitiva?`;
+    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler eliminare l'evento "${formatEventName(event.name)}"?\n\n• Verranno eliminati ${participantsCount} ${winesText} dal database\n• Tutti i voti associati andranno persi\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione definitiva?`;
     
     if (confirm(confirmMessage)) {
       onDeleteEvent(event.id);
@@ -133,7 +133,7 @@ export default function AdminEventManagementScreen({
                     
                     {/* Nome evento centrato */}
                     <div className="text-center mb-4">
-                      <h3 className="event-name-standard text-lg font-bold text-gray-800 leading-tight">{event.name}</h3>
+                      <h3 className="event-name-standard text-lg font-bold text-gray-800 leading-tight">{formatEventName(event.name)}</h3>
                     </div>
 
                     {/* Primary Action - Voting Control */}
@@ -242,7 +242,7 @@ export default function AdminEventManagementScreen({
               <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-4 border border-[#8d0303]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
+                    <h4 className="font-semibold text-sm text-white break-words leading-tight">{formatEventName(event.name)}</h4>
                     <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
                   </div>
                   <div className="flex items-center space-x-2">

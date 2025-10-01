@@ -1,6 +1,6 @@
 // Removed decorative icons for cleaner UI
 import { EventReportData } from '@shared/schema';
-import { formatEventDate } from '@/lib/utils';
+import { formatEventDate, formatEventName } from '@/lib/utils';
 import BottomNavBar from '../navigation/BottomNavBar';
 import diagoLogo from '@assets/diagologo.png';
 
@@ -30,7 +30,7 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
       <div className="flex-shrink-0 text-center mb-6">
         <div className="mb-2">
           <h1 className="event-name-standard text-2xl font-bold text-white">
-            {eventInfo.name}
+            {formatEventName(eventInfo.name)}
           </h1>
         </div>
         <p className="text-yellow-200">

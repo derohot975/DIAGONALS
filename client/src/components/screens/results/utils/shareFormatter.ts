@@ -1,8 +1,9 @@
 import { WineEvent, WineResultDetailed } from '@shared/schema';
+import { formatEventName } from '@/lib/utils';
 
 export const formatResults = (event: WineEvent, results: WineResultDetailed[]) => {
   let text = `🏆 CLASSIFICA FINALE\n`;
-  text += `🍷 ${event.name}\n`;
+  text += `🍷 ${formatEventName(event.name)}\n`;
   text += `📅 ${event.date}\n\n`;
   
   results.forEach((result, index) => {
@@ -21,7 +22,7 @@ export const formatResults = (event: WineEvent, results: WineResultDetailed[]) =
 
 export const handleExport = async (event: WineEvent, results: WineResultDetailed[]) => {
   const shareData = {
-    title: `Classifica ${event.name}`,
+    title: `Classifica ${formatEventName(event.name)}`,
     text: formatResults(event, results),
   };
 

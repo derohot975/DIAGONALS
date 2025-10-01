@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { WineEvent } from '@shared/schema';
-import { formatEventDate } from '@/lib/utils';
+import { formatEventDate, formatEventName } from '@/lib/utils';
 
 interface EventCardProps {
   event: WineEvent;
@@ -21,7 +21,7 @@ export const EventCard = memo(({ event, onSelect, onRegisterWine, userHasWineInE
           lineHeight: '1.2'
         }}
       >
-        {event.name}
+        {formatEventName(event.name)}
       </h3>
       
       <div className="space-y-2 mb-4">
