@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '../../../../lib/queryClient';
+import { Star } from '@/components/icons';
 
 interface ParticipantsManagerProps {
   eventId: number;
@@ -65,15 +66,41 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
   // Render iconOnly per modale
   if (iconOnly) {
     return (
-      <button
-        onClick={() => setShowParticipants(!showParticipants)}
-        className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
-        title="Gestisci partecipanti"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+      <>
+        <button
+          onClick={() => setShowParticipants(!showParticipants)}
+          className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
+          title="Gestisci partecipanti"
+        >
+          <Star className="w-4 h-4" />
+        </button>
+        
+        {/* Tabella partecipanti quando stellina è cliccata */}
+        {showParticipants && (
+          <div className="absolute top-16 right-4 mt-2 bg-white rounded-lg shadow-xl p-3 max-h-40 overflow-y-auto z-50 min-w-48">
+            {isLoading ? (
+              <p className="text-sm text-gray-500">Caricamento...</p>
+            ) : participants.length === 0 ? (
+              <p className="text-sm text-gray-500">Nessun partecipante</p>
+            ) : (
+              <div className="space-y-2">
+                {participants.map((participant) => (
+                  <div key={participant.userId} className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-gray-800">{participant.userName}</span>
+                    <button
+                      onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
+                      className="text-red-500 hover:text-red-700 text-xs"
+                      disabled={removeParticipantMutation.isPending}
+                    >
+                      Rimuovi
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </>
     );
   }
 
