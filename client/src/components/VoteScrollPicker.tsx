@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo, useMemo, useCallback } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -16,105 +16,38 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
   wineName 
 }: VoteScrollPickerProps) {
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const isScrollingRef = useRef<boolean>(false);
-  
+
   // Generate scores from 0.0 to 10.0 in 0.5 increments
-  const scores = useMemo(() => {
-    const scoreArray: number[] = [];
-    for (let i = 0.0; i <= 10.0; i += 0.5) {
-      scoreArray.push(Number(i.toFixed(1)));
+  const scores: number[] = [];
+  for (let i = 0.0; i <= 10.0; i += 0.5) {
+    scores.push(Number(i.toFixed(1)));
+  }
+
+  // Reset selected score when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedScore(currentVote || 5.0);
     }
-    return scoreArray;
-  }, []);
+  }, [isOpen, currentVote]);
 
-  const handleConfirm = useCallback(() => {
-    onVote(selectedScore);
-    onClose();
-  }, [selectedScore, onVote, onClose]);
-
-  const handleScoreClick = useCallback((score: number) => {
-    setSelectedScore(score);
-    if (scrollRef.current) {
-      const index = scores.indexOf(score);
-      const itemHeight = 64;
-      const containerHeight = 320;
-      const scrollTop = index * itemHeight - containerHeight / 2 + itemHeight / 2;
-      
-      isScrollingRef.current = true;
-      scrollRef.current.scrollTo({
-        top: Math.max(0, scrollTop),
-        behavior: 'smooth'
-      });
-      
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 300);
-    }
-  }, [scores]);
-
-  // Body scroll lock when modal is open
+  // Body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       return () => {
         document.body.style.overflow = '';
-        // Cleanup scroll timeout
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
       };
     }
   }, [isOpen]);
 
-  // Auto-scroll to selected value when modal opens
-  useEffect(() => {
-    if (isOpen && scrollRef.current) {
-      const currentIndex = scores.indexOf(selectedScore);
-      if (currentIndex !== -1) {
-        const itemHeight = 64;
-        const containerHeight = 320;
-        const scrollTop = currentIndex * itemHeight - containerHeight / 2 + itemHeight / 2;
-        
-        setTimeout(() => {
-          if (scrollRef.current) {
-            scrollRef.current.scrollTop = Math.max(0, scrollTop);
-          }
-        }, 150);
-      }
-    }
-  }, [isOpen, selectedScore, scores]);
+  const handleConfirm = () => {
+    onVote(selectedScore);
+    onClose();
+  };
 
-  // Sync selection with scroll position (optimized to prevent flicker)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
-  
-  const handleScroll = useCallback(() => {
-    if (!scrollRef.current || isScrollingRef.current) return;
-    
-    // Clear previous timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    // Throttle to prevent excessive updates
-    scrollTimeoutRef.current = setTimeout(() => {
-      if (!scrollRef.current) return;
-      
-      const container = scrollRef.current;
-      const itemHeight = 64;
-      const containerHeight = 320;
-      const scrollTop = container.scrollTop;
-      const centerPosition = scrollTop + containerHeight / 2;
-      const selectedIndex = Math.round(centerPosition / itemHeight);
-      
-      if (selectedIndex >= 0 && selectedIndex < scores.length) {
-        const newScore = scores[selectedIndex];
-        if (typeof newScore === 'number' && newScore !== selectedScore) {
-          setSelectedScore(newScore);
-        }
-      }
-    }, 100); // 100ms throttle
-  }, [scores, selectedScore]);
+  const handleScoreSelect = (score: number) => {
+    setSelectedScore(score);
+  };
 
   if (!isOpen) return null;
 
@@ -122,16 +55,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     <div 
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
-      style={{ touchAction: 'none' }}
     >
       <div 
         className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{ 
-          position: 'relative',
-          transform: 'none',
-          isolation: 'isolate'
-        }}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-red-950 to-red-900 text-white p-6 text-center">
@@ -141,51 +68,24 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           </div>
         </div>
 
-        {/* Score Picker */}
+        {/* Score Grid */}
         <div className="p-6">
-          <div className="relative">
-            {/* Selection indicator with high contrast */}
-            <div 
-              className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-0"
-              style={{
-                boxShadow: 'inset 0 0 0 1px rgba(127, 29, 29, 0.2)'
-              }}
-            ></div>
-            
-            {/* Scrollable scores */}
-            <div 
-              ref={scrollRef}
-              className="h-80 overflow-y-scroll scrollbar-hide"
-              onScroll={handleScroll}
-              style={{
-                scrollSnapType: 'y mandatory',
-                touchAction: 'pan-y',
-                overscrollBehavior: 'contain',
-                WebkitOverflowScrolling: 'touch',
-                contain: 'strict',
-                isolation: 'isolate'
-              }}
-            >
-              <div className="py-32">
-                {scores.map((score) => (
-                  <div
-                    key={score}
-                    className={`h-16 flex items-center justify-center cursor-pointer select-none ${
-                      selectedScore === score 
-                        ? 'text-3xl font-black text-red-950 scale-110 relative z-10' 
-                        : 'text-xl font-medium text-gray-600 hover:text-red-800 relative z-10'
-                    }`}
-                    style={{ 
-                      scrollSnapAlign: 'center',
-                      transition: 'all 0.2s ease-out'
-                    }}
-                    onClick={() => handleScoreClick(score)}
-                  >
-                    {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="grid grid-cols-4 gap-3 max-h-80 overflow-y-auto">
+            {scores.map((score) => (
+              <button
+                key={score}
+                onClick={() => handleScoreSelect(score)}
+                className={`
+                  h-12 rounded-xl font-semibold transition-all duration-200
+                  ${selectedScore === score 
+                    ? 'bg-red-100 border-2 border-red-800 text-red-950 scale-105 shadow-lg' 
+                    : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400'
+                  }
+                `}
+              >
+                {score % 1 === 0 ? score.toString() : score.toFixed(1)}
+              </button>
+            ))}
           </div>
         </div>
 
