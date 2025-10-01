@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo, useMemo } from 'react';
+import { useState, useRef, useEffect, memo, useMemo, useCallback } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -17,6 +17,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
 }: VoteScrollPickerProps) {
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isScrollingRef = useRef<boolean>(false);
   
   // Generate scores from 0.0 to 10.0 in 0.5 increments
   const scores = useMemo(() => {
@@ -27,14 +28,30 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     return scoreArray;
   }, []);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     onVote(selectedScore);
     onClose();
-  };
+  }, [selectedScore, onVote, onClose]);
 
-  const handleScoreClick = (score: number) => {
+  const handleScoreClick = useCallback((score: number) => {
     setSelectedScore(score);
-  };
+    if (scrollRef.current) {
+      const index = scores.indexOf(score);
+      const itemHeight = 64;
+      const containerHeight = 320;
+      const scrollTop = index * itemHeight - containerHeight / 2 + itemHeight / 2;
+      
+      isScrollingRef.current = true;
+      scrollRef.current.scrollTo({
+        top: Math.max(0, scrollTop),
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 300);
+    }
+  }, [scores]);
 
   // Body scroll lock when modal is open
   useEffect(() => {
@@ -51,35 +68,18 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     if (isOpen && scrollRef.current) {
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
-        const itemHeight = 60;
-        const containerHeight = 300;
+        const itemHeight = 64;
+        const containerHeight = 320;
         const scrollTop = currentIndex * itemHeight - containerHeight / 2 + itemHeight / 2;
         
         setTimeout(() => {
           if (scrollRef.current) {
             scrollRef.current.scrollTop = Math.max(0, scrollTop);
           }
-        }, 100);
+        }, 150);
       }
     }
   }, [isOpen, selectedScore, scores]);
-
-  // Stable scroll handler without throttling to prevent flicker
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const itemHeight = 60;
-    const containerHeight = 320; // h-80 = 320px
-    const scrollTop = container.scrollTop;
-    const centerPosition = scrollTop + containerHeight / 2;
-    const selectedIndex = Math.round(centerPosition / itemHeight);
-    
-    if (selectedIndex >= 0 && selectedIndex < scores.length) {
-      const newScore = scores[selectedIndex];
-      if (typeof newScore === 'number' && newScore !== selectedScore) {
-        setSelectedScore(newScore);
-      }
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -94,7 +94,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         onClick={(e) => e.stopPropagation()}
         style={{ 
           position: 'relative',
-          transform: 'none'
+          transform: 'none',
+          isolation: 'isolate'
         }}
       >
         {/* Header */}
@@ -108,35 +109,40 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         {/* Score Picker */}
         <div className="p-6">
           <div className="relative">
-            {/* Selection indicator */}
-            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-white border-2 border-red-700 rounded-xl pointer-events-none z-10"></div>
+            {/* Selection indicator with high contrast */}
+            <div 
+              className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-10"
+              style={{
+                boxShadow: 'inset 0 0 0 1px rgba(127, 29, 29, 0.2)'
+              }}
+            ></div>
             
             {/* Scrollable scores */}
             <div 
               ref={scrollRef}
-              className="h-80 overflow-y-auto scrollbar-hide"
-              onScroll={handleScroll}
+              className="h-80 overflow-y-scroll scrollbar-hide"
               style={{
                 scrollSnapType: 'y mandatory',
                 touchAction: 'pan-y',
                 overscrollBehavior: 'contain',
                 WebkitOverflowScrolling: 'touch',
-                contain: 'content',
-                willChange: 'scroll-position',
-                backfaceVisibility: 'hidden',
-                transform: 'translateZ(0)'
+                contain: 'strict',
+                isolation: 'isolate'
               }}
             >
               <div className="py-32">
                 {scores.map((score) => (
                   <div
                     key={score}
-                    className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                    className={`h-16 flex items-center justify-center cursor-pointer select-none ${
                       selectedScore === score 
-                        ? 'text-3xl font-black text-red-950' 
-                        : 'text-xl font-medium text-gray-700 hover:text-red-900'
+                        ? 'text-3xl font-black text-red-950 scale-110' 
+                        : 'text-xl font-medium text-gray-600 hover:text-red-800'
                     }`}
-                    style={{ scrollSnapAlign: 'center' }}
+                    style={{ 
+                      scrollSnapAlign: 'center',
+                      transition: 'all 0.2s ease-out'
+                    }}
                     onClick={() => handleScoreClick(score)}
                   >
                     {score % 1 === 0 ? score.toString() : score.toFixed(1)}
