@@ -5,9 +5,10 @@ import { apiRequest } from '../../../../lib/queryClient';
 
 interface ParticipantsManagerProps {
   eventId: number;
+  iconOnly?: boolean;
 }
 
-export default function ParticipantsManager({ eventId }: ParticipantsManagerProps) {
+export default function ParticipantsManager({ eventId, iconOnly = false }: ParticipantsManagerProps) {
   const [showParticipants, setShowParticipants] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -60,6 +61,21 @@ export default function ParticipantsManager({ eventId }: ParticipantsManagerProp
       removeParticipantMutation.mutate(userId);
     }
   };
+
+  // Render iconOnly per modale
+  if (iconOnly) {
+    return (
+      <button
+        onClick={() => setShowParticipants(!showParticipants)}
+        className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
+        title="Gestisci partecipanti"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <div className="mt-3">

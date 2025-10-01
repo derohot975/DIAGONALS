@@ -55,9 +55,11 @@ export default function AdminEventManagementScreen({
           />
         </div>
 
-        {/* Title */}
+        {/* Title - Nome evento attivo o "Gestione Eventi" */}
         <div className="text-center pb-6">
-          <h2 className="text-lg text-yellow-200">Gestione Eventi</h2>
+          <h2 className="text-lg text-yellow-200">
+            {activeEvents.length > 0 ? activeEvents[0].name : "Gestione Eventi"}
+          </h2>
         </div>
 
         {/* Fixed Active Events */}
@@ -69,30 +71,26 @@ export default function AdminEventManagementScreen({
                   {/* Main Event Card */}
                   <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in relative">
                     
-                    {/* Action Buttons - Top Right */}
-                    <button
-                      onClick={() => onEditEvent(event)}
-                      className="absolute top-4 right-20 p-2 text-gray-700 hover:text-gray-900 transition-all duration-200"
-                      title="Modifica evento"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteEvent(event.id)}
-                      className="absolute top-4 right-12 p-2 text-red-600 hover:text-red-800 transition-all duration-200"
-                      title="Elimina evento"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    {/* Participants Manager Button - Freccia in giù con funzione */}
-                    <div className="absolute top-4 right-4">
-                      <ParticipantsManager eventId={event.id} />
+                    {/* Action Buttons - Allineati a destra */}
+                    <div className="absolute top-4 right-4 flex items-center space-x-2">
+                      <button
+                        onClick={() => onEditEvent(event)}
+                        className="p-2 text-gray-700 hover:text-gray-900 transition-all duration-200"
+                        title="Modifica evento"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => onDeleteEvent(event.id)}
+                        className="p-2 text-red-600 hover:text-red-800 transition-all duration-200"
+                        title="Elimina evento"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      {/* Participants Manager - Solo icona gialla */}
+                      <ParticipantsManager eventId={event.id} iconOnly={true} />
                     </div>
 
-                    {/* Event Header - Solo nome centrato */}
-                    <div className="text-center mb-4">
-                      <h3 className="event-name-standard text-lg font-bold text-gray-800 leading-tight">{event.name}</h3>
-                    </div>
 
                     {/* Primary Action - Voting Control */}
                     <div className="mt-6">
