@@ -36,6 +36,16 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     setSelectedScore(score);
   };
 
+  // Body scroll lock when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isOpen]);
+
   // Auto-scroll to selected value when modal opens
   useEffect(() => {
     if (isOpen && scrollRef.current) {
@@ -79,10 +89,15 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     <div 
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
+      style={{ touchAction: 'none' }}
     >
       <div 
         className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        style={{ 
+          position: 'relative',
+          transform: 'none'
+        }}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-amber-600 to-yellow-600 text-white p-6 text-center">
@@ -104,7 +119,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
               className="h-80 overflow-y-auto scrollbar-hide"
               onScroll={handleScroll}
               style={{
-                scrollSnapType: 'y mandatory'
+                scrollSnapType: 'y mandatory',
+                touchAction: 'pan-y',
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch'
               }}
             >
               <div className="py-32">
