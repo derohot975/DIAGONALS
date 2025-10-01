@@ -111,7 +111,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           <div className="relative">
             {/* Selection indicator with high contrast */}
             <div 
-              className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-10"
+              className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-0"
               style={{
                 boxShadow: 'inset 0 0 0 1px rgba(127, 29, 29, 0.2)'
               }}
@@ -136,8 +136,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
                     key={score}
                     className={`h-16 flex items-center justify-center cursor-pointer select-none ${
                       selectedScore === score 
-                        ? 'text-3xl font-black text-red-950 scale-110' 
-                        : 'text-xl font-medium text-gray-600 hover:text-red-800'
+                        ? 'text-3xl font-black text-red-950 scale-110 relative z-10' 
+                        : 'text-xl font-medium text-gray-600 hover:text-red-800 relative z-10'
                     }`}
                     style={{ 
                       scrollSnapAlign: 'center',
