@@ -48,9 +48,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     if (isOpen && useScrollMode && scrollRef.current) {
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
-        const itemHeight = 60;
-        const containerHeight = 300;
-        const scrollTop = currentIndex * itemHeight - containerHeight / 2 + itemHeight / 2;
+        const itemHeight = 64; // h-16 = 64px
+        const containerHeight = 320; // h-80 = 320px
+        const paddingTop = 128; // py-32 = 128px
+        const scrollTop = currentIndex * itemHeight + paddingTop - containerHeight / 2 + itemHeight / 2;
         
         setTimeout(() => {
           if (scrollRef.current) {
@@ -70,11 +71,15 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     if (!scrollRef.current || isScrollingRef.current || !useScrollMode) return;
     
     const container = scrollRef.current;
-    const itemHeight = 60;
-    const containerHeight = 300;
+    const itemHeight = 64; // h-16 = 64px
+    const containerHeight = 320; // h-80 = 320px
     const scrollTop = container.scrollTop;
+    const paddingTop = 128; // py-32 = 128px top padding
+    
+    // Calculate which item is in the center of the selection box
     const centerPosition = scrollTop + containerHeight / 2;
-    const selectedIndex = Math.round(centerPosition / itemHeight);
+    const adjustedPosition = centerPosition - paddingTop;
+    const selectedIndex = Math.round(adjustedPosition / itemHeight);
     
     if (selectedIndex >= 0 && selectedIndex < scores.length) {
       const newScore = scores[selectedIndex];
@@ -95,9 +100,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     // In scroll mode, scroll to selected item
     if (useScrollMode && scrollRef.current) {
       const index = scores.indexOf(score);
-      const itemHeight = 60;
-      const containerHeight = 300;
-      const scrollTop = index * itemHeight - containerHeight / 2 + itemHeight / 2;
+      const itemHeight = 64; // h-16 = 64px
+      const containerHeight = 320; // h-80 = 320px
+      const paddingTop = 128; // py-32 = 128px
+      const scrollTop = index * itemHeight + paddingTop - containerHeight / 2 + itemHeight / 2;
       
       isScrollingRef.current = true;
       scrollRef.current.scrollTo({
@@ -111,9 +117,6 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     }
   };
 
-  const toggleMode = () => {
-    setUseScrollMode(!useScrollMode);
-  };
 
   if (!isOpen) return null;
 
@@ -132,14 +135,6 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           <div className="text-xl font-bold mt-1">
             {wineName.replace('Vino di ', '').toUpperCase()}
           </div>
-          
-          {/* Mode Toggle */}
-          <button
-            onClick={toggleMode}
-            className="mt-3 px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm transition-colors"
-          >
-            {useScrollMode ? '📱 Scroll' : '🔢 Grid'}
-          </button>
         </div>
 
         {/* Score Selection */}
