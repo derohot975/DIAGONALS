@@ -161,6 +161,15 @@ export default function EventListScreen({
 
 
 
+          {/* No Active Events State */}
+          {events.length > 0 && activeEvents.length === 0 && (
+            <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
+              <div className="text-6xl mb-6">🍷</div>
+              <h2 className="text-2xl font-bold text-[#300505] mb-4">...in attesa della prossima ciucciata!</h2>
+              <p className="text-[#8d0303] text-lg font-semibold">organizziamo?!</p>
+            </div>
+          )}
+
           {/* Empty State */}
           {events.length === 0 && (
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
