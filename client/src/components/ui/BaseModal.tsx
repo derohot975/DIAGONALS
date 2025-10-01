@@ -127,6 +127,7 @@ export default function BaseModal({
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
       aria-describedby={description ? 'modal-description' : undefined}
+      style={{ touchAction: 'none' }}
     >
       <div 
         className={`

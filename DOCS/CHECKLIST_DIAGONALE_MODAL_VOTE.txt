@@ -1,0 +1,216 @@
+═══════════════════════════════════════════════════════════════════════════════
+🧪 CHECKLIST DIAGONALE - MODALE VOTO TOUCH-LOCK (STEP 7A)
+═══════════════════════════════════════════════════════════════════════════════
+Data: 01/10/2025 11:50
+Scope: Test manuali per fix modale voto e nuova regola nav bar
+Status: READY FOR TESTING
+
+──────────────────────────────────────────────────────────────────────────────
+🔧 SETUP TESTING
+──────────────────────────────────────────────────────────────────────────────
+
+PREREQUISITI:
+✅ App avviata in locale: npm run dev
+✅ Browser DevTools aperto (Console + Touch Events)
+- [ ] Test su iOS Safari + Android Chrome
+- [ ] Evento attivo con vini per test votazione
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST MODALE VOTO - TOUCH STABILITY
+──────────────────────────────────────────────────────────────────────────────
+
+PANEL FISSO (ZERO DRIFT):
+- [ ] Panel fisso: NESSUN movimento al touch/drag
+- [ ] Drag orizzontale: completamente bloccato
+- [ ] Drag verticale: bloccato (solo picker scrolla)
+- [ ] Pinch/zoom: bloccato sul backdrop
+- [ ] Swipe gestures: nessun movimento panel
+
+SCROLL VERTICALE PICKER:
+- [ ] Scroll solo verticale nel picker: funzionante
+- [ ] Touch-action pan-y: solo scroll verticale consentito
+- [ ] Smooth scrolling: fluido su iOS/Android
+- [ ] Overscroll behavior: contenuto nel container
+- [ ] Selection highlight: sempre centrato
+
+BACKDROP & BODY LOCK:
+- [ ] Backdrop non scrolla: touch bloccati
+- [ ] Body lock attivo: pagina sottostante ferma
+- [ ] Click backdrop: chiude modale correttamente
+- [ ] ESC key: chiude modale (se dismissible)
+
+NESTED SCROLL RISOLTO:
+- [ ] Nessun nested scroll imprevisto
+- [ ] Parent container: non riceve scroll events
+- [ ] iOS rubber band: eliminato completamente
+- [ ] Android overscroll: comportamento nativo
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST FUNZIONALITÀ MODALE
+──────────────────────────────────────────────────────────────────────────────
+
+SELEZIONE VOTO:
+- [ ] Scroll picker: selezione voto funzionante
+- [ ] Click item: selezione diretta funzionante
+- [ ] Highlight centrale: sempre visibile
+- [ ] Score display: aggiornamento real-time
+- [ ] Auto-scroll: posizionamento corretto all'apertura
+
+BOTTONI & HIT-AREA:
+- [ ] Pulsanti con hit-area ≥44-48px: touch-friendly
+- [ ] Bottone "Annulla": funzionante
+- [ ] Bottone "Conferma": funzionante + score display
+- [ ] Hover states: transizioni smooth
+- [ ] Focus management: tab navigation corretta
+
+APERTURA/CHIUSURA:
+- [ ] Chiudi/riapri più volte: comportamento invariato
+- [ ] Animazioni: transizioni smooth
+- [ ] Focus trap: funzionante
+- [ ] Memory leaks: nessun accumulo eventi
+
+──────────────────────────────────────────────────────────────────────────────
+🎯 TEST NUOVA REGOLA NAV BAR
+──────────────────────────────────────────────────────────────────────────────
+
+LAYOUT ALIGNMENT:
+- [ ] Freccia indietro: sempre slot sinistro quando presente
+- [ ] Home/Admin/Custom: sempre cluster centrale
+- [ ] Slot destro: riservato per bilanciamento (vuoto)
+- [ ] Layout stabile: no collapse se bottoni nascosti
+- [ ] Centratura: cluster sempre centrato
+
+COLORI ICONE:
+- [ ] Tutte le icone: sempre bianche (white/currentColor)
+- [ ] Admin icon: NON più rossa, ora bianca
+- [ ] Home icon: bianca
+- [ ] Back icon: bianca
+- [ ] Custom buttons: colori ereditati correttamente
+
+HOVER & STATES:
+- [ ] Hover effects: solo opacity changes
+- [ ] Nessun color change: red → white eliminato
+- [ ] Transizioni: smooth e consistenti
+- [ ] Active states: feedback visivo appropriato
+
+──────────────────────────────────────────────────────────────────────────────
+📱 TEST MOBILE SPECIFICI
+──────────────────────────────────────────────────────────────────────────────
+
+iOS SAFARI:
+- [ ] Modale voto: nessun drift al touch
+- [ ] Scroll picker: smooth scrolling nativo
+- [ ] Rubber band: eliminato completamente
+- [ ] Safe area: nav bar posizionata correttamente
+- [ ] Icone bianche: contrasto appropriato
+
+ANDROID CHROME:
+- [ ] Touch events: gestiti correttamente
+- [ ] Overscroll: comportamento nativo rispettato
+- [ ] Performance: scroll fluido 60fps
+- [ ] Nav bar: layout stabile su diverse densità
+
+GESTURE CONFLICTS:
+- [ ] Swipe back: non interferisce con modale
+- [ ] Pull to refresh: bloccato durante modale
+- [ ] Zoom gestures: bloccati su backdrop
+- [ ] Multi-touch: gestito correttamente
+
+──────────────────────────────────────────────────────────────────────────────
+🔄 TEST REGRESSIONI
+──────────────────────────────────────────────────────────────────────────────
+
+FUNZIONALITÀ ESISTENTI:
+- [ ] Votazione: processo completo funzionante
+- [ ] Navigation: tutti i flussi preservati
+- [ ] Modali: altri modali non affetti
+- [ ] Performance: nessun degrado percepibile
+
+LAYOUT & STYLING:
+- [ ] Nav bar: posizione e dimensioni invariate
+- [ ] Safe area: iOS/Android compatibility
+- [ ] Z-index: nessun conflitto
+- [ ] Responsive: layout adattivo funzionante
+
+CROSS-SCREEN CONSISTENCY:
+- [ ] EventDetailsScreen: nav bar corretta
+- [ ] SimpleVotingScreen: layout preservato
+- [ ] AdminScreen: comportamento invariato
+- [ ] Tutte le pagine: regola applicata consistentemente
+
+──────────────────────────────────────────────────────────────────────────────
+⚡ TEST PERFORMANCE & QUALITY
+──────────────────────────────────────────────────────────────────────────────
+
+BUILD & BUNDLE:
+- [ ] TypeScript: 0 errori
+- [ ] ESLint: 0 warning
+- [ ] Bundle size: ~240KB (no regression)
+- [ ] Build time: <4s
+
+RUNTIME PERFORMANCE:
+- [ ] Modal open/close: <200ms
+- [ ] Scroll performance: smooth 60fps
+- [ ] Touch responsiveness: immediata
+- [ ] Memory usage: stabile
+
+CONSOLE & LOGS:
+- [ ] Console errors: 0
+- [ ] Console warnings: 0
+- [ ] Touch events: gestiti correttamente
+- [ ] Performance warnings: 0
+
+──────────────────────────────────────────────────────────────────────────────
+🧪 TEST SCENARI SPECIFICI
+──────────────────────────────────────────────────────────────────────────────
+
+SCENARIO 1 - MODALE STABILITY:
+- [ ] Apri modale voto → drag in tutte le direzioni → panel fisso
+- [ ] Scroll picker → solo movimento verticale
+- [ ] Pinch/zoom backdrop → nessun effetto
+- [ ] Swipe per chiudere → solo backdrop click/ESC
+
+SCENARIO 2 - NAV BAR CONSISTENCY:
+- [ ] EventDetailsScreen: Back sinistra, Home/Admin centro
+- [ ] SimpleVotingScreen: layout corretto
+- [ ] AdminScreen: tutti bottoni centrati
+- [ ] Tutte le icone: bianche su tutti gli screen
+
+SCENARIO 3 - MOBILE EDGE CASES:
+- [ ] iOS: landscape/portrait → layout stabile
+- [ ] Android: diverse densità → icone corrette
+- [ ] Keyboard mobile: nav bar non coperta
+- [ ] Notch/safe area: posizionamento corretto
+
+──────────────────────────────────────────────────────────────────────────────
+✅ CHECKLIST COMPLETION
+──────────────────────────────────────────────────────────────────────────────
+
+SIGN-OFF CRITERIA:
+- [ ] Tutti i test modale voto PASSED
+- [ ] Tutti i test nav bar PASSED
+- [ ] Tutti i test mobile PASSED
+- [ ] Tutti i test performance PASSED
+- [ ] Console pulita
+- [ ] Build TypeScript clean
+
+TESTING NOTES:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+BUGS FOUND:
+_________________________________
+_________________________________
+_________________________________
+_________________________________
+
+FINAL APPROVAL:
+- [ ] STEP 7 MODAL + NAVBAR PASSED - Ready for Step 8
+- [ ] Tester: ________________
+- [ ] Date: ________________
+
+═══════════════════════════════════════════════════════════════════════════════
+🏁 FINE CHECKLIST - STEP 7 MODAL VOTE + NAVBAR TESTING
+═══════════════════════════════════════════════════════════════════════════════

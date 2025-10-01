@@ -50,25 +50,32 @@ export default function BottomNavBar({
       case 'glass':
         return `${baseStyles} text-white/80 hover:text-white`;
       case 'admin':
-        return `${baseStyles} text-red-400 hover:text-red-300`;
+        return `${baseStyles} text-white hover:text-white/80`;
       default:
         return `${baseStyles} text-white hover:text-white/80`;
     }
   };
 
-  // Apply definitive rule: Home always left, Admin always right
+  // NEW RULE: Back left, everything else centered
   const shouldShowHome = onGoHome && currentScreen !== 'events' && currentScreen !== 'home';
   const shouldShowAdmin = onShowAdmin && currentScreen !== 'admin';
 
-  // Layout: sides (Home left, Admin right, center buttons in middle)
+  // Layout: sides (Back left, everything else centered)
   if (layout === 'sides') {
+    // Collect center buttons (Home, Admin, custom buttons)
+    const allCenterButtons = [
+      ...centerButtons,
+      ...(shouldShowHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'primary' as const }] : []),
+      ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
+    ];
+
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex items-center justify-between px-4"
+        className="fixed left-0 right-0 z-50 flex items-center px-4"
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
-        {/* Left side - Reserved for Home (or Back if present) */}
-        <div className="flex items-center space-x-3 min-w-[48px]">
+        {/* Left slot - Only Back button */}
+        <div className="flex items-center min-w-[48px]">
           {onGoBack && (
             <button
               onClick={onGoBack}
@@ -78,54 +85,24 @@ export default function BottomNavBar({
               <ArrowLeft className="w-6 h-6" />
             </button>
           )}
-          {shouldShowHome && !onGoBack && (
-            <button
-              onClick={onGoHome}
-              className={getButtonStyles('primary')}
-              title="Home"
-            >
-              <Home className="w-6 h-6" />
-            </button>
-          )}
         </div>
 
-        {/* Center - Custom buttons */}
-        {centerButtons.length > 0 && (
-          <div className="flex items-center space-x-3">
-            {centerButtons.map((button) => (
-              <button
-                key={button.id}
-                onClick={button.onClick}
-                className={getButtonStyles(button.variant)}
-                title={button.title}
-              >
-                {button.icon}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Right side - Reserved for Admin */}
-        <div className="flex items-center space-x-3 min-w-[48px] justify-end">
-          {shouldShowHome && onGoBack && (
+        {/* Center cluster - All other buttons */}
+        <div className="flex-1 flex items-center justify-center space-x-3">
+          {allCenterButtons.map((button) => (
             <button
-              onClick={onGoHome}
-              className={getButtonStyles('primary')}
-              title="Home"
+              key={button.id}
+              onClick={button.onClick}
+              className={getButtonStyles(button.variant)}
+              title={button.title}
             >
-              <Home className="w-6 h-6" />
+              {button.icon}
             </button>
-          )}
-          {shouldShowAdmin && (
-            <button
-              onClick={onShowAdmin}
-              className={getButtonStyles('admin')}
-              title="Admin"
-            >
-              <Shield className="w-6 h-6" />
-            </button>
-          )}
+          ))}
         </div>
+
+        {/* Right slot - Reserved for balance */}
+        <div className="min-w-[48px]"></div>
       </div>
     );
   }

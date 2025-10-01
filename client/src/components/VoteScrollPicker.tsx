@@ -152,7 +152,10 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
             className="h-full overflow-y-scroll scrollbar-hide px-4"
             style={{
               paddingTop: '126px',
-              paddingBottom: '78px'
+              paddingBottom: '78px',
+              touchAction: 'pan-y',
+              overscrollBehavior: 'contain',
+              WebkitOverflowScrolling: 'touch'
             }}
             onScroll={(e) => {
               const container = e.target as HTMLDivElement;
