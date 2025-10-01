@@ -75,9 +75,9 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
           <Star className="w-4 h-4" />
         </button>
         
-        {/* Tabella partecipanti quando stellina è cliccata */}
+        {/* Tabella partecipanti a comparsa */}
         {showParticipants && (
-          <div className="absolute top-16 right-4 mt-2 bg-white rounded-lg shadow-xl p-3 max-h-40 overflow-y-auto z-50 min-w-48">
+          <div className="absolute top-12 right-0 mt-1 bg-white rounded-lg shadow-xl border p-3 max-h-40 overflow-y-auto z-50 min-w-48">
             {isLoading ? (
               <p className="text-sm text-gray-500">Caricamento...</p>
             ) : participants.length === 0 ? (
@@ -89,10 +89,10 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
                     <span className="font-medium text-gray-800">{participant.userName}</span>
                     <button
                       onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
-                      className="text-red-500 hover:text-red-700 text-xs"
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-medium"
                       disabled={removeParticipantMutation.isPending}
                     >
-                      Rimuovi
+                      Elimina
                     </button>
                   </div>
                 ))}

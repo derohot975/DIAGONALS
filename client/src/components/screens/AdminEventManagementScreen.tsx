@@ -55,10 +55,6 @@ export default function AdminEventManagementScreen({
           />
         </div>
 
-        {/* Title */}
-        <div className="text-center pb-6">
-          <h2 className="text-lg text-yellow-200">Gestione Eventi</h2>
-        </div>
 
         {/* Fixed Active Events */}
         {activeEvents.length > 0 && (
@@ -79,7 +75,7 @@ export default function AdminEventManagementScreen({
                       {event.votingStatus === 'active' ? (
                         <button
                           onClick={() => onDeactivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
                         >
                           <Square className="w-4 h-4" />
                           <span>SOSPENDI VOTAZIONI</span>
@@ -87,7 +83,7 @@ export default function AdminEventManagementScreen({
                       ) : (
                         <button
                           onClick={() => onActivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
                         >
                           <Play className="w-4 h-4" />
                           <span>AVVIA VOTAZIONI</span>
@@ -144,7 +140,7 @@ export default function AdminEventManagementScreen({
             height: 'calc(100dvh - 460px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
           }}
         >
-          <div className="space-y-4 max-w-4xl mx-auto">
+          <div className="space-y-2 max-w-4xl mx-auto">
             {completedEvents.map(event => (
               <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-4 border border-[#8d0303]">
                 <div className="flex items-center justify-between mb-2">
