@@ -64,23 +64,31 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     }
   }, [isOpen, selectedScore, scores]);
 
-  // Handle scroll to update selection
+  // Handle scroll to update selection with throttling
+  const scrollTimeout = useRef<NodeJS.Timeout>();
+  
   const handleScroll = () => {
-    if (!scrollRef.current) return;
-    
-    const container = scrollRef.current;
-    const itemHeight = 60;
-    const containerHeight = 300;
-    const scrollTop = container.scrollTop;
-    const centerPosition = scrollTop + containerHeight / 2;
-    const selectedIndex = Math.round(centerPosition / itemHeight);
-    
-    if (selectedIndex >= 0 && selectedIndex < scores.length) {
-      const newScore = scores[selectedIndex];
-      if (typeof newScore === 'number' && newScore !== selectedScore) {
-        setSelectedScore(newScore);
-      }
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
     }
+    
+    scrollTimeout.current = setTimeout(() => {
+      if (!scrollRef.current) return;
+      
+      const container = scrollRef.current;
+      const itemHeight = 60;
+      const containerHeight = 320; // h-80 = 320px
+      const scrollTop = container.scrollTop;
+      const centerPosition = scrollTop + containerHeight / 2;
+      const selectedIndex = Math.round(centerPosition / itemHeight);
+      
+      if (selectedIndex >= 0 && selectedIndex < scores.length) {
+        const newScore = scores[selectedIndex];
+        if (typeof newScore === 'number' && newScore !== selectedScore) {
+          setSelectedScore(newScore);
+        }
+      }
+    }, 50); // Throttle to 50ms
   };
 
   if (!isOpen) return null;
@@ -100,7 +108,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-amber-600 to-yellow-600 text-white p-6 text-center">
+        <div className="bg-gradient-to-r from-red-800 to-red-600 text-white p-6 text-center">
           <div className="text-lg font-medium">Vota il vino di</div>
           <div className="text-xl font-bold mt-1">
             {wineName.replace('Vino di ', '').toUpperCase()}
@@ -111,7 +119,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         <div className="p-6">
           <div className="relative">
             {/* Selection indicator */}
-            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-amber-100 border-2 border-amber-400 rounded-xl pointer-events-none z-10"></div>
+            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-50 border-2 border-red-400 rounded-xl pointer-events-none z-10"></div>
             
             {/* Scrollable scores */}
             <div 
@@ -131,8 +139,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
                     key={score}
                     className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
                       selectedScore === score 
-                        ? 'text-3xl font-bold text-amber-700' 
-                        : 'text-xl font-medium text-gray-600 hover:text-amber-600'
+                        ? 'text-3xl font-black text-red-700' 
+                        : 'text-xl font-medium text-gray-700 hover:text-red-600'
                     }`}
                     style={{ scrollSnapAlign: 'center' }}
                     onClick={() => handleScoreClick(score)}
@@ -155,7 +163,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white py-3 px-4 rounded-xl font-bold transition-colors"
+            className="flex-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white py-3 px-4 rounded-xl font-bold transition-colors"
           >
             Conferma {selectedScore}
           </button>
