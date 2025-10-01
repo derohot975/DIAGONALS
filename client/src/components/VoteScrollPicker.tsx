@@ -98,7 +98,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-900 to-red-800 text-white p-6 text-center">
+        <div className="bg-gradient-to-r from-red-950 to-red-900 text-white p-6 text-center">
           <div className="text-lg font-medium">Vota il vino di</div>
           <div className="text-xl font-bold mt-1">
             {wineName.replace('Vino di ', '').toUpperCase()}
@@ -109,7 +109,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         <div className="p-6">
           <div className="relative">
             {/* Selection indicator */}
-            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-50 border-2 border-red-600 rounded-xl pointer-events-none z-10"></div>
+            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-white border-2 border-red-700 rounded-xl pointer-events-none z-10"></div>
             
             {/* Scrollable scores */}
             <div 
@@ -133,8 +133,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
                     key={score}
                     className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
                       selectedScore === score 
-                        ? 'text-3xl font-black text-red-900' 
-                        : 'text-xl font-medium text-gray-700 hover:text-red-800'
+                        ? 'text-3xl font-black text-red-950' 
+                        : 'text-xl font-medium text-gray-700 hover:text-red-900'
                     }`}
                     style={{ scrollSnapAlign: 'center' }}
                     onClick={() => handleScoreClick(score)}
@@ -157,7 +157,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 bg-gradient-to-r from-red-800 to-red-700 hover:from-red-900 hover:to-red-800 text-white py-3 px-4 rounded-xl font-bold transition-colors"
+            className="flex-1 bg-gradient-to-r from-red-900 to-red-800 hover:from-red-950 hover:to-red-900 text-white py-3 px-4 rounded-xl font-bold transition-colors"
           >
             Conferma {selectedScore}
           </button>
