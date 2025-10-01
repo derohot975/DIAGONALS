@@ -44,33 +44,26 @@ export default function AdminEventManagementScreen({
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="w-20 h-auto logo-filter drop-shadow-lg" 
-        />
-      </div>
+      {/* Fixed Header Section */}
+      <div className="flex-shrink-0">
+        {/* Logo Header */}
+        <div className="flex justify-center pt-8 pb-6">
+          <img 
+            src={diagoLogo} 
+            alt="DIAGO Logo" 
+            className="w-20 h-auto logo-filter drop-shadow-lg" 
+          />
+        </div>
 
-      {/* Title */}
-      <div className="flex-shrink-0 text-center pb-6">
-        <h2 className="text-lg text-yellow-200">Gestione Eventi</h2>
-      </div>
+        {/* Title */}
+        <div className="text-center pb-6">
+          <h2 className="text-lg text-yellow-200">Gestione Eventi</h2>
+        </div>
 
-      {/* Scrollable Content */}
-      <div 
-        className="overflow-y-auto px-4 pb-4" 
-        style={{
-          height: 'calc(100dvh - 140px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
-        }}
-      >
-        <div className="space-y-6 max-w-4xl mx-auto">
-          
-          {/* Active Events - New Modern Layout */}
-          {activeEvents.length > 0 && (
-            <div className="space-y-6">
-              
+        {/* Fixed Active Events */}
+        {activeEvents.length > 0 && (
+          <div className="px-4 pb-4">
+            <div className="space-y-6 max-w-4xl mx-auto">
               {activeEvents.map(event => (
                 <div key={event.id} className="relative overflow-hidden">
                   {/* Main Event Card */}
@@ -136,61 +129,72 @@ export default function AdminEventManagementScreen({
                       )}
                     </div>
                   </div>
-
-
                 </div>
               ))}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Completed Events */}
-          {completedEvents.length > 0 && (
-            <div className="space-y-4 mt-8">
-              <h3 className="text-lg font-semibold text-white flex items-center justify-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                STORICO EVENTI
-              </h3>
-              
-              {completedEvents.map(event => (
-                <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-6 border border-[#8d0303]">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
-                      <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => onViewReport(event.id)}
-                        className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-                        title="Visualizza Report"
-                      >
-                        <BarChart3 className="w-4 h-4 inline mr-1" />
-                        Report
-                      </button>
-                      <button
-                        onClick={() => onDeleteEvent(event.id)}
-                        className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
-                        title="Elimina evento"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+        {/* Fixed Historic Events Title */}
+        {completedEvents.length > 0 && (
+          <div className="px-4 pb-2">
+            <h3 className="text-lg font-semibold text-white flex items-center justify-center">
+              <Calendar className="w-5 h-5 mr-2" />
+              STORICO EVENTI
+            </h3>
+          </div>
+        )}
+      </div>
+
+      {/* Scrollable Historic Events Only */}
+      {completedEvents.length > 0 ? (
+        <div 
+          className="overflow-y-auto px-4 pb-4" 
+          style={{
+            height: 'calc(100dvh - 420px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          }}
+        >
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {completedEvents.map(event => (
+              <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-6 border border-[#8d0303]">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h4>
+                    <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => onViewReport(event.id)}
+                      className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                      title="Visualizza Report"
+                    >
+                      <BarChart3 className="w-4 h-4 inline mr-1" />
+                      Report
+                    </button>
+                    <button
+                      onClick={() => onDeleteEvent(event.id)}
+                      className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
+                      title="Elimina evento"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-
-          {/* No Events */}
-          {events.length === 0 && (
-            <div className="text-center py-8">
-              <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500">Nessun evento creato</p>
-              <p className="text-sm text-gray-400">Usa "Nuovo Evento" per crearne uno</p>
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : events.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center py-8">
+            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-500">Nessun evento creato</p>
+            <p className="text-sm text-gray-400">Usa "Nuovo Evento" per crearne uno</p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1"></div>
+      )}
 
       <BottomNavBar 
         onGoHome={onGoHome}

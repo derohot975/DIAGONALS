@@ -3,7 +3,7 @@ import { User, WineEvent } from "@shared/schema";
 
 import EventInfo from "./vote/components/EventInfo";
 import WineList from "./vote/components/WineList";
-import AdminPinModalBridge from "./vote/modals/AdminPinModalBridge";
+import AdminPinModal from "../AdminPinModal";
 import { VoteScrollPicker } from "../VoteScrollPicker";
 import BottomNavBar from "../navigation/BottomNavBar";
 import { useVotingLogic } from "./vote/hooks/useVotingLogic";
@@ -66,7 +66,7 @@ export default function SimpleVotingScreen({
       />
 
       {/* Admin PIN Modal */}
-      <AdminPinModalBridge 
+      <AdminPinModal 
         isOpen={showAdminPinModal}
         onClose={() => setShowAdminPinModal(false)}
         onSuccess={() => {
