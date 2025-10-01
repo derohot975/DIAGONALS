@@ -84,25 +84,14 @@ export default function AdminEventManagementScreen({
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                    {/* Participants Manager Button - Freccia in giù */}
-                    <button
-                      className="absolute top-4 right-4 p-2 text-blue-600 hover:text-blue-800 transition-all duration-200"
-                      title="Gestisci partecipanti"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                    {/* Participants Manager Button - Freccia in giù con funzione */}
+                    <div className="absolute top-4 right-4">
+                      <ParticipantsManager eventId={event.id} />
+                    </div>
 
-                    {/* Event Header - Data e nome sulla stessa riga */}
+                    {/* Event Header - Solo nome centrato */}
                     <div className="text-center mb-4">
-                      <div className="flex items-center justify-center space-x-3">
-                        <p className="text-sm text-gray-600">
-                          {formatEventDate(event.date)}
-                        </p>
-                        <span className="text-gray-400">•</span>
-                        <h3 className="event-name-standard text-sm font-bold text-gray-800 leading-tight break-words">{event.name}</h3>
-                      </div>
+                      <h3 className="event-name-standard text-lg font-bold text-gray-800 leading-tight">{event.name}</h3>
                     </div>
 
                     {/* Primary Action - Voting Control */}
@@ -110,17 +99,17 @@ export default function AdminEventManagementScreen({
                       {event.votingStatus === 'active' ? (
                         <button
                           onClick={() => onDeactivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-lg"
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
                         >
-                          <Square className="w-5 h-5" />
+                          <Square className="w-4 h-4" />
                           <span>SOSPENDI VOTAZIONI</span>
                         </button>
                       ) : (
                         <button
                           onClick={() => onActivateVoting(event.id)}
-                          className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-lg"
+                          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-base rounded-xl transition-all duration-200 shadow-lg whitespace-nowrap"
                         >
-                          <Play className="w-5 h-5" />
+                          <Play className="w-4 h-4" />
                           <span>AVVIA VOTAZIONI</span>
                         </button>
                       )}
@@ -158,7 +147,7 @@ export default function AdminEventManagementScreen({
         <div 
           className="overflow-y-auto px-4 pb-4" 
           style={{
-            height: 'calc(100dvh - 520px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+            height: 'calc(100dvh - 460px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
           }}
         >
           <div className="space-y-4 max-w-4xl mx-auto">
