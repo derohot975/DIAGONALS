@@ -16,7 +16,6 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
   wineName 
 }: VoteScrollPickerProps) {
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
-  const [useScrollMode, setUseScrollMode] = useState<boolean>(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef<boolean>(false);
 
@@ -45,7 +44,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
 
   // Auto-scroll to selected value in scroll mode
   useEffect(() => {
-    if (isOpen && useScrollMode && scrollRef.current) {
+    if (isOpen && scrollRef.current) {
       const currentIndex = scores.indexOf(selectedScore);
       if (currentIndex !== -1) {
         const itemHeight = 64; // h-16 = 64px
@@ -64,11 +63,11 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         }, 100);
       }
     }
-  }, [isOpen, selectedScore, scores, useScrollMode]);
+  }, [isOpen, selectedScore, scores]);
 
   // Scroll handler for scroll mode
   const handleScroll = useCallback(() => {
-    if (!scrollRef.current || isScrollingRef.current || !useScrollMode) return;
+    if (!scrollRef.current || isScrollingRef.current) return;
     
     const container = scrollRef.current;
     const itemHeight = 64; // h-16 = 64px
@@ -87,7 +86,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         setSelectedScore(newScore);
       }
     }
-  }, [scores, selectedScore, useScrollMode]);
+  }, [scores, selectedScore]);
 
   const handleConfirm = () => {
     onVote(selectedScore);
@@ -98,7 +97,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     setSelectedScore(score);
     
     // In scroll mode, scroll to selected item
-    if (useScrollMode && scrollRef.current) {
+    if (scrollRef.current) {
       const index = scores.indexOf(score);
       const itemHeight = 64; // h-16 = 64px
       const containerHeight = 320; // h-80 = 320px
@@ -139,62 +138,41 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
 
         {/* Score Selection */}
         <div className="p-6">
-          {useScrollMode ? (
-            /* Scroll Mode */
-            <div className="relative">
-              {/* Selection indicator */}
-              <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-10"></div>
-              
-              {/* Scrollable scores */}
-              <div 
-                ref={scrollRef}
-                className="h-80 overflow-y-scroll scrollbar-hide"
-                onScroll={handleScroll}
-                style={{
-                  scrollSnapType: 'y mandatory',
-                  touchAction: 'pan-y',
-                  overscrollBehavior: 'contain',
-                  WebkitOverflowScrolling: 'touch'
-                }}
-              >
-                <div className="py-32">
-                  {scores.map((score) => (
-                    <div
-                      key={score}
-                      className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
-                        selectedScore === score 
-                          ? 'text-2xl font-black text-red-950 relative z-20' 
-                          : 'text-lg font-medium text-gray-600 hover:text-red-800 relative z-20'
-                      }`}
-                      style={{ scrollSnapAlign: 'center' }}
-                      onClick={() => handleScoreSelect(score)}
-                    >
-                      {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-                    </div>
-                  ))}
-                </div>
+          {/* Scroll Mode */}
+          <div className="relative">
+            {/* Selection indicator */}
+            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-0"></div>
+            
+            {/* Scrollable scores */}
+            <div 
+              ref={scrollRef}
+              className="h-80 overflow-y-scroll scrollbar-hide"
+              onScroll={handleScroll}
+              style={{
+                scrollSnapType: 'y mandatory',
+                touchAction: 'pan-y',
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch'
+              }}
+            >
+              <div className="py-32">
+                {scores.map((score) => (
+                  <div
+                    key={score}
+                    className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                      selectedScore === score 
+                        ? 'text-2xl font-black text-red-950 relative z-20' 
+                        : 'text-lg font-medium text-gray-600 hover:text-red-800 relative z-20'
+                    }`}
+                    style={{ scrollSnapAlign: 'center' }}
+                    onClick={() => handleScoreSelect(score)}
+                  >
+                    {score % 1 === 0 ? score.toString() : score.toFixed(1)}
+                  </div>
+                ))}
               </div>
             </div>
-          ) : (
-            /* Grid Mode (Fallback) */
-            <div className="grid grid-cols-4 gap-3 max-h-80 overflow-y-auto">
-              {scores.map((score) => (
-                <button
-                  key={score}
-                  onClick={() => handleScoreSelect(score)}
-                  className={`
-                    h-12 rounded-xl font-semibold transition-all duration-200
-                    ${selectedScore === score 
-                      ? 'bg-red-100 border-2 border-red-800 text-red-950 scale-105 shadow-lg' 
-                      : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400'
-                    }
-                  `}
-                >
-                  {score % 1 === 0 ? score.toString() : score.toFixed(1)}
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Footer */}
