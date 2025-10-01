@@ -18,7 +18,7 @@ export default function EventReportModal({ isOpen, onClose, reportData }: EventR
     <div className="flex items-center space-x-3">
       <Trophy className="w-8 h-8" />
       <div>
-        <div className="event-name-script text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{eventInfo.name}</div>
+        <div className="event-name-standard text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{eventInfo.name}</div>
         <div className="text-amber-100">{formatEventDate(eventInfo.date)} • Report Finale</div>
       </div>
     </div>

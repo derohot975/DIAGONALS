@@ -90,7 +90,7 @@ export default function AdminEventManagementScreen({
                       <p className="text-base text-gray-600 mb-2">
                         {formatEventDate(event.date)}
                       </p>
-                      <h3 className="event-name-script text-sm font-bold text-gray-800 mb-1 leading-tight break-words">{event.name}</h3>
+                      <h3 className="event-name-standard text-sm font-bold text-gray-800 mb-1 leading-tight break-words">{event.name}</h3>
                     </div>
 
                     {/* Primary Action - Voting Control */}
@@ -151,8 +151,8 @@ export default function AdminEventManagementScreen({
         <div 
           className="overflow-y-auto px-4" 
           style={{
-            height: 'calc(100dvh - 440px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
-            paddingBottom: 'var(--bottom-nav-total, 88px)'
+            height: 'calc(100dvh - 520px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
+            paddingBottom: 'calc(var(--bottom-nav-total, 88px) + 20px)'
           }}
         >
           <div className="space-y-4 max-w-4xl mx-auto">

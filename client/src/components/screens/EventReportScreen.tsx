@@ -29,7 +29,7 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
       {/* Event Info Header */}
       <div className="flex-shrink-0 text-center mb-6">
         <div className="mb-2">
-          <h1 className="event-name-script text-2xl font-bold text-white">
+          <h1 className="event-name-standard text-2xl font-bold text-white">
             {eventInfo.name}
           </h1>
         </div>

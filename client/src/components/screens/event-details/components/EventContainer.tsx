@@ -34,7 +34,7 @@ export default function EventContainer({
           <div className="glass-effect rounded-2xl shadow-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="event-name-script text-xl font-bold text-[#300505] whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{event.name}</h2>
+                <h2 className="event-name-standard text-xl font-bold text-[#300505] whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{event.name}</h2>
                 <p className="text-gray-600">{event.date} - Modalità {event.mode}</p>
               </div>
               <div className="flex items-center space-x-2">
