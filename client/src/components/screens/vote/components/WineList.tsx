@@ -36,9 +36,10 @@ export default function WineList({ wines, users, votes, currentUser, onWineClick
 
   return (
     <div 
-      className="overflow-y-auto px-4 py-4" 
+      className="overflow-y-auto px-4" 
       style={{
-        height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+        height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
+        paddingBottom: 'var(--bottom-nav-total, 88px)'
       }}
     >
       <div className="max-w-sm mx-auto">

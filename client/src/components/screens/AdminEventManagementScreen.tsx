@@ -166,11 +166,10 @@ export default function AdminEventManagementScreen({
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => onViewReport(event.id)}
-                      className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                      className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors"
                       title="Visualizza Report"
                     >
-                      <BarChart3 className="w-4 h-4 inline mr-1" />
-                      Report
+                      <BarChart3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDeleteEvent(event.id)}
