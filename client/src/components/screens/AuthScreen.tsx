@@ -139,7 +139,7 @@ export default function AuthScreen({
 
                     {/* Smart Keypad */}
                     <div className="flex justify-center mb-4">
-                      <div className="grid grid-cols-3 gap-5 max-w-72">
+                      <div className="grid grid-cols-3 gap-3 max-w-72">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
                           <button
                             key={number}

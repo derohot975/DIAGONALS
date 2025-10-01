@@ -70,12 +70,12 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
+        <div className="grid grid-cols-3 gap-3 mb-6">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(number => (
             <button
               key={number}
               onClick={() => handleNumberClick(number.toString())}
-              className="h-12 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-lg font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
+              className="min-h-[56px] min-w-[56px] bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-lg font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
             >
               {number}
             </button>
@@ -86,14 +86,14 @@ export default function AdminPinModal({ isOpen, onClose, onSuccess }: AdminPinMo
           
           <button
             onClick={() => handleNumberClick('0')}
-            className="h-12 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-lg font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
+            className="min-h-[56px] min-w-[56px] bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-lg font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
           >
             0
           </button>
           
           <button
             onClick={handleDelete}
-            className="h-12 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
+            className="min-h-[56px] min-w-[56px] bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
           >
             <Delete className="w-6 h-6" />
           </button>
