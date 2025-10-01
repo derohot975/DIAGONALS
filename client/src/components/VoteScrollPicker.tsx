@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 
 interface VoteScrollPickerProps {
   isOpen: boolean;
@@ -18,12 +18,16 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
   const [selectedScore, setSelectedScore] = useState<number>(currentVote || 5.0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef<boolean>(false);
+  const animationFrameRef = useRef<number | null>(null);
 
-  // Generate scores from 0.0 to 10.0 in 0.5 increments
-  const scores: number[] = [];
-  for (let i = 0.0; i <= 10.0; i += 0.5) {
-    scores.push(Number(i.toFixed(1)));
-  }
+  // 1) Stabilizzazione dati di lista - array scores in memoria referenziale stabile
+  const scores = useMemo(() => {
+    const scoresArray: number[] = [];
+    for (let i = 0.0; i <= 10.0; i += 0.5) {
+      scoresArray.push(Number(i.toFixed(1)));
+    }
+    return scoresArray;
+  }, []);
 
   // Reset selected score when modal opens
   useEffect(() => {
@@ -42,7 +46,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     }
   }, [isOpen]);
 
-  // Auto-scroll to selected value in scroll mode
+  // 2) Autoscroll robusto all'apertura - requestAnimationFrame + scrollend
   useEffect(() => {
     if (isOpen && scrollRef.current) {
       const currentIndex = scores.indexOf(selectedScore);
@@ -52,40 +56,62 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         const paddingTop = 128; // py-32 = 128px
         const scrollTop = currentIndex * itemHeight + paddingTop - containerHeight / 2 + itemHeight / 2;
         
-        setTimeout(() => {
+        // Usa requestAnimationFrame per sincronizzazione robusta
+        requestAnimationFrame(() => {
           if (scrollRef.current) {
             isScrollingRef.current = true;
             scrollRef.current.scrollTop = Math.max(0, scrollTop);
+            
+            // Listener per scrollend (fallback timeout)
+            const handleScrollEnd = () => {
+              isScrollingRef.current = false;
+              scrollRef.current?.removeEventListener('scrollend', handleScrollEnd);
+            };
+            
+            scrollRef.current.addEventListener('scrollend', handleScrollEnd);
+            
+            // Fallback timeout di sicurezza
             setTimeout(() => {
               isScrollingRef.current = false;
-            }, 200);
+              scrollRef.current?.removeEventListener('scrollend', handleScrollEnd);
+            }, 300);
           }
-        }, 100);
+        });
       }
     }
   }, [isOpen, selectedScore, scores]);
 
-  // Scroll handler for scroll mode
+  // 5) onScroll più leggero - debounce via requestAnimationFrame
   const handleScroll = useCallback(() => {
     if (!scrollRef.current || isScrollingRef.current) return;
     
-    const container = scrollRef.current;
-    const itemHeight = 64; // h-16 = 64px
-    const containerHeight = 320; // h-80 = 320px
-    const scrollTop = container.scrollTop;
-    const paddingTop = 128; // py-32 = 128px top padding
-    
-    // Calculate which item is in the center of the selection box
-    const centerPosition = scrollTop + containerHeight / 2;
-    const adjustedPosition = centerPosition - paddingTop;
-    const selectedIndex = Math.round(adjustedPosition / itemHeight);
-    
-    if (selectedIndex >= 0 && selectedIndex < scores.length) {
-      const newScore = scores[selectedIndex];
-      if (typeof newScore === 'number' && newScore !== selectedScore) {
-        setSelectedScore(newScore);
-      }
+    // Cancella frame precedente se pendente
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
+    
+    // Calcola indice una volta per frame
+    animationFrameRef.current = requestAnimationFrame(() => {
+      if (!scrollRef.current) return;
+      
+      const container = scrollRef.current;
+      const itemHeight = 64; // h-16 = 64px
+      const containerHeight = 320; // h-80 = 320px
+      const scrollTop = container.scrollTop;
+      const paddingTop = 128; // py-32 = 128px top padding
+      
+      // Calculate which item is in the center of the selection box
+      const centerPosition = scrollTop + containerHeight / 2;
+      const adjustedPosition = centerPosition - paddingTop;
+      const selectedIndex = Math.round(adjustedPosition / itemHeight);
+      
+      if (selectedIndex >= 0 && selectedIndex < scores.length) {
+        const newScore = scores[selectedIndex];
+        if (typeof newScore === 'number' && newScore !== selectedScore) {
+          setSelectedScore(newScore);
+        }
+      }
+    });
   }, [scores, selectedScore]);
 
   const handleConfirm = () => {
@@ -119,10 +145,29 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
 
   if (!isOpen) return null;
 
+  // Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  // 6) Accessibilità e focus deterministici
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  }, [onClose]);
+
   return (
     <div 
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={handleKeyDown}
     >
       <div 
         className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden"
@@ -144,12 +189,14 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
             <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 h-16 bg-red-100 border-2 border-red-800 rounded-xl pointer-events-none z-0"></div>
             
             {/* Scrollable scores */}
+            {/* 3) Snap fermo e 4) Transizioni safe per selezione */}
             <div 
               ref={scrollRef}
               className="h-80 overflow-y-scroll scrollbar-hide"
               onScroll={handleScroll}
               style={{
                 scrollSnapType: 'y mandatory',
+                scrollSnapStop: 'always',
                 touchAction: 'pan-y',
                 overscrollBehavior: 'contain',
                 WebkitOverflowScrolling: 'touch'
@@ -159,12 +206,17 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
                 {scores.map((score) => (
                   <div
                     key={score}
-                    className={`h-16 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                    className={`h-16 flex items-center justify-center cursor-pointer relative z-20 ${
                       selectedScore === score 
-                        ? 'text-2xl font-black text-red-950 relative z-20' 
-                        : 'text-lg font-medium text-gray-600 hover:text-red-800 relative z-20'
+                        ? 'text-2xl font-black text-red-950' 
+                        : 'text-lg font-medium text-gray-600 hover:text-red-800'
                     }`}
-                    style={{ scrollSnapAlign: 'center' }}
+                    style={{ 
+                      scrollSnapAlign: 'center',
+                      fontVariantNumeric: 'tabular-nums',
+                      transition: 'color 0.15s ease-out, opacity 0.15s ease-out',
+                      opacity: selectedScore === score ? 1 : 0.7
+                    }}
                     onClick={() => handleScoreSelect(score)}
                   >
                     {score % 1 === 0 ? score.toString() : score.toFixed(1)}
