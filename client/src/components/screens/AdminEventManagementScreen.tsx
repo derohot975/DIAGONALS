@@ -1,16 +1,19 @@
-import { Calendar, Edit, Trash2, Play, Square, BarChart3, CheckCircle, Home, Shield } from '@/components/icons';
+import { useState, useEffect } from 'react';
 import { WineEvent, User, Wine } from '@shared/schema';
+import { Edit, Trash2, Square, Play, Calendar, Star, BarChart3 } from '@/components/icons';
 import { formatEventDate } from '../../lib/utils';
 import diagoLogo from '@assets/diagologo.png';
+import BottomNavBar from '../navigation/BottomNavBar';
 import ParticipantsManager from './admin/components/ParticipantsManager';
 import VotingCompletionChecker from './admin/components/VotingCompletionChecker';
-import { useAdminEventManagement } from './admin/hooks/useAdminEventManagement';
-import BottomNavBar from '../navigation/BottomNavBar';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '../../lib/queryClient';
 
 interface AdminEventManagementScreenProps {
   events: WineEvent[];
-  users: User[];
   wines: Wine[];
+  users: User[];
   onGoBack: () => void;
   onEditEvent: (event: WineEvent) => void;
   onDeleteEvent: (eventId: number) => void;
@@ -36,11 +39,63 @@ export default function AdminEventManagementScreen({
   onGoHome,
   onGoBackToAdmin
 }: AdminEventManagementScreenProps) {
-  // Use custom hook for business logic
-  const { getParticipantsCount, activeEvents, completedEvents } = useAdminEventManagement({
-    events,
-    wines,
+  const [showParticipants, setShowParticipants] = useState<{[key: number]: boolean}>({});
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const activeEvents = events.filter(event => event.status === 'registration' || event.status === 'active');
+  const completedEvents = events.filter(event => event.status === 'completed');
+  
+  const getParticipantsCount = (eventId: number) => {
+    return wines.filter(wine => wine.eventId === eventId).length;
+  };
+
+  // Fetch participants per evento specifico
+  const getParticipants = (eventId: number) => {
+    const eventWines = wines.filter(wine => wine.eventId === eventId);
+    return eventWines.map(wine => {
+      const user = users.find(u => u.id === wine.userId);
+      return {
+        userId: wine.userId,
+        userName: user?.name || 'Sconosciuto',
+        registeredAt: wine.createdAt || new Date().toISOString()
+      };
+    });
+  };
+
+  // Remove participant mutation
+  const removeParticipantMutation = useMutation({
+    mutationFn: async ({ eventId, userId }: { eventId: number; userId: number }) => {
+      const response = await apiRequest('DELETE', `/api/events/${eventId}/participants/${userId}`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
+      toast({ title: 'Partecipante rimosso con successo!' });
+    },
+    onError: () => {
+      toast({ 
+        title: 'Errore', 
+        description: 'Impossibile rimuovere il partecipante', 
+        variant: 'destructive' 
+      });
+    },
   });
+
+  const handleRemoveParticipant = (eventId: number, userId: number, userName: string) => {
+    const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler rimuovere ${userName} dall'evento?\n\n• Il suo vino verrà eliminato definitivamente\n• Non potrà più partecipare alle votazioni\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione?`;
+    
+    if (confirm(confirmMessage)) {
+      removeParticipantMutation.mutate({ eventId, userId });
+    }
+  };
+
+  const toggleParticipants = (eventId: number) => {
+    setShowParticipants(prev => ({
+      ...prev,
+      [eventId]: !prev[eventId]
+    }));
+  };
 
   return (
     <div className="flex-1 flex flex-col">
@@ -63,7 +118,7 @@ export default function AdminEventManagementScreen({
               {activeEvents.map(event => (
                 <div key={event.id} className="relative overflow-hidden">
                   {/* Main Event Card */}
-                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in relative">
+                  <div className="bg-gradient-to-br from-white/95 to-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-4 animate-fade-in relative">
                     
                     {/* Nome evento centrato */}
                     <div className="text-center mb-4">
@@ -108,8 +163,39 @@ export default function AdminEventManagementScreen({
                         <Trash2 className="w-4 h-4" />
                       </button>
                       {/* Participants Manager - Icona stellina */}
-                      <ParticipantsManager eventId={event.id} iconOnly={true} />
+                      <button
+                        onClick={() => toggleParticipants(event.id)}
+                        className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
+                        title="Gestisci partecipanti"
+                      >
+                        <Star className="w-4 h-4" />
+                      </button>
                     </div>
+
+                    {/* Dropdown partecipanti nel container */}
+                    {showParticipants[event.id] && (
+                      <div className="mt-4 bg-gray-50 rounded-lg p-3 border">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Partecipanti</h4>
+                        {getParticipants(event.id).length === 0 ? (
+                          <p className="text-sm text-gray-500">Nessun partecipante</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {getParticipants(event.id).map((participant) => (
+                              <div key={participant.userId} className="flex items-center justify-between text-sm">
+                                <span className="font-medium text-gray-800">{participant.userName}</span>
+                                <button
+                                  onClick={() => handleRemoveParticipant(event.id, participant.userId, participant.userName)}
+                                  className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-medium"
+                                  disabled={removeParticipantMutation.isPending}
+                                >
+                                  Elimina
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Voting Completion Status - Show only when voting is active or completed */}
                     {event.votingStatus === 'completed' && (
@@ -140,7 +226,7 @@ export default function AdminEventManagementScreen({
             height: 'calc(100dvh - 460px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
           }}
         >
-          <div className="space-y-2 max-w-4xl mx-auto">
+          <div className="space-y-1 max-w-4xl mx-auto">
             {completedEvents.map(event => (
               <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-4 border border-[#8d0303]">
                 <div className="flex items-center justify-between mb-2">

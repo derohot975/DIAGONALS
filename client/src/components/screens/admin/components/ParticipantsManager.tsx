@@ -66,41 +66,13 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
   // Render iconOnly per modale
   if (iconOnly) {
     return (
-      <>
-        <button
-          onClick={() => setShowParticipants(!showParticipants)}
-          className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
-          title="Gestisci partecipanti"
-        >
-          <Star className="w-4 h-4" />
-        </button>
-        
-        {/* Tabella partecipanti a comparsa */}
-        {showParticipants && (
-          <div className="absolute top-12 right-0 mt-1 bg-white rounded-lg shadow-xl border p-3 max-h-40 overflow-y-auto z-50 min-w-48">
-            {isLoading ? (
-              <p className="text-sm text-gray-500">Caricamento...</p>
-            ) : participants.length === 0 ? (
-              <p className="text-sm text-gray-500">Nessun partecipante</p>
-            ) : (
-              <div className="space-y-2">
-                {participants.map((participant) => (
-                  <div key={participant.userId} className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-gray-800">{participant.userName}</span>
-                    <button
-                      onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-medium"
-                      disabled={removeParticipantMutation.isPending}
-                    >
-                      Elimina
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </>
+      <button
+        onClick={() => setShowParticipants(!showParticipants)}
+        className="p-2 text-yellow-600 hover:text-yellow-800 transition-all duration-200"
+        title="Gestisci partecipanti"
+      >
+        <Star className="w-4 h-4" />
+      </button>
     );
   }
 
