@@ -135,16 +135,17 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
       footer={footer}
       headerClassName="bg-[#300505] text-center"
       className="rounded-3xl overflow-hidden bg-[#300505]"
+      showCloseButton={false}
     >
 
         {/* iOS-Style Scroll Picker */}
-        <div className="relative h-64 overflow-hidden" style={{background: '#300505'}}>
+        <div className="relative h-64 overflow-hidden bg-white/90 rounded-2xl mx-4 my-4">
           {/* Gradient overlays for iOS effect */}
-          <div className="absolute top-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to bottom, #300505, transparent)'}}></div>
-          <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, #300505, transparent)'}}></div>
+          <div className="absolute top-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to bottom, rgba(255,255,255,0.9), transparent)'}}></div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, rgba(255,255,255,0.9), transparent)'}}></div>
           
           {/* Selection highlight - posizionato al centro esatto */}
-          <div className="absolute left-0 right-0 h-12 bg-yellow-400 bg-opacity-20 border-t-2 border-b-2 border-yellow-400 z-5" style={{top: '126px'}}></div>
+          <div className="absolute left-0 right-0 h-12 bg-amber-200 bg-opacity-40 border-t-2 border-b-2 border-amber-600 z-5" style={{top: '126px'}}></div>
           
           {/* Scrollable content */}
           <div 
@@ -181,7 +182,7 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({ isOpen, onClose
                     : 'font-normal scale-100 text-lg'
                 }`}
                 style={{
-                  color: selectedScore === score ? '#FFD700' : '#FFFFFF'
+                  color: selectedScore === score ? '#B45309' : '#374151'
                 }}
                 onClick={() => {
                   setSelectedScore(score);

@@ -136,6 +136,11 @@ export default function BaseModal({
           ${className}
         `}
         onClick={(e) => e.stopPropagation()}
+        style={{ 
+          position: 'relative',
+          transform: 'none',
+          touchAction: 'manipulation'
+        }}
       >
         {/* Header */}
         {(title || showCloseButton) && (
