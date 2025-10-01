@@ -35,7 +35,7 @@ export default function SimpleVotingScreen({
   return (
     <div className="flex-1 flex flex-col">
       {/* Fixed Header - Event Info Only */}
-      <div className="sticky top-0 z-50 pt-2 pb-4" style={{background: '#300505'}}>
+      <div className="sticky top-0 z-50 pt-2 pb-4">
         <EventInfo event={event} />
       </div>
 

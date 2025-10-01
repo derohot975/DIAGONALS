@@ -63,7 +63,7 @@ export default function HistoricEventsScreen({
                     <h3 className="font-semibold text-sm text-white break-words leading-tight">{event.name}</h3>
                     <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
                   </div>
-                  <div className="flex flex-col items-end space-y-2">
+                  <div className="flex items-center space-x-2">
                     <button
                       onClick={() => onShowEventResults(event.id)}
                       className="p-2 bg-blue-200 hover:bg-blue-300 text-blue-800 rounded-lg transition-colors"

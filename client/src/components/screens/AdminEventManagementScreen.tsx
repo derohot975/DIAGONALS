@@ -151,7 +151,7 @@ export default function AdminEventManagementScreen({
         <div 
           className="overflow-y-auto px-4" 
           style={{
-            height: 'calc(100dvh - 520px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+            height: 'calc(100dvh - 580px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
           }}
         >
           <div className="space-y-4 max-w-4xl mx-auto">
