@@ -36,12 +36,13 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
     }
   }, [isOpen, currentVote]);
 
-  // Body scroll lock
+  // 7) Lock/Unlock scroll del body - standardizzato con BaseModal
   useEffect(() => {
     if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       return () => {
-        document.body.style.overflow = '';
+        document.body.style.overflow = originalOverflow;
       };
     }
   }, [isOpen]);
