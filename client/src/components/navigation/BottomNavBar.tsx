@@ -65,7 +65,7 @@ export default function BottomNavBar({
   const shouldShowHome = onGoHome && currentScreen !== 'events' && currentScreen !== 'home';
   const shouldShowAdmin = onShowAdmin && currentScreen !== 'admin';
 
-  // Layout: sides (Back left, everything else centered)
+  // Layout: sides (Balanced three-region layout for optical centering)
   if (layout === 'sides') {
     // Collect center buttons (Home, Admin, custom buttons)
     const allCenterButtons = [
@@ -79,8 +79,8 @@ export default function BottomNavBar({
         className="fixed left-0 right-0 z-50 flex items-center px-4"
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
-        {/* Left slot - Only Back button */}
-        <div className="flex items-center min-w-[48px]">
+        {/* Left Region - Back button with fixed width for optical balance */}
+        <div className="flex items-center justify-start w-16">
           {onGoBack && (
             <button
               onClick={onGoBack}
@@ -92,22 +92,24 @@ export default function BottomNavBar({
           )}
         </div>
 
-        {/* Center cluster - All other buttons */}
-        <div className="flex-1 flex items-center justify-center space-x-3">
-          {allCenterButtons.map((button) => (
-            <button
-              key={button.id}
-              onClick={button.onClick}
-              className={getButtonStyles(button.variant)}
-              title={button.title}
-            >
-              {button.icon}
-            </button>
-          ))}
+        {/* Center Region - Optically centered buttons */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center space-x-4">
+            {allCenterButtons.map((button) => (
+              <button
+                key={button.id}
+                onClick={button.onClick}
+                className={getButtonStyles(button.variant)}
+                title={button.title}
+              >
+                {button.icon}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Right slot - Wine Search Lens (Global) */}
-        <div className="flex items-center min-w-[48px] justify-end">
+        {/* Right Region - Search lens with fixed width matching left */}
+        <div className="flex items-center justify-end w-16">
           {FEATURES.ENABLE_WINE_SEARCH && (
             <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
           )}
@@ -116,7 +118,7 @@ export default function BottomNavBar({
     );
   }
 
-  // Layout: center (all buttons centered)
+  // Layout: center (all buttons centered with search lens)
   if (layout === 'center') {
     const allButtons = [
       ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
@@ -127,7 +129,7 @@ export default function BottomNavBar({
 
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex justify-center"
+        className="fixed left-0 right-0 z-50 flex justify-center px-4"
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
         <div className="flex items-center space-x-4">
@@ -142,7 +144,7 @@ export default function BottomNavBar({
             </button>
           ))}
           
-          {/* Wine Search Lens - Always visible in center layout */}
+          {/* Wine Search Lens - Integrated in center cluster */}
           {FEATURES.ENABLE_WINE_SEARCH && (
             <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
           )}
@@ -190,7 +192,7 @@ export default function BottomNavBar({
         )}
         
         {onGoHome && (
-          <div className="absolute right-16">
+          <div className="absolute right-20">
             <button
               onClick={onGoHome}
               className={getButtonStyles('primary')}
@@ -201,7 +203,7 @@ export default function BottomNavBar({
           </div>
         )}
         
-        {/* Wine Search Lens - Always visible in mixed layout (right) */}
+        {/* Wine Search Lens - Always visible in mixed layout (extreme right) */}
         {FEATURES.ENABLE_WINE_SEARCH && (
           <div className="absolute right-4">
             <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
