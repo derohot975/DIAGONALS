@@ -51,6 +51,9 @@ export interface IStorage {
   
   // Voting completion check
   checkEventVotingComplete(eventId: number): Promise<{ isComplete: boolean; totalParticipants: number; totalWines: number; votesReceived: number; }>;
+  
+  // Wine search in completed events
+  searchWinesInCompletedEvents(query: string, limit: number, offset: number): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -336,6 +339,37 @@ export class DatabaseStorage implements IStorage {
       totalWines: eventWines.length,
       votesReceived
     };
+  }
+
+  // 🔍 Search wines in completed events
+  async searchWinesInCompletedEvents(query: string, limit: number, offset: number): Promise<any[]> {
+    const searchTerm = `%${query.toLowerCase()}%`;
+    
+    const results = await db
+      .select({
+        id: wines.id,
+        name: wines.name,
+        producer: wines.producer,
+        type: wines.type,
+        year: wines.year,
+        userName: users.name,
+        eventName: wineEvents.name,
+        eventDate: wineEvents.date,
+      })
+      .from(wines)
+      .innerJoin(wineEvents, eq(wines.eventId, wineEvents.id))
+      .innerJoin(users, eq(wines.userId, users.id))
+      .where(
+        and(
+          eq(wineEvents.status, 'completed'),
+          sql`(LOWER(${wines.name}) LIKE ${searchTerm} OR LOWER(${wines.producer}) LIKE ${searchTerm})`
+        )
+      )
+      .orderBy(sql`${wineEvents.date} DESC`)
+      .limit(limit)
+      .offset(offset);
+
+    return results;
   }
 }
 
