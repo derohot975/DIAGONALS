@@ -144,7 +144,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       onOpenChange={onOpenChange}
       size="lg"
       title="Cerca Vini"
-      className="max-h-[80vh]"
+      className="max-h-[80vh] w-full max-w-3xl"
     >
       <div className="space-y-4">
         {/* Search Input */}

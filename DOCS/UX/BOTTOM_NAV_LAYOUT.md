@@ -1,8 +1,8 @@
 # 🎯 BOTTOM NAV LAYOUT - CENTRATURA OTTICA
 
-**Data**: 02/10/2025 15:58  
-**Versione**: 2.0 - Ottimizzazione Centratura  
-**Status**: ✅ IMPLEMENTATO  
+**Data**: 02/10/2025 16:26  
+**Versione**: 2.1 - Standard Progetto Consolidato  
+**Status**: ✅ STANDARD DEFINITIVO  
 
 ---
 
@@ -204,6 +204,29 @@ Utilizziamo un sistema a **tre regioni bilanciate** per evitare che la presenza/
 
 ---
 
-**STATUS**: 🎯 **CENTRATURA OTTICA PERFETTA RAGGIUNTA**
+## 🏛️ GOVERNANCE E STANDARD
 
-Layout bottom-nav ottimizzato per massima usabilità e percezione visiva bilanciata.
+### Regola Aurea del Progetto
+**Il layout a tre regioni (64px - flex-1 - 64px) è lo STANDARD DEFINITIVO** per tutte le implementazioni future della bottom-nav in DIAGONALE.
+
+### Checklist Anti-Regressione
+Prima di ogni modifica alla bottom-nav, verificare:
+- ✅ **Left region**: 64px fissi (w-16)
+- ✅ **Center region**: flex-1 con justify-center
+- ✅ **Right region**: 64px fissi (w-16) 
+- ✅ **Centratura**: ±2px tolleranza su tutti i layout
+- ✅ **Touch targets**: ≥48px su mobile
+- ✅ **Lente ricerca**: Sempre presente quando abilitata
+- ✅ **Zero regressioni**: Test su Home/Auth/Admin/Eventi
+
+### Modifiche Vietate
+- ❌ **Non alterare** le dimensioni delle regioni laterali
+- ❌ **Non rimuovere** il bilanciamento ottico
+- ❌ **Non modificare** la spaziatura centrale (space-x-4)
+- ❌ **Non spostare** la lente dalla right region
+
+---
+
+**STATUS**: 🏛️ **STANDARD PROGETTO CONSOLIDATO**
+
+Layout bottom-nav definito come regola aurea per sviluppi futuri e prevenzione regressioni.

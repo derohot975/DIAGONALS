@@ -1,8 +1,8 @@
 # 🔍 SEARCH LENS SPECIFICATION - DIAGONALE
 
-**Data**: 02/10/2025 15:45  
-**Versione**: 1.0  
-**Status**: ✅ IMPLEMENTATO  
+**Data**: 02/10/2025 16:26  
+**Versione**: 1.1 - Desktop Consolidato  
+**Status**: ✅ MOBILE + DESKTOP FUNZIONANTI  
 
 ---
 
@@ -176,6 +176,28 @@ export const FEATURES = {
    - ✅ TypeScript: 0 errori
    - ✅ Bundle size: +9.17kB BottomNavBar
    - ✅ Zero regressioni altre pagine
+
+---
+
+## 🖥️ COMPORTAMENTO DESKTOP
+
+### Funzionalità Completa
+- **Stesso overlay**: Identico comportamento mobile, nessuna pagina dedicata
+- **Dimensioni**: Modal `max-w-3xl` centrato a schermo
+- **Responsive**: Layout cards adattato per viewport larghi
+- **Keyboard**: Supporto completo ESC, Tab, Enter
+
+### UX Desktop-Specific
+- **Modal size**: Large (lg) con max-width 768px
+- **Cards layout**: Full-width per leggibilità ottimale
+- **Scroll**: Verticale con padding laterale
+- **Hover states**: Feedback più evidenti su desktop
+
+### Integrazione Seamless
+- **Stesso API**: Nessuna logica separata backend
+- **Stessi states**: Loading, empty, error identici
+- **Stesso data flow**: Debounce, paginazione invariati
+- **Zero duplicazione**: Riuso totale componenti mobile
 
 ---
 

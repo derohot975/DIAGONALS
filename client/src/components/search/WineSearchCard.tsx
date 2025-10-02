@@ -25,7 +25,7 @@ export default function WineSearchCard({ wine, onClick }: WineSearchCardProps) {
 
   return (
     <div 
-      className="bg-white/95 rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 cursor-pointer"
+      className="bg-white/95 rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 cursor-pointer w-full max-w-none"
       onClick={handleClick}
     >
       {/* Header - Nome vino e tipo */}
