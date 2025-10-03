@@ -227,6 +227,18 @@ Prima di ogni modifica alla bottom-nav, verificare:
 
 ---
 
-**STATUS**: 🏛️ **STANDARD PROGETTO CONSOLIDATO**
+**STATUS**: 🏛️ **STANDARD PROGETTO CONSOLIDATO + LENTE ATTIVA**
 
 Layout bottom-nav definito come regola aurea per sviluppi futuri e prevenzione regressioni.
+
+### 🚑 Fix Critico Applicato (02/10/2025 17:08)
+**Z-Index Conflict Risolto**: BaseModal z-index aumentato da `z-50` a `z-[100]` per garantire che la lente di ricerca sia sempre funzionante sopra la bottom-nav. Lente ora **completamente operativa** su mobile e desktop.
+
+### 🛡️ Guardrail Z-Index Implementato (03/10/2025 16:18)
+**Design Tokens Centralizzati**: Creato sistema token z-index in `/styles/tokens/zIndex.ts`
+- `Z_BOTTOM_NAV = 50` (navigation layer)
+- `Z_MODAL_OVERLAY = 100` (overlay layer)  
+- `Z_TOAST = 200` (notification layer)
+
+**Guardrail Development**: Console warning automatico se ordine z-index errato
+**Test E2E**: Playwright test per prevenire regressioni future stacking context

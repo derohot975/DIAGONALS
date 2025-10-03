@@ -3,6 +3,7 @@ import { Home, ArrowLeft, Shield } from '@/components/icons';
 import { FEATURES } from '@/config/features';
 import SearchLensButton from '@/components/search/SearchLensButton';
 import WineSearchOverlay from '@/components/search/WineSearchOverlay';
+import { getZIndexClass } from '@/styles/tokens/zIndex';
 
 export interface BottomNavButton {
   id: string;
@@ -76,7 +77,7 @@ export default function BottomNavBar({
 
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex items-center px-4"
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex items-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
         {/* Left Region - Back button with fixed width for optical balance */}
@@ -129,7 +130,7 @@ export default function BottomNavBar({
 
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex justify-center px-4"
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex justify-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
         <div className="flex items-center space-x-4">
@@ -157,7 +158,7 @@ export default function BottomNavBar({
   return (
     <>
       <div 
-        className="fixed left-0 right-0 z-50"
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')}`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
       >
         {/* Custom layout - render center buttons only */}

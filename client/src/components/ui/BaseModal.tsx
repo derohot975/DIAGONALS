@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { X } from '@/components/icons';
+import { getZIndexClass } from '@/styles/tokens/zIndex';
 
 export interface BaseModalProps {
   open: boolean;
@@ -121,7 +122,7 @@ export default function BaseModal({
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className={`fixed inset-0 bg-black/50 flex items-center justify-center ${getZIndexClass('MODAL_OVERLAY')} p-4`}
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"

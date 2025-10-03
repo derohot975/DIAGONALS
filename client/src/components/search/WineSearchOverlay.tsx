@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Search, Wine } from '@/components/icons';
 import BaseModal from '@/components/ui/BaseModal';
 import WineSearchCard, { WineSearchResult } from './WineSearchCard';
+import { validateZIndexOrder } from '@/styles/tokens/zIndex';
 
 interface WineSearchOverlayProps {
   open: boolean;
@@ -13,6 +14,13 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
   const [results, setResults] = useState<WineSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 🛡️ Guardrail Dev - Verifica z-index order al mount
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      validateZIndexOrder('MODAL_OVERLAY', 'BOTTOM_NAV');
+    }
+  }, []);
 
   // Debounced search function
   const searchWines = useCallback(async (searchQuery: string) => {
@@ -28,19 +36,18 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       const response = await fetch(`/api/wines/search?q=${encodeURIComponent(searchQuery)}&limit=20`);
       
       if (!response.ok) {
-        throw new Error('Errore nella ricerca');
+        throw new Error(`Search failed: ${response.status}`);
       }
 
       const data = await response.json();
       setResults(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Errore nella ricerca');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Search failed');
       setResults([]);
     } finally {
       setLoading(false);
     }
   }, []);
-
   // Debounce effect
   useEffect(() => {
     const timer = setTimeout(() => {

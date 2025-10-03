@@ -201,6 +201,39 @@ export const FEATURES = {
 
 ---
 
+## 🚑 KNOWN ISSUES & FIX LOG
+
+### Issue Risolto: Z-Index Conflict (02/10/2025 17:08)
+**Problema**: BaseModal e BottomNavBar entrambi con `z-50` causavano conflitto stacking context
+**Sintomi**: Overlay search non visibile, pulsante lente non responsivo
+**Root Cause**: Stesso z-index tra modal overlay e bottom navigation
+**Fix Applicato**: BaseModal z-index aumentato da `z-50` a `z-[100]`
+**Risultato**: ✅ Overlay ora sempre sopra bottom-nav, funzionamento corretto
+
+### Verifica Completa Effettuata
+- ✅ Feature flag: `ENABLE_WINE_SEARCH=true` attivo
+- ✅ Icona Search: Esportata correttamente nel barrel
+- ✅ Wiring: SearchLensButton presente in tutti i layout (sides/center/mixed)
+- ✅ Handler: onClick collegato correttamente a setSearchOverlayOpen
+- ✅ Mount: WineSearchOverlay montato globalmente in BottomNavBar
+- ✅ Z-index: BaseModal z-[100] > BottomNavBar z-50
+- ✅ API: GET /api/wines/search funzionante, validazione 2+ caratteri
+- ✅ Build: SUCCESS (3.30s, 0 errori TypeScript)
+
+### 🛡️ Guardrail & Testing (03/10/2025 16:18)
+**Design Tokens Z-Index**: Sistema centralizzato `/styles/tokens/zIndex.ts`
+- Prevenzione conflitti stacking context
+- Utility `getZIndexClass()` per classi Tailwind
+- Validazione automatica ordine layer in development
+
+**Test E2E Playwright**: `/e2e/search-overlay.spec.ts`
+- Verifica overlay sempre sopra bottom-nav
+- Test interattività mobile + desktop
+- Guardrail console warning per regressioni
+- Coverage: Chrome, Firefox, Safari, Mobile
+
+---
+
 ## 🚫 LIMITAZIONI NOTE
 
 ### Navigazione
