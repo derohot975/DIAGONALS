@@ -22,7 +22,49 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
     }
   }, []);
 
-  // Debounced search function
+  // 🎯 Focus management e scroll lock
+  useEffect(() => {
+    if (open) {
+      // Blocca scroll del body
+      document.body.style.overflow = 'hidden';
+      
+      // Focus immediato sull'input con fallback
+      const focusInput = () => {
+        const input = document.querySelector('input[placeholder*="Nome vino"]') as HTMLInputElement;
+        if (input) {
+          input.focus();
+        }
+      };
+      
+      // Prova focus immediato e fallback con requestAnimationFrame
+      focusInput();
+      requestAnimationFrame(focusInput);
+    } else {
+      // Ripristina scroll del body
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      // Cleanup: ripristina sempre scroll
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  // ⌨️ Keyboard shortcuts globali
+  useEffect(() => {
+    const handleGlobalKeydown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + K per aprire overlay
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        onOpenChange(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalKeydown);
+    return () => document.removeEventListener('keydown', handleGlobalKeydown);
+  }, [onOpenChange]);
+
+  // Debounced search function con retry e timeout
   const searchWines = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setResults([]);
@@ -32,22 +74,53 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
     setLoading(true);
     setError(null);
 
+    const startTime = Date.now();
+
     try {
-      const response = await fetch(`/api/wines/search?q=${encodeURIComponent(searchQuery)}&limit=20`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+      const response = await fetch(`/api/wines/search?q=${encodeURIComponent(searchQuery)}&limit=20`, {
+        signal: controller.signal
+      });
       
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`);
+        throw new Error(`Ricerca fallita (${response.status})`);
       }
 
       const data = await response.json();
+      
+      // Performance monitoring
+      const duration = Date.now() - startTime;
+      if (process.env.NODE_ENV === 'development' && duration > 700) {
+        console.warn(`🔍 Ricerca più lunga del previsto: ${duration}ms per "${searchQuery}"`);
+      }
+
       setResults(data);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Search failed');
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          setError('Ricerca interrotta per timeout');
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError('Errore di connessione');
+      }
       setResults([]);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  // 🔄 Retry function
+  const retrySearch = useCallback(() => {
+    if (query.length >= 2) {
+      searchWines(query);
+    }
+  }, [query, searchWines]);
   // Debounce effect
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,6 +141,16 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+    // Reset error quando utente digita
+    if (error) setError(null);
+  };
+
+  // ⌨️ Handle Enter key per ricerca
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && query.length >= 2) {
+      e.preventDefault();
+      searchWines(query);
+    }
   };
 
   const renderContent = () => {
@@ -78,6 +161,22 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
           <Wine className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg">Cerca per nome o produttore</p>
           <p className="text-gray-400 text-sm mt-1">Minimo 2 caratteri</p>
+          <div className="mt-4 text-xs text-gray-400">
+            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600">Ctrl</kbd> + 
+            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600 ml-1">K</kbd>
+            <span className="ml-2">per aprire rapidamente</span>
+          </div>
+        </div>
+      );
+    }
+
+    // Too short state
+    if (query.length === 1) {
+      return (
+        <div className="text-center py-12">
+          <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">Aggiungi almeno un altro carattere</p>
+          <p className="text-gray-400 text-sm mt-1">Prova con il nome del vino o del produttore</p>
         </div>
       );
     }
@@ -102,22 +201,25 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       );
     }
 
-    // Error state
+    // Error state con retry
     if (error) {
       return (
         <div className="text-center py-8">
-          <p className="text-red-600 mb-2">{error}</p>
-          <button 
-            onClick={() => searchWines(query)}
-            className="text-[#300505] hover:text-[#8d0303] font-medium"
+          <div className="text-red-600 mb-4 flex items-center justify-center">
+            <Search className="w-5 h-5 mr-2" />
+            {error}
+          </div>
+          <button
+            onClick={retrySearch}
+            className="px-4 py-2 bg-[#8d0303] text-white rounded-lg hover:bg-[#300505] transition-colors font-medium"
           >
-            Riprova
+            Riprova ricerca
           </button>
         </div>
       );
     }
 
-    // Empty results
+    // Empty state migliorato
     if (results.length === 0) {
       return (
         <div className="text-center py-12">
@@ -128,18 +230,14 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       );
     }
 
-    // Results
+    // Results con highlight
     return (
       <div className="space-y-3">
         {results.map((wine) => (
-          <WineSearchCard 
-            key={wine.id} 
-            wine={wine}
-            onClick={() => {
-              // TODO: Future navigation
-              console.log('Wine selected:', wine);
-            }}
-          />
+          <WineSearchCard key={wine.id} wine={wine} query={query} onClick={() => {
+            // TODO: Future navigation
+            console.log('Wine selected:', wine);
+          }} />
         ))}
       </div>
     );
@@ -161,9 +259,14 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
             type="text"
             value={query}
             onChange={handleInputChange}
-            placeholder="Nome vino o produttore..."
+            onKeyDown={handleKeyDown}
+            placeholder="Cerca per nome o produttore · min 2 caratteri"
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent"
+            inputMode="search"
+            enterKeyHint="search"
+            aria-label="Cerca vini negli eventi conclusi"
             autoFocus
+            autoComplete="off"
           />
         </div>
 

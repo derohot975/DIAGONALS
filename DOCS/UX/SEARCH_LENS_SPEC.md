@@ -232,6 +232,31 @@ export const FEATURES = {
 - Guardrail console warning per regressioni
 - Coverage: Chrome, Firefox, Safari, Mobile
 
+### 🎯 Perfezionamenti UX (03/10/2025 16:23)
+**Keyboard & Focus**:
+- `Ctrl/Cmd + K` apre overlay globalmente
+- Focus immediato su input con fallback `requestAnimationFrame`
+- `Enter` lancia ricerca se query ≥2 caratteri
+- Body scroll lock durante overlay aperto
+
+**Highlight & Risultati**:
+- Evidenziazione match con `<mark>` subtle (bg-yellow-100)
+- Multi-evento: ultimi 3 + badge "+N altri"
+- Ordinamento stabile: recenza evento + tie-break nome
+- Cards responsive con hover states desktop
+
+**States Migliorati**:
+- Too-short: pannello guida invece di lista vuota
+- Empty: "negli eventi conclusi" + hint produttore
+- Error: retry button con icona e feedback chiaro
+- Loading: skeleton 3 cards dimensioni reali
+
+**Performance & Robustezza**:
+- Timeout 5s con AbortController
+- Early return API per query <2 caratteri (204 No Content)
+- Performance warning dev se >700ms
+- Retry smart con ultima query memorizzata
+
 ---
 
 ## 🚫 LIMITAZIONI NOTE

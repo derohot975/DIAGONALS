@@ -55,8 +55,10 @@ winesRouter.get("/search", async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 20;
     const offset = parseInt(req.query.offset as string) || 0;
     
+    // Early return per query troppo corte
     if (!query || query.length < 2) {
-      return res.status(400).json({ message: "Query must be at least 2 characters" });
+      res.set('Server-Timing', `wine-search;dur=0, search-total;dur=0`);
+      return res.status(204).end(); // No Content invece di 400
     }
     
     const queryStart = Date.now();

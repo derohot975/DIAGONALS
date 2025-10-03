@@ -242,3 +242,11 @@ Layout bottom-nav definito come regola aurea per sviluppi futuri e prevenzione r
 
 **Guardrail Development**: Console warning automatico se ordine z-index errato
 **Test E2E**: Playwright test per prevenire regressioni future stacking context
+
+### 🎯 Lente Perfezionata (03/10/2025 16:23)
+**Compatibilità Overlay Garantita**: Layout bottom-nav invariato durante perfezionamenti UX
+- Focus management robusto con scroll lock
+- Keyboard shortcuts globali (Ctrl/Cmd+K)
+- Highlight risultati senza impatto layout
+- Performance ottimizzata con timeout e retry
+- Accessibilità completa ARIA + enterKeyHint
