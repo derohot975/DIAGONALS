@@ -16,19 +16,12 @@ export function SearchOverlayProvider({ children }: { children: React.ReactNode 
   openRef.current = open;
 
   const openOverlay = () => {
-    console.info('[LENS] ctx openOverlay called');
     setOpen(true);
   };
 
   const closeOverlay = () => {
-    console.info('[LENS] ctx closeOverlay called');
     setOpen(false);
   };
-
-  // Debug state changes
-  React.useEffect(() => {
-    console.info('[LENS] ctx open ->', open);
-  }, [open]);
 
   const value = {
     open,

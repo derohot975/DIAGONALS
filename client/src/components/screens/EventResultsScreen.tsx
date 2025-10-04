@@ -1,4 +1,4 @@
-import { Star, Download } from '@/components/icons';
+import { Star, Download, ArrowLeft, Home } from '@/components/icons';
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import ResultsHeader from './results/components/ResultsHeader';
 import ResultCard from './results/components/ResultCard';
@@ -78,16 +78,30 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       </div>
       
       <BottomNavBar 
-        onGoBack={onGoBack}
-        onGoHome={onGoHome}
-        centerButtons={[{
-          id: 'export',
-          icon: <Download className="w-5 h-5" />,
-          onClick: handleExportClick,
-          title: 'Condividi',
-          variant: 'glass'
-        }]}
         layout="center"
+        centerButtons={[
+          ...(onGoBack ? [{
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onGoBack,
+            title: 'Indietro',
+            variant: 'glass' as const
+          }] : []),
+          {
+            id: 'export',
+            icon: <Download className="w-6 h-6" />,
+            onClick: handleExportClick,
+            title: 'Condividi',
+            variant: 'glass' as const
+          },
+          ...(onGoHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : [])
+        ]}
       />
     </div>
   );

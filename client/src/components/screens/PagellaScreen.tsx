@@ -1,3 +1,4 @@
+import { ArrowLeft, Home } from '@/components/icons';
 import { WineEvent, User } from '@shared/schema';
 import { usePagellaPermissions } from './pagella/hooks/usePagellaPermissions';
 import { usePagellaLogic } from './pagella/hooks/usePagellaLogic';
@@ -41,7 +42,25 @@ export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }
         canEdit={canEdit} 
         onContentChange={handleContentChange} 
       />
-      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="center" />
+      <BottomNavBar 
+        layout="center"
+        centerButtons={[
+          ...(onGoBack ? [{
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onGoBack,
+            title: 'Indietro',
+            variant: 'glass' as const
+          }] : []),
+          ...(onGoHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : [])
+        ]}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowLeft, Home, Shield } from '@/components/icons';
 import { User, WineEvent } from "@shared/schema";
 
 import EventInfo from "./vote/components/EventInfo";
@@ -79,10 +80,30 @@ export default function SimpleVotingScreen({
 
       {/* Bottom Navigation */}
       <BottomNavBar 
-        onGoBack={onBack}
-        onGoHome={onHome}
-        onShowAdmin={onShowAdmin}
-        layout="sides"
+        layout="center"
+        centerButtons={[
+          ...(onBack ? [{
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onBack,
+            title: 'Indietro',
+            variant: 'glass' as const
+          }] : []),
+          ...(onHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : []),
+          ...(onShowAdmin ? [{
+            id: 'admin',
+            icon: <Shield className="w-6 h-6" />,
+            onClick: onShowAdmin,
+            title: 'Admin',
+            variant: 'admin' as const
+          }] : [])
+        ]}
       />
 
     </div>

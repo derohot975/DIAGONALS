@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Search, Wine } from '@/components/icons';
-import BaseModal from '@/components/ui/BaseModal';
+import BaseModal, { ModalVisibilityProps } from '@/components/ui/BaseModal';
 import WineSearchCard, { WineSearchResult } from './WineSearchCard';
 import { validateZIndexOrder } from '@/styles/tokens/zIndex';
 
+// 🛡️ Contract Lock - Wine Search Overlay (ONLY open allowed)
 interface WineSearchOverlayProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void; // Required
 }
 
 export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOverlayProps) {
@@ -17,17 +18,10 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
 
   // 🛡️ Guardrail Dev - Verifica z-index order al mount
   useEffect(() => {
-    console.info('[LENS] WineSearchOverlay mounted');
     if (process.env.NODE_ENV === 'development') {
       validateZIndexOrder('MODAL_OVERLAY', 'BOTTOM_NAV');
     }
-    return () => console.info('[LENS] overlay unmount');
   }, []);
-
-  // 🚑 Debug overlay state changes
-  useEffect(() => {
-    console.info('[LENS] overlay prop open=', open, 'typeof=', typeof open);
-  }, [open]);
 
   // 🎯 Focus management e scroll lock
   useEffect(() => {
@@ -257,6 +251,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       size="lg"
       title="Cerca Vini"
       className="max-h-[80vh] w-full max-w-3xl"
+      data-testid="wine-search-overlay"
     >
       <div className="space-y-4">
         {/* Search Input */}

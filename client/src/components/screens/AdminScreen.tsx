@@ -149,7 +149,18 @@ export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEve
         </div>
       </div>
 
-      <BottomNavBar onGoHome={onGoHome} layout="center" />
+      <BottomNavBar 
+        layout="center"
+        centerButtons={[
+          ...(onGoHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : [])
+        ]}
+      />
     </div>
   );
 }

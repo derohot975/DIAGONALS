@@ -185,7 +185,7 @@ export default function EventListScreen({
         onShowAdmin={onShowAdmin}
         centerButtons={completedEvents.length > 0 && onShowHistoricEvents ? [{
           id: 'historic',
-          icon: <Calendar className="w-5 h-5" />,
+          icon: <Calendar className="w-6 h-6" />,
           onClick: onShowHistoricEvents,
           title: 'Storico Eventi',
           variant: 'glass'

@@ -78,6 +78,7 @@ export default function BottomNavBar({
       <div 
         className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex items-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
       >
         {/* Left Region - Back button with fixed width for optical balance */}
         <div className="flex items-center justify-start w-16">
@@ -120,9 +121,13 @@ export default function BottomNavBar({
 
   // Layout: center (all buttons centered with search lens)
   if (layout === 'center') {
-    const allButtons = [
-      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
+    // Se centerButtons è fornito, usa solo quelli (evita duplicazioni)
+    // Altrimenti usa la logica automatica per back/home/admin
+    const allButtons = centerButtons.length > 0 ? [
       ...centerButtons,
+      ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
+    ] : [
+      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
       ...(shouldShowHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
       ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
     ];
@@ -131,6 +136,7 @@ export default function BottomNavBar({
       <div 
         className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex justify-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
       >
         <div className="flex items-center space-x-4">
           {allButtons.map((button) => (
@@ -159,6 +165,7 @@ export default function BottomNavBar({
       <div 
         className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')}`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
       >
         {/* Custom layout - render center buttons only */}
         {centerButtons.length > 0 && (
@@ -186,7 +193,7 @@ export default function BottomNavBar({
               className={getButtonStyles('primary')}
               title="Indietro"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-6 h-6" />
             </button>
           </div>
         )}
@@ -198,7 +205,7 @@ export default function BottomNavBar({
               className={getButtonStyles('primary')}
               title="Home"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-6 h-6" />
             </button>
           </div>
         )}
@@ -217,7 +224,7 @@ export default function BottomNavBar({
               className={getButtonStyles('admin')}
               title="Admin"
             >
-              <Shield className="w-5 h-5" />
+              <Shield className="w-6 h-6" />
             </button>
           </div>
         )}
