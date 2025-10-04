@@ -17,10 +17,17 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
 
   // 🛡️ Guardrail Dev - Verifica z-index order al mount
   useEffect(() => {
+    console.info('[LENS] WineSearchOverlay mounted');
     if (process.env.NODE_ENV === 'development') {
       validateZIndexOrder('MODAL_OVERLAY', 'BOTTOM_NAV');
     }
+    return () => console.info('[LENS] overlay unmount');
   }, []);
+
+  // 🚑 Debug overlay state changes
+  useEffect(() => {
+    console.info('[LENS] overlay prop open=', open, 'typeof=', typeof open);
+  }, [open]);
 
   // 🎯 Focus management e scroll lock
   useEffect(() => {

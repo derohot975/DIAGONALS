@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react';
 import { Home, ArrowLeft, Shield } from '@/components/icons';
 import { FEATURES } from '@/config/features';
 import SearchLensButton from '@/components/search/SearchLensButton';
-import WineSearchOverlay from '@/components/search/WineSearchOverlay';
 import { getZIndexClass } from '@/styles/tokens/zIndex';
 
 export interface BottomNavButton {
@@ -42,7 +41,7 @@ export default function BottomNavBar({
   currentScreen
 }: BottomNavBarProps) {
   // 🔍 Wine Search State (Global)
-  const [searchOverlayOpen, setSearchOverlayOpen] = useState(false);
+  // Search overlay now managed globally via SearchOverlayContext
   
   // Button style variants - icone trasparenti senza sfondo
   const getButtonStyles = (buttonVariant: BottomNavButton['variant'] = 'primary') => {
@@ -112,7 +111,7 @@ export default function BottomNavBar({
         {/* Right Region - Search lens with fixed width matching left */}
         <div className="flex items-center justify-end w-16">
           {FEATURES.ENABLE_WINE_SEARCH && (
-            <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
+            <SearchLensButton />
           )}
         </div>
       </div>
@@ -147,7 +146,7 @@ export default function BottomNavBar({
           
           {/* Wine Search Lens - Integrated in center cluster */}
           {FEATURES.ENABLE_WINE_SEARCH && (
-            <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
+            <SearchLensButton />
           )}
         </div>
       </div>
@@ -207,7 +206,7 @@ export default function BottomNavBar({
         {/* Wine Search Lens - Always visible in mixed layout (extreme right) */}
         {FEATURES.ENABLE_WINE_SEARCH && (
           <div className="absolute right-4">
-            <SearchLensButton onClick={() => setSearchOverlayOpen(true)} />
+            <SearchLensButton />
           </div>
         )}
         
@@ -224,13 +223,7 @@ export default function BottomNavBar({
         )}
       </div>
       
-      {/* Global Wine Search Overlay */}
-      {FEATURES.ENABLE_WINE_SEARCH && (
-        <WineSearchOverlay 
-          open={searchOverlayOpen} 
-          onOpenChange={setSearchOverlayOpen} 
-        />
-      )}
+      {/* Wine Search Overlay now managed globally via Portal */}
     </>
   );
 }

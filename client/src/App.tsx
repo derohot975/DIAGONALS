@@ -17,6 +17,8 @@ import { performanceTelemetry } from './lib/performanceTelemetry';
 import AppShell from './components/AppShell';
 import ScreenRouter from './components/ScreenRouter';
 import LoadingSkeleton from './components/LoadingSkeleton';
+import { SearchOverlayProvider } from './contexts/SearchOverlayContext';
+import GlobalWineSearchOverlay from './components/search/GlobalWineSearchOverlay';
 
 import { User, WineEvent, Wine, Vote, WineResultDetailed } from '@shared/schema';
 
@@ -424,8 +426,9 @@ function App() {
   }
 
   return (
-    <AppShell>
-      <ScreenRouter
+    <SearchOverlayProvider>
+      <AppShell>
+        <ScreenRouter
         currentScreen={router.currentScreen}
         currentUser={currentUser}
         currentEvent={currentEvent}
@@ -526,8 +529,11 @@ function App() {
       {/* Install Prompt - Only show on home screen when not logged in */}
       {router.currentScreen === 'home' && !currentUser && <InstallPrompt />}
 
-
-    </AppShell>
+      </AppShell>
+      
+      {/* Global Wine Search Overlay - Always mounted via Portal */}
+      <GlobalWineSearchOverlay />
+    </SearchOverlayProvider>
   );
 }
 

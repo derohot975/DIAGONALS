@@ -118,6 +118,9 @@ export default function BaseModal({
     }
   }, [open]);
 
+  // 🚑 Debug modal state
+  console.info('[LENS] BaseModal render - open:', open, 'will render:', open ? 'YES' : 'NO');
+
   if (!open) return null;
 
   return (
@@ -126,9 +129,9 @@ export default function BaseModal({
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
+      style={{ outline: '3px solid #00E5FF', touchAction: 'none' }}
       aria-labelledby={title ? 'modal-title' : undefined}
       aria-describedby={description ? 'modal-description' : undefined}
-      style={{ touchAction: 'none' }}
     >
       <div 
         className={`
