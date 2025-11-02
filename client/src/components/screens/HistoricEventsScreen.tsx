@@ -47,9 +47,9 @@ export default function HistoricEventsScreen({
 
       {/* Scrollable Content */}
       <div 
-        className="overflow-y-auto px-4 pb-4" 
+        className="flex-1 overflow-y-auto px-4 pb-4 min-h-0" 
         style={{
-          height: 'calc(100dvh - 120px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          paddingBottom: 'calc(var(--bottom-nav-total, 88px) + 1rem)'
         }}
       >
         <div className="max-w-2xl mx-auto space-y-4">

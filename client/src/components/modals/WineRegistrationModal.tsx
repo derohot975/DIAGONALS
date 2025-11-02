@@ -147,17 +147,17 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
       title={`🍷 ${wine ? 'Modifica Vino' : 'Registra Vino'}`}
       size="lg"
       footer={footer}
-      headerClassName="text-[hsl(270,50%,65%)]"
+      headerClassName="text-[#8d0303]"
       className="glass-effect"
     >
         
-      <form id="wine-registration-form" onSubmit={handleSubmit} className="space-y-4">
+      <form id="wine-registration-form" onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tipologia</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             >
               <option value="">Seleziona tipologia</option>
@@ -185,7 +185,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={producer}
               onChange={(e) => setProducer(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
           </div>
@@ -196,7 +196,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={grape}
               onChange={(e) => setGrape(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
           </div>
@@ -210,7 +210,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 onChange={(e) => setYear(e.target.value)}
                 min="1900"
                 max="2025"
-                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
             </div>
@@ -222,7 +222,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 onChange={(e) => setPrice(e.target.value)}
                 min="0"
                 step="0.01"
-                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
             </div>
@@ -232,7 +232,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
                 type="text"
                 value={alcohol}
                 onChange={(e) => setAlcohol(formatAlcoholValue(e.target.value))}
-                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
                 required
               />
             </div>
@@ -244,7 +244,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
               type="text"
               value={origin}
               onChange={(e) => setOrigin(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
               required
             />
           </div>

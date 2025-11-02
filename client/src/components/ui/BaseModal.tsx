@@ -131,7 +131,7 @@ export default function BaseModal({
     >
       <div 
         className={`
-          bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden
+          bg-white rounded-2xl shadow-2xl w-full max-h-[75vh] overflow-hidden
           ${getSizeStyles()}
           ${className}
         `}
@@ -139,13 +139,14 @@ export default function BaseModal({
         style={{ 
           position: 'relative',
           transform: 'none',
-          touchAction: 'manipulation'
+          touchAction: 'manipulation',
+          marginBottom: 'var(--bottom-nav-total, 88px)'
         }}
       >
         {/* Header */}
         {(title || showCloseButton) && (
           <div className={`
-            ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-6 border-b border-gray-200
+            ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-4 border-b border-gray-200
             ${headerClassName}
           `}>
             <div className={showCloseButton ? "flex-1 min-w-0" : "text-center"}>
@@ -182,7 +183,7 @@ export default function BaseModal({
         {/* Content */}
         <div className={`
           overflow-y-auto flex-1
-          ${title || showCloseButton ? 'p-6' : 'p-6'}
+          ${title || showCloseButton ? 'p-4' : 'p-4'}
           ${contentClassName}
         `}>
           {children}
@@ -190,7 +191,7 @@ export default function BaseModal({
 
         {/* Footer */}
         {footer && (
-          <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
+          <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">
             {footer}
           </div>
         )}
