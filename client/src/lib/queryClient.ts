@@ -1,4 +1,8 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { dataClient } from "./dataClient";
+
+// API Base URL configuration
+const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '') || '';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -12,7 +16,16 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Block write operations for main resources in guest mode
+  const isWriteOperation = method !== 'GET';
+  const isMainResource = url.includes('/api/users') || url.includes('/api/events') || url.includes('/api/wines');
+  
+  if (isWriteOperation && isMainResource) {
+    throw new Error('Funzione non disponibile in questa modalità');
+  }
+  
+  const fullUrl = url.startsWith('/') ? `${API_BASE}${url}` : url;
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -29,7 +42,36 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const url = queryKey.join("/") as string;
+    
+    // Route Supabase calls for main resources
+    if (url === '/api/users') {
+      const response = await dataClient.getUsers();
+      if (!response.ok) {
+        throw new Error(response.error || 'Failed to fetch users');
+      }
+      return response.data;
+    }
+    
+    if (url === '/api/events') {
+      const response = await dataClient.getEvents();
+      if (!response.ok) {
+        throw new Error(response.error || 'Failed to fetch events');
+      }
+      return response.data;
+    }
+    
+    if (url === '/api/wines') {
+      const response = await dataClient.getWines();
+      if (!response.ok) {
+        throw new Error(response.error || 'Failed to fetch wines');
+      }
+      return response.data;
+    }
+    
+    // Fallback to original API for other endpoints
+    const fullUrl = url.startsWith('/') ? `${API_BASE}${url}` : url;
+    const res = await fetch(fullUrl, {
       credentials: "include",
     });
 

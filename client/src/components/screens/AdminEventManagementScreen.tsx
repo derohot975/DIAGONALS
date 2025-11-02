@@ -44,7 +44,6 @@ export default function AdminEventManagementScreen({
   const queryClient = useQueryClient();
   
   const activeEvents = events.filter(event => event.status === 'registration' || event.status === 'active');
-  const completedEvents = events.filter(event => event.status === 'completed');
   
   const getParticipantsCount = (eventId: number) => {
     return wines.filter(wine => wine.eventId === eventId).length;
@@ -219,54 +218,9 @@ export default function AdminEventManagementScreen({
           </div>
         )}
 
-        {/* Fixed Historic Events Title */}
-        {completedEvents.length > 0 && (
-          <div className="px-4 pb-2">
-            <h3 className="text-base font-semibold text-white text-center">
-              STORICO EVENTI
-            </h3>
-          </div>
-        )}
       </div>
 
-      {/* Scrollable Historic Events Only */}
-      {completedEvents.length > 0 ? (
-        <div 
-          className="overflow-y-auto px-4 pb-4" 
-          style={{
-            height: 'calc(100dvh - 460px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
-          }}
-        >
-          <div className="space-y-1 max-w-4xl mx-auto">
-            {completedEvents.map(event => (
-              <div key={event.id} className="bg-[#300505] rounded-2xl shadow-xl p-4 border border-[#8d0303]">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-sm text-white break-words leading-tight">{formatEventName(event.name)}</h4>
-                    <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => onViewReport(event.id)}
-                      className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors"
-                      title="Visualizza Report"
-                    >
-                      <BarChart3 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteEvent(event.id)}
-                      className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
-                      title="Elimina evento"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : events.length === 0 ? (
+      {events.length === 0 ? (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center py-8">
             <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
