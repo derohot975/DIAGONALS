@@ -1,5 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Home, ArrowLeft, Shield } from '@/components/icons';
+import { FEATURES } from '@/config/features';
+import SearchLensButton from '@/components/search/SearchLensButton';
+import { getZIndexClass } from '@/styles/tokens/zIndex';
 
 export interface BottomNavButton {
   id: string;
@@ -37,6 +40,8 @@ export default function BottomNavBar({
   variant = 'solid',
   currentScreen
 }: BottomNavBarProps) {
+  // 🔍 Wine Search State (Global)
+  // Search overlay now managed globally via SearchOverlayContext
   
   // Button style variants - icone trasparenti senza sfondo
   const getButtonStyles = (buttonVariant: BottomNavButton['variant'] = 'primary') => {
@@ -60,7 +65,7 @@ export default function BottomNavBar({
   const shouldShowHome = onGoHome && currentScreen !== 'events' && currentScreen !== 'home';
   const shouldShowAdmin = onShowAdmin && currentScreen !== 'admin';
 
-  // Layout: sides (Back left, everything else centered)
+  // Layout: sides (Balanced three-region layout for optical centering)
   if (layout === 'sides') {
     // Collect center buttons (Home, Admin, custom buttons)
     const allCenterButtons = [
@@ -71,11 +76,12 @@ export default function BottomNavBar({
 
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex items-center px-4"
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex items-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
       >
-        {/* Left slot - Only Back button */}
-        <div className="flex items-center min-w-[48px]">
+        {/* Left Region - Back button with fixed width for optical balance */}
+        <div className="flex items-center justify-start w-16">
           {onGoBack && (
             <button
               onClick={onGoBack}
@@ -87,39 +93,50 @@ export default function BottomNavBar({
           )}
         </div>
 
-        {/* Center cluster - All other buttons */}
-        <div className="flex-1 flex items-center justify-center space-x-3">
-          {allCenterButtons.map((button) => (
-            <button
-              key={button.id}
-              onClick={button.onClick}
-              className={getButtonStyles(button.variant)}
-              title={button.title}
-            >
-              {button.icon}
-            </button>
-          ))}
+        {/* Center Region - Optically centered buttons */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center space-x-4">
+            {allCenterButtons.map((button) => (
+              <button
+                key={button.id}
+                onClick={button.onClick}
+                className={getButtonStyles(button.variant)}
+                title={button.title}
+              >
+                {button.icon}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Right slot - Reserved for balance */}
-        <div className="min-w-[48px]"></div>
+        {/* Right Region - Search lens with fixed width matching left */}
+        <div className="flex items-center justify-end w-16">
+          {FEATURES.ENABLE_WINE_SEARCH && (
+            <SearchLensButton />
+          )}
+        </div>
       </div>
     );
   }
 
-  // Layout: center (all buttons centered)
+  // Layout: center (all buttons centered with search lens)
   if (layout === 'center') {
-    const allButtons = [
-      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
+    // Se centerButtons è fornito, usa solo quelli (evita duplicazioni)
+    // Altrimenti usa la logica automatica per back/home/admin
+    const allButtons = centerButtons.length > 0 ? [
       ...centerButtons,
+      ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
+    ] : [
+      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
       ...(shouldShowHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
       ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : [])
     ];
 
     return (
       <div 
-        className="fixed left-0 right-0 z-50 flex justify-center"
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex justify-center px-4`}
         style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
       >
         <div className="flex items-center space-x-4">
           {allButtons.map((button) => (
@@ -132,6 +149,11 @@ export default function BottomNavBar({
               {button.icon}
             </button>
           ))}
+          
+          {/* Wine Search Lens - Integrated in center cluster */}
+          {FEATURES.ENABLE_WINE_SEARCH && (
+            <SearchLensButton />
+          )}
         </div>
       </div>
     );
@@ -139,64 +161,76 @@ export default function BottomNavBar({
 
   // Layout: mixed (custom positioning)
   return (
-    <div 
-      className="fixed left-0 right-0 z-50"
-      style={{ bottom: 'var(--bottom-nav-offset)' }}
-    >
-      {/* Custom layout - render center buttons only */}
-      {centerButtons.length > 0 && (
-        <div className="flex justify-center">
-          <div className="flex items-center space-x-4">
-            {centerButtons.map((button) => (
-              <button
-                key={button.id}
-                onClick={button.onClick}
-                className={getButtonStyles(button.variant)}
-                title={button.title}
-              >
-                {button.icon}
-              </button>
-            ))}
+    <>
+      <div 
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')}`}
+        style={{ bottom: 'var(--bottom-nav-offset)' }}
+        data-testid="bottom-nav"
+      >
+        {/* Custom layout - render center buttons only */}
+        {centerButtons.length > 0 && (
+          <div className="flex justify-center">
+            <div className="flex items-center space-x-4">
+              {centerButtons.map((button) => (
+                <button
+                  key={button.id}
+                  onClick={button.onClick}
+                  className={getButtonStyles(button.variant)}
+                  title={button.title}
+                >
+                  {button.icon}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        
+        {/* Individual positioned buttons */}
+        {onGoBack && (
+          <div className="absolute left-4">
+            <button
+              onClick={onGoBack}
+              className={getButtonStyles('primary')}
+              title="Indietro"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+          </div>
+        )}
+        
+        {onGoHome && (
+          <div className="absolute right-20">
+            <button
+              onClick={onGoHome}
+              className={getButtonStyles('primary')}
+              title="Home"
+            >
+              <Home className="w-6 h-6" />
+            </button>
+          </div>
+        )}
+        
+        {/* Wine Search Lens - Always visible in mixed layout (extreme right) */}
+        {FEATURES.ENABLE_WINE_SEARCH && (
+          <div className="absolute right-4">
+            <SearchLensButton />
+          </div>
+        )}
+        
+        {onShowAdmin && (
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <button
+              onClick={onShowAdmin}
+              className={getButtonStyles('admin')}
+              title="Admin"
+            >
+              <Shield className="w-6 h-6" />
+            </button>
+          </div>
+        )}
+      </div>
       
-      {/* Individual positioned buttons */}
-      {onGoBack && (
-        <div className="absolute left-4">
-          <button
-            onClick={onGoBack}
-            className={getButtonStyles('primary')}
-            title="Indietro"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-      
-      {onGoHome && (
-        <div className="absolute right-4">
-          <button
-            onClick={onGoHome}
-            className={getButtonStyles('primary')}
-            title="Home"
-          >
-            <Home className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-      
-      {onShowAdmin && (
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <button
-            onClick={onShowAdmin}
-            className={getButtonStyles('admin')}
-            title="Admin"
-          >
-            <Shield className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-    </div>
+      {/* Wine Search Overlay now managed globally via Portal */}
+    </>
   );
 }

@@ -1,3 +1,4 @@
+import { ArrowLeft, Home } from '@/components/icons';
 import { WineEvent, Wine, Vote, User } from '@shared/schema';
 import { useEventLogic } from '@/hooks/useEventLogic';
 import EventContainer from './event-details/components/EventContainer';
@@ -84,7 +85,25 @@ export default function EventDetailsScreen({
         </div>
       </div>
       
-      <BottomNavBar onGoBack={onGoBack} onGoHome={onGoHome} layout="sides" />
+      <BottomNavBar 
+        layout="center"
+        centerButtons={[
+          ...(onGoBack ? [{
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onGoBack,
+            title: 'Indietro',
+            variant: 'glass' as const
+          }] : []),
+          ...(onGoHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : [])
+        ]}
+      />
     </div>
   );
 }

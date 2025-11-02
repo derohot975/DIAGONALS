@@ -59,6 +59,9 @@ export {
   // Input & Forms
   Dot,
   
+  // Search & Discovery
+  Search,
+  
   // Notes & Documentation
   StickyNote,
   

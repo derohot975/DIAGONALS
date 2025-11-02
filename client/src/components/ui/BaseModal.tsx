@@ -1,9 +1,15 @@
 import { ReactNode, useEffect } from 'react';
 import { X } from '@/components/icons';
+import { getZIndexClass } from '@/styles/tokens/zIndex';
 
-export interface BaseModalProps {
+// 🛡️ Contract Lock - Modal Visibility Props (ONLY open allowed)
+export interface ModalVisibilityProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export interface BaseModalProps extends ModalVisibilityProps {
+  onOpenChange: (open: boolean) => void; // Required for contract lock
   title?: ReactNode;
   description?: ReactNode;
   footer?: ReactNode;
@@ -15,6 +21,7 @@ export interface BaseModalProps {
   headerClassName?: string;
   contentClassName?: string;
   showCloseButton?: boolean;
+  'data-testid'?: string; // For E2E tests
 }
 
 export default function BaseModal({
@@ -30,7 +37,8 @@ export default function BaseModal({
   className = '',
   headerClassName = '',
   contentClassName = '',
-  showCloseButton = true
+  showCloseButton = true,
+  'data-testid': testId
 }: BaseModalProps) {
   
   // Size variants
@@ -121,13 +129,14 @@ export default function BaseModal({
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className={`fixed inset-0 bg-black/50 flex items-center justify-center ${getZIndexClass('MODAL_OVERLAY')} p-4`}
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
+      data-testid={testId}
+      style={{ touchAction: 'none' }}
       aria-labelledby={title ? 'modal-title' : undefined}
       aria-describedby={description ? 'modal-description' : undefined}
-      style={{ touchAction: 'none' }}
     >
       <div 
         className={`

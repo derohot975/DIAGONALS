@@ -15,13 +15,6 @@ export default function PagellaEditor({ content, canEdit, onContentChange }: Pag
       <div className="max-w-4xl mx-auto h-full">
         <div className="h-full flex flex-col">
           {/* Messaggio informativo per utenti non editor */}
-          {!canEdit && (
-            <div className="mb-4 p-3 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-              <p className="text-blue-200 text-sm text-center">
-                📖 Stai visualizzando la Pagella in sola lettura. Solo DERO e TOMMY possono modificarla.
-              </p>
-            </div>
-          )}
           
           {/* Text Area Container */}
           <div className="relative flex-1">

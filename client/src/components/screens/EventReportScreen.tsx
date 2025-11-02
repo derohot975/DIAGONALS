@@ -1,4 +1,4 @@
-// Removed decorative icons for cleaner UI
+import { ArrowLeft, Home } from '@/components/icons';
 import { EventReportData } from '@shared/schema';
 import { formatEventDate, formatEventName } from '@/lib/utils';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -106,9 +106,23 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
 
       {/* Bottom Navigation */}
       <BottomNavBar 
-        onGoBack={onGoBack}
-        onGoHome={onGoHome}
-        layout="sides"
+        layout="center"
+        centerButtons={[
+          ...(onGoBack ? [{
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onGoBack,
+            title: 'Indietro',
+            variant: 'glass' as const
+          }] : []),
+          ...(onGoHome ? [{
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass' as const
+          }] : [])
+        ]}
       />
     </div>
   );

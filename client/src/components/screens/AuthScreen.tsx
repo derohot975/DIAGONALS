@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LogIn, UserPlus, Shield, Settings } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
+import '@/styles/auth-keypad-mobile.css';
 
 interface AuthScreenProps {
   onLogin: (name: string, pin: string) => void;
@@ -139,13 +140,13 @@ export default function AuthScreen({
 
                     {/* Smart Keypad */}
                     <div className="flex justify-center mb-4">
-                      <div className="grid grid-cols-3 gap-3 max-w-72">
+                      <div className="grid grid-cols-3 gap-3 max-w-72 auth-keypad-container">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
                           <button
                             key={number}
                             type="button"
                             onClick={() => handleNumberInput(number.toString())}
-                            className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                            className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg auth-keypad-button number relative"
                           >
                             {number}
                           </button>
@@ -155,7 +156,7 @@ export default function AuthScreen({
                         <button
                           type="button"
                           onClick={handleDeletePin}
-                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center auth-keypad-button delete relative"
                         >
                           C
                         </button>
@@ -164,7 +165,7 @@ export default function AuthScreen({
                         <button
                           type="button"
                           onClick={() => handleNumberInput('0')}
-                          className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg"
+                          className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg auth-keypad-button number relative"
                         >
                           0
                         </button>
@@ -174,7 +175,7 @@ export default function AuthScreen({
                           <button
                             type="button"
                             onClick={onShowAdmin}
-                            className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-400 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center"
+                            className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-400 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center auth-keypad-button admin relative"
                           >
                             <Settings className="w-5 h-5" />
                           </button>

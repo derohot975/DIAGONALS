@@ -46,6 +46,40 @@ winesRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
+// 🔍 Wine Search Endpoint - Ricerca vini eventi conclusi
+winesRouter.get("/search", async (req: Request, res: Response) => {
+  const startTime = Date.now();
+  
+  try {
+    const query = req.query.q as string;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const offset = parseInt(req.query.offset as string) || 0;
+    
+    // Early return per query troppo corte
+    if (!query || query.length < 2) {
+      res.set('Server-Timing', `wine-search;dur=0, search-total;dur=0`);
+      return res.status(204).end(); // No Content invece di 400
+    }
+    
+    const queryStart = Date.now();
+    const results = await storage.searchWinesInCompletedEvents(query, limit, offset);
+    const queryDuration = Date.now() - queryStart;
+    const totalDuration = Date.now() - startTime;
+    
+    // Performance monitoring
+    res.set('Server-Timing', `wine-search;dur=${queryDuration}, search-total;dur=${totalDuration}`);
+    
+    if (queryDuration > 500) {
+      console.warn(`⚠️ /api/wines/search: Query lenta rilevata (${queryDuration}ms) - query: "${query}"`);
+    }
+    
+    res.json(results);
+  } catch (error) {
+    console.error('Wine search error:', error);
+    res.status(500).json({ message: "Failed to search wines" });
+  }
+});
+
 winesRouter.post("/", async (req: Request, res: Response) => {
   try {
     // Trasforma i campi numerici per la compatibilità
