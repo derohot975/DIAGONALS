@@ -26,6 +26,9 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
+  /* iOS Safe Height - Dynamic Viewport Height with safe areas */
+  --app-h: 100dvh;
+  
   /* Wine-specific colors - bordeaux scuro/rosso specifici */
   --wine-primary: #300505;
   --wine-secondary: #8d0303;
@@ -36,6 +39,13 @@
   --bottom-nav-height: 5.5rem; /* 88px: pulsanti (48px) + bottom-6 (24px) + margine (16px) */
   --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
   --bottom-nav-offset: calc(1.75rem + env(safe-area-inset-bottom)); /* 28px + safe-area (bottom-7) */
+}
+
+/* iOS Safe Height fallback for browsers without dvh support */
+@supports not (height: 100dvh) {
+  :root {
+    --app-h: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
 }
 
 @layer base {
@@ -79,8 +89,9 @@
   }
 
   #root {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height per mobile */
+    height: 100vh; /* Fallback */
+    height: var(--app-h); /* iOS Safe Height with dynamic viewport */
+    min-height: var(--app-h);
     display: flex;
     flex-direction: column;
     background: linear-gradient(135deg, #300505 0%, #8d0303 100%);

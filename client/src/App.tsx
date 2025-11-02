@@ -39,9 +39,10 @@ import InstallPrompt from './components/InstallPrompt';
 import { EventReportData } from '@shared/schema';
 import { Screen } from './hooks/useAppRouter';
 
-// BEGIN DIAGONALE APP SHELL - Feature Flags
-const ENABLE_APP_SHELL = import.meta.env.VITE_ENABLE_APP_SHELL !== 'false'; // Default: true
-const ENABLE_APP_SHELL_ON_INTRO = import.meta.env.VITE_ENABLE_APP_SHELL_ON_INTRO === 'true'; // Default: false
+// BEGIN DIAGONALE APP SHELL - Feature Flags (iOS Safe)
+const safeMode = (window as any).__DIAGONALE_SAFE_MODE__ || {};
+const ENABLE_APP_SHELL = safeMode.SHELL_ENABLED ?? (import.meta.env.VITE_ENABLE_APP_SHELL !== 'false');
+const ENABLE_APP_SHELL_ON_INTRO = safeMode.INTRO_ENABLED ?? (import.meta.env.VITE_ENABLE_APP_SHELL_ON_INTRO === 'true');
 
 // Route che dovrebbero mostrare skeleton (data-heavy)
 const DATA_HEAVY_SCREENS: Screen[] = ['events', 'adminEvents', 'eventDetails', 'eventResults', 'voting', 'historicEvents', 'pagella', 'admin'];
@@ -514,17 +515,22 @@ function App() {
       />
 
 
-      <AdminPinModal
-        isOpen={appState.showAdminPinModal}
-        onClose={handleAdminPinClose}
-        onSuccess={handleAdminPinSuccess}
-      />
+      {/* iOS Safe Mode: Block modals if Shell disabled */}
+      {ENABLE_APP_SHELL && (
+        <>
+          <AdminPinModal
+            isOpen={appState.showAdminPinModal}
+            onClose={handleAdminPinClose}
+            onSuccess={handleAdminPinSuccess}
+          />
 
-      <ChangeAdminPinModal
-        isOpen={appState.showChangeAdminPinModal}
-        onClose={() => appState.setShowChangeAdminPinModal(false)}
-        onSuccess={handleChangeAdminPin}
-      />
+          <ChangeAdminPinModal
+            isOpen={appState.showChangeAdminPinModal}
+            onClose={() => appState.setShowChangeAdminPinModal(false)}
+            onSuccess={handleChangeAdminPin}
+          />
+        </>
+      )}
 
       {/* Install Prompt - Only show on home screen when not logged in */}
       {router.currentScreen === 'home' && !currentUser && <InstallPrompt />}

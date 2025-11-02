@@ -29,12 +29,10 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 - **React Query** per gestione stato server
 - **Wouter** per routing leggero
 
-### Backend
-- **Express.js** con TypeScript
-- **Drizzle ORM** per gestione database
-- **PostgreSQL** (produzione) / Storage in memoria (sviluppo)
-- **API RESTful** con gestione errori completa
-- **Gestione sessioni** con archiviazione sicura
+### Database
+- **Supabase** per dati in sola lettura
+- **PostgreSQL** con Row Level Security (RLS)
+- **Accesso guest** senza autenticazione persistente
 
 ## Avvio Rapido
 
@@ -51,101 +49,54 @@ L'applicazione sarà disponibile su `http://localhost:5000`
 
 ### Build di Produzione
 ```bash
-# Build per produzione
-npm run build
-
-# Avvia server di produzione
-npm start
+# Build frontend statico per Netlify
+npm run build:frontend
 ```
 
 ## Deploy
 
-### Deploy su Render
+### Deploy su Netlify (Raccomandato)
 
-1. **Collega Repository**: Collega il tuo repository GitHub/GitLab a Render
-2. **Crea Web Service**: Usa la seguente configurazione:
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-   - **Environment**: Node.js
-   - **Port**: 5000 (auto-rilevato)
+1. **Collega Repository**: Collega il repository GitHub a Netlify
+2. **Configurazione Build**:
+   - **Build Command**: `npm run build:frontend`
+   - **Publish Directory**: `dist/public`
+   - **Node Version**: 18+
 
-3. **Variabili d'Ambiente** (se si usa PostgreSQL):
-   - `DATABASE_URL`: Stringa di connessione PostgreSQL
-   - `NODE_ENV`: `production`
+3. **Variabili d'Ambiente**:
+   - `VITE_SUPABASE_URL`: URL del progetto Supabase
+   - `VITE_SUPABASE_ANON_KEY`: Chiave anonima Supabase
+   - `VITE_ENABLE_SW`: `false` (disabilita service worker)
 
-4. **Auto-Deploy**: Abilita auto-deploy dal branch principale
+4. **Auto-Deploy**: Abilita auto-deploy dal branch main
 
-### Deploy Docker
+### Limitazioni Modalità Guest
 
-```bash
-# Build immagine Docker
-docker build -t diagonale-wine-app .
+**Funzionalità Read-Only**:
+- Visualizzazione dati (utenti, eventi, vini)
+- Navigazione completa dell'interfaccia
+- Accesso a tutte le pagine
 
-# Esegui container
-docker run -p 5000:5000 diagonale-wine-app
-```
+**Funzionalità Disabilitate**:
+- Creazione/modifica utenti ed eventi
+- Registrazione vini e votazioni
+- Operazioni di scrittura sul database
+## Configurazione Supabase
 
-### Deploy Manuale
+### Setup Database
+1. **Crea progetto Supabase**: Vai su [supabase.com](https://supabase.com)
+2. **Crea tabelle**:
+   - `users` (id, name, pin, is_admin, created_at)
+   - `wine_events` (id, name, date, mode, status, created_by)
+   - `vini` (id, event_id, user_id, type, name, producer, etc.)
 
-1. **Build dell'applicazione**:
-   ```bash
-   npm install
-   npm run build
-   ```
-
-2. **Carica file** sul tuo server:
-   - Directory `dist/` (applicazione compilata)
-   - `package.json` e `package-lock.json`
-   - `node_modules/` (o esegui `npm install --production`)
-
-3. **Avvia l'applicazione**:
-   ```bash
-   NODE_ENV=production npm start
-   ```
-
-## Configurazione Database
-
-### Sviluppo (In-Memory)
-L'applicazione usa storage in memoria per default durante lo sviluppo, non richiede setup database.
-
-### Produzione (PostgreSQL)
-Per il deploy in produzione, imposta la variabile d'ambiente `DATABASE_URL`:
-
-```
-DATABASE_URL=postgresql://username:password@hostname:port/database
-```
-
-L'applicazione creerà automaticamente le tabelle necessarie all'avvio.
-
-## Endpoint API
-
-### Utenti
-- `GET /api/users` - Ottieni tutti gli utenti
-- `POST /api/users` - Crea nuovo utente
-- `GET /api/users/:id` - Ottieni utente per ID
-
-### Eventi
-- `GET /api/events` - Ottieni tutti gli eventi
-- `POST /api/events` - Crea nuovo evento
-- `GET /api/events/:id` - Ottieni evento per ID
-- `PATCH /api/events/:id/status` - Aggiorna stato evento
-
-### Vini
-- `GET /api/events/:eventId/wines` - Ottieni vini per evento
-- `POST /api/wines` - Registra nuovo vino
-- `PATCH /api/wines/:id/reveal` - Attiva/disattiva rivelazione vino
-
-### Voti
-- `GET /api/events/:eventId/votes` - Ottieni voti per evento
-- `POST /api/votes` - Invia o aggiorna voto
-- `GET /api/events/:eventId/results` - Ottieni risultati evento
-
-## Configurazione
+3. **Configura RLS**: Abilita Row Level Security per accesso read-only
+4. **Ottieni credenziali**: URL progetto e chiave anonima
 
 ### Variabili d'Ambiente
-- `NODE_ENV`: Imposta su `production` per deploy in produzione
-- `PORT`: Porta server (default: 5000)
-- `DATABASE_URL`: Stringa connessione PostgreSQL (opzionale)
+- `VITE_SUPABASE_URL`: URL del progetto Supabase
+- `VITE_SUPABASE_ANON_KEY`: Chiave anonima per accesso read-only
+- `VITE_ENABLE_SW`: `false` (disabilita service worker)
 
 ### Personalizzazione
 - **Colori**: Modifica variabili CSS in `client/src/index.css`

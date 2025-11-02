@@ -1,9 +1,6 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import { dataClient } from "./dataClient";
 
-// API Base URL configuration
-const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '') || '';
-
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -24,7 +21,8 @@ export async function apiRequest(
     throw new Error('Funzione non disponibile in questa modalità');
   }
   
-  const fullUrl = url.startsWith('/') ? `${API_BASE}${url}` : url;
+  // All main resources now use Supabase, remaining calls should be blocked
+  const fullUrl = url;
   const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -69,9 +67,10 @@ export const getQueryFn: <T>(options: {
       return response.data;
     }
     
-    // Fallback to original API for other endpoints
-    const fullUrl = url.startsWith('/') ? `${API_BASE}${url}` : url;
-    const res = await fetch(fullUrl, {
+    // No fallback needed - all remaining endpoints should be blocked
+    throw new Error('Endpoint non disponibile in modalità frontend-only');
+    
+    const res = await fetch(url, {
       credentials: "include",
     });
 
