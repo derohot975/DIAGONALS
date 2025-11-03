@@ -4,7 +4,7 @@ import { EventReportData, UserRanking, WineResultDetailed } from "@shared/schema
 import { getPagellaByEventId, upsertPagella } from "../db/pagella";
 
 // Internal constants
-const ROUNDING_PRECISION = 10;
+const ROUNDING_PRECISION = 100;
 const UNKNOWN_CONTRIBUTOR = 'Unknown';
 
 export const reportsRouter = Router();
@@ -136,7 +136,14 @@ reportsRouter.post("/:id/complete", async (req: Request, res: Response) => {
     // Calculate wine results with detailed votes
     const wineResults: WineResultDetailed[] = wines.map(wine => {
       const wineVotes = votes.filter(vote => vote.wineId === wine.id);
-      const totalScore = wineVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+      
+      // Calcolo più preciso: converti a numero e usa precisione maggiore per il calcolo
+      const scores = wineVotes.map(vote => {
+        const score = typeof vote.score === 'number' ? vote.score : parseFloat(vote.score.toString());
+        return Math.round(score * 1000) / 1000; // Arrotonda a 3 decimali per evitare errori di floating point
+      });
+      
+      const totalScore = scores.reduce((sum, score) => sum + score, 0);
       const averageScore = wineVotes.length > 0 ? totalScore / wineVotes.length : 0;
       
       const contributor = allUsers.find(u => u.id === wine.userId);
@@ -148,10 +155,10 @@ reportsRouter.post("/:id/complete", async (req: Request, res: Response) => {
         totalVotes: wineVotes.length,
         lodeCount: 0, // Legacy field
         contributor: contributor?.name || UNKNOWN_CONTRIBUTOR,
-        votes: wineVotes.map(vote => ({
+        votes: wineVotes.map((vote, index) => ({
           userId: vote.userId,
           userName: allUsers.find(u => u.id === vote.userId)?.name || UNKNOWN_CONTRIBUTOR,
-          score: parseFloat(vote.score.toString())
+          score: scores[index] // Usa il valore già processato
         })),
         position: 0 // Will be set after sorting
       };
@@ -165,7 +172,14 @@ reportsRouter.post("/:id/complete", async (req: Request, res: Response) => {
     // Calculate user rankings
     const userRankings: UserRanking[] = participants.map(participant => {
       const userVotes = votes.filter(vote => vote.userId === participant.id);
-      const totalScore = userVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+      
+      // Usa la stessa logica precisa per i calcoli degli utenti
+      const userScores = userVotes.map(vote => {
+        const score = typeof vote.score === 'number' ? vote.score : parseFloat(vote.score.toString());
+        return Math.round(score * 1000) / 1000;
+      });
+      
+      const totalScore = userScores.reduce((sum, score) => sum + score, 0);
       const averageScore = userVotes.length > 0 ? totalScore / userVotes.length : 0;
 
       return {
@@ -193,7 +207,10 @@ reportsRouter.post("/:id/complete", async (req: Request, res: Response) => {
         totalWines: wines.length,
         totalVotes: votes.length,
         averageScore: votes.length > 0 ? 
-          Math.round((votes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0) / votes.length) * ROUNDING_PRECISION) / ROUNDING_PRECISION : 0
+          Math.round((votes.reduce((sum, vote) => {
+            const score = typeof vote.score === 'number' ? vote.score : parseFloat(vote.score.toString());
+            return sum + Math.round(score * 1000) / 1000;
+          }, 0) / votes.length) * ROUNDING_PRECISION) / ROUNDING_PRECISION : 0
       }
     };
 

@@ -4,7 +4,7 @@ import { insertVoteSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Internal constants
-const ROUNDING_PRECISION = 10;
+const ROUNDING_PRECISION = 100;
 const UNKNOWN_CONTRIBUTOR = 'Unknown';
 
 export const votesRouter = Router();
