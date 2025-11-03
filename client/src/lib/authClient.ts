@@ -31,9 +31,8 @@ export async function loginWithPin(pin: string): Promise<AuthResult> {
     // Query Supabase for user with matching PIN
     const { data, error } = await supabase
       .from('users')
-      .select('id, name, is_admin, created_at')
+      .select('id, name, pin')
       .eq('pin', pin)
-      .eq('active', true)
       .single();
 
     if (error || !data) {
@@ -45,7 +44,7 @@ export async function loginWithPin(pin: string): Promise<AuthResult> {
     const user: AuthUser = {
       id: data.id,
       name: data.name,
-      role: data.is_admin ? 'admin' : 'user'
+      role: data.name === 'Admin' ? 'admin' : 'user' // Assume Admin by name
     };
 
     // Save session to localStorage
