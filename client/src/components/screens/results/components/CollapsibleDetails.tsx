@@ -45,25 +45,15 @@ export default function CollapsibleDetails({ result, isExpanded }: CollapsibleDe
       <div>
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Voti individuali</p>
         <div className="flex flex-wrap gap-1">
-          {result?.votes && result.votes.map(vote => {
-            // Mostra il nome solo se è il proprietario del vino
-            const isOwner = vote.userId === result.userId;
-            return (
-              <span 
-                key={vote.userId} 
-                className="inline-flex items-center bg-white px-2 py-0.5 rounded-full text-xs border border-gray-200 shadow-sm"
-              >
-                {isOwner ? (
-                  <>
-                    <span className="font-medium text-gray-700">{vote.userName}:</span>
-                    <span className="ml-1 text-[hsl(43,96%,56%)] font-bold">{vote.score}</span>
-                  </>
-                ) : (
-                  <span className="text-[hsl(43,96%,56%)] font-bold">{vote.score}</span>
-                )}
-              </span>
-            );
-          })}
+          {result?.votes && result.votes.map(vote => (
+            <span 
+              key={vote.userId} 
+              className="inline-flex items-center bg-white px-2 py-0.5 rounded-full text-xs border border-gray-200 shadow-sm"
+            >
+              <span className="font-medium text-gray-700">{vote.userName}</span>
+              <span className="ml-1 text-[#8d0303] font-bold">{vote.score}</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>

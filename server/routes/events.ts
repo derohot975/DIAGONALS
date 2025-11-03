@@ -178,22 +178,29 @@ eventsRouter.get("/:eventId/results", async (req: Request, res: Response) => {
     const votes = await storage.getVotesByEventId(eventId);
     const users = await storage.getAllUsers();
     
-    const ROUNDING_PRECISION = 10;
+    const ROUNDING_PRECISION = 100;
     const UNKNOWN_CONTRIBUTOR = 'Unknown';
     
     const results = wines.map(wine => {
       const wineVotes = votes.filter(vote => vote.wineId === wine.id);
-      const totalScore = wineVotes.reduce((sum, vote) => sum + parseFloat(vote.score.toString()), 0);
+      
+      // Calcolo più preciso: converti a numero e usa precisione maggiore per il calcolo
+      const scores = wineVotes.map(vote => {
+        const score = typeof vote.score === 'number' ? vote.score : parseFloat(vote.score.toString());
+        return Math.round(score * 1000) / 1000; // Arrotonda a 3 decimali per evitare errori di floating point
+      });
+      
+      const totalScore = scores.reduce((sum, score) => sum + score, 0);
       const averageScore = wineVotes.length > 0 ? totalScore / wineVotes.length : 0;
       const contributor = users.find(u => u.id === wine.userId);
       
       // Includi i dettagli dei voti individuali
-      const voteDetails = wineVotes.map(vote => {
+      const voteDetails = wineVotes.map((vote, index) => {
         const voter = users.find(u => u.id === vote.userId);
         return {
           userId: vote.userId,
           userName: voter?.name || "Unknown",
-          score: parseFloat(vote.score.toString())
+          score: scores[index] // Usa il valore già processato
         };
       });
       

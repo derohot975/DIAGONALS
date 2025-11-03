@@ -7,6 +7,7 @@ interface WineRegistrationModalProps {
   onClose: () => void;
   currentUser?: { name: string } | null;
   wine?: Wine | null;
+  eventId?: number | null;
   onRegisterWine: (wineData: {
     type: string;
     name: string;
@@ -16,10 +17,11 @@ interface WineRegistrationModalProps {
     origin: string;
     price: number;
     alcohol?: number;
+    eventId: number;
   }) => void;
 }
 
-export default function WineRegistrationModal({ isOpen, onClose, currentUser, wine, onRegisterWine }: WineRegistrationModalProps) {
+export default function WineRegistrationModal({ isOpen, onClose, currentUser, wine, eventId, onRegisterWine }: WineRegistrationModalProps) {
   const [type, setType] = useState('');
   const [name, setName] = useState('');
   const [producer, setProducer] = useState('');
@@ -100,10 +102,13 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate all required fields including alcohol as number
+    // Validate all required fields including alcohol as number and eventId
     const alcoholValue = parseFloat(alcohol);
     const isValidAlcohol = !isNaN(alcoholValue) && alcoholValue > 0;
+    
+    if (!eventId) {
+      return;
+    }
     
     if (type && name.trim() && producer.trim() && grape.trim() && year && origin.trim() && price && isValidAlcohol) {
       onRegisterWine({
@@ -114,7 +119,8 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
         year: parseInt(year),
         origin: origin.trim(),
         price: parseFloat(price),
-        alcohol: alcoholValue
+        alcohol: alcoholValue,
+        eventId: eventId
       });
       resetFormFields();
       onClose();

@@ -162,7 +162,7 @@ export default function BaseModal({
               {title && (
                 <h2 
                   id="modal-title"
-                  className="text-xl font-bold text-white truncate"
+                  className="text-xl font-bold truncate"
                 >
                   {title}
                 </h2>

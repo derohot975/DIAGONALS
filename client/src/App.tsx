@@ -229,8 +229,11 @@ function App() {
     origin: string;
     price: number;
     alcohol?: number;
+    eventId: number;
   }) => {
-    if (!currentUser || !appState.selectedEventId) return;
+    if (!currentUser || !wineData.eventId) {
+      return;
+    }
     
     if (appState.editingWine) {
       // Update existing wine
@@ -258,7 +261,7 @@ function App() {
         origin: wineData.origin,
         price: wineData.price.toString(),
         alcohol: wineData.alcohol || 0,
-        eventId: appState.selectedEventId,
+        eventId: wineData.eventId,
         userId: currentUser.id,
       });
     }
@@ -512,6 +515,7 @@ function App() {
         currentUser={currentUser}
         onRegisterWine={handleRegisterWine}
         wine={appState.editingWine}
+        eventId={appState.selectedEventId}
       />
 
 

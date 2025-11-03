@@ -33,7 +33,7 @@ export default function ResultCard({ result, index, isExpanded, onToggleExpand }
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(1)}</span>
+            <span className="font-bold text-lg">{(result?.averageScore || 0).toFixed(2)}</span>
             {isExpanded ? (
               <ChevronUp className="w-4 h-4 text-gray-400" />
             ) : (

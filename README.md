@@ -29,10 +29,10 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 - **React Query** per gestione stato server
 - **Wouter** per routing leggero
 
-### Database
-- **Supabase** per dati in sola lettura
-- **PostgreSQL** con Row Level Security (RLS)
-- **Accesso guest** senza autenticazione persistente
+### Backend & Database
+- **Express.js** API server con TypeScript
+- **PostgreSQL** database con Drizzle ORM
+- **Autenticazione PIN** a 4 cifre per sicurezza
 
 ## Avvio Rapido
 
@@ -49,54 +49,53 @@ L'applicazione sarà disponibile su `http://localhost:5000`
 
 ### Build di Produzione
 ```bash
-# Build frontend statico per Netlify
-npm run build:frontend
+# Build completo per produzione
+npm run build
 ```
 
 ## Deploy
 
-### Deploy su Netlify (Raccomandato)
+### Deploy su Render.com (Raccomandato)
 
-1. **Collega Repository**: Collega il repository GitHub a Netlify
+1. **Collega Repository**: Collega il repository GitHub a Render.com
 2. **Configurazione Build**:
-   - **Build Command**: `npm run build:frontend`
-   - **Publish Directory**: `dist/public`
+   - **Build Command**: `npm run build`
+   - **Start Command**: `npm run start`
    - **Node Version**: 18+
 
 3. **Variabili d'Ambiente**:
-   - `VITE_SUPABASE_URL`: URL del progetto Supabase
-   - `VITE_SUPABASE_ANON_KEY`: Chiave anonima Supabase
-   - `VITE_ENABLE_SW`: `false` (disabilita service worker)
+   - `DATABASE_URL`: URL del database PostgreSQL
+   - `NODE_ENV`: `production`
+   - `LOG_LEVEL`: `1`
 
 4. **Auto-Deploy**: Abilita auto-deploy dal branch main
 
-### Limitazioni Modalità Guest
+### Sistema di Autenticazione
 
-**Funzionalità Read-Only**:
-- Visualizzazione dati (utenti, eventi, vini)
-- Navigazione completa dell'interfaccia
-- Accesso a tutte le pagine
+**Autenticazione PIN**:
+- Login con PIN a 4 cifre numeriche
+- Ruoli utente: Regular e Admin
+- Gestione sessioni con localStorage
 
-**Funzionalità Disabilitate**:
-- Creazione/modifica utenti ed eventi
-- Registrazione vini e votazioni
-- Operazioni di scrittura sul database
-## Configurazione Supabase
+**Funzionalità per Ruolo**:
+- **Regular**: Registrazione vini, votazioni, visualizzazione risultati
+- **Admin**: Tutte le funzionalità + gestione utenti ed eventi
+## Configurazione Database
 
-### Setup Database
-1. **Crea progetto Supabase**: Vai su [supabase.com](https://supabase.com)
-2. **Crea tabelle**:
+### Setup PostgreSQL
+1. **Database**: PostgreSQL 14+ (locale o cloud)
+2. **Schema**: Gestito automaticamente da Drizzle ORM
+3. **Tabelle principali**:
    - `users` (id, name, pin, is_admin, created_at)
-   - `wine_events` (id, name, date, mode, status, created_by)
-   - `vini` (id, event_id, user_id, type, name, producer, etc.)
-
-3. **Configura RLS**: Abilita Row Level Security per accesso read-only
-4. **Ottieni credenziali**: URL progetto e chiave anonima
+   - `wine_events` (id, name, date, mode, status, voting_status, created_by)
+   - `wines` (id, event_id, user_id, type, name, producer, grape, year, origin, price, alcohol)
+   - `votes` (id, event_id, wine_id, user_id, score, created_at)
+   - `event_reports` (id, event_id, report_data, generated_at, generated_by)
 
 ### Variabili d'Ambiente
-- `VITE_SUPABASE_URL`: URL del progetto Supabase
-- `VITE_SUPABASE_ANON_KEY`: Chiave anonima per accesso read-only
-- `VITE_ENABLE_SW`: `false` (disabilita service worker)
+- `DATABASE_URL`: URL connessione PostgreSQL
+- `NODE_ENV`: `development` o `production`
+- `LOG_LEVEL`: Livello logging (1-4)
 
 ### Personalizzazione
 - **Colori**: Modifica variabili CSS in `client/src/index.css`

@@ -1,19 +1,36 @@
 # Environment Variables Example
 
-## Required Variables for Local Development
+## Development Environment
 
-Create a `.env.local` file in the root directory with:
+Create a `.env.development` file in the root directory with:
 
 ```bash
-# Supabase Configuration
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/diagonale_dev
 
-# Feature Flags
-VITE_ENABLE_SW=false
-VITE_AUTH_MODE=supabase
-VITE_ENABLE_APP_SHELL=true
-VITE_ENABLE_APP_SHELL_ON_INTRO=false
+# Server Configuration
+NODE_ENV=development
+LOG_LEVEL=3
+
+# Debug Tools
+ENABLE_DEBUG_TOOLS=true
+ENABLE_ERROR_OVERLAY=true
+```
+
+## Production Environment
+
+Create a `.env.production` file with:
+
+```bash
+# Database Configuration
+DATABASE_URL=${DATABASE_URL}
+
+# Server Configuration
+NODE_ENV=production
+LOG_LEVEL=1
+
+# Debug Tools
+ENABLE_DEBUG_TOOLS=false
 ```
 
 ## Quick Setup
