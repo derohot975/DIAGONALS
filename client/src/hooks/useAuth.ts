@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { User } from '@shared/schema';
+import { loginWithPin, AuthUser } from '../lib/authClient';
 
 export const useAuth = () => {
   const [authLoading, setAuthLoading] = useState(false);
@@ -12,26 +13,40 @@ export const useAuth = () => {
     setAuthLoading(true);
     setAuthError(null);
     
+    // Feature flag: use Supabase auth or fallback to API
+    const AUTH_MODE = (import.meta.env.VITE_AUTH_MODE ?? 'supabase').toLowerCase();
+    
     try {
-      const response = await apiRequest('POST', '/api/auth/login', { pin });
-      const data = await response.json();
-      toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
-      return data.user;
-    } catch (error: any) {
-      console.error('Login error:', error);
-      
-      // Extract message from error thrown by apiRequest
-      if (error.message && error.message.includes('401:')) {
-        try {
-          const errorText = error.message.split('401: ')[1];
-          const errorData = JSON.parse(errorText);
-          setAuthError(errorData.message || 'Errore durante il login');
-        } catch (parseError) {
-          setAuthError('Errore durante il login');
+      if (AUTH_MODE === 'supabase') {
+        // Use Supabase PIN authentication
+        const result = await loginWithPin(pin);
+        
+        if (result.ok && result.user) {
+          // Convert AuthUser to User format for compatibility
+          const user: User = {
+            id: result.user.id,
+            name: result.user.name,
+            pin: pin, // Keep PIN for compatibility
+            isAdmin: result.user.role === 'admin',
+            createdAt: new Date(), // Placeholder
+          };
+          
+          toast({ title: 'Login effettuato', description: `Benvenuto ${result.user.name}!` });
+          return user;
+        } else {
+          setAuthError(result.error || 'PIN non valido');
+          return null;
         }
       } else {
-        setAuthError('Errore di connessione');
+        // Fallback to original API (not used in production)
+        const response = await apiRequest('POST', '/api/auth/login', { pin });
+        const data = await response.json();
+        toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
+        return data.user;
       }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      setAuthError('Errore di connessione');
       return null;
     } finally {
       setAuthLoading(false);
@@ -43,25 +58,8 @@ export const useAuth = () => {
     setAuthError(null);
     
     try {
-      const response = await apiRequest('POST', '/api/auth/register', { name, pin });
-      const data = await response.json();
-      toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
-      return data.user;
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      
-      // Extract message from error thrown by apiRequest
-      if (error.message && error.message.includes('409:')) {
-        try {
-          const errorText = error.message.split('409: ')[1];
-          const errorData = JSON.parse(errorText);
-          setAuthError(errorData.message || 'Errore durante la registrazione');
-        } catch (parseError) {
-          setAuthError('Errore durante la registrazione');
-        }
-      } else {
-        setAuthError('Errore di connessione');
-      }
+      // Block registration in read-only mode
+      setAuthError('Funzione non disponibile in questa modalità');
       return null;
     } finally {
       setAuthLoading(false);
