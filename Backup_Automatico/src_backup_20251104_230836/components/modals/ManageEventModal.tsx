@@ -1,27 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Trash2, X, Delete } from '@/components/icons';
+import { Trash2, X, Delete, Settings } from '@/components/icons';
 import BaseModal from '../ui/BaseModal';
 import { WineEvent } from '@shared/schema';
 import { formatEventName, formatEventDate } from '@/lib/utils';
 
-interface DeleteEventModalProps {
+interface ManageEventModalProps {
   isOpen: boolean;
   event: WineEvent | null;
   onClose: () => void;
-  onConfirm: (eventId: number) => void;
+  onDelete: (eventId: number) => void;
+  onProtect: (eventId: number, protect: boolean) => void;
   isProtected?: boolean;
 }
 
-type ModalStep = 'confirm' | 'pin' | 'final';
+type ModalStep = 'choose' | 'delete-confirm' | 'delete-pin' | 'delete-final' | 'protect-pin';
+type ActionType = 'delete' | 'protect' | null;
 
-export default function DeleteEventModal({ 
+export default function ManageEventModal({ 
   isOpen, 
   event, 
   onClose, 
-  onConfirm,
+  onDelete,
+  onProtect,
   isProtected = false 
-}: DeleteEventModalProps) {
-  const [step, setStep] = useState<ModalStep>('confirm');
+}: ManageEventModalProps) {
+  const [step, setStep] = useState<ModalStep>('choose');
+  const [selectedAction, setSelectedAction] = useState<ActionType>(null);
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [countdown, setCountdown] = useState(5);
@@ -30,16 +34,17 @@ export default function DeleteEventModal({
   // Reset state quando il modal si apre/chiude
   useEffect(() => {
     if (isOpen) {
-      setStep('confirm');
+      setStep('choose');
+      setSelectedAction(null);
       setPin('');
       setError('');
       setCountdown(5);
     }
   }, [isOpen]);
 
-  // Countdown per conferma finale
+  // Countdown per conferma finale eliminazione
   useEffect(() => {
-    if (step === 'final' && countdown > 0) {
+    if (step === 'delete-final' && countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     }
@@ -48,19 +53,33 @@ export default function DeleteEventModal({
   if (!isOpen || !event) return null;
 
   const handleClose = () => {
-    setStep('confirm');
+    setStep('choose');
+    setSelectedAction(null);
     setPin('');
     setError('');
     setCountdown(5);
     onClose();
   };
 
-  const handleFirstConfirm = () => {
+  const handleActionSelect = (action: ActionType) => {
+    setSelectedAction(action);
+    if (action === 'delete') {
+      if (isProtected) {
+        setError('Questo evento è protetto e non può essere eliminato');
+        return;
+      }
+      setStep('delete-confirm');
+    } else if (action === 'protect') {
+      setStep('protect-pin');
+    }
+  };
+
+  const handleDeleteConfirm = () => {
     if (isProtected) {
       setError('Questo evento è protetto e non può essere eliminato');
       return;
     }
-    setStep('pin');
+    setStep('delete-pin');
   };
 
   const handleNumberClick = (number: string) => {
@@ -70,29 +89,115 @@ export default function DeleteEventModal({
     }
   };
 
-  const handleDelete = () => {
+  const handleDeletePin = () => {
     setPin(prev => prev.slice(0, -1));
     setError('');
   };
 
   const handlePinConfirm = () => {
     if (pin === ADMIN_PIN) {
-      setStep('final');
-      setError('');
+      if (selectedAction === 'delete') {
+        setStep('delete-final');
+        setError('');
+      } else if (selectedAction === 'protect') {
+        onProtect(event.id, !isProtected);
+        handleClose();
+      }
     } else {
       setError('PIN Admin non valido');
       setPin('');
     }
   };
 
-  const handleFinalConfirm = () => {
+  const handleFinalDeleteConfirm = () => {
     if (countdown === 0) {
-      onConfirm(event.id);
+      onDelete(event.id);
       handleClose();
     }
   };
 
-  const renderConfirmStep = () => (
+  const renderChooseStep = () => (
+    <div className="space-y-6">
+      {/* Event Info */}
+      <div className="text-center space-y-2">
+        <h3 className="text-lg font-bold text-gray-900">
+          {formatEventName(event.name)}
+        </h3>
+        <p className="text-sm text-gray-600">
+          {formatEventDate(event.date)}
+        </p>
+      </div>
+
+      {/* Action Selection */}
+      <div className="space-y-3">
+        <p className="text-center text-gray-700 font-medium">
+          Cosa vuoi fare con questo evento?
+        </p>
+
+        {/* Delete Action */}
+        <button
+          onClick={() => handleActionSelect('delete')}
+          disabled={isProtected}
+          className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+            isProtected
+              ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-red-50 border-red-200 hover:border-red-300 hover:bg-red-100 text-red-800'
+          }`}
+        >
+          <div className="flex items-center space-x-3">
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              isProtected ? 'bg-gray-200' : 'bg-red-100'
+            }`}>
+              <Trash2 className={`w-5 h-5 ${isProtected ? 'text-gray-400' : 'text-red-600'}`} />
+            </div>
+            <div>
+              <p className="font-semibold">ELIMINA EVENTO</p>
+              <p className="text-sm opacity-75">
+                {isProtected ? 'Evento protetto - Non eliminabile' : 'Rimuovi definitivamente'}
+              </p>
+            </div>
+          </div>
+        </button>
+
+        {/* Protect Action */}
+        <button
+          onClick={() => handleActionSelect('protect')}
+          className="w-full p-4 rounded-xl border-2 bg-yellow-50 border-yellow-200 hover:border-yellow-300 hover:bg-yellow-100 text-yellow-800 transition-all duration-200 text-left"
+        >
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <span className="text-lg">🛡️</span>
+            </div>
+            <div>
+              <p className="font-semibold">
+                {isProtected ? 'RIMUOVI PROTEZIONE' : 'PROTEGGI EVENTO'}
+              </p>
+              <p className="text-sm opacity-75">
+                {isProtected ? 'Consenti eliminazione futura' : 'Impedisci eliminazione'}
+              </p>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p className="text-red-800 text-sm font-medium">{error}</p>
+        </div>
+      )}
+
+      {/* Cancel Button */}
+      <button
+        onClick={handleClose}
+        className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+      >
+        Annulla
+      </button>
+    </div>
+  );
+
+  const renderDeleteConfirmStep = () => (
     <div className="space-y-6">
       {/* Warning Icon */}
       <div className="flex justify-center">
@@ -127,17 +232,6 @@ export default function DeleteEventModal({
         </div>
       </div>
 
-      {isProtected && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <X className="w-5 h-5 text-yellow-600" />
-            <p className="text-sm font-semibold text-yellow-800">
-              🛡️ Evento Protetto - Non eliminabile
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Buttons */}
       <div className="flex space-x-3">
         <button
@@ -147,7 +241,7 @@ export default function DeleteEventModal({
           Annulla
         </button>
         <button
-          onClick={handleFirstConfirm}
+          onClick={handleDeleteConfirm}
           disabled={isProtected}
           className={`flex-1 px-4 py-3 font-medium rounded-xl transition-colors ${
             isProtected
@@ -165,11 +259,22 @@ export default function DeleteEventModal({
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-          <Trash2 className="w-6 h-6 text-red-600" />
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
+          selectedAction === 'delete' ? 'bg-red-100' : 'bg-yellow-100'
+        }`}>
+          {selectedAction === 'delete' ? (
+            <Trash2 className="w-6 h-6 text-red-600" />
+          ) : (
+            <span className="text-lg">🛡️</span>
+          )}
         </div>
         <h3 className="text-lg font-bold text-gray-900">Autenticazione Admin</h3>
-        <p className="text-sm text-gray-600 mt-1">Inserisci il PIN Admin per confermare</p>
+        <p className="text-sm text-gray-600 mt-1">
+          {selectedAction === 'delete' 
+            ? 'Inserisci il PIN Admin per eliminare l\'evento'
+            : `Inserisci il PIN Admin per ${isProtected ? 'rimuovere la protezione' : 'proteggere l\'evento'}`
+          }
+        </p>
       </div>
 
       {/* PIN Display */}
@@ -180,8 +285,8 @@ export default function DeleteEventModal({
               key={index}
               className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
                 index < pin.length 
-                  ? 'bg-red-600 border-red-600 shadow-lg' 
-                  : 'border-red-300 bg-white'
+                  ? `${selectedAction === 'delete' ? 'bg-red-600 border-red-600' : 'bg-yellow-600 border-yellow-600'} shadow-lg` 
+                  : `${selectedAction === 'delete' ? 'border-red-300' : 'border-yellow-300'} bg-white`
               }`}
             />
           ))}
@@ -197,7 +302,11 @@ export default function DeleteEventModal({
           <button
             key={number}
             onClick={() => handleNumberClick(number.toString())}
-            className="h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-300 rounded-lg text-lg font-semibold text-red-700 transition-all duration-200 active:scale-95"
+            className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 ${
+              selectedAction === 'delete'
+                ? 'hover:bg-red-50 border-red-200 hover:border-red-300 text-red-700'
+                : 'hover:bg-yellow-50 border-yellow-200 hover:border-yellow-300 text-yellow-700'
+            }`}
           >
             {number}
           </button>
@@ -206,12 +315,16 @@ export default function DeleteEventModal({
         <div></div>
         <button
           onClick={() => handleNumberClick('0')}
-          className="h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-300 rounded-lg text-lg font-semibold text-red-700 transition-all duration-200 active:scale-95"
+          className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 ${
+            selectedAction === 'delete'
+              ? 'hover:bg-red-50 border-red-200 hover:border-red-300 text-red-700'
+              : 'hover:bg-yellow-50 border-yellow-200 hover:border-yellow-300 text-yellow-700'
+          }`}
         >
           0
         </button>
         <button
-          onClick={handleDelete}
+          onClick={handleDeletePin}
           className="h-12 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
         >
           <Delete className="w-5 h-5" />
@@ -233,7 +346,7 @@ export default function DeleteEventModal({
             pin === ADMIN_PIN
               ? 'bg-green-600 hover:bg-green-700 text-white'
               : pin.length > 0
-              ? 'bg-red-600 hover:bg-red-700 text-white'
+              ? `${selectedAction === 'delete' ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white`
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
@@ -243,7 +356,7 @@ export default function DeleteEventModal({
     </div>
   );
 
-  const renderFinalStep = () => (
+  const renderDeleteFinalStep = () => (
     <div className="space-y-6">
       {/* Danger Icon */}
       <div className="flex justify-center">
@@ -287,7 +400,7 @@ export default function DeleteEventModal({
           Annulla
         </button>
         <button
-          onClick={handleFinalConfirm}
+          onClick={handleFinalDeleteConfirm}
           disabled={countdown > 0}
           className={`flex-1 px-4 py-3 font-bold rounded-xl transition-all duration-200 ${
             countdown === 0
@@ -303,16 +416,19 @@ export default function DeleteEventModal({
 
   const getStepContent = () => {
     switch (step) {
-      case 'confirm': return renderConfirmStep();
-      case 'pin': return renderPinStep();
-      case 'final': return renderFinalStep();
+      case 'choose': return renderChooseStep();
+      case 'delete-confirm': return renderDeleteConfirmStep();
+      case 'delete-pin': 
+      case 'protect-pin': return renderPinStep();
+      case 'delete-final': return renderDeleteFinalStep();
+      default: return renderChooseStep();
     }
   };
 
   const title = (
     <div className="flex items-center space-x-2">
-      <Trash2 className="w-5 h-5" />
-      <span>Elimina Evento</span>
+      <Settings className="w-5 h-5" />
+      <span>Gestisci Evento</span>
     </div>
   );
 
@@ -322,8 +438,8 @@ export default function DeleteEventModal({
       onOpenChange={handleClose}
       title={title}
       size="sm"
-      headerClassName="bg-gradient-to-r from-red-600 to-red-700 text-white"
-      className="bg-white border border-red-200"
+      headerClassName="bg-gradient-to-r from-gray-600 to-gray-700 text-white"
+      className="bg-white border border-gray-200"
     >
       {getStepContent()}
     </BaseModal>
