@@ -3,6 +3,11 @@ import { User } from '@shared/schema';
 
 export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'eventReport' | 'voting' | 'historicEvents' | 'pagella';
 
+interface UserSession {
+  user: User | null;
+  isAuthenticated: boolean;
+}
+
 export interface AppRouter {
   currentScreen: Screen;
   setCurrentScreen: (screen: Screen) => void;
@@ -10,7 +15,7 @@ export interface AppRouter {
   setShowSplash: (show: boolean) => void;
 }
 
-export function useAppRouter(currentUser: User | null): AppRouter {
+export function useAppRouter(isUserAuthenticated: boolean): AppRouter {
   const [showSplash, setShowSplash] = useState(true);
   const [currentScreen, setCurrentScreen] = useState<Screen>('auth');
 
@@ -19,12 +24,12 @@ export function useAppRouter(currentUser: User | null): AppRouter {
     setCurrentScreen('auth');
   }, []);
 
-  // Auto-navigate to events if user exists and we're on auth
+  // Auto-navigate to events if user is authenticated and we're on auth
   useEffect(() => {
-    if (currentUser && currentScreen === 'auth') {
+    if (isUserAuthenticated && currentScreen === 'auth') {
       setCurrentScreen('events');
     }
-  }, [currentUser, currentScreen]);
+  }, [isUserAuthenticated, currentScreen]);
 
   return {
     currentScreen,

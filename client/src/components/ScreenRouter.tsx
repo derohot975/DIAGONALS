@@ -35,6 +35,10 @@ export interface ScreenRouterProps {
   // Auth state
   authLoading: boolean;
   authError: string | null;
+  userSession: {
+    user: User | null;
+    isAuthenticated: boolean;
+  };
   
   // Auth handlers
   onLogin: (name: string, pin: string) => Promise<void>;
@@ -85,6 +89,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
   reportData,
   authLoading,
   authError,
+  userSession,
   onLogin,
   onRegister,
   setCurrentScreen,
@@ -143,12 +148,17 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
           onShowEventList={handleShowAdminEvents}
           onShowEditUserModal={handleShowEditUserModal}
           onDeleteUser={handleDeleteUser}
-          onGoBack={() => setCurrentScreen('events')}
-          onGoHome={() => setCurrentScreen('events')}
+          onGoBack={() => setCurrentScreen('auth')}
+          onGoHome={() => setCurrentScreen('auth')}
           onChangeAdminPin={handleShowChangeAdminPin}
         />
       );
     case 'events':
+      // Guard: require user authentication for user screens
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
       return (
         <EventListScreen
           events={events}
@@ -184,6 +194,11 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
         />
       );
     case 'voting':
+      // Guard: require user authentication
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
       return currentEvent && currentUser ? (
         <SimpleVotingScreen
           event={currentEvent}
@@ -194,7 +209,12 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
         />
       ) : null;
     case 'eventDetails':
-      return (
+      // Guard: require user authentication
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
+      return currentEvent ? (
         <EventDetailsScreen
           event={currentEvent}
           wines={wines}
@@ -209,16 +229,21 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
           onGoBack={() => setCurrentScreen('events')}
           onGoHome={() => setCurrentScreen('events')}
         />
-      );
+      ) : null;
     case 'eventResults':
-      return (
+      // Guard: require user authentication
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
+      return currentEvent ? (
         <EventResultsScreen
           event={currentEvent}
           results={results}
           onGoBack={() => setCurrentScreen('events')}
           onGoHome={() => setCurrentScreen('events')}
         />
-      );
+      ) : null;
     case 'eventReport':
       return (
         <EventReportScreen
@@ -228,6 +253,11 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
         />
       );
     case 'historicEvents':
+      // Guard: require user authentication
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
       return (
         <HistoricEventsScreen
           events={events}
@@ -241,14 +271,19 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
         />
       );
     case 'pagella':
-      return (
+      // Guard: require user authentication
+      if (!userSession.isAuthenticated) {
+        setCurrentScreen('auth');
+        return null;
+      }
+      return currentEvent ? (
         <PagellaScreen
           event={currentEvent}
           currentUser={currentUser}
           onGoBack={() => setCurrentScreen('historicEvents')}
           onGoHome={() => setCurrentScreen('events')}
         />
-      );
+      ) : null;
 
     default:
       return null;

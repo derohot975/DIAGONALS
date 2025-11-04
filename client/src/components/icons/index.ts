@@ -16,6 +16,7 @@ export {
   Shield,
   Users,
   Key,
+  Lock,
   
   // Events & Calendar
   Calendar,

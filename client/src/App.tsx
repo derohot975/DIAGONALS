@@ -59,11 +59,70 @@ const shouldShowSkeleton = (currentScreen: Screen): boolean => {
 };
 // END DIAGONALE APP SHELL
 
+// AuthStore types
+interface UserSession {
+  user: User | null;
+  isAuthenticated: boolean;
+}
+
+interface AdminSession {
+  isAdmin: boolean;
+}
+
 function App() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  // Separated session states
+  const [userSession, setUserSession] = useState<UserSession>(() => {
+    // Initialize with sessionStorage check (safe - only on mount)
+    const savedUserSession = sessionStorage.getItem('dg_user_session');
+    if (savedUserSession) {
+      try {
+        const parsed = JSON.parse(savedUserSession);
+        if (parsed.userId && parsed.ts && (Date.now() - parsed.ts < 24 * 60 * 60 * 1000)) {
+          console.debug('User session restored from sessionStorage');
+          return { user: null, isAuthenticated: true };
+        } else {
+          sessionStorage.removeItem('dg_user_session');
+        }
+      } catch (e) {
+        sessionStorage.removeItem('dg_user_session');
+      }
+    }
+    return { user: null, isAuthenticated: false };
+  });
+  
+  const [adminSession, setAdminSession] = useState<AdminSession>(() => {
+    // Initialize with sessionStorage check (safe - only on mount)
+    const savedAdminSession = sessionStorage.getItem('dg_admin_session');
+    if (savedAdminSession === 'true') {
+      console.debug('Admin session restored from sessionStorage');
+      return { isAdmin: true };
+    }
+    return { isAdmin: false };
+  });
+
+
+  // Legacy currentUser for backward compatibility
+  const currentUser = userSession.user;
+  const setCurrentUser = (user: User | null) => {
+    setUserSession(prev => ({
+      ...prev,
+      user,
+      isAuthenticated: !!user
+    }));
+    
+    // Persist user session to sessionStorage
+    if (user) {
+      sessionStorage.setItem('dg_user_session', JSON.stringify({
+        userId: user.id,
+        ts: Date.now()
+      }));
+    } else {
+      sessionStorage.removeItem('dg_user_session');
+    }
+  };
 
   // Custom hooks for state management
-  const router = useAppRouter(currentUser);
+  const router = useAppRouter(userSession.isAuthenticated);
   const appState = useAppState();
   const navigation = useAppNavigation(router.setCurrentScreen, appState);
 
@@ -133,17 +192,17 @@ function App() {
     enabled: !!appState.selectedEventId && router.currentScreen === 'eventResults',
   });
 
-  // App effects hook
-  useAppEffects({
-    currentUser,
-    setCurrentUser,
-    setCurrentScreen: router.setCurrentScreen,
-    users,
-    usersLoading,
-    eventsLoading,
-    showSplash: router.showSplash,
-    currentScreen: router.currentScreen
-  });
+  // App effects hook - TEMPORANEAMENTE DISABILITATO per evitare loop
+  // useAppEffects({
+  //   currentUser,
+  //   setCurrentUser,
+  //   setCurrentScreen: router.setCurrentScreen,
+  //   users,
+  //   usersLoading,
+  //   eventsLoading,
+  //   showSplash: router.showSplash,
+  //   currentScreen: router.currentScreen
+  // });
 
   // Logout function
   const handleLogout = () => {
@@ -177,6 +236,11 @@ function App() {
 
   // Admin PIN protection functions
   const handleAdminPinSuccess = () => {
+    // Set admin session
+    setAdminSession({ isAdmin: true });
+    sessionStorage.setItem('dg_admin_session', 'true');
+    console.debug('Admin session activated');
+    
     appState.setShowAdminPinModal(false);
     appState.setPendingAdminAction(null);
     // Execute the pending admin action
@@ -499,6 +563,7 @@ function App() {
         reportData={appState.reportData}
         authLoading={authLoading}
         authError={authError}
+        userSession={userSession}
         onLogin={onLogin}
         onRegister={onRegister}
         setCurrentScreen={router.setCurrentScreen}
