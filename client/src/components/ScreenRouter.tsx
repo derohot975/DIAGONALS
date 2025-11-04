@@ -232,6 +232,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = ({
           users={users}
           onShowEventResults={handleShowEventResults}
           onShowPagella={handleShowPagella}
+          onDeleteEvent={handleDeleteEvent}
           onGoBack={() => setCurrentScreen('events')}
           onGoHome={() => setCurrentScreen('events')}
         />
