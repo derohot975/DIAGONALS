@@ -64,6 +64,59 @@ export default function HistoricEventsScreen({
     setEventToDelete(null);
   };
 
+  // Componente per singolo evento per evitare hooks condizionali
+  const EventItem = ({ event }: { event: WineEvent }) => {
+    const { handlers, isLongPressing } = useLongPress({
+      onLongPress: () => handleLongPress(event),
+      delay: 800
+    });
+
+    return (
+      <div 
+        className={`bg-[#300505] rounded-xl p-4 border border-[#8d0303] shadow-lg transition-all duration-200 ${
+          isLongPressing ? 'scale-95 bg-red-700' : 'hover:shadow-xl'
+        } ${isProtectedEvent(event) ? 'border-yellow-500' : ''}`}
+        {...handlers}
+        style={{ userSelect: 'none' }}
+      >
+        {/* Indicatore protezione */}
+        {isProtectedEvent(event) && (
+          <div className="absolute top-2 right-2 text-yellow-400 text-xs font-bold">
+            🛡️
+          </div>
+        )}
+        
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm text-white break-words leading-tight">{formatEventName(event.name)}</h3>
+            <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
+            {onDeleteEvent && (
+              <p className="text-xs text-gray-400 mt-1">
+                {isProtectedEvent(event) ? '🛡️ Protetto' : '⏳ Tieni premuto per eliminare'}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => onShowEventResults(event.id)}
+              className="p-2 bg-blue-200 hover:bg-blue-300 text-blue-800 rounded-lg transition-colors"
+              title="Visualizza Report"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onShowPagella(event.id)}
+              className="p-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg transition-colors"
+              title="Visualizza Pagella"
+            >
+              <StickyNote className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
 
 
   return (
@@ -95,58 +148,9 @@ export default function HistoricEventsScreen({
           
           {/* Completed Events */}
           {completedEvents.length > 0 ? (
-            completedEvents.map(event => {
-              const longPressHandlers = useLongPress({
-                onLongPress: () => handleLongPress(event),
-                delay: 800
-              });
-              
-              return (
-                <div 
-                  key={event.id} 
-                  className={`bg-[#300505] rounded-xl p-4 border border-[#8d0303] shadow-lg transition-all duration-200 ${
-                    longPressHandlers.isLongPressing ? 'scale-95 bg-red-700' : 'hover:shadow-xl'
-                  } ${isProtectedEvent(event) ? 'border-yellow-500' : ''}`}
-                  {...longPressHandlers}
-                  style={{ userSelect: 'none' }}
-                >
-                  {/* Indicatore protezione */}
-                  {isProtectedEvent(event) && (
-                    <div className="absolute top-2 right-2 text-yellow-400 text-xs font-bold">
-                      🛡️
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-sm text-white break-words leading-tight">{formatEventName(event.name)}</h3>
-                      <p className="text-sm text-gray-300">{formatEventDate(event.date)}</p>
-                      {onDeleteEvent && (
-                        <p className="text-xs text-gray-400 mt-1">
-                          {isProtectedEvent(event) ? '🛡️ Protetto' : '⏳ Tieni premuto per eliminare'}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => onShowEventResults(event.id)}
-                        className="p-2 bg-blue-200 hover:bg-blue-300 text-blue-800 rounded-lg transition-colors"
-                        title="Visualizza Report"
-                      >
-                        <BarChart3 className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => onShowPagella(event.id)}
-                        className="p-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 rounded-lg transition-colors"
-                        title="Visualizza Pagella"
-                      >
-                        <StickyNote className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
+            completedEvents.map(event => (
+              <EventItem key={event.id} event={event} />
+            ))
           ) : (
             /* Empty State */
             <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">

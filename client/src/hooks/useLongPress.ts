@@ -7,11 +7,13 @@ interface UseLongPressOptions {
 }
 
 interface UseLongPressReturn {
-  onMouseDown: (event: React.MouseEvent) => void;
-  onMouseUp: (event: React.MouseEvent) => void;
-  onMouseLeave: (event: React.MouseEvent) => void;
-  onTouchStart: (event: React.TouchEvent) => void;
-  onTouchEnd: (event: React.TouchEvent) => void;
+  handlers: {
+    onMouseDown: (event: React.MouseEvent) => void;
+    onMouseUp: (event: React.MouseEvent) => void;
+    onMouseLeave: (event: React.MouseEvent) => void;
+    onTouchStart: (event: React.TouchEvent) => void;
+    onTouchEnd: (event: React.TouchEvent) => void;
+  };
   isLongPressing: boolean;
 }
 
@@ -55,11 +57,13 @@ export const useLongPress = ({
   }, [onPress]);
 
   return {
-    onMouseDown: (event: any) => start(event),
-    onMouseUp: (event: any) => clear(event),
-    onMouseLeave: (event: any) => clear(event, false),
-    onTouchStart: (event: any) => start(event),
-    onTouchEnd: (event: any) => clear(event),
+    handlers: {
+      onMouseDown: (event: any) => start(event),
+      onMouseUp: (event: any) => clear(event),
+      onMouseLeave: (event: any) => clear(event, false),
+      onTouchStart: (event: any) => start(event),
+      onTouchEnd: (event: any) => clear(event)
+    },
     isLongPressing
   };
 };
