@@ -1,0 +1,123 @@
+{
+  "diagnosis": {
+    "timestamp": "2025-10-02T15:35:00Z",
+    "objective": "Ricerca vini eventi conclusi - Bottom-nav + overlay",
+    "scope": "Chirurgico, zero regressioni"
+  },
+  "components": {
+    "bottomNav": {
+      "file": "client/src/components/navigation/BottomNavBar.tsx",
+      "type": "global_reusable",
+      "layouts": ["sides", "center", "mixed"],
+      "slots": {
+        "left": "back_button",
+        "center": "custom_buttons_array", 
+        "right": "available_empty"
+      },
+      "risk": "low"
+    },
+    "modal": {
+      "file": "client/src/components/ui/BaseModal.tsx",
+      "reusable": true,
+      "features": ["dismissible", "keyboard_esc", "sizes", "footer_header"],
+      "risk": "low"
+    },
+    "cards": {
+      "existing": ["EventCard", "9_modals"],
+      "pattern": "consolidated",
+      "risk": "low"
+    }
+  },
+  "database": {
+    "schema_file": "shared/schema.ts",
+    "tables": {
+      "wines": ["id", "eventId", "userId", "name", "producer", "type", "grape", "year", "origin", "price"],
+      "wineEvents": ["id", "name", "date", "status", "votingStatus", "createdBy"],
+      "users": ["id", "name", "pin", "isAdmin"]
+    },
+    "completed_event_rule": "wineEvents.status = 'completed'",
+    "join_required": "wines ↔ wineEvents ↔ users",
+    "risk": "medium_performance"
+  },
+  "api": {
+    "existing": {
+      "endpoint": "GET /api/wines",
+      "features": ["eventId_filter", "performance_monitoring"],
+      "extensible": true
+    },
+    "required": {
+      "endpoint": "GET /api/wines/search",
+      "params": ["q", "limit", "offset"],
+      "join_tables": 3
+    },
+    "risk": "medium"
+  },
+  "icons": {
+    "available": ["Eye", "Plus", "Home", "Shield", "Calendar"],
+    "missing": ["Search"],
+    "action_required": "Add Search to client/src/components/icons/index.ts",
+    "risk": "low"
+  },
+  "risks": {
+    "blocking": [],
+    "medium": [
+      {
+        "type": "performance_query",
+        "detail": "Join 3 tables + text filter",
+        "mitigation": "Debounce 300ms, min 2 chars, LIMIT 20"
+      }
+    ],
+    "low": [
+      {
+        "type": "mobile_touch_target", 
+        "detail": "Button must be ≥44px",
+        "mitigation": "Reuse existing bottom-nav pattern"
+      },
+      {
+        "type": "overlay_zindex",
+        "detail": "Possible conflict with existing modals", 
+        "mitigation": "BaseModal handles z-index correctly"
+      }
+    ]
+  },
+  "implementation": {
+    "files_to_modify": [
+      "client/src/components/icons/index.ts",
+      "client/src/components/navigation/BottomNavBar.tsx", 
+      "server/routes/wines.ts"
+    ],
+    "files_to_create": [
+      "client/src/components/search/SearchLensButton.tsx",
+      "client/src/components/search/WineSearchOverlay.tsx",
+      "client/src/components/search/WineSearchCard.tsx"
+    ],
+    "estimated_lines": {
+      "backend": 50,
+      "frontend": 200,
+      "total": 250
+    }
+  },
+  "acceptance_criteria": {
+    "functional": [
+      "Button visible in bottom-nav right slot",
+      "Overlay opens/closes without layout changes",
+      "Search: min 2 chars, debounce 300ms",
+      "Results: only completed events wines",
+      "Cards: name, producer, user, event"
+    ],
+    "non_functional": [
+      "Zero regressions on Home/Auth/Management",
+      "Performance: query <500ms, responsive UI",
+      "Mobile: touch target ≥44px, safe-area OK",
+      "Accessibility: ESC closes, focus management"
+    ]
+  },
+  "status": {
+    "overall": "ready_to_implement",
+    "blocking_risks": 0,
+    "medium_risks": 1,
+    "low_risks": 2,
+    "prerequisites_met": true,
+    "patterns_available": true
+  }
+}
