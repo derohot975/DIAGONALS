@@ -135,7 +135,11 @@ export default function BottomNavBar({
     return (
       <div 
         className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex justify-center px-4`}
-        style={{ bottom: 'var(--bottom-nav-offset)' }}
+        style={{ 
+          bottom: 'var(--bottom-nav-offset)',
+          background: 'linear-gradient(to top, rgba(48, 5, 5, 0.95) 0%, rgba(48, 5, 5, 0.8) 70%, transparent 100%)',
+          paddingTop: '1rem'
+        }}
         data-testid="bottom-nav"
       >
         <div className="flex items-center space-x-4">

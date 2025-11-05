@@ -39,10 +39,9 @@ export default function HistoricEventsScreen({
   // State per forzare re-render quando localStorage cambia
   const [forceUpdate, setForceUpdate] = useState(0);
   
-  // Ref per il contenitore scorrevole e il contenuto
+  // Ref per il contenitore scorrevole (mantenuto per compatibilità)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [needsScroll, setNeedsScroll] = useState(false);
 
   // Listener per aggiornamenti localStorage (per reattività immediata)
   useEffect(() => {
@@ -58,28 +57,6 @@ export default function HistoricEventsScreen({
     };
   }, []);
 
-  // Calcola se serve lo scroll basandosi sulle dimensioni del contenuto
-  useEffect(() => {
-    const checkScrollNeeded = () => {
-      if (scrollContainerRef.current && contentRef.current) {
-        const containerHeight = scrollContainerRef.current.clientHeight;
-        const contentHeight = contentRef.current.scrollHeight;
-        setNeedsScroll(contentHeight > containerHeight);
-      }
-    };
-
-    // Controlla subito e dopo un breve delay per permettere il rendering
-    checkScrollNeeded();
-    const timeoutId = setTimeout(checkScrollNeeded, 100);
-
-    // Controlla anche al resize della finestra
-    window.addEventListener('resize', checkScrollNeeded);
-    
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', checkScrollNeeded);
-    };
-  }, [completedEvents.length, forceUpdate]); // Ricalcola quando cambiano gli eventi o localStorage
 
   // Funzione per determinare se un evento è protetto
   const isProtectedEvent = (event: WineEvent): boolean => {
@@ -201,9 +178,9 @@ export default function HistoricEventsScreen({
       {/* Scrollable Content */}
       <div 
         ref={scrollContainerRef}
-        className={`flex-1 px-4 min-h-0 ${needsScroll ? 'overflow-y-auto' : 'overflow-y-visible'}`}
+        className="flex-1 px-4 min-h-0 overflow-y-auto"
         style={{
-          paddingBottom: 'calc(var(--bottom-nav-height, 5.5rem) + var(--bottom-nav-offset, 1.75rem) + 1rem)'
+          paddingBottom: 'calc(var(--bottom-nav-height, 5.5rem) + var(--bottom-nav-offset, 1.75rem) + 2rem)'
         }}
       >
         <div ref={contentRef} className="max-w-2xl mx-auto space-y-4">
