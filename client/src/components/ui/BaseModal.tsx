@@ -140,7 +140,7 @@ export default function BaseModal({
     >
       <div 
         className={`
-          bg-white rounded-2xl shadow-2xl w-full max-h-[75vh] overflow-hidden
+          bg-white/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl w-full max-h-[85vh] overflow-hidden border border-white/20
           ${getSizeStyles()}
           ${className}
         `}
