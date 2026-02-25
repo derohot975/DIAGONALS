@@ -8,7 +8,64 @@ import {
   Vote, InsertVote, EventReport, InsertEventReport 
 } from "@shared/schema";
 
-export class DatabaseStorage {
+export interface IStorage {
+  // User operations
+  getUser(id: number): Promise<User | undefined>;
+  getUserByName(name: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined>;
+  deleteUser(id: number): Promise<boolean>;
+  getAllUsers(): Promise<User[]>;
+  getUsersByEventId(eventId: number): Promise<User[]>;
+  
+  // PIN authentication
+  authenticateUser(name: string, pin: string): Promise<User | undefined>;
+  authenticateUserByPin(pin: string): Promise<User | undefined>;
+  
+  // Wine Event operations
+  getWineEvent(id: number): Promise<WineEvent | undefined>;
+  createWineEvent(event: InsertWineEvent): Promise<WineEvent>;
+  getAllWineEvents(): Promise<WineEvent[]>;
+  updateWineEvent(id: number, updates: Partial<InsertWineEvent>): Promise<WineEvent | undefined>;
+  deleteWineEvent(id: number): Promise<boolean>;
+  updateWineEventStatus(id: number, status: string): Promise<WineEvent | undefined>;
+
+  // Wine operations
+  getWine(id: number): Promise<Wine | undefined>;
+  getWineById(id: number): Promise<Wine | undefined>;
+  createWine(wine: InsertWine): Promise<Wine>;
+  updateWine(id: number, updates: Partial<InsertWine>): Promise<Wine | undefined>;
+  deleteWine(id: number): Promise<boolean>;
+  getAllWines(): Promise<Wine[]>;
+  getWinesByEventId(eventId: number): Promise<Wine[]>;
+
+  // Vote operations
+  getVote(id: number): Promise<Vote | undefined>;
+  createVote(vote: InsertVote): Promise<Vote>;
+  updateVote(id: number, score: number): Promise<Vote | undefined>;
+  deleteVote(id: number): Promise<boolean>;
+  getVotesByEventId(eventId: number): Promise<Vote[]>;
+  getVotesByWineId(wineId: number): Promise<Vote[]>;
+  getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
+  
+  // Event Report operations
+  createEventReport(report: InsertEventReport): Promise<EventReport>;
+  getEventReport(eventId: number): Promise<EventReport | undefined>;
+  
+  // Voting completion check
+  checkEventVotingComplete(eventId: number): Promise<{ 
+    isComplete: boolean; 
+    totalParticipants: number; 
+    totalWines: number; 
+    votesReceived: number;
+    missingVotes: { userName: string; missingWineNames: string[] }[];
+  }>;
+  
+  // Wine search in completed events
+  searchWinesInCompletedEvents(query: string, limit: number, offset: number): Promise<any[]>;
+}
+
+export class DatabaseStorage implements IStorage {
   private users = new UserStorage();
   private events = new EventStorage();
   private wines = new WineStorage();
