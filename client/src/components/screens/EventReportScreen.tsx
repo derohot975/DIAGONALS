@@ -10,118 +10,79 @@ interface EventReportScreenProps {
   onGoHome: () => void;
 }
 
+const RANK_COLORS = [
+  { bg: 'bg-yellow-400', text: 'text-yellow-950' },
+  { bg: 'bg-gray-300', text: 'text-gray-800' },
+  { bg: 'bg-orange-400', text: 'text-orange-950' },
+];
+
 export default function EventReportScreen({ reportData, onGoBack, onGoHome }: EventReportScreenProps) {
   if (!reportData) return null;
-
   const { eventInfo, wineResults } = reportData;
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="w-20 h-auto logo-filter drop-shadow-lg" 
-        />
+    <div className="flex-1 flex flex-col bg-gray-50">
+      {/* Header */}
+      <div className="flex-shrink-0 bg-white border-b px-6 pt-10 pb-6 flex flex-col items-center">
+        <img src={diagoLogo} alt="Logo" className="w-16 h-auto mb-5 grayscale opacity-40" />
+        <h1 className="text-xl font-black text-gray-900 tracking-tight">{formatEventName(eventInfo.name)}</h1>
+        <p className="text-sm text-gray-400 mt-1">{formatEventDate(eventInfo.date)} · Report Finale</p>
       </div>
 
-      {/* Event Info Header */}
-      <div className="flex-shrink-0 text-center mb-6">
-        <div className="mb-2">
-          <h1 className="event-name-standard text-2xl font-bold text-white">
-            {formatEventName(eventInfo.name)}
-          </h1>
-        </div>
-        <p className="text-yellow-200">
-          {formatEventDate(eventInfo.date)} • Report Finale
-        </p>
-      </div>
-
-      {/* Scrollable Content */}
-      <div 
-        className="overflow-y-auto px-4 pb-4" 
+      {/* Scrollable content */}
+      <div
+        className="overflow-y-auto px-6 scrollbar-hide"
         style={{
           height: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
         }}
       >
-        <div className="max-w-4xl mx-auto">
-          {/* Wine Rankings */}
-          <div className="mb-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-white">Classifica Vini</h2>
-            </div>
-            
-            <div className="space-y-3">
-              {wineResults.map((wine, index) => (
-                <div key={wine.id} className={`p-4 rounded-lg border ${
-                  index === 0 ? 'bg-red-50 border-red-200' :
-                  index === 1 ? 'bg-gray-50 border-gray-200' :
-                  index === 2 ? 'bg-orange-50 border-orange-200' :
-                  'bg-white border-gray-100'
-                }`}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                        index === 0 ? 'bg-red-500 text-white' :
-                        index === 1 ? 'bg-gray-400 text-white' :
-                        index === 2 ? 'bg-orange-500 text-white' :
-                        'bg-gray-200 text-gray-700'
-                      }`}>
-                        {wine.position}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium break-words">{wine.name}</div>
-                        <div className="text-sm text-gray-600">{wine.producer}</div>
-                        <div className="text-xs text-gray-500">da {wine.contributor}</div>
-                      </div>
-                    </div>
-                    <div className="text-right ml-2">
-                      <div className="font-bold text-lg">{wine.averageScore.toFixed(1)}</div>
-                      <div className="text-sm text-gray-500">{wine.totalVotes} voti</div>
-                    </div>
+        <div className="max-w-md mx-auto py-6 space-y-4">
+          {wineResults.map((wine, index) => (
+            <div key={wine.id} className={`bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden`}>
+              <div className="p-5">
+                <div className="flex items-start space-x-4">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm flex-shrink-0 ${
+                    index < 3 ? `${RANK_COLORS[index].bg} ${RANK_COLORS[index].text}` : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {wine.position}
                   </div>
-                  
-                  {/* Individual votes */}
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex flex-wrap gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between">
+                      <div className="min-w-0 flex-1 mr-4">
+                        <p className="font-bold text-gray-900 leading-tight">{wine.name}</p>
+                        <p className="text-sm text-gray-500 mt-0.5">{wine.producer}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">da {wine.contributor}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-2xl font-black text-gray-900">{wine.averageScore.toFixed(1)}</p>
+                        <p className="text-xs text-gray-400">{wine.totalVotes} voti</p>
+                      </div>
+                    </div>
+                    {/* Individual votes */}
+                    <div className="mt-3 pt-3 border-t border-gray-50 flex flex-wrap gap-2">
                       {wine.votes.map((vote, voteIndex) => (
-                        <div key={voteIndex} className="bg-gray-100 px-2 py-1 rounded text-xs">
+                        <span key={voteIndex} className="bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full">
                           {vote.userName}: {vote.score}
-                        </div>
+                        </span>
                       ))}
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
 
-          {/* Report Info */}
-          <div className="text-center text-white/70 text-sm mb-4">
+          <p className="text-center text-gray-300 text-xs pb-4">
             Report generato il {new Date().toLocaleDateString('it-IT')}
-          </div>
+          </p>
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <BottomNavBar 
+      <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onGoBack ? [{
-            id: 'back',
-            icon: <ArrowLeft className="w-6 h-6" />,
-            onClick: onGoBack,
-            title: 'Indietro',
-            variant: 'glass' as const
-          }] : []),
-          ...(onGoHome ? [{
-            id: 'home',
-            icon: <Home className="w-6 h-6" />,
-            onClick: onGoHome,
-            title: 'Home',
-            variant: 'glass' as const
-          }] : [])
+          { id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const },
+          { id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }
         ]}
       />
     </div>
