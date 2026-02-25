@@ -150,7 +150,7 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
               <button
                 type="submit"
                 disabled={isLoading || pin.length !== 4 || (!isLoginMode && name.trim().length === 0)}
-                className={`w-full font-bold py-4 rounded-2xl text-lg disabled:opacity-30 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 shadow-xl mt-4 flex-shrink-0 ${pin.length === 4 ? 'bg-emerald-600 text-white' : 'bg-white/8 text-white/30'}`}
+                className={`w-full font-bold py-4 rounded-2xl text-lg disabled:opacity-30 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 shadow-xl mt-4 flex-shrink-0 ${pin.length === 4 ? 'bg-emerald-600 text-white' : 'bg-white text-red-950'}`}
               >
                 {isLoading ? (
                   <span>Caricamento...</span>
