@@ -50,106 +50,95 @@ export default function EventListScreen({
   const completedEvents = events.filter(event => event.status === 'completed');
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-4">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
-        />
+      <div className="flex-shrink-0 flex justify-center pt-10 pb-6">
+        <div className="relative">
+          <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
+          <img 
+            src={diagoLogo} 
+            alt="DIAGO Logo" 
+            className="relative mx-auto w-28 h-auto logo-filter drop-shadow-2xl" 
+          />
+        </div>
       </div>
 
       {/* Welcome Message */}
       {currentUser && (
-        <div className="flex-shrink-0 text-center pb-6">
-          <h2 className="text-2xl font-bold text-yellow-200">
-            Ciao {currentUser.name}!
+        <div className="flex-shrink-0 text-center pb-8">
+          <p className="text-xs font-semibold text-white/30 uppercase tracking-[0.2em] mb-1">Benvenuto</p>
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            {currentUser.name}
           </h2>
         </div>
       )}
 
       {/* Scrollable Content */}
       <div 
-        className="overflow-y-auto px-4 pb-4" 
+        className="overflow-y-auto px-6 pb-20 scrollbar-hide" 
         style={{
-          height: 'calc(100dvh - 140px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
         }}
       >
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-md mx-auto space-y-8">
         
           {/* Active Events */}
           {activeEvents.length > 0 && (
-            <div className="space-y-4">
-
-              
+            <div className="space-y-6">
               {activeEvents.map(event => (
-                <div key={event.id} className="space-y-3">
-                  <div className="relative glass-effect rounded-3xl shadow-2xl p-6 animate-fade-in">
-                    {/* Date e Event Name - Data sopra, nome sotto */}
-                    <div className="text-center mb-4">
-                      <p className="text-lg text-[#300505] mb-2">
+                <div key={event.id} className="group">
+                  <div className="relative bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-8 shadow-2xl transition-all duration-500 hover:bg-white/10 active:scale-[0.98]">
+                    {/* Event Info */}
+                    <div className="text-center mb-8">
+                      <p className="text-xs font-bold text-red-500/60 uppercase tracking-widest mb-3">
                         {formatEventDate(event.date)}
                       </p>
-                      <h3 className="event-name-standard font-bold text-[#300505] leading-tight break-words text-center text-sm">
+                      <h3 className="text-2xl font-bold text-white leading-tight tracking-tight">
                         {formatEventName(event.name)}
                       </h3>
                       
-                      {/* MESSAGGIO SUCCESSO - DENTRO IL MODAL SOTTO IL NOME */}
                       {userHasRegisteredWineForEvent(event.id) && (
-                        <div className="mt-3">
-                          <div className="flex items-center justify-center space-x-2">
-                            <span className="text-lg animate-bounce">⭐</span>
-                            <span className="text-green-600 font-bold text-sm">REGISTRATO CON SUCCESSO!</span>
-                            <span className="text-lg animate-bounce" style={{ animationDelay: '0.5s' }}>⭐</span>
-                          </div>
+                        <div className="mt-4 inline-flex items-center px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+                          <span className="text-[10px] font-black text-green-400 uppercase tracking-widest">Vino Registrato</span>
                         </div>
                       )}
                     </div>
 
-                    {/* PULSANTE UNICO CONDIZIONALE */}
-                    <div>
+                    {/* Action Button */}
+                    <div className="relative z-10">
                       {!userHasRegisteredWineForEvent(event.id) ? (
                         <button
                           onClick={() => onRegisterWine(event.id)}
-                          className="w-full bg-gradient-to-r from-[#8d0303] to-[#300505] hover:from-[#300505] hover:to-[#8d0303] text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                          className="w-full bg-white text-red-950 font-bold py-5 px-8 rounded-2xl text-lg shadow-xl shadow-white/5 active:scale-95 transition-all duration-300"
                         >
-                          REGISTRA IL TUO VINO
+                          Registra il tuo vino
                         </button>
                       ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                           {event.votingStatus === 'active' ? (
                             <button
                               onClick={() => onParticipateEvent(event.id)}
-                              className="w-full font-bold py-3 px-6 rounded-2xl text-lg transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-2xl bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white"
+                              className="w-full bg-red-600 text-white font-bold py-5 px-8 rounded-2xl text-lg shadow-xl shadow-red-600/20 active:scale-95 transition-all duration-300"
                             >
-                              PARTECIPA ALLA DIAGONALE
+                              Entra nella Diagonale
                             </button>
                           ) : (
-                            <button
-                              disabled
-                              className="w-full font-bold py-3 px-6 rounded-2xl text-lg bg-gray-400 text-gray-600 cursor-not-allowed"
-                            >
-                              <div className="flex items-center justify-center space-x-2">
-                                <span>👁️</span>
-                                <span>ATTENDI ATTIVAZIONE VOTAZIONI</span>
-                              </div>
-                            </button>
+                            <div className="w-full py-5 px-8 rounded-2xl bg-white/5 border border-white/5 text-center">
+                              <span className="text-sm font-bold text-white/20 uppercase tracking-widest">In attesa dei voti...</span>
+                            </div>
                           )}
                         </div>
                       )}
                     </div>
                     
-                    {/* PULSANTE MODIFICA VINO - Posizionato in alto a destra */}
+                    {/* Edit Wine Link */}
                     {userHasRegisteredWineForEvent(event.id) && (
-                      <div className="absolute top-4 right-4">
-                        <button
-                          onClick={() => onEditWine(event.id)}
-                          className="text-[#300505] hover:text-[#8d0303] transition-colors"
-                        >
-                          <Edit3 className="w-5 h-5" />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => onEditWine(event.id)}
+                        className="absolute top-6 right-8 text-white/20 hover:text-white transition-colors p-2"
+                      >
+                        <Edit3 className="w-5 h-5" />
+                      </button>
                     )}
                   </div>
                 </div>
@@ -157,25 +146,21 @@ export default function EventListScreen({
             </div>
           )}
 
-
-
-
-
           {/* No Active Events State */}
           {events.length > 0 && activeEvents.length === 0 && (
-            <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
+            <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-12 text-center animate-fade-in">
               <div className="text-6xl mb-6">🍷</div>
-              <h2 className="text-2xl font-bold text-[#300505] mb-4">...in attesa della prossima ciucciata!</h2>
-              <p className="text-[#8d0303] text-lg font-semibold">organizziamo?!</p>
+              <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Prossima ciucciata?</h2>
+              <p className="text-white/40 font-medium">In attesa di un nuovo evento...</p>
             </div>
           )}
 
           {/* Empty State */}
           {events.length === 0 && (
-            <div className="glass-effect rounded-2xl shadow-2xl p-12 text-center">
-              <Calendar className="w-20 h-20 text-gray-400 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-gray-600 mb-4">Nessun Evento Creato</h2>
-              <p className="text-gray-500 text-lg">Crea il primo evento per iniziare le degustazioni</p>
+            <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-12 text-center animate-fade-in">
+              <Calendar className="w-16 h-16 text-white/10 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Nessun evento</h2>
+              <p className="text-white/40 font-medium">Crea il primo evento per iniziare.</p>
             </div>
           )}
         </div>
