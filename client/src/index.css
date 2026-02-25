@@ -96,6 +96,8 @@
     flex-direction: column;
     background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
     position: relative;
+    /* Safe area top per iPhone notch / Dynamic Island */
+    padding-top: env(safe-area-inset-top);
   }
 
   /* Stabilizzazione scroll mobile */
