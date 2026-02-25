@@ -13,7 +13,7 @@ interface LoadingSkeletonProps {
  */
 function LoadingSkeleton({ showLogo = true, showNavigation = true }: LoadingSkeletonProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#300505] to-[#8d0303]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       {/* Header con Logo - Sempre visibile */}
       {showLogo && (
         <div className="flex items-center justify-center py-8">
