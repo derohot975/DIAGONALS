@@ -14,7 +14,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   }, [onFinish]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#300505] to-[#8d0303]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       {/* Logo centrato */}
       <div className="flex-1 flex items-center justify-center">
         <div className="animate-fade-in">

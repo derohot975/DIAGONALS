@@ -140,7 +140,7 @@ function App() {
     }
     if (router.currentScreen === 'auth') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#300505] to-[#8d0303]">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#300505] to-[#1a0303]">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white/50" />
         </div>
       );

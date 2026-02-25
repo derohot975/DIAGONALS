@@ -72,7 +72,7 @@
   body {
     @apply font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #300505 0%, #8d0303 100%) !important;
+    background: linear-gradient(to bottom, #300505 0%, #1a0303 100%) !important;
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height per mobile */
     margin: 0;
@@ -94,7 +94,7 @@
     min-height: var(--app-h);
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
+    background: linear-gradient(to bottom, #300505 0%, #1a0303 100%);
     position: relative;
     /* Safe area top per iPhone notch / Dynamic Island */
     padding-top: env(safe-area-inset-top);
@@ -162,11 +162,11 @@
   }
 
   .wine-gradient {
-    background: linear-gradient(135deg, #300505 0%, #8d0303 100%);
+    background: linear-gradient(to bottom, #300505 0%, #1a0303 100%);
   }
 
   .wine-gradient-hover:hover {
-    background: linear-gradient(135deg, #240404 0%, #a00404 100%);
+    background: linear-gradient(to bottom, #240404 0%, #1a0303 100%);
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(48, 5, 5, 0.4);
   }
