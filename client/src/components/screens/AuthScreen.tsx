@@ -35,20 +35,21 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
   const handleDeletePin = () => setPin(prev => prev.slice(0, -1));
 
   return (
-    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
+    <div className="h-full flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303] overflow-hidden">
       {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-14 pb-10">
+      <div className="flex-shrink-0 flex justify-center pt-8 pb-4">
         <div className="relative">
           <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
-          <img src={diagoLogo} alt="DIAGO Logo" className="relative mx-auto w-28 h-auto logo-filter drop-shadow-2xl" />
+          <img src={diagoLogo} alt="DIAGO Logo" className="relative mx-auto w-24 h-auto logo-filter drop-shadow-2xl" />
         </div>
       </div>
 
       {/* Card */}
-      <div className="flex-1 flex flex-col items-center px-8">
-        <div className="w-full max-w-xs">
-          <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-8 shadow-2xl">
-            <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex-1 flex flex-col items-center px-8 min-h-0">
+        <div className="w-full max-w-xs flex flex-col h-full">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-6 shadow-2xl flex flex-col min-h-0">
+            <form onSubmit={handleSubmit} className="flex flex-col h-full">
+              <div className="flex-1 flex flex-col justify-center min-h-0">
 
               {/* Nome - solo registrazione */}
               {!isLoginMode && (
@@ -69,28 +70,28 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
               )}
 
               {/* PIN label */}
-              <div>
-                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-5 text-center">
+              <div className="flex-1 flex flex-col justify-center min-h-0 py-2">
+                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-3 text-center flex-shrink-0">
                   {isLoginMode ? 'Inserisci il tuo PIN' : 'Scegli un PIN (4 cifre)'}
                 </label>
 
                 {isLoginMode ? (
-                  <>
+                  <div className="flex flex-col min-h-0">
                     {/* PIN dots */}
-                    <div className="flex justify-center space-x-4 mb-8">
+                    <div className="flex justify-center space-x-4 mb-4 flex-shrink-0">
                       {[0, 1, 2, 3].map((i) => (
-                        <div key={i} className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${pin.length > i ? 'bg-white border-white scale-110' : 'border-white/30'}`} />
+                        <div key={i} className={`w-3 h-3 rounded-full border-2 transition-all duration-200 ${pin.length > i ? 'bg-white border-white scale-110' : 'border-white/30'}`} />
                       ))}
                     </div>
 
                     {/* Keypad */}
-                    <div className="grid grid-cols-3 gap-4 auth-keypad-container">
+                    <div className="grid grid-cols-3 gap-2 auth-keypad-container flex-1 min-h-0 overflow-hidden py-1">
                       {[1,2,3,4,5,6,7,8,9].map((n) => (
                         <button
                           key={n}
                           type="button"
                           onClick={() => handleNumberInput(n.toString())}
-                          className="w-full aspect-square bg-white/5 border border-white/10 text-white text-2xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative"
+                          className="w-full aspect-square bg-white/5 border border-white/10 text-white text-xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative flex items-center justify-center"
                         >
                           {n}
                         </button>
@@ -98,14 +99,14 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
                       <button
                         type="button"
                         onClick={handleDeletePin}
-                        className="w-full aspect-square bg-white/5 border border-white/10 text-white/40 text-lg font-bold rounded-2xl active:scale-90 transition-all duration-150 auth-keypad-button delete relative"
+                        className="w-full aspect-square bg-white/5 border border-white/10 text-white/40 text-lg font-bold rounded-2xl active:scale-90 transition-all duration-150 auth-keypad-button delete relative flex items-center justify-center"
                       >
                         C
                       </button>
                       <button
                         type="button"
                         onClick={() => handleNumberInput('0')}
-                        className="w-full aspect-square bg-white/5 border border-white/10 text-white text-2xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative"
+                        className="w-full aspect-square bg-white/5 border border-white/10 text-white text-xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative flex items-center justify-center"
                       >
                         0
                       </button>
@@ -119,7 +120,7 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
                         </button>
                       )}
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <input
@@ -147,7 +148,7 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
               <button
                 type="submit"
                 disabled={isLoading || pin.length !== 4 || (!isLoginMode && name.trim().length === 0)}
-                className="w-full bg-white text-red-950 font-bold py-4 rounded-2xl text-lg disabled:opacity-30 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 shadow-xl"
+                className={`w-full font-bold py-4 rounded-2xl text-lg disabled:opacity-30 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 shadow-xl mt-4 flex-shrink-0 ${pin.length === 4 ? 'bg-emerald-600 text-white' : 'bg-white text-red-950'}`}
               >
                 {isLoading ? (
                   <span>Caricamento...</span>
@@ -162,7 +163,7 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
           </div>
 
           {/* Toggle mode */}
-          <div className="text-center pt-6">
+          <div className="text-center pt-4 pb-4 flex-shrink-0">
             <button
               type="button"
               onClick={() => { setIsLoginMode(!isLoginMode); setName(''); setPin(''); }}
