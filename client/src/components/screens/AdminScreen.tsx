@@ -19,7 +19,11 @@ interface AdminScreenProps {
 export default function AdminScreen({ users, onShowAddUserModal, onShowCreateEventModal, onShowEventList, onShowEditUserModal, onDeleteUser, onGoBack, onGoHome, onChangeAdminPin }: AdminScreenProps) {
   const [uniqueSessionEnabled, setUniqueSessionEnabled] = useState(false);
 
-  const nonAdminUsers = useMemo(() => users.filter(user => !user.isAdmin), [users]);
+  const nonAdminUsers = useMemo(() => {
+    return [...users]
+      .filter(user => !user.isAdmin)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [users]);
 
   useEffect(() => {
     const saved = localStorage.getItem('diagonale_unique_session_enabled');
