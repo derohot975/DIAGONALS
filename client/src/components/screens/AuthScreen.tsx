@@ -137,9 +137,11 @@ export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin,
                 )}
               </div>
 
+              </div>{/* chiusura flex-1 wrapper */}
+
               {/* Errore */}
               {error && (
-                <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-2xl text-center font-bold">
+                <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-2xl text-center font-bold mt-2">
                   {error}
                 </div>
               )}

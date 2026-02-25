@@ -54,13 +54,13 @@ export default function BottomNavBar({
 
   return (
     <div
-      className={`fixed left-0 right-0 bottom-0 ${getZIndexClass('BOTTOM_NAV')}`}
+      className={`fixed left-0 right-0 bottom-0 bg-[#130202] border-t border-white/10 ${getZIndexClass('BOTTOM_NAV')}`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       data-testid="bottom-nav"
     >
-      {/* Solid bar — no transparency */}
+      {/* Solid bar — 56px touch area + safe area inset covered by parent bg */}
       <div
-        className="bg-[#130202] border-t border-white/10 flex items-center justify-around px-2"
+        className="flex items-center justify-around px-2"
         style={{ height: '56px' }}
       >
         {buttons.map((button) => (
