@@ -27,25 +27,24 @@ export const useLongPress = ({
 }: UseLongPressOptions): UseLongPressReturn => {
   const [isLongPressing, setIsLongPressing] = useState(false);
   const timeout = useRef<NodeJS.Timeout>();
-  const target = useRef<EventTarget | null>(null);
   const startPos = useRef<{ x: number; y: number } | null>(null);
   const didScroll = useRef(false);
+  const longPressTriggered = useRef(false);
 
-  const start = useCallback((event: Event) => {
-    event.preventDefault();
-    target.current = event.target;
+  const startTouch = useCallback((event: React.TouchEvent) => {
+    // NON chiamare preventDefault() — lascia che il browser gestisca lo scroll nativamente
     didScroll.current = false;
+    longPressTriggered.current = false;
 
-    if (event instanceof TouchEvent && event.touches.length > 0) {
+    if (event.touches.length > 0) {
       startPos.current = { x: event.touches[0].clientX, y: event.touches[0].clientY };
-    } else {
-      startPos.current = null;
     }
 
     setIsLongPressing(true);
 
     timeout.current = setTimeout(() => {
       if (!didScroll.current) {
+        longPressTriggered.current = true;
         onLongPress();
       }
       setIsLongPressing(false);
@@ -68,32 +67,55 @@ export const useLongPress = ({
     }
   }, [scrollThreshold]);
 
-  const clear = useCallback((event: Event, shouldTriggerPress = true) => {
+  const onTouchEnd = useCallback(() => {
     if (timeout.current) {
       clearTimeout(timeout.current);
       timeout.current = undefined;
     }
-
     setIsLongPressing(false);
 
-    if (shouldTriggerPress && !didScroll.current && onPress && target.current === event.target) {
+    if (!didScroll.current && !longPressTriggered.current && onPress) {
       onPress();
     }
 
-    target.current = null;
     startPos.current = null;
     didScroll.current = false;
+    longPressTriggered.current = false;
   }, [onPress]);
 
+  // Mouse handlers (solo desktop)
+  const onMouseDown = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    longPressTriggered.current = false;
+    setIsLongPressing(true);
+    timeout.current = setTimeout(() => {
+      longPressTriggered.current = true;
+      onLongPress();
+      setIsLongPressing(false);
+    }, delay);
+  }, [onLongPress, delay]);
+
+  const onMouseUp = useCallback(() => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = undefined;
+    }
+    setIsLongPressing(false);
+    if (!longPressTriggered.current && onPress) onPress();
+    longPressTriggered.current = false;
+  }, [onPress]);
+
+  const onMouseLeave = useCallback(() => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = undefined;
+    }
+    setIsLongPressing(false);
+    longPressTriggered.current = false;
+  }, []);
+
   return {
-    handlers: {
-      onMouseDown: (event: any) => start(event),
-      onMouseUp: (event: any) => clear(event),
-      onMouseLeave: (event: any) => clear(event, false),
-      onTouchStart: (event: any) => start(event),
-      onTouchMove,
-      onTouchEnd: (event: any) => clear(event),
-    },
+    handlers: { onMouseDown, onMouseUp, onMouseLeave, onTouchStart: startTouch, onTouchMove, onTouchEnd },
     isLongPressing
   };
 };
