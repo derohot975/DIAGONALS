@@ -26,7 +26,8 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
       if (!response.ok) {
         throw new Error('Failed to fetch participants');
       }
-      return response.json();
+      const data = await response.json();
+      return [...data].sort((a, b) => a.userName.localeCompare(b.userName));
     },
     enabled: showParticipants,
   });
