@@ -6,6 +6,22 @@ import router from "./routes/index";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
 import { ensurePagellaTable } from "./db/pagella";
+import { db } from "./db";
+import { sql } from "drizzle-orm";
+
+const KEEP_ALIVE_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 ore
+
+function startDatabaseKeepAlive() {
+  setInterval(async () => {
+    try {
+      await db.execute(sql`SELECT 1`);
+      log("Keep-alive: database ping OK");
+    } catch (err) {
+      log("Keep-alive: database ping fallito");
+    }
+  }, KEEP_ALIVE_INTERVAL_MS);
+  log("Keep-alive: avviato (intervallo 24h)");
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -94,5 +110,6 @@ app.use((req, res, next) => {
   server.listen(port, '0.0.0.0', () => {
     log(`Server running on port ${port}`);
     log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    startDatabaseKeepAlive();
   });
 })();
