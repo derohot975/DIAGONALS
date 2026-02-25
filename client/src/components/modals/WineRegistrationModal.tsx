@@ -132,7 +132,7 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
       <button
         type="button"
         onClick={onClose}
-        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+        className="flex-1 px-4 py-3 border border-white/12 rounded-lg text-white/60 hover:bg-white/8 transition-colors font-medium"
       >
         Annulla
       </button>
@@ -159,11 +159,11 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
         
       <form id="wine-registration-form" onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipologia</label>
+            <label className="block text-sm font-medium text-white/60 mb-1">Tipologia</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white"
               required
             >
               <option value="">Seleziona tipologia</option>
@@ -175,82 +175,82 @@ export default function WineRegistrationModal({ isOpen, onClose, currentUser, wi
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nome Vino</label>
+            <label className="block text-sm font-medium text-white/60 mb-1">Nome Vino</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value.toUpperCase())}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] uppercase"
+              className="w-full px-3 py-2 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white placeholder-white/30 uppercase"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Produttore</label>
+            <label className="block text-sm font-medium text-white/60 mb-1">Produttore</label>
             <input
               type="text"
               value={producer}
               onChange={(e) => setProducer(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white placeholder-white/30"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vitigno</label>
+            <label className="block text-sm font-medium text-white/60 mb-1">Vitigno</label>
             <input
               type="text"
               value={grape}
               onChange={(e) => setGrape(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white placeholder-white/30"
               required
             />
           </div>
 
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Anno</label>
+              <label className="block text-xs font-medium text-white/60 mb-1">Anno</label>
               <input
                 type="number"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 min="1900"
                 max="2025"
-                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white text-sm"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Prezzo (€)</label>
+              <label className="block text-xs font-medium text-white/60 mb-1">Prezzo (€)</label>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 min="0"
                 step="0.01"
-                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white text-sm"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Grad. %</label>
+              <label className="block text-xs font-medium text-white/60 mb-1">Grad. %</label>
               <input
                 type="text"
                 value={alcohol}
                 onChange={(e) => setAlcohol(formatAlcoholValue(e.target.value))}
-                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)] text-sm"
+                className="w-full px-2 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white text-sm"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Provenienza</label>
+            <label className="block text-sm font-medium text-white/60 mb-1">Provenienza</label>
             <input
               type="text"
               value={origin}
               onChange={(e) => setOrigin(capitalizeFirstLetter(e.target.value))}
-              className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(229,73%,69%)]"
+              className="w-full px-3 py-1.5 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-white placeholder-white/30"
               required
             />
           </div>

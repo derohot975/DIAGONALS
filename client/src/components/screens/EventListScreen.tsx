@@ -109,7 +109,7 @@ export default function EventListScreen({
                       {!userHasRegisteredWineForEvent(event.id) ? (
                         <button
                           onClick={() => onRegisterWine(event.id)}
-                          className="w-full bg-white text-red-950 font-bold py-5 px-8 rounded-2xl text-lg shadow-xl shadow-white/5 active:scale-95 transition-all duration-300"
+                          className="w-full bg-white/92 text-red-950 font-bold py-5 px-8 rounded-2xl text-lg shadow-xl shadow-black/20 active:scale-95 transition-all duration-300"
                         >
                           Registra il tuo vino
                         </button>

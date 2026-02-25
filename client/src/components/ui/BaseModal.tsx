@@ -140,7 +140,7 @@ export default function BaseModal({
     >
       <div 
         className={`
-          bg-white/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl w-full max-h-[85vh] overflow-hidden border border-white/20
+          bg-[#160404]/95 backdrop-blur-3xl rounded-[2rem] shadow-2xl w-full max-h-[85vh] overflow-hidden border border-white/10
           ${getSizeStyles()}
           ${className}
         `}
@@ -155,14 +155,14 @@ export default function BaseModal({
         {/* Header */}
         {(title || showCloseButton) && (
           <div className={`
-            ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-4 border-b border-gray-200
+            ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-4 border-b border-white/10
             ${headerClassName}
           `}>
             <div className={showCloseButton ? "flex-1 min-w-0" : "text-center"}>
               {title && (
                 <h2 
                   id="modal-title"
-                  className="text-xl font-bold truncate"
+                  className="text-xl font-bold truncate text-white"
                 >
                   {title}
                 </h2>
@@ -170,7 +170,7 @@ export default function BaseModal({
               {description && (
                 <p 
                   id="modal-description"
-                  className="mt-1 text-sm text-gray-600"
+                  className="mt-1 text-sm text-white/50"
                 >
                   {description}
                 </p>
@@ -180,7 +180,7 @@ export default function BaseModal({
             {showCloseButton && dismissible && (
               <button
                 onClick={handleClose}
-                className="ml-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+                className="ml-4 p-2 text-white/40 hover:text-white/70 transition-colors rounded-full hover:bg-white/10"
                 aria-label="Chiudi"
               >
                 <X className="w-5 h-5" />
@@ -200,7 +200,7 @@ export default function BaseModal({
 
         {/* Footer */}
         {footer && (
-          <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">
+          <div className="border-t border-white/10 px-4 py-3 bg-white/5">
             {footer}
           </div>
         )}

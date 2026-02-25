@@ -156,19 +156,19 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
       onKeyDown={handleKeyDown}
     >
       <div 
-        className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl w-full max-w-sm overflow-hidden border border-white/20 animate-in zoom-in-95 duration-300"
+        className="bg-[#160404]/96 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl w-full max-w-sm overflow-hidden border border-white/10 animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8 text-center">
-          <div className="text-xs font-semibold text-red-900/40 uppercase tracking-widest mb-1">Vota il vino di</div>
-          <div className="text-2xl font-bold text-red-950 tracking-tight">
+          <div className="text-xs font-semibold text-white/35 uppercase tracking-widest mb-1">Vota il vino di</div>
+          <div className="text-2xl font-bold text-white tracking-tight">
             {wineName.replace('Vino di ', '').toUpperCase()}
           </div>
         </div>
 
         <div className="px-8 pb-4">
           <div className="relative">
-            <div className="absolute left-4 right-4 top-1/2 transform -translate-y-1/2 h-16 bg-red-50/50 rounded-2xl pointer-events-none z-0 border border-red-100/50 shadow-inner"></div>
+            <div className="absolute left-4 right-4 top-1/2 transform -translate-y-1/2 h-16 bg-white/8 rounded-2xl pointer-events-none z-0 border border-white/12 shadow-inner"></div>
             
             <div 
               ref={scrollRef}
@@ -188,8 +188,8 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
                     key={score}
                     className={`h-16 flex items-center justify-center cursor-pointer relative z-20 transition-all duration-300 ${
                       selectedScore === score 
-                        ? 'text-4xl font-bold text-red-950 scale-110' 
-                        : 'text-xl font-medium text-gray-300'
+                        ? 'text-4xl font-bold text-white scale-110' 
+                        : 'text-xl font-medium text-white/22'
                     }`}
                     style={{ 
                       scrollSnapAlign: 'center',
@@ -208,13 +208,13 @@ export const VoteScrollPicker = memo(function VoteScrollPicker({
         <div className="p-8 pt-4 flex space-x-3">
           <button
             onClick={onClose}
-            className="flex-1 bg-gray-100 text-gray-500 py-4 px-6 rounded-2xl font-semibold active:scale-95 transition-all"
+            className="flex-1 bg-white/8 text-white/60 py-4 px-6 rounded-2xl font-semibold active:scale-95 transition-all border border-white/10"
           >
             Annulla
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 bg-red-950 text-white py-4 px-6 rounded-2xl font-bold shadow-lg shadow-red-950/20 active:scale-95 transition-all"
+            className="flex-1 bg-[#300505] text-white py-4 px-6 rounded-2xl font-bold shadow-lg shadow-black/30 active:scale-95 transition-all border border-white/10"
           >
             Conferma
           </button>
