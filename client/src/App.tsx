@@ -146,11 +146,8 @@ function App() {
       );
     }
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass-effect rounded-2xl shadow-2xl p-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(270,50%,65%)] mx-auto mb-4" />
-          <p className="text-gray-600">Caricamento...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#300505] to-[#1a0303]">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white/40" />
       </div>
     );
   }

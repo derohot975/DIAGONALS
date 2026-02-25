@@ -1,14 +1,10 @@
-import { lazy } from 'react';
-
-// Lazy-loaded screen components
-// Maintains exact same component names and exports for seamless replacement
-export const AuthScreen = lazy(() => import('./screens/AuthScreen'));
-export const AdminScreen = lazy(() => import('./screens/AdminScreen'));
-export const EventListScreen = lazy(() => import('./screens/EventListScreen'));
-export const AdminEventManagementScreen = lazy(() => import('./screens/AdminEventManagementScreen'));
-export const EventDetailsScreen = lazy(() => import('./screens/EventDetailsScreen'));
-export const EventResultsScreen = lazy(() => import('./screens/EventResultsScreen'));
-export const HistoricEventsScreen = lazy(() => import('./screens/HistoricEventsScreen'));
-export const PagellaScreen = lazy(() => import('./screens/PagellaScreen'));
-export const SimpleVotingScreen = lazy(() => import('./screens/SimpleVotingScreen'));
-export const EventReportScreen = lazy(() => import('./screens/EventReportScreen'));
+export { default as AuthScreen } from './screens/AuthScreen';
+export { default as AdminScreen } from './screens/AdminScreen';
+export { default as EventListScreen } from './screens/EventListScreen';
+export { default as AdminEventManagementScreen } from './screens/AdminEventManagementScreen';
+export { default as EventDetailsScreen } from './screens/EventDetailsScreen';
+export { default as EventResultsScreen } from './screens/EventResultsScreen';
+export { default as HistoricEventsScreen } from './screens/HistoricEventsScreen';
+export { default as PagellaScreen } from './screens/PagellaScreen';
+export { default as SimpleVotingScreen } from './screens/SimpleVotingScreen';
+export { default as EventReportScreen } from './screens/EventReportScreen';
