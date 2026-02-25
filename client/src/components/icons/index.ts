@@ -66,6 +66,9 @@ export {
   // Notes & Documentation
   StickyNote,
   
+  // Alerts & Warnings
+  AlertTriangle,
+
   // Additional icons found during refactor
   // (Add any new icons here as needed)
 } from 'lucide-react';
