@@ -133,17 +133,13 @@ function App() {
     userHandlers.addUser({ createUserMutation }, name, isAdmin);
   };
 
+  // La Splash Screen ha la precedenza assoluta per coprire il caricamento iniziale dei dati
+  if (router.showSplash) return <SplashScreen onFinish={() => router.setShowSplash(false)} />;
+
   if (isLoadingState(usersLoading, eventsLoading)) {
     if (ENABLE_APP_SHELL && shouldShowSkeleton(router.currentScreen)) {
       performanceTelemetry.markAppShellReady();
       return <LoadingSkeleton showLogo={true} showNavigation={true} />;
-    }
-    if (router.currentScreen === 'auth') {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#300505] to-[#1a0303]">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white/50" />
-        </div>
-      );
     }
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#300505] to-[#1a0303]">
@@ -151,8 +147,6 @@ function App() {
       </div>
     );
   }
-
-  if (router.showSplash) return <SplashScreen onFinish={() => router.setShowSplash(false)} />;
 
   const currentEvent = appState.selectedEventId
     ? events.find((e: WineEvent) => e.id === appState.selectedEventId) ?? null
