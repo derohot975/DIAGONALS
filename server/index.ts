@@ -1,9 +1,14 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
+import { fileURLToPath } from "url";
+import pathModule from "path";
 import router from "./routes/index";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
 import { ensurePagellaTable } from "./db/pagella";
+
+const __filename = fileURLToPath(import.meta.url);
+const __serverDirname = pathModule.dirname(__filename);
 
 const app = express();
 app.use(express.json());
@@ -48,8 +53,7 @@ app.use((req, res, next) => {
 
   // Serve PWA static files with correct MIME types in development
   if (app.get("env") === "development") {
-    const path = await import("path");
-    const publicDir = path.resolve(import.meta.dirname, "..", "public");
+    const publicDir = pathModule.resolve(__serverDirname, "..", "public");
     app.use(express.static(publicDir, {
       setHeaders: (res, filePath) => {
         if (filePath.endsWith('.png')) {
