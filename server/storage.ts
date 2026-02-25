@@ -313,31 +313,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Check if all participants have voted for all wines in an event
-  async checkEventVotingComplete(eventId: number): Promise<{ isComplete: boolean; totalParticipants: number; totalWines: number; votesReceived: number; }> {
-    // Get all participants (users who registered wines for this event)
+  async checkEventVotingComplete(eventId: number): Promise<{
+    isComplete: boolean;
+    totalParticipants: number;
+    totalWines: number;
+    votesReceived: number;
+    missingVotes: { userName: string; missingWineNames: string[] }[];
+  }> {
     const participants = await this.getUsersByEventId(eventId);
-    
-    // Get all wines for this event
     const eventWines = await this.getWinesByEventId(eventId);
-    
-    // Get all votes for this event
     const eventVotes = await this.getVotesByEventId(eventId);
-    
-    // Calculate expected votes: each participant should vote for all wines except their own
+
     let expectedVotes = 0;
+    const missingVotes: { userName: string; missingWineNames: string[] }[] = [];
+
     for (const participant of participants) {
       const winesCanVoteFor = eventWines.filter(wine => wine.userId !== participant.id);
       expectedVotes += winesCanVoteFor.length;
+
+      const votedWineIds = new Set(
+        eventVotes.filter(v => v.userId === participant.id).map(v => v.wineId)
+      );
+      const missingWineNames = winesCanVoteFor
+        .filter(wine => !votedWineIds.has(wine.id))
+        .map(wine => wine.name || `Vino #${wine.id}`);
+
+      if (missingWineNames.length > 0) {
+        missingVotes.push({ userName: participant.name, missingWineNames });
+      }
     }
-    
+
     const votesReceived = eventVotes.length;
     const isComplete = votesReceived >= expectedVotes;
-    
+
     return {
       isComplete,
       totalParticipants: participants.length,
       totalWines: eventWines.length,
-      votesReceived
+      votesReceived,
+      missingVotes
     };
   }
 
