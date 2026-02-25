@@ -57,6 +57,7 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
   const EventItem = ({ event }: { event: WineEvent }) => {
     const { handlers, isLongPressing } = useLongPress({
       onLongPress: () => { if (onDeleteEvent) { setEventToDelete(event); setDeleteModalOpen(true); } },
+      onPress: () => onShowEventResults(event.id),
       delay: 800
     });
 
