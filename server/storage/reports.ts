@@ -27,6 +27,7 @@ export class ReportStorage {
       if (missingWineNames.length > 0) missingVotes.push({ userName: participant.name, missingWineNames });
     }
     const votesReceived = eventVotes.length;
-    return { isComplete: votesReceived >= expectedVotes, totalParticipants: participants.length, totalWines: eventWines.length, votesReceived, missingVotes };
+    const isComplete = expectedVotes > 0 && votesReceived >= expectedVotes;
+    return { isComplete, totalParticipants: participants.length, totalWines: eventWines.length, votesReceived, missingVotes };
   }
 }
