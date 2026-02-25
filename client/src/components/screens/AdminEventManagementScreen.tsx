@@ -51,7 +51,7 @@ export default function AdminEventManagementScreen({
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
+    <div className="flex-1 flex flex-col">
       {/* Header */}
       <div className="flex-shrink-0 px-6 pt-10 pb-6 flex flex-col items-center">
         <img src={diagoLogo} alt="Logo" className="w-16 h-auto mb-4 logo-filter drop-shadow-lg opacity-90" />
