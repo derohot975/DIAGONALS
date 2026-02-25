@@ -149,7 +149,7 @@ export default function BaseModal({
           position: 'relative',
           transform: 'none',
           touchAction: 'manipulation',
-          marginBottom: 'var(--bottom-nav-total, 88px)'
+          marginBottom: 'var(--bottom-nav-total, 56px)'
         }}
       >
         {/* Header */}

@@ -33,7 +33,7 @@ export default function EventReportScreen({ reportData, onGoBack, onGoHome }: Ev
       <div
         className="overflow-y-auto px-6 scrollbar-hide"
         style={{
-          height: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          height: 'calc(100dvh - 200px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))'
         }}
       >
         <div className="max-w-md mx-auto py-6 space-y-4">

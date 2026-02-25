@@ -35,10 +35,10 @@
   --wine-accent: hsl(0, 84.2%, 60.2%);
   --wine-gold: hsl(43, 96%, 56%);
   
-  /* Bottom navigation height tokens */
-  --bottom-nav-height: 5.5rem; /* 88px: pulsanti (48px) + bottom-6 (24px) + margine (16px) */
-  --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
-  --bottom-nav-offset: calc(1.75rem + env(safe-area-inset-bottom)); /* 28px + safe-area (bottom-7) */
+  /* Bottom navigation height tokens — solid bar 56px */
+  --bottom-nav-height: 3.5rem; /* 56px: standard mobile tab bar */
+  --bottom-nav-total: calc(3.5rem + env(safe-area-inset-bottom));
+  --bottom-nav-offset: 0px; /* bar è fixed bottom: 0, non floating */
 }
 
 /* iOS Safe Height fallback for browsers without dvh support */

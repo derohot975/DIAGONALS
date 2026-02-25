@@ -39,7 +39,7 @@ export default function EventDetailsScreen({ event, wines, votes, users, current
 
       <div
         className="overflow-y-auto px-6 scrollbar-hide"
-        style={{ height: 'calc(100dvh - 260px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))' }}
+        style={{ height: 'calc(100dvh - 260px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))' }}
       >
         <div className="max-w-md mx-auto space-y-4">
           <WinesGrid

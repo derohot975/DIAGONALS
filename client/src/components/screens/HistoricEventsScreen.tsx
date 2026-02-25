@@ -115,7 +115,7 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
       {/* Scrollable content */}
       <div
         className="flex-1 px-6 min-h-0 overflow-y-auto scrollbar-hide"
-        style={{ paddingBottom: 'calc(var(--bottom-nav-height, 5.5rem) + var(--bottom-nav-offset, 1.75rem) + 2rem)' }}
+        style={{ paddingBottom: 'calc(var(--bottom-nav-total, 3.5rem) + 1.5rem)' }}
       >
         <div className="max-w-md mx-auto space-y-4">
           {completedEvents.length > 0 ? (

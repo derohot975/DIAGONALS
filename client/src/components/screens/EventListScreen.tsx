@@ -77,7 +77,7 @@ export default function EventListScreen({
       <div 
         className="overflow-y-auto px-6 pb-20 scrollbar-hide" 
         style={{
-          height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          height: 'calc(100dvh - 180px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))'
         }}
       >
         <div className="max-w-md mx-auto space-y-8">
