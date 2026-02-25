@@ -1,0 +1,124 @@
+# DIAGONALE — PRE-PROMPT PER REPLIT AGENT (SOLO ANALISI + DIAGNOSI, ZERO MODIFICHE)
+
+## Ruolo
+Sei Replit Agent. Devi eseguire **solo analisi e diagnosi** dell’intero progetto importato da GitHub.  
+**Divieto assoluto**: non modificare codice, non creare PR, non fare refactor, non cambiare dipendenze, non cambiare config, non cambiare layout, non cambiare logiche.  
+Output richiesto: **report tecnico dettagliatissimo** salvato in **un file .md** nel progetto.
+
+---
+
+## Obiettivo finale (contesto, NON da implementare ora)
+L’obiettivo finale (che verrà eseguito in step successivi) è portare l’app a livello **enterprise** come **web app mobile**:
+- stabilità visiva totale (niente glitch/jitter/flicker/reflow strani)
+- performance fluide su smartphone
+- nessuna modifica di layout/UI o logiche/flow rispetto a oggi
+- progetto **portabile e indipendente**: niente vincoli verso tool specifici che limitino l’utilizzo
+- **Supabase intoccabile**: non toccare DB, schema, policy, record, né eseguire migrazioni o scritture “di test”
+
+**In questa fase fai solo diagnosi e piano.**
+
+---
+
+## Vincoli fondamentali
+1) **MOBILE-FIRST ASSOLUTO**
+   - Questa è una mobile app: la UX deve essere valutata come “solo telefono”.
+   - Diagnostica tutto ciò che oggi impedisce una visibilità/esperienza 100% corretta su smartphone (layout viewport, safe-area, scrolling, fixed/sticky, overflow, font scaling, touch targets, ecc.).
+
+2) **ZERO IMPATTO SU SUPABASE**
+   - Non avviare operazioni che scrivono su Supabase.
+   - Non richiedere modifiche al DB.
+   - Se ci sono rischi di scrittura involontaria (seed, script, init), devi evidenziarli nel report e proporre mitigazioni future (ma senza implementarle ora).
+
+3) **Analizza TUTTI i file MD in /docs**
+   - Devi leggere e riassumere **tutti** i markdown presenti nella cartella `docs/`.
+   - Se trovi regole, specifiche, vincoli o decisioni: vanno riportate come “governance” nel report.
+
+4) **Nessun lock-in**
+   - Il progetto deve restare libero/indipendente da strumenti o servizi che lo rendano non portabile.
+   - In diagnosi segnala eventuali dipendenze/tooling che introducono lock-in e come neutralizzarle in futuro (senza farlo ora).
+
+---
+
+## Cosa devi fare ora (solo analisi)
+### A) Inventario e mappa del progetto
+- Identifica framework e runtime: React/Next/Vite/Expo Web/altro
+- Struttura cartelle, entrypoint, routing, componenti chiave
+- Dove vivono: UI, state, API, auth, storage, style, assets
+- Build/run scripts: `package.json` (scripts), toolchain, bundler
+
+### B) Stato qualità e rischio
+- Stato TypeScript/lint (se presenti): errori/warn principali
+- Dipendenze critiche: obsolete, duplicate, pesanti, non usate (solo elenco e rischio)
+- Config: env variables attese, gestione segreti, rischio di crash in assenza env
+- Logging/console noise: quantità e impatto
+
+### C) Diagnosi “stabilità visiva” (core)
+Devi cercare cause tipiche di instabilità visuale su mobile:
+- re-render eccessivi, state management caotico, prop drilling
+- layout thrash (misure DOM in loop), useEffect mal gestiti
+- CSS/viewport issues: `100vh` su mobile, safe-area, overflow, fixed position, scroll locking
+- hydration mismatch (se SSR), race tra fetch e render, suspense/loading errati
+- immagini/asset: dimensioni, lazy loading, CLS (cumulative layout shift)
+- font loading, flicker, animation jank
+- gesture/touch: click delay, scrolling, double tap zoom, overscroll
+
+### D) Supabase: solo integrazione client (senza toccare DB)
+- Mappa punti di accesso a Supabase (client, query, realtime, auth)
+- Identifica rischio di scritture involontarie in dev/run
+- Elenca dove si legge/scrive e con quali tabelle (solo per capire)
+- Evidenzia eventuali chiamate “dangerous” (truncate/reset/seed)
+
+### E) Portabilità / indipendenza
+- Indica cosa rende il progetto “non portabile” (es. config hardcoded Replit, path, runtime specifici)
+- Proponi linee guida future per renderlo neutro (ma non implementare)
+
+---
+
+## Output richiesto (file MD)
+Crea un file:
+- `docs/REPORT_DIAGNOSI_DIAGONALE.md` (se `docs/` esiste)
+- Se `docs/` non esiste: `REPORT_DIAGNOSI_DIAGONALE.md` in root
+
+Il report deve essere **molto dettagliato**, e includere:
+
+1) **Executive summary (1 pagina)**  
+   - situazione attuale  
+   - problemi bloccanti / rischi principali  
+   - impatto su mobile  
+   - stima complessità (BASSA/MEDIA/ALTA) per arrivare all’obiettivo (solo valutazione)
+
+2) **Mappa architetturale**  
+   - struttura cartelle e moduli  
+   - entrypoint, routing, state, style  
+   - flussi principali UI→state→API
+
+3) **Diagnosi stabilità visiva (mobile)**  
+   - elenco problemi osservabili/probabili  
+   - punti nel codice dove nascono (file/percorso)  
+   - meccanismo tecnico (perché succede)
+
+4) **Rischi Supabase (senza interventi)**  
+   - dove si può scrivere involontariamente  
+   - come prevenire in step futuri (solo raccomandazioni)
+
+5) **Qualità / debito tecnico**  
+   - errori/warn, deps, config, logging  
+   - asset e performance
+
+6) **Piano operativo futuro (solo proposta, niente implementazione)**  
+   - Roadmap in step piccoli, ordinati per priorità  
+   - Ogni step: obiettivo, file coinvolti, rischio regressione, test da fare
+   - Regola: “no change a layout/logiche” (solo stabilità/qualità)
+
+7) **Checklist di test mobile**  
+   - cosa testare su telefono (Safari iOS/Chrome Android)  
+   - viewport, scroll, safe-area, tastiera, performance, offline (se rilevante)
+
+---
+
+## Regole finali
+- Ripeto: **non modificare nulla**.  
+- Se per fare diagnosi hai bisogno di eseguire comandi, puoi farlo (read-only) ma **non introdurre cambiamenti**; se un comando potrebbe scrivere su Supabase o alterare dati, **non eseguirlo**.
+- Concludi il lavoro solo quando il file MD è stato creato e popolato.
+
+Procedi ora.
