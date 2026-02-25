@@ -19,8 +19,8 @@ export default function WineListItem({ wine, contributor, userVote, onWineClick 
     >
       {/* Info */}
       <div className="flex-1 min-w-0 mr-4">
-        <h3 className="font-bold text-white text-base truncate">{contributor.toUpperCase()}</h3>
-        <p className="text-xs text-white/30 mt-0.5">{wine.type || 'Vino'}{wine.alcohol ? ` · ${wine.alcohol}°` : ''}</p>
+        <h3 className="font-bold text-white text-[1.25rem] truncate">{contributor.toUpperCase()}</h3>
+        <p className="text-[0.9375rem] text-amber-200/90 mt-1">{wine.type || 'Vino'}{wine.alcohol ? ` · ${wine.alcohol}°` : ''}</p>
       </div>
 
       {/* Vote indicator */}
