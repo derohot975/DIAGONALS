@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, Home, Shield } from '@/components/icons';
 import { User, WineEvent } from "@shared/schema";
-
 import EventInfo from "./vote/components/EventInfo";
 import WineList from "./vote/components/WineList";
 import AdminPinModal from "../AdminPinModal";
@@ -17,30 +16,20 @@ interface SimpleVotingScreenProps {
   onShowAdmin?: () => void;
 }
 
-export default function SimpleVotingScreen({
-  event,
-  currentUser,
-  onBack,
-  onHome,
-  onShowAdmin
-}: SimpleVotingScreenProps) {
+export default function SimpleVotingScreen({ event, currentUser, onBack, onHome, onShowAdmin }: SimpleVotingScreenProps) {
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [showAdminPinModal, setShowAdminPinModal] = useState(false);
-  
-  // Use custom hook for business logic
-  const { wines, users, votes, voteMutation, getUserVoteForWine, getWineContributor } = useVotingLogic({
-    event,
-    currentUser,
-  });
+
+  const { wines, users, votes, voteMutation, getUserVoteForWine, getWineContributor } = useVotingLogic({ event, currentUser });
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Fixed Header - Event Info Only */}
-      <div className="sticky top-0 z-50 pt-2 pb-4">
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
+      {/* Event Header */}
+      <div className="flex-shrink-0 sticky top-0 z-10">
         <EventInfo event={event} />
       </div>
 
-      {/* Scrollable Wine List */}
+      {/* Wine List */}
       <WineList
         wines={wines}
         users={users}
@@ -49,14 +38,14 @@ export default function SimpleVotingScreen({
         onWineClick={setSelectedWineId}
       />
 
-      {/* Vote Scroll Picker */}
-      <VoteScrollPicker 
+      {/* Vote Picker */}
+      <VoteScrollPicker
         isOpen={!!selectedWineId}
         onClose={() => setSelectedWineId(null)}
         onVote={(score) => {
           if (selectedWineId) {
             voteMutation.mutate({ wineId: selectedWineId, score });
-            setSelectedWineId(null); // Chiudi il modale dopo il voto
+            setSelectedWineId(null);
           }
         }}
         currentVote={selectedWineId ? Number(getUserVoteForWine(selectedWineId)?.score) : undefined}
@@ -67,45 +56,20 @@ export default function SimpleVotingScreen({
       />
 
       {/* Admin PIN Modal */}
-      <AdminPinModal 
+      <AdminPinModal
         isOpen={showAdminPinModal}
         onClose={() => setShowAdminPinModal(false)}
-        onSuccess={() => {
-          setShowAdminPinModal(false);
-          if (onShowAdmin) {
-            onShowAdmin();
-          }
-        }}
+        onSuccess={() => { setShowAdminPinModal(false); if (onShowAdmin) onShowAdmin(); }}
       />
 
-      {/* Bottom Navigation */}
-      <BottomNavBar 
+      <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onBack ? [{
-            id: 'back',
-            icon: <ArrowLeft className="w-6 h-6" />,
-            onClick: onBack,
-            title: 'Indietro',
-            variant: 'glass' as const
-          }] : []),
-          ...(onHome ? [{
-            id: 'home',
-            icon: <Home className="w-6 h-6" />,
-            onClick: onHome,
-            title: 'Home',
-            variant: 'glass' as const
-          }] : []),
-          ...(onShowAdmin ? [{
-            id: 'admin',
-            icon: <Shield className="w-6 h-6" />,
-            onClick: onShowAdmin,
-            title: 'Admin',
-            variant: 'admin' as const
-          }] : [])
+          ...(onBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onBack, title: 'Indietro', variant: 'glass' as const }] : []),
+          ...(onHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onHome, title: 'Home', variant: 'glass' as const }] : []),
+          ...(onShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin, title: 'Admin', variant: 'admin' as const }] : []),
         ]}
       />
-
     </div>
   );
 }
