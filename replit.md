@@ -80,6 +80,7 @@ shared/
 - Nessun commit/push automatico — l'utente committa manualmente
 - Non modificare mai i dati del DB di Supabase
 - Chiedere autorizzazione prima di cambiamenti architetturali importanti
+- **Report Costi**: Ogni volta che Agent esegue azioni a pagamento, deve includere un report schematico con l'importo in $ dell'ultima azione e il totale addebitato fino a quel momento.
 
 ## Fix applicati (Feb 2026)
 - `server/vite.ts`: sostituito `import.meta.dirname` con `fileURLToPath` (Node 18 compat)
