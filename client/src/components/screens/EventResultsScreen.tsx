@@ -26,7 +26,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div
         className="flex-1 overflow-y-auto px-6 scrollbar-hide"
         style={{
-          paddingBottom: 'calc(var(--bottom-nav-height, 5.5rem) + var(--bottom-nav-offset, 1.75rem) + 1rem)'
+          paddingBottom: 'calc(var(--bottom-nav-total, 3.5rem) + 1rem)'
         }}
       >
         <div className="max-w-md mx-auto space-y-2">

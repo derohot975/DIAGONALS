@@ -26,7 +26,7 @@ export default function WineList({ wines, users, votes, currentUser, onWineClick
   return (
     <div
       className="overflow-y-auto px-6 scrollbar-hide"
-      style={{ height: 'calc(100dvh - 220px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))' }}
+      style={{ height: 'calc(100dvh - 220px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))' }}
     >
       <div className="max-w-md mx-auto space-y-3">
         {sortedWines.map(wine => (
