@@ -108,8 +108,8 @@ export default function ManageEventModal({
       onOpenChange={handleClose}
       title={<div className="flex items-center space-x-2"><Settings className="w-5 h-5" /><span>Gestisci Evento</span></div>}
       size="sm"
-      headerClassName="bg-white/5 text-white"
-      className=""
+      headerClassName="bg-gradient-to-r from-gray-600 to-gray-700 text-white"
+      className="bg-white border border-gray-200"
     >
       {renderStep()}
     </BaseModal>
