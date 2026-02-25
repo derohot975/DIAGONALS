@@ -10,62 +10,39 @@ interface WineListProps {
 }
 
 export default function WineList({ wines, users, votes, currentUser, onWineClick }: WineListProps) {
-  const getWineContributor = (userId: number) => {
-    return users.find(u => u.id === userId)?.name || 'Sconosciuto';
-  };
+  const getWineContributor = (userId: number) => users.find(u => u.id === userId)?.name || 'Sconosciuto';
+  const getUserVoteForWine = (wineId: number) => votes.find(v => v.wineId === wineId && v.userId === currentUser.id);
 
-  const getUserVoteForWine = (wineId: number) => {
-    return votes.find(vote => vote.wineId === wineId && vote.userId === currentUser.id);
-  };
-
-  const sortedWines = wines.sort((a, b) => {
-    // Ordine: Bollicina < Bianco < Rosso < Altro
-    const typeOrder = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3, 'Altro': 4 };
-    const aOrder = typeOrder[a.type as keyof typeof typeOrder] || 5;
-    const bOrder = typeOrder[b.type as keyof typeof typeOrder] || 5;
-    
-    if (aOrder !== bOrder) {
-      return aOrder - bOrder;
-    }
-    
-    // Stesso tipo: ordina per gradazione crescente
-    const aAlcohol = typeof a.alcohol === 'number' ? a.alcohol : parseFloat(a.alcohol || '0');
-    const bAlcohol = typeof b.alcohol === 'number' ? b.alcohol : parseFloat(b.alcohol || '0');
-    return aAlcohol - bAlcohol;
+  const TYPE_ORDER: Record<string, number> = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3, 'Altro': 4 };
+  const sortedWines = [...wines].sort((a, b) => {
+    const aO = TYPE_ORDER[a.type as string] || 5;
+    const bO = TYPE_ORDER[b.type as string] || 5;
+    if (aO !== bO) return aO - bO;
+    const aAlc = typeof a.alcohol === 'number' ? a.alcohol : parseFloat(a.alcohol || '0');
+    const bAlc = typeof b.alcohol === 'number' ? b.alcohol : parseFloat(b.alcohol || '0');
+    return aAlc - bAlc;
   });
 
   return (
-    <div 
-      className="overflow-y-auto px-4" 
-      style={{
-        height: 'calc(100dvh - 180px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
-      }}
+    <div
+      className="overflow-y-auto px-6 scrollbar-hide"
+      style={{ height: 'calc(100dvh - 220px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))' }}
     >
-      <div className="max-w-sm mx-auto">
-        <div className="space-y-3">
-          {sortedWines.map((wine) => {
-            const contributor = getWineContributor(wine.userId);
-            const userVote = getUserVoteForWine(wine.id);
-
-            return (
-              <WineListItem
-                key={wine.id}
-                wine={wine}
-                contributor={contributor}
-                userVote={userVote}
-                onWineClick={onWineClick}
-              />
-            );
-          })}
-        </div>
-
-        {/* No wines message */}
+      <div className="max-w-md mx-auto space-y-3">
+        {sortedWines.map(wine => (
+          <WineListItem
+            key={wine.id}
+            wine={wine}
+            contributor={getWineContributor(wine.userId)}
+            userVote={getUserVoteForWine(wine.id)}
+            onWineClick={onWineClick}
+          />
+        ))}
         {wines.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-white text-lg">Nessun vino registrato per questo evento</p>
+          <div className="text-center py-16">
+            <p className="text-white/30 font-medium">Nessun vino registrato per questo evento</p>
           </div>
         )}
-
       </div>
     </div>
   );

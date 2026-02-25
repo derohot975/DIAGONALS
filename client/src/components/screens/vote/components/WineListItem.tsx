@@ -8,40 +8,26 @@ interface WineListItemProps {
 }
 
 export default function WineListItem({ wine, contributor, userVote, onWineClick }: WineListItemProps) {
+  const voted = !!userVote;
+
   return (
-    <div 
-      key={wine.id} 
-      className="bg-white rounded-2xl shadow-lg p-3 animate-fade-in"
+    <div
+      className={`flex items-center justify-between bg-white/5 backdrop-blur-xl border rounded-3xl px-5 py-4 transition-all duration-200 active:scale-[0.98] cursor-pointer ${
+        voted ? 'border-white/20 bg-white/10' : 'border-white/5 hover:bg-white/10'
+      }`}
+      onClick={() => onWineClick(wine.id)}
     >
-      {/* Horizontal Layout */}
-      <div className="flex items-center justify-between">
-        
-        {/* Left Side - Wine Info */}
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-800 mb-1">
-            <span className="text-[#300505]">{contributor.toUpperCase()}</span>
-          </h3>
-          <div className="flex items-center text-gray-600 text-sm">
-            <span>{wine.type || 'Vino'} • {wine.alcohol ? `${wine.alcohol}°` : 'N/A'}</span>
-          </div>
-        </div>
+      {/* Info */}
+      <div className="flex-1 min-w-0 mr-4">
+        <h3 className="font-bold text-white text-base truncate">{contributor.toUpperCase()}</h3>
+        <p className="text-xs text-white/30 mt-0.5">{wine.type || 'Vino'}{wine.alcohol ? ` · ${wine.alcohol}°` : ''}</p>
+      </div>
 
-        {/* Right Side - Vote Display */}
-        <div className="flex items-center space-x-3">
-          {/* Vote Badge */}
-          <div 
-            className={`px-5 py-2 rounded-full font-bold text-lg text-center min-w-[70px] cursor-pointer transition-all ${
-              userVote 
-                ? 'bg-gradient-to-r from-[#8d0303] to-[#300505] text-white' 
-                : 'bg-gray-400 text-white hover:bg-gray-500'
-            }`}
-            onClick={() => onWineClick(wine.id)}
-            title="Clicca per votare"
-          >
-            {userVote ? userVote.score : '1.0'}
-          </div>
-        </div>
-
+      {/* Vote indicator */}
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-lg flex-shrink-0 transition-all duration-300 ${
+        voted ? 'bg-white text-red-950 shadow-lg' : 'bg-white/5 border border-white/10 text-white/20'
+      }`}>
+        {voted ? userVote.score : '?'}
       </div>
     </div>
   );

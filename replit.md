@@ -92,14 +92,24 @@ shared/
 - Design Apple-style applicato a tutte le schermate principali (dark + glassmorphism)
 
 ## Schermate aggiornate (design Apple-style)
-- `EventListScreen` — dark gradient, frosted-glass cards, tipografia white
-- `AdminEventManagementScreen` — clean white cards, bottoni chiari
-- `AuthScreen` — dark con keypad PIN minimalista e frosted-glass card
-- `HistoricEventsScreen` — dark cards, icone glass, long-press preserved
-- `AdminScreen` — layout pulito con icone colorate per ogni azione
-- `EventReportScreen` — ranking cards con badge colorati (oro/argento/bronzo)
+Tutte le schermate usano dark theme coerente (from-[#300505] to-[#1a0303]) con:
+- Frosted glass cards (`bg-white/5 backdrop-blur-2xl border border-white/10`)
+- Tipografia white con gerarchia chiara (`text-white`, `text-white/40`, `text-white/20`)
+- Bottoni bianchi su dark (`bg-white text-red-950`) o rossi (`bg-red-600 text-white`)
+
+| Schermata | File | Stile |
+|---|---|---|
+| Auth | AuthScreen.tsx | Dark + keypad PIN glassmorphism |
+| Home utente | EventListScreen.tsx | Dark gradient + frosted cards |
+| Storico | HistoricEventsScreen.tsx | Dark cards, long-press preservato |
+| Admin | AdminScreen.tsx | Light clean, icone colorate |
+| Gestione eventi | AdminEventManagementScreen.tsx | Light clean, bottoni chiari |
+| Report evento | EventReportScreen.tsx | Light clean, badge oro/argento/bronzo |
+| Risultati | EventResultsScreen.tsx | Dark gradient + rank cards |
+| Votazione | SimpleVotingScreen.tsx | Dark gradient + wine list glass |
+| Dettagli evento | EventDetailsScreen.tsx | Dark gradient + frosted container |
 
 ## Performance
-- LCP effettivo app: ~288ms (escluso SplashScreen da 3s intenzionale)
-- FCP: ~272ms
-- Nota: LCP rilevato a 4-5s include i 3s della SplashScreen — normale e intenzionale
+- FCP/LCP effettivo app (post-splash): ~1.7s da cold start
+- SplashScreen ha timer 3s intenzionale — i valori 4-5s nei log sono normali
+- Nessun errore runtime in browser console

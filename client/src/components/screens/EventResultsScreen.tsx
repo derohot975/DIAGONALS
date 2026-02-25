@@ -1,10 +1,9 @@
-import { Star, Download, ArrowLeft, Home } from '@/components/icons';
+import { Download, ArrowLeft, Home } from '@/components/icons';
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import ResultsHeader from './results/components/ResultsHeader';
 import ResultCard from './results/components/ResultCard';
 import CollapsibleDetails from './results/components/CollapsibleDetails';
 import BottomNavBar from '../navigation/BottomNavBar';
-import { useResultsStats } from './results/hooks/useResultsStats';
 import { useResultsExpansion } from './results/hooks/useResultsExpansion';
 import { handleExport } from './results/utils/shareFormatter';
 
@@ -17,90 +16,49 @@ interface EventResultsScreenProps {
 
 export default function EventResultsScreen({ event, results, onGoBack, onGoHome }: EventResultsScreenProps) {
   if (!event) return null;
-  
-  // Use custom hooks
-  const stats = useResultsStats({ results });
+
   const { expandedWines, toggleExpandWine } = useResultsExpansion();
 
-  const handleExportClick = () => {
-    handleExport(event, results);
-  };
-
-
-
   return (
-    <div className="h-full flex flex-col">
-      {/* Fixed Header - Logo + Title */}
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       <ResultsHeader />
 
-      {/* Scrollable Content */}
-      <div 
-        className="px-4 scrollable-area overflow-y-auto" 
+      <div
+        className="flex-1 overflow-y-auto px-6 scrollbar-hide"
         style={{
-          height: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))',
-          maxHeight: 'calc(100dvh - 200px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
+          paddingBottom: 'calc(var(--bottom-nav-height, 5.5rem) + var(--bottom-nav-offset, 1.75rem) + 1rem)'
         }}
       >
-        <div className="max-w-4xl mx-auto space-y-4">
-          
+        <div className="max-w-md mx-auto space-y-2">
           {results.length === 0 ? (
-            <div className="text-center py-12">
-              <Star className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">Nessun risultato disponibile</p>
-              <p className="text-gray-400 text-sm">Non ci sono ancora voti per questo evento</p>
+            <div className="text-center py-20">
+              <p className="text-white/30 font-medium">Nessun risultato disponibile</p>
             </div>
           ) : (
-            <>
-              <div className="space-y-2">
-                {results.map((result, index) => (
-                  <div key={result.id} className="space-y-2">
-                    <ResultCard
-                      result={result}
-                      index={index}
-                      isExpanded={expandedWines.has(result.id)}
-                      onToggleExpand={toggleExpandWine}
-                    />
-                    <CollapsibleDetails
-                      result={result}
-                      isExpanded={expandedWines.has(result.id)}
-                    />
-                  </div>
-                ))}
-                
-                {/* Spacer per garantire spazio alla bottom-nav */}
-                <div className="h-20" style={{height: 'var(--bottom-nav-total)'}} aria-hidden="true"></div>
+            results.map((result, index) => (
+              <div key={result.id}>
+                <ResultCard
+                  result={result}
+                  index={index}
+                  isExpanded={expandedWines.has(result.id)}
+                  onToggleExpand={toggleExpandWine}
+                />
+                <CollapsibleDetails
+                  result={result}
+                  isExpanded={expandedWines.has(result.id)}
+                />
               </div>
-              
-
-            </>
+            ))
           )}
         </div>
       </div>
-      
-      <BottomNavBar 
+
+      <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onGoBack ? [{
-            id: 'back',
-            icon: <ArrowLeft className="w-6 h-6" />,
-            onClick: onGoBack,
-            title: 'Indietro',
-            variant: 'glass' as const
-          }] : []),
-          {
-            id: 'export',
-            icon: <Download className="w-6 h-6" />,
-            onClick: handleExportClick,
-            title: 'Condividi',
-            variant: 'glass' as const
-          },
-          ...(onGoHome ? [{
-            id: 'home',
-            icon: <Home className="w-6 h-6" />,
-            onClick: onGoHome,
-            title: 'Home',
-            variant: 'glass' as const
-          }] : [])
+          ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
+          { id: 'export', icon: <Download className="w-6 h-6" />, onClick: () => handleExport(event, results), title: 'Condividi', variant: 'glass' as const },
+          ...(onGoHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
         ]}
       />
     </div>

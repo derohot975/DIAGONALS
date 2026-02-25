@@ -9,29 +9,30 @@ interface ProgressBarProps {
 
 export default function ProgressBar({ event, progress, onShowResults, onCompleteEvent }: ProgressBarProps) {
   return (
-    <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-      <div className="flex items-center space-x-4">
-        <span className="text-sm text-gray-600">Progresso:</span>
-        <div className="flex items-center space-x-2">
-          <div className="w-32 bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-[hsl(229,73%,69%)] h-2 rounded-full transition-all duration-300" 
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-          <span className="text-sm font-medium text-gray-700">{progress}%</span>
-        </div>
+    <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs font-bold text-white/30 uppercase tracking-widest">Progresso voti</span>
+        <span className="text-sm font-black text-white">{progress}%</span>
       </div>
-      <div className="flex items-center space-x-2">
+
+      {/* Progress bar */}
+      <div className="w-full bg-white/5 rounded-full h-2 mb-5">
+        <div
+          className="bg-white h-2 rounded-full transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
         <button
           onClick={() => onShowResults(event.id)}
-          className="bg-[hsl(43,96%,56%)] hover:bg-yellow-600 text-white px-4 py-2 rounded-xl transition-colors"
+          className="bg-white/10 border border-white/10 text-white font-bold py-3 rounded-2xl text-sm active:scale-95 transition-all"
         >
-          Mostra Risultati
+          Risultati
         </button>
         <button
           onClick={() => onCompleteEvent(event.id)}
-          className="bg-[hsl(0,84.2%,60.2%)] hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors"
+          className="bg-white text-red-950 font-bold py-3 rounded-2xl text-sm active:scale-95 transition-all shadow-lg"
         >
           Termina Evento
         </button>

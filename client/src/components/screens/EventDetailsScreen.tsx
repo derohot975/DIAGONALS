@@ -21,37 +21,15 @@ interface EventDetailsScreenProps {
   onGoHome?: () => void;
 }
 
-export default function EventDetailsScreen({
-  event,
-  wines,
-  votes,
-  users,
-  currentUser,
-  onShowWineRegistrationModal,
-  onVoteForWine,
-  onCompleteEvent,
-  onShowResults,
-  onParticipateEvent,
-  onGoBack,
-  onGoHome
-}: EventDetailsScreenProps) {
+export default function EventDetailsScreen({ event, wines, votes, users, currentUser, onShowWineRegistrationModal, onVoteForWine, onCompleteEvent, onShowResults, onParticipateEvent, onGoBack, onGoHome }: EventDetailsScreenProps) {
   if (!event || !currentUser) return null;
 
-  // Use optimized event logic hook
-  const { 
-    eventWines, 
-    userHasRegisteredWine, 
-    votingIsActive, 
-    getUserVoteForWine, 
-    getWineContributor,
-    getEventProgress 
-  } = useEventLogic({ event, wines, votes, users, currentUser });
-
+  const { eventWines, userHasRegisteredWine, votingIsActive, getUserVoteForWine, getWineContributor, getEventProgress } = useEventLogic({ event, wines, votes, users, currentUser });
   const progress = getEventProgress();
 
   return (
-    <div className="flex-1 flex flex-col">
-      <EventContainer 
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
+      <EventContainer
         event={event}
         userHasRegisteredWine={userHasRegisteredWine}
         votingIsActive={votingIsActive}
@@ -59,21 +37,17 @@ export default function EventDetailsScreen({
         onParticipateEvent={onParticipateEvent}
       />
 
-      {/* Scrollable Content */}
-      <div 
-        className="overflow-y-auto px-4 pb-4" 
-        style={{
-          height: 'calc(100dvh - 120px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
-        }}
+      <div
+        className="overflow-y-auto px-6 scrollbar-hide"
+        style={{ height: 'calc(100dvh - 260px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))' }}
       >
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-md mx-auto space-y-4">
           <WinesGrid
             eventWines={eventWines}
             getUserVoteForWine={getUserVoteForWine}
             getWineContributor={getWineContributor}
             onVoteForWine={onVoteForWine}
           />
-          
           {eventWines.length > 0 && (
             <ProgressBar
               event={event}
@@ -84,24 +58,12 @@ export default function EventDetailsScreen({
           )}
         </div>
       </div>
-      
-      <BottomNavBar 
+
+      <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onGoBack ? [{
-            id: 'back',
-            icon: <ArrowLeft className="w-6 h-6" />,
-            onClick: onGoBack,
-            title: 'Indietro',
-            variant: 'glass' as const
-          }] : []),
-          ...(onGoHome ? [{
-            id: 'home',
-            icon: <Home className="w-6 h-6" />,
-            onClick: onGoHome,
-            title: 'Home',
-            variant: 'glass' as const
-          }] : [])
+          ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
+          ...(onGoHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
         ]}
       />
     </div>

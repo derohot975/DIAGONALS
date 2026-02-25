@@ -11,66 +11,47 @@ interface EventContainerProps {
   onParticipateEvent: (eventId: number) => void;
 }
 
-export default function EventContainer({ 
-  event, 
-  userHasRegisteredWine, 
-  votingIsActive, 
-  onShowWineRegistrationModal, 
-  onParticipateEvent 
-}: EventContainerProps) {
+export default function EventContainer({ event, userHasRegisteredWine, votingIsActive, onShowWineRegistrationModal, onParticipateEvent }: EventContainerProps) {
   return (
-    <>
-      {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
-        />
-      </div>
-
-      {/* Event Info + CTA */}
-      <div className="px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="glass-effect rounded-2xl shadow-2xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="event-name-standard text-xl font-bold text-[#300505] whitespace-nowrap overflow-hidden text-ellipsis max-w-sm">{formatEventName(event.name)}</h2>
-                <p className="text-gray-600">{event.date} - Modalità {event.mode}</p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">ATTIVO</span>
-              </div>
-            </div>
-
-            {/* PULSANTE UNICO CONDIZIONALE */}
-            <div className="mt-6">
-              {!userHasRegisteredWine ? (
-                <button
-                  onClick={onShowWineRegistrationModal}
-                  className="w-full bg-[#8d0303] hover:bg-[#300505] text-white px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors text-lg font-semibold"
-                >
-                  <Plus className="w-5 h-5" />
-                  <span>REGISTRA IL TUO VINO</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => votingIsActive ? onParticipateEvent(event.id) : null}
-                  disabled={!votingIsActive}
-                  className={`w-full px-6 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all text-lg font-semibold ${
-                    votingIsActive 
-                      ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404] text-white shadow-lg hover:scale-105' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-                  }`}
-                >
-                  <Eye className="w-5 h-5" />
-                  <span>{votingIsActive ? 'PARTECIPA ALLA DIAGONALE' : 'ATTENDI ATTIVAZIONE VOTAZIONI'}</span>
-                </button>
-              )}
-            </div>
-          </div>
+    <div className="flex-shrink-0 bg-gradient-to-b from-[#300505] to-transparent px-6 pt-10 pb-6">
+      <div className="flex justify-center mb-6">
+        <div className="relative">
+          <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
+          <img src={diagoLogo} alt="DIAGO Logo" className="relative w-20 h-auto logo-filter drop-shadow-2xl mx-auto" />
         </div>
       </div>
-    </>
+
+      <div className="max-w-md mx-auto">
+        <div className="bg-white/5 backdrop-blur-2xl rounded-[2rem] border border-white/10 p-6">
+          <div className="text-center mb-6">
+            <span className="inline-block text-[10px] font-black text-green-400 bg-green-400/10 border border-green-400/20 px-3 py-1 rounded-full uppercase tracking-widest mb-3">Attivo</span>
+            <h2 className="text-xl font-bold text-white tracking-tight">{formatEventName(event.name)}</h2>
+          </div>
+
+          {!userHasRegisteredWine ? (
+            <button
+              onClick={onShowWineRegistrationModal}
+              className="w-full bg-white text-red-950 font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 active:scale-95 transition-all shadow-xl"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Registra il tuo vino</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => votingIsActive ? onParticipateEvent(event.id) : undefined}
+              disabled={!votingIsActive}
+              className={`w-full font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 transition-all ${
+                votingIsActive
+                  ? 'bg-red-600 text-white active:scale-95 shadow-xl shadow-red-600/20'
+                  : 'bg-white/5 border border-white/5 text-white/20 cursor-not-allowed'
+              }`}
+            >
+              <Eye className="w-5 h-5" />
+              <span>{votingIsActive ? 'Entra nella Diagonale' : 'In attesa di attivazione...'}</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
