@@ -76,44 +76,48 @@ export default function BottomNavBar({
 
     return (
       <div 
-        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex items-center px-4`}
-        style={{ bottom: 'var(--bottom-nav-offset)' }}
+        className={`fixed left-0 right-0 ${getZIndexClass('BOTTOM_NAV')} flex items-center px-6`}
+        style={{ 
+          bottom: 'var(--bottom-nav-offset)',
+        }}
         data-testid="bottom-nav"
       >
-        {/* Left Region - Back button with fixed width for optical balance */}
-        <div className="flex items-center justify-start w-16">
-          {onGoBack && (
-            <button
-              onClick={onGoBack}
-              className={getButtonStyles('primary')}
-              title="Indietro"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-          )}
-        </div>
-
-        {/* Center Region - Optically centered buttons */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex items-center space-x-4">
-            {allCenterButtons.map((button) => (
+        <div className="mx-auto w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-2 flex items-center shadow-2xl">
+          {/* Left Region - Back button */}
+          <div className="flex items-center justify-start w-16">
+            {onGoBack && (
               <button
-                key={button.id}
-                onClick={button.onClick}
-                className={getButtonStyles(button.variant)}
-                title={button.title}
+                onClick={onGoBack}
+                className="p-3 text-white/40 hover:text-white transition-all active:scale-90"
+                title="Indietro"
               >
-                {button.icon}
+                <ArrowLeft className="w-6 h-6" />
               </button>
-            ))}
+            )}
           </div>
-        </div>
 
-        {/* Right Region - Search lens with fixed width matching left */}
-        <div className="flex items-center justify-end w-16">
-          {FEATURES.ENABLE_WINE_SEARCH && (
-            <SearchLensButton />
-          )}
+          {/* Center Region */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="flex items-center space-x-2">
+              {allCenterButtons.map((button) => (
+                <button
+                  key={button.id}
+                  onClick={button.onClick}
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 transition-all active:scale-90"
+                  title={button.title}
+                >
+                  {button.icon}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Region - Search lens */}
+          <div className="flex items-center justify-end w-16">
+            {FEATURES.ENABLE_WINE_SEARCH && (
+              <SearchLensButton />
+            )}
+          </div>
         </div>
       </div>
     );
