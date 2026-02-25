@@ -1,4 +1,4 @@
-import { Suspense, memo } from 'react';
+import { Suspense, memo, useEffect } from 'react';
 import { User, WineEvent, Wine, Vote, WineResultDetailed, EventReportData } from '@shared/schema';
 import LoadingSkeleton from './LoadingSkeleton';
 import {
@@ -8,6 +8,8 @@ import {
 } from './screens.lazy';
 
 export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'eventReport' | 'voting' | 'historicEvents' | 'pagella';
+
+const PROTECTED_SCREENS: Screen[] = ['events', 'voting', 'eventDetails', 'eventResults', 'historicEvents', 'pagella'];
 
 export interface ScreenRouterProps {
   currentScreen: Screen;
@@ -55,34 +57,48 @@ export interface ScreenRouterProps {
 const ScreenRouter: React.FC<ScreenRouterProps> = (props) => {
   const { currentScreen, userSession, setCurrentScreen } = props;
 
+  // Fix: use useEffect for auth guards instead of calling setState during render
+  const needsAuth = PROTECTED_SCREENS.includes(currentScreen) && !userSession.isAuthenticated;
+  useEffect(() => {
+    if (needsAuth) {
+      setCurrentScreen('auth');
+    }
+  }, [needsAuth, setCurrentScreen]);
+
   const renderScreen = () => {
+    if (needsAuth) return null;
+
     switch (currentScreen) {
       case 'auth':
         return <AuthScreen onLogin={props.onLogin} onRegister={props.onRegister} onGoBack={() => setCurrentScreen('auth')} onShowAdmin={props.handleShowAdmin} isLoading={props.authLoading} error={props.authError} />;
+
       case 'admin':
         return <AdminScreen users={props.users} onShowAddUserModal={props.handleShowAddUserModal} onShowCreateEventModal={props.handleShowCreateEventModal} onShowEventList={props.handleShowAdminEvents} onShowEditUserModal={props.handleShowEditUserModal} onDeleteUser={props.handleDeleteUser} onGoBack={() => setCurrentScreen('auth')} onGoHome={() => setCurrentScreen('auth')} onChangeAdminPin={props.handleShowChangeAdminPin} />;
+
       case 'events':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return <EventListScreen events={props.events} users={props.users} currentUser={props.currentUser} wines={props.wines} votes={props.votes} onShowEventDetails={props.handleShowEventDetails} onShowEventResults={props.handleShowEventResults} onShowAdmin={props.handleShowAdmin} onRegisterWine={props.handleShowWineRegistration} onParticipateEvent={props.handleParticipateEvent} onVoteForWine={props.handleVoteForWine} onEditWine={props.handleEditWine} onShowHistoricEvents={props.handleShowHistoricEvents} />;
+
       case 'adminEvents':
         return <AdminEventManagementScreen events={props.events} users={props.users} wines={props.wines} onGoBack={() => setCurrentScreen('admin')} onEditEvent={props.handleEditEvent} onDeleteEvent={props.handleDeleteEvent} onActivateVoting={props.handleActivateVoting} onDeactivateVoting={props.handleDeactivateVoting} onCompleteEvent={props.handleCompleteEvent} onViewReport={props.handleViewReport} onGoHome={() => setCurrentScreen('events')} onGoBackToAdmin={() => setCurrentScreen('admin')} />;
+
       case 'voting':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return props.currentEvent && props.currentUser ? <SimpleVotingScreen event={props.currentEvent} currentUser={props.currentUser} onBack={() => setCurrentScreen('events')} onHome={() => setCurrentScreen('events')} onShowAdmin={() => setCurrentScreen('admin')} /> : null;
+
       case 'eventDetails':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return props.currentEvent ? <EventDetailsScreen event={props.currentEvent} wines={props.wines} votes={props.votes} users={props.users} currentUser={props.currentUser} onShowWineRegistrationModal={() => props.setShowWineRegistrationModal(true)} onVoteForWine={props.handleVoteForWine} onCompleteEvent={props.handleCompleteEvent} onShowResults={props.handleShowResults} onParticipateEvent={props.handleParticipateEvent} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
+
       case 'eventResults':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return props.currentEvent ? <EventResultsScreen event={props.currentEvent} results={props.results} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
+
       case 'eventReport':
         return <EventReportScreen reportData={props.reportData} onGoBack={() => setCurrentScreen('adminEvents')} onGoHome={() => setCurrentScreen('events')} />;
+
       case 'historicEvents':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return <HistoricEventsScreen events={props.events} users={props.users} onShowEventResults={props.handleShowEventResults} onShowPagella={props.handleShowPagella} onDeleteEvent={props.handleDeleteEvent} onProtectEvent={props.handleProtectEvent} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} />;
+
       case 'pagella':
-        if (!userSession.isAuthenticated) { setCurrentScreen('auth'); return null; }
         return props.currentEvent ? <PagellaScreen event={props.currentEvent} currentUser={props.currentUser} onGoBack={() => setCurrentScreen('historicEvents')} onGoHome={() => setCurrentScreen('events')} /> : null;
+
       default: return null;
     }
   };

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogIn, UserPlus, Shield, Settings } from '@/components/icons';
+import { LogIn, UserPlus, Settings } from '@/components/icons';
 import diagoLogo from '@assets/diagologo.png';
 import '@/styles/auth-keypad-mobile.css';
 
@@ -12,250 +12,167 @@ interface AuthScreenProps {
   error: string | null;
 }
 
-export default function AuthScreen({ 
-  onLogin, 
-  onRegister, 
-  onGoBack,
-  onShowAdmin,
-  isLoading, 
-  error 
-}: AuthScreenProps) {
+export default function AuthScreen({ onLogin, onRegister, onGoBack, onShowAdmin, isLoading, error }: AuthScreenProps) {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [name, setName] = useState('');
   const [pin, setPin] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validazione nome solo in modalità registrazione
-    if (!isLoginMode && (name.trim().length === 0 || name.trim().length > 10)) {
-      return;
-    }
-    
-    // Validazione PIN (4 cifre)
-    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-      return;
-    }
-
+    if (!isLoginMode && (name.trim().length === 0 || name.trim().length > 10)) return;
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) return;
     if (isLoginMode) {
-      onLogin('', pin); // In modalità login non serve il nome
+      onLogin('', pin);
     } else {
       onRegister(name.trim(), pin);
     }
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase();
-    if (value.length <= 10) {
-      setName(value);
-    }
-  };
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // Solo numeri
-    if (value.length <= 4) {
-      setPin(value);
-    }
-  };
-
   const handleNumberInput = (number: string) => {
-    if (pin.length < 4) {
-      setPin(prev => prev + number);
-    }
+    if (pin.length < 4) setPin(prev => prev + number);
   };
 
-  const handleDeletePin = () => {
-    setPin(prev => prev.slice(0, -1));
-  };
+  const handleDeletePin = () => setPin(prev => prev.slice(0, -1));
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       {/* Logo Header */}
-      <div className="flex-shrink-0 flex justify-center pt-8 pb-6">
-        <img 
-          src={diagoLogo} 
-          alt="DIAGO Logo" 
-          className="mx-auto mb-2 w-24 h-auto logo-filter drop-shadow-lg" 
-        />
+      <div className="flex-shrink-0 flex justify-center pt-14 pb-10">
+        <div className="relative">
+          <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
+          <img src={diagoLogo} alt="DIAGO Logo" className="relative mx-auto w-28 h-auto logo-filter drop-shadow-2xl" />
+        </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div 
-        className="overflow-y-auto px-4 pb-4" 
-        style={{
-          height: 'calc(100dvh - 120px - var(--bottom-nav-total, 88px) - env(safe-area-inset-top, 0px))'
-        }}
-      >
-        <div className="max-w-72 mx-auto">
-          
+      {/* Card */}
+      <div className="flex-1 flex flex-col items-center px-8">
+        <div className="w-full max-w-xs">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-8 shadow-2xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
-
-          {/* Form */}
-          <div className="bg-white/95 rounded-2xl p-6 shadow-2xl">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
-              {/* Nome Utente - Solo in modalità registrazione */}
+              {/* Nome - solo registrazione */}
               {!isLoginMode && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1 text-center">
-                    Nome Utente (max 10 caratteri)
+                  <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-3 text-center">
+                    Il tuo nome (max 10 caratteri)
                   </label>
                   <input
                     type="text"
                     value={name}
-                    onChange={handleNameChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent uppercase text-center"
-                    placeholder="INSERISCI IL TUO NOME"
+                    onChange={(e) => { const v = e.target.value.toUpperCase(); if (v.length <= 10) setName(v); }}
+                    className="w-full bg-white/5 border border-white/10 text-white placeholder-white/20 px-4 py-3 rounded-2xl text-center text-lg font-bold focus:outline-none focus:border-white/30 uppercase"
+                    placeholder="NOME"
                     maxLength={10}
                     required
                   />
-
                 </div>
               )}
 
-              {/* PIN */}
+              {/* PIN label */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
-                  PIN (4 cifre)
+                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-5 text-center">
+                  {isLoginMode ? 'Inserisci il tuo PIN' : 'Scegli un PIN (4 cifre)'}
                 </label>
-                
+
                 {isLoginMode ? (
-                  // Modalità Login: Pulsantiera e display PIN
                   <>
-                    {/* PIN Display */}
-                    <div className="flex justify-center mb-4">
-                      <div className="flex space-x-2">
-                        {[0, 1, 2, 3].map((index) => (
-                          <div
-                            key={index}
-                            className="w-11 h-11 border-2 border-gray-300 rounded-lg flex items-center justify-center bg-white"
-                          >
-                            <span className="text-2xl font-bold text-gray-800">
-                              {pin[index] ? '•' : ''}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                    {/* PIN dots */}
+                    <div className="flex justify-center space-x-4 mb-8">
+                      {[0, 1, 2, 3].map((i) => (
+                        <div key={i} className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${pin.length > i ? 'bg-white border-white scale-110' : 'border-white/30'}`} />
+                      ))}
                     </div>
 
-                    {/* Smart Keypad */}
-                    <div className="flex justify-center mb-4">
-                      <div className="grid grid-cols-3 gap-3 max-w-72 auth-keypad-container">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                          <button
-                            key={number}
-                            type="button"
-                            onClick={() => handleNumberInput(number.toString())}
-                            className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg auth-keypad-button number relative"
-                          >
-                            {number}
-                          </button>
-                        ))}
-                        
-                        {/* Tasto C (Cancella) */}
+                    {/* Keypad */}
+                    <div className="grid grid-cols-3 gap-4 auth-keypad-container">
+                      {[1,2,3,4,5,6,7,8,9].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => handleNumberInput(n.toString())}
+                          className="w-full aspect-square bg-white/5 border border-white/10 text-white text-2xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative"
+                        >
+                          {n}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={handleDeletePin}
+                        className="w-full aspect-square bg-white/5 border border-white/10 text-white/40 text-lg font-bold rounded-2xl active:scale-90 transition-all duration-150 auth-keypad-button delete relative"
+                      >
+                        C
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleNumberInput('0')}
+                        className="w-full aspect-square bg-white/5 border border-white/10 text-white text-2xl font-bold rounded-2xl active:scale-90 active:bg-white/20 transition-all duration-150 auth-keypad-button number relative"
+                      >
+                        0
+                      </button>
+                      {onShowAdmin && (
                         <button
                           type="button"
-                          onClick={handleDeletePin}
-                          className="w-14 h-14 bg-white border-2 border-gray-300 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-500 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center auth-keypad-button delete relative"
+                          onClick={onShowAdmin}
+                          className="w-full aspect-square bg-white/5 border border-white/10 text-white/30 rounded-2xl active:scale-90 transition-all duration-150 flex items-center justify-center auth-keypad-button admin relative"
                         >
-                          C
+                          <Settings className="w-5 h-5" />
                         </button>
-                        
-                        {/* Zero */}
-                        <button
-                          type="button"
-                          onClick={() => handleNumberInput('0')}
-                          className="w-14 h-14 bg-white border-2 border-gray-200 text-[#300505] text-2xl font-bold rounded-full hover:bg-gray-50 hover:border-[#300505] active:scale-95 transition-all duration-150 shadow-lg auth-keypad-button number relative"
-                        >
-                          0
-                        </button>
-                        
-                        {/* Tasto Admin */}
-                        {onShowAdmin && (
-                          <button
-                            type="button"
-                            onClick={onShowAdmin}
-                            className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 text-xl font-bold rounded-full hover:bg-gray-50 hover:border-gray-400 active:scale-95 transition-all duration-150 shadow-lg flex items-center justify-center auth-keypad-button admin relative"
-                          >
-                            <Settings className="w-5 h-5" />
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   </>
                 ) : (
-                  // Modalità Registrazione: Campo input normale
                   <>
                     <input
                       type="tel"
                       value={pin}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
-                        setPin(value);
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#300505] focus:border-transparent text-center text-2xl font-bold tracking-widest"
-                      placeholder="0000"
+                      onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      className="w-full bg-white/5 border border-white/10 text-white placeholder-white/20 px-4 py-4 rounded-2xl text-center text-3xl font-bold tracking-[1rem] focus:outline-none focus:border-white/30"
+                      placeholder="••••"
                       maxLength={4}
-                      pattern="[0-9]{4}"
                       required
                     />
-                    <div className="text-sm text-yellow-700 mt-2 text-center font-semibold">
-                      Inserisci giorno e mese di nascita,<br />così te lo ricordi anche da ubriaco! 🍷
-                    </div>
+                    <p className="text-white/30 text-xs text-center mt-3">Usa giorno e mese di nascita — così te lo ricordi anche da ubriaco 🍷</p>
                   </>
                 )}
               </div>
 
               {/* Errore */}
               {error && (
-                <div className="text-red-600 text-sm bg-red-50 p-2 rounded-lg text-center font-bold">
+                <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-2xl text-center font-bold">
                   {error}
                 </div>
               )}
 
-              {/* Pulsante Submit */}
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={isLoading || pin.length !== 4 || (!isLoginMode && name.trim().length === 0)}
-                className={`w-full font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-white ${
-                  pin.length === 4 && (isLoginMode || name.trim().length > 0)
-                    ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600'
-                    : 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#240404] hover:to-[#a00404]'
-                }`}
+                className="w-full bg-white text-red-950 font-bold py-4 rounded-2xl text-lg disabled:opacity-30 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 shadow-xl"
               >
                 {isLoading ? (
                   <span>Caricamento...</span>
                 ) : (
                   <>
-                    {isLoginMode ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                    <span>{isLoginMode ? 'ACCEDI' : 'REGISTRATI'}</span>
+                    {isLoginMode ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+                    <span>{isLoginMode ? 'Accedi' : 'Registrati'}</span>
                   </>
                 )}
               </button>
-
-
-
             </form>
           </div>
 
-          {/* Toggle Mode - Fuori dal modal */}
-          <div className="text-center pt-4">
+          {/* Toggle mode */}
+          <div className="text-center pt-6">
             <button
               type="button"
-              onClick={() => {
-                setIsLoginMode(!isLoginMode);
-                setName('');
-                setPin('');
-              }}
-              className="text-white hover:text-yellow-200 font-medium underline"
+              onClick={() => { setIsLoginMode(!isLoginMode); setName(''); setPin(''); }}
+              className="text-white/40 hover:text-white/70 font-medium text-sm transition-colors"
             >
               {isLoginMode ? 'Non hai un account? Registrati' : 'Hai già un account? Accedi'}
             </button>
           </div>
-          
         </div>
       </div>
-
     </div>
   );
 }

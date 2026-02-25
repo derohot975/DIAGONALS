@@ -88,7 +88,18 @@ shared/
 - `package.json` dev script: rimosso `--env-file=.env.development` (non supportato Node 18)
 - `App.tsx`: 671 → 229 righe (estratti `AppModals.tsx` + `useAppHandlers.ts`)
 - `ManageEventModal.tsx`: 447 → 117 righe (estratto `ManageEventSteps.tsx`)
+- `ScreenRouter.tsx`: fix bug React "setState durante render" — guards auth via `useEffect`
+- Design Apple-style applicato a tutte le schermate principali (dark + glassmorphism)
+
+## Schermate aggiornate (design Apple-style)
+- `EventListScreen` — dark gradient, frosted-glass cards, tipografia white
+- `AdminEventManagementScreen` — clean white cards, bottoni chiari
+- `AuthScreen` — dark con keypad PIN minimalista e frosted-glass card
+- `HistoricEventsScreen` — dark cards, icone glass, long-press preserved
+- `AdminScreen` — layout pulito con icone colorate per ogni azione
+- `EventReportScreen` — ranking cards con badge colorati (oro/argento/bronzo)
 
 ## Performance
-- LCP: da 4-8s → ~288ms dopo refactoring
+- LCP effettivo app: ~288ms (escluso SplashScreen da 3s intenzionale)
 - FCP: ~272ms
+- Nota: LCP rilevato a 4-5s include i 3s della SplashScreen — normale e intenzionale
