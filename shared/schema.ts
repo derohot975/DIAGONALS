@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -34,6 +34,10 @@ export const wines = pgTable("wines", {
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   alcohol: decimal("alcohol", { precision: 4, scale: 1 }), // Gradazione alcolica opzionale
   createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+  return {
+    eventIdIdx: index("wines_event_id_idx").on(table.eventId),
+  };
 });
 
 export const votes = pgTable("votes", {
