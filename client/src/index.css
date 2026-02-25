@@ -146,10 +146,20 @@
 
 @layer components {
   .glass-effect {
-    backdrop-filter: blur(20px) !important;
-    background: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(24px) !important;
+    background: rgba(22, 4, 4, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
+  }
+
+  input[class*="bg-white"],
+  select[class*="bg-white"] {
+    color-scheme: dark;
+  }
+
+  select[class*="bg-white"] option {
+    background-color: #1a0303;
+    color: #ffffff;
   }
 
   .wine-card-hover {

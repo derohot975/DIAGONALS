@@ -140,11 +140,11 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
       title={title}
       size="sm"
       headerClassName="bg-gradient-to-r from-[#300505] to-[#8d0303] text-white"
-      className="bg-gradient-to-br from-white to-gray-50 border border-[#300505]/10"
+      className=""
     >
       {/* Step Title */}
       <div className="mb-4">
-        <p className="text-sm font-medium text-center text-[#300505]">{getStepTitle()}</p>
+        <p className="text-sm font-medium text-center text-white/65">{getStepTitle()}</p>
       </div>
 
       {/* PIN Display */}
@@ -155,8 +155,8 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
               key={index}
               className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
                 index < getCurrentValue().length 
-                  ? 'bg-[#300505] border-[#300505] shadow-lg' 
-                  : 'border-[#300505]/30 bg-white'
+                  ? 'bg-white border-white shadow-lg' 
+                  : 'border-white/20 bg-transparent'
               }`}
             />
           ))}
@@ -172,7 +172,7 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
           <button
             key={number}
             onClick={() => handleNumberClick(number.toString())}
-            className="h-16 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-xl font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
+            className="h-16 bg-white/8 hover:bg-white/15 border border-white/12 rounded-xl text-xl font-semibold text-white transition-all duration-200 active:scale-95"
           >
             {number}
           </button>
@@ -183,14 +183,14 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
         
         <button
           onClick={() => handleNumberClick('0')}
-          className="h-16 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-xl font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
+          className="h-16 bg-white/8 hover:bg-white/15 border border-white/12 rounded-xl text-xl font-semibold text-white transition-all duration-200 active:scale-95"
         >
           0
         </button>
         
         <button
           onClick={handleDelete}
-          className="h-16 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
+          className="h-16 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center text-white/50 transition-all duration-200 active:scale-95"
         >
           <Delete className="w-6 h-6" />
         </button>
@@ -205,7 +205,7 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
             ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white active:scale-95 shadow-lg'
             : getCurrentValue().length > 0
             ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#8d0303] hover:to-[#300505] text-white active:scale-95 shadow-lg'
-            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            : 'bg-white/5 text-white/25 cursor-not-allowed'
         }`}
       >
         {step === 'confirm' ? 'Salva PIN' : 'Conferma'}

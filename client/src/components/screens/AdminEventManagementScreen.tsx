@@ -77,7 +77,7 @@ export default function AdminEventManagementScreen({
                 ) : (
                   <button
                     onClick={() => onActivateVoting(event.id)}
-                    className="w-full bg-white text-red-950 font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg active:scale-95 transition-all"
+                    className="w-full bg-white/92 text-red-950 font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-black/20 active:scale-95 transition-all"
                   >
                     <Play className="w-4 h-4 fill-current" /><span>Avvia Votazioni</span>
                   </button>

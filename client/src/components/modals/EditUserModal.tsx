@@ -33,7 +33,7 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: E
       <button
         type="button"
         onClick={onClose}
-        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+        className="flex-1 bg-white/8 hover:bg-white/12 text-white/60 font-medium py-2 px-4 rounded-lg transition-colors border border-white/10"
       >
         Annulla
       </button>
@@ -58,14 +58,14 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: E
     >
       <form id="edit-user-form" onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white/60 mb-2">
             Nome Utente
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value.toUpperCase())}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(270,50%,65%)] focus:border-transparent uppercase"
+            className="w-full px-3 py-2 bg-white/8 border border-white/12 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent text-white placeholder-white/30 uppercase"
             placeholder="Inserisci il nome"
             required
           />
