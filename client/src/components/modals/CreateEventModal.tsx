@@ -81,8 +81,8 @@ export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: Cre
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white/80 focus:outline-none focus:border-white/25 transition-colors"
-              style={{ colorScheme: 'dark' }}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white/80 focus:outline-none focus:border-white/25 transition-colors block"
+              style={{ colorScheme: 'dark', appearance: 'none', WebkitAppearance: 'none' }}
               required
             />
           </div>
