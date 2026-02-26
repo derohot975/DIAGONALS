@@ -18,7 +18,7 @@ export const formatEventName = (eventName: string): string => {
 export const formatEventDate = (dateString: string) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
-  const month = date.toLocaleString('it-IT', { month: 'Long' });
+  const month = date.toLocaleString('it-IT', { month: 'long' });
   const year = date.getFullYear();
   
   // Capitalize first letter of month
