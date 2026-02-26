@@ -16,11 +16,15 @@ export const formatEventName = (eventName: string): string => {
 };
 
 export const formatEventDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('it-IT', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.toLocaleString('it-IT', { month: 'Long' });
+  const year = date.getFullYear();
+  
+  // Capitalize first letter of month
+  const formattedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+  
+  return `${day} ${formattedMonth} ${year}`;
 };
 
 export const getWineOwner = (userId: number, users: Array<{id: number, name: string}>) => {
