@@ -19,7 +19,9 @@ interface HistoricEventsScreenProps {
 }
 
 export default function HistoricEventsScreen({ events, users, onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
-  const completedEvents = events.filter(event => event.status === 'completed');
+  const completedEvents = [...events]
+    .filter(event => event.status === 'completed')
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<WineEvent | null>(null);
   const [, setForceUpdate] = useState(0);
@@ -34,8 +36,8 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
     const key = 'diagonale_protected_events';
     const initKey = 'diagonale_protection_initialized';
     if (!localStorage.getItem(initKey)) {
-      const sorted = completedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      localStorage.setItem(key, JSON.stringify(sorted.slice(0, 3).map(e => e.id)));
+      const sortedForProtection = [...completedEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      localStorage.setItem(key, JSON.stringify(sortedForProtection.slice(0, 3).map(e => e.id)));
       localStorage.setItem(initKey, 'true');
     }
     const protected_ = JSON.parse(localStorage.getItem(key) || '[]') as number[];
