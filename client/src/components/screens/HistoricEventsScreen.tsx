@@ -77,7 +77,7 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
               {isProtectedEvent(event) && <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />}
               <h3 className="font-bold text-white text-base leading-tight truncate">{formatEventName(event.name)}</h3>
             </div>
-            <p className="text-sm text-white/40">{formatEventDate(event.date)}</p>
+            <p className="text-sm font-medium text-amber-200/80">{formatEventDate(event.date)}</p>
           </div>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button
