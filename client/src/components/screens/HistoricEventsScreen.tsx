@@ -82,6 +82,10 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button
               onClick={(e) => { e.stopPropagation(); onShowPagella(event.id); }}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => { e.stopPropagation(); onShowPagella(event.id); }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => { e.stopPropagation(); }}
               className="p-3 bg-white/5 hover:bg-white/15 border border-white/10 text-white/60 hover:text-white rounded-2xl transition-all"
               title="Pagella"
             >
