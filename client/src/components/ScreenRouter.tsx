@@ -76,7 +76,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = (props) => {
         return <AdminScreen users={props.users} onShowAddUserModal={props.handleShowAddUserModal} onShowCreateEventModal={props.handleShowCreateEventModal} onShowEventList={props.handleShowAdminEvents} onShowEditUserModal={props.handleShowEditUserModal} onDeleteUser={props.handleDeleteUser} onGoBack={() => setCurrentScreen('auth')} onGoHome={() => setCurrentScreen('auth')} onChangeAdminPin={props.handleShowChangeAdminPin} />;
 
       case 'events':
-        return <EventListScreen events={props.events} users={props.users} currentUser={props.currentUser} wines={props.wines} votes={props.votes} onShowEventDetails={props.handleShowEventDetails} onShowEventResults={props.handleShowEventResults} onShowAdmin={props.handleShowAdmin} onRegisterWine={props.handleShowWineRegistration} onParticipateEvent={props.handleParticipateEvent} onVoteForWine={props.handleVoteForWine} onEditWine={props.handleEditWine} onShowHistoricEvents={props.handleShowHistoricEvents} />;
+        return <EventListScreen events={props.events} users={props.users} currentUser={props.currentUser} wines={props.wines} votes={props.votes ?? []} onShowEventDetails={props.handleShowEventDetails} onShowEventResults={props.handleShowEventResults} onShowAdmin={props.handleShowAdmin} onRegisterWine={props.handleShowWineRegistration} onParticipateEvent={props.handleParticipateEvent} onVoteForWine={props.handleVoteForWine} onEditWine={props.handleEditWine} onShowHistoricEvents={props.handleShowHistoricEvents} />;
 
       case 'adminEvents':
         return <AdminEventManagementScreen events={props.events} users={props.users} wines={props.wines} onGoBack={() => setCurrentScreen('admin')} onEditEvent={props.handleEditEvent} onDeleteEvent={props.handleDeleteEvent} onActivateVoting={props.handleActivateVoting} onDeactivateVoting={props.handleDeactivateVoting} onCompleteEvent={props.handleCompleteEvent} onViewReport={props.handleViewReport} onGoHome={() => setCurrentScreen('events')} onGoBackToAdmin={() => setCurrentScreen('admin')} />;
@@ -85,10 +85,10 @@ const ScreenRouter: React.FC<ScreenRouterProps> = (props) => {
         return props.currentEvent && props.currentUser ? <SimpleVotingScreen event={props.currentEvent} currentUser={props.currentUser} onBack={() => setCurrentScreen('events')} onHome={() => setCurrentScreen('events')} onShowAdmin={() => setCurrentScreen('admin')} /> : null;
 
       case 'eventDetails':
-        return props.currentEvent ? <EventDetailsScreen event={props.currentEvent} wines={props.wines} votes={props.votes} users={props.users} currentUser={props.currentUser} onShowWineRegistrationModal={() => props.setShowWineRegistrationModal(true)} onVoteForWine={props.handleVoteForWine} onCompleteEvent={props.handleCompleteEvent} onShowResults={props.handleShowResults} onParticipateEvent={props.handleParticipateEvent} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
+        return props.currentEvent ? <EventDetailsScreen event={props.currentEvent} wines={props.wines} votes={props.votes ?? []} users={props.users} currentUser={props.currentUser} onShowWineRegistrationModal={() => props.setShowWineRegistrationModal(true)} onVoteForWine={props.handleVoteForWine} onCompleteEvent={props.handleCompleteEvent} onShowResults={props.handleShowResults} onParticipateEvent={props.handleParticipateEvent} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
 
       case 'eventResults':
-        return props.currentEvent ? <EventResultsScreen event={props.currentEvent} results={props.results} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
+        return props.currentEvent ? <EventResultsScreen event={props.currentEvent} results={props.results ?? []} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} /> : null;
 
       case 'eventReport':
         return <EventReportScreen reportData={props.reportData} onGoBack={() => setCurrentScreen('adminEvents')} onGoHome={() => setCurrentScreen('events')} />;
