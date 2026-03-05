@@ -82,14 +82,22 @@ shared/
 - Chiedere autorizzazione prima di cambiamenti architetturali importanti
 - **Report Costi**: Ogni volta che Agent esegue azioni a pagamento, deve includere un report schematico con l'importo in $ dell'ultima azione e il totale addebitato fino a quel momento.
 
-## Fix applicati (Feb 2026)
-- `server/vite.ts`: sostituito `import.meta.dirname` con `fileURLToPath` (Node 18 compat)
-- `server/index.ts`: stesso fix + rimosso dynamic import superfluo
-- `package.json` dev script: rimosso `--env-file=.env.development` (non supportato Node 18)
-- `App.tsx`: 671 → 229 righe (estratti `AppModals.tsx` + `useAppHandlers.ts`)
-- `ManageEventModal.tsx`: 447 → 117 righe (estratto `ManageEventSteps.tsx`)
-- `ScreenRouter.tsx`: fix bug React "setState durante render" — guards auth via `useEffect`
-- Design Apple-style applicato a tutte le schermate principali (dark + glassmorphism)
+## Stato Attuale (5 Marzo 2026) - v2.0
+- **UI/UX**: Design Apple-style minimal dark completato. Frosted glass, tipografia curata, icone Lucide.
+- **PWA**: Configurazione PWA completa con supporto iOS safe-areas e install prompt.
+- **Performance**: Ottimizzazione hover (disabilitato su touch), memoizzazione componenti critici, caricamento rapido.
+- **Funzionalità**:
+  - Classifica Globale: Calcolo medie per evento e somma totale (Yellow Star).
+  - Pagella: Gestione voti singola portata con stopPropagation su mobile.
+  - Sicurezza: PIN Admin per azioni critiche (protezione/eliminazione eventi).
+  - Deploy: Script `deploy.sh` per push rapido su GitHub.
+  - Firma: "By DERO v2.0" nella SplashScreen.
+
+## Modifiche Recenti
+- Allineamento date negli eventi (padding 22px + mt-1).
+- Fix visibilità pallini PIN (classi Tailwind esplicite).
+- Disabilitazione globale `hover:` su dispositivi touch via `tailwind.config.ts`.
+- Script di backup automatico e deploy.
 
 ## Schermate aggiornate (design Apple-style)
 Tutte le schermate usano dark theme coerente (from-[#300505] to-[#1a0303]) con:
