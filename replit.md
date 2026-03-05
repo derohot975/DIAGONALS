@@ -93,6 +93,10 @@ shared/
   - Deploy: Script `deploy.sh` per push rapido su GitHub.
   - Firma: "By DERO v2.0" nella SplashScreen.
 
+## Note Sicurezza
+- Rimossi log contenenti Personal Access Token dalla cronologia git.
+- Esclusa cartella `Backup_Automatico/` dal tracking git.
+
 ## Modifiche Recenti
 - Allineamento date negli eventi (padding 22px + mt-1).
 - Fix visibilità pallini PIN (classi Tailwind esplicite).
