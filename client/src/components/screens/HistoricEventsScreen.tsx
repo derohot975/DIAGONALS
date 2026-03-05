@@ -39,7 +39,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
     votes.forEach(v => {
       if (completedEventIds.has(v.eventId)) {
         if (ranking[v.userId]) {
-          ranking[v.userId].score += (v.score || 0);
+          ranking[v.userId].score += parseFloat(String(v.score)) || 0;
         }
       }
     });
@@ -121,23 +121,22 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
       {/* Header */}
-      <div className="flex-shrink-0 flex justify-center pt-10 pb-6">
+      <div className="flex-shrink-0 relative flex justify-center pt-10 pb-6">
         <div className="relative">
           <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
           <img src={diagoLogo} alt="DIAGO Logo" className="relative mx-auto w-24 h-auto logo-filter drop-shadow-2xl" />
         </div>
-      </div>
-
-      <div className="flex-shrink-0 text-center pb-8 relative">
-        <p className="text-xs font-bold text-white/30 uppercase tracking-widest mb-1">Archivio</p>
-        <h2 className="text-3xl font-bold text-white tracking-tight">Storico</h2>
-        
         <button 
           onClick={() => setShowGlobalRanking(true)}
-          className="absolute right-6 top-0 p-2 text-yellow-400 transition-opacity hover:opacity-70"
+          className="absolute right-6 top-10 p-2 text-yellow-400 transition-opacity hover:opacity-70"
         >
           <Star className="w-7 h-7 fill-current" />
         </button>
+      </div>
+
+      <div className="flex-shrink-0 text-center pb-8">
+        <p className="text-xs font-bold text-white/30 uppercase tracking-widest mb-1">Archivio</p>
+        <h2 className="text-3xl font-bold text-white tracking-tight">Storico</h2>
       </div>
 
       {/* Global Ranking Modal/Overlay */}
