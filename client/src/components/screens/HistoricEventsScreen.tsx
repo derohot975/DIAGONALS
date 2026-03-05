@@ -190,7 +190,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
               {globalRanking.map((entry, index) => (
                 <div key={entry.name} className="flex items-center justify-between bg-white/5 rounded-2xl p-4 border border-white/5">
                   <div className="flex items-center gap-4">
-                    <span className="text-lg font-bold text-white/20 w-6">{index + 1}°</span>
+                    <span className="text-lg font-bold text-white/40 w-6">{index + 1}°</span>
                     <div className="flex flex-col">
                       <span className="text-white font-medium">{entry.name}</span>
                       <span className="text-[10px] font-medium text-[#fbedaa] leading-none mt-0.5">{entry.eventCount} DIAGONALI</span>
