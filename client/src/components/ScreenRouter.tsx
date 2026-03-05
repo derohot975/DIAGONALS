@@ -99,6 +99,7 @@ const ScreenRouter: React.FC<ScreenRouterProps> = (props) => {
             events={props.events}
             users={props.users}
             votes={props.votes}
+            wines={props.wines}
             onShowEventResults={props.handleShowEventResults}
             onShowPagella={props.handleShowPagella}
             onDeleteEvent={props.handleDeleteEvent}

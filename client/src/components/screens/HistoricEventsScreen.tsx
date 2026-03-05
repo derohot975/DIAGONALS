@@ -194,7 +194,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
                     <span className="text-white font-medium">{entry.name}</span>
                   </div>
                   <div className="text-yellow-400 font-bold">
-                    {Math.round(entry.score)} pts
+                    {entry.score.toFixed(1)} pts
                   </div>
                 </div>
               ))}
