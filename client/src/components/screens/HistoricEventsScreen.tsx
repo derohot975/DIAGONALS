@@ -129,7 +129,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
                 {isProtectedEvent(event) && <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />}
                 <h3 className="font-bold text-white text-base leading-tight truncate">{formatEventName(event.name)}</h3>
               </div>
-              <p className="text-sm font-medium text-[#fbedaa] pl-[22px]">{formatEventDate(event.date)}</p>
+              <p className="text-sm font-medium text-[#fbedaa] pl-[22px] mt-1">{formatEventDate(event.date)}</p>
             </div>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button
