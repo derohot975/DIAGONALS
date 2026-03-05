@@ -54,7 +54,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
   // ⌨️ Keyboard shortcuts globali
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + K per aprire overlay
+      // Ctrl/Cmd + K per aprire overlay - Mantengo solo logica silente senza testo UI
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         onOpenChange(true);
@@ -162,11 +162,6 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
           <Wine className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg">Cerca per nome o produttore</p>
           <p className="text-gray-400 text-sm mt-1">Minimo 2 caratteri</p>
-          <div className="mt-4 text-xs text-gray-400">
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600">Ctrl</kbd> + 
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600 ml-1">K</kbd>
-            <span className="ml-2">per aprire rapidamente</span>
-          </div>
         </div>
       );
     }
