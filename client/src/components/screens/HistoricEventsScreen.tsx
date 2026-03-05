@@ -125,13 +125,11 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
       >
         <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0 mr-4">
-              <div className="flex flex-col gap-0.5 mb-1">
-                <div className="flex items-center gap-2">
-                  {isProtectedEvent(event) && <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />}
-                  <div className="flex flex-col min-w-0">
-                    <h3 className="font-bold text-white text-base leading-tight truncate">{formatEventName(event.name)}</h3>
-                    <p className="text-sm font-medium text-[#fbedaa]">{formatEventDate(event.date)}</p>
-                  </div>
+              <div className="flex items-center gap-2 mb-1">
+                {isProtectedEvent(event) && <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />}
+                <div className="flex flex-col min-w-0">
+                  <h3 className="font-bold text-white text-base leading-tight truncate">{formatEventName(event.name)}</h3>
+                  <p className="text-sm font-medium text-[#fbedaa]">{formatEventDate(event.date)}</p>
                 </div>
               </div>
             </div>
