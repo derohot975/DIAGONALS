@@ -85,6 +85,10 @@ function App() {
   const { data: wines = [] } = useQuery<Wine[]>({
     queryKey: ['/api/wines'], staleTime: 2 * 60 * 1000, refetchOnWindowFocus: false,
   });
+  const { data: allVotes = [] } = useQuery<Vote[]>({
+    queryKey: ['/api/votes'], staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false,
+  });
+
   const { data: votes = [] } = useQuery<Vote[]>({
     queryKey: ['/api/votes?eventId=' + appState.selectedEventId], enabled: !!appState.selectedEventId,
   });
@@ -162,7 +166,7 @@ function App() {
           users={users}
           events={events}
           wines={wines}
-          votes={votes}
+          votes={allVotes}
           results={results}
           reportData={appState.reportData}
           authLoading={authLoading}

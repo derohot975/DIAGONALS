@@ -18,8 +18,8 @@ export interface ScreenRouterProps {
   users: User[];
   events: WineEvent[];
   wines: Wine[];
-  votes: Vote[];
-  results: WineResultDetailed[];
+  votes?: Vote[];
+  results?: WineResultDetailed[];
   reportData: EventReportData | null;
   authLoading: boolean;
   authError: string | null;
@@ -94,7 +94,19 @@ const ScreenRouter: React.FC<ScreenRouterProps> = (props) => {
         return <EventReportScreen reportData={props.reportData} onGoBack={() => setCurrentScreen('adminEvents')} onGoHome={() => setCurrentScreen('events')} />;
 
       case 'historicEvents':
-        return <HistoricEventsScreen events={props.events} users={props.users} onShowEventResults={props.handleShowEventResults} onShowPagella={props.handleShowPagella} onDeleteEvent={props.handleDeleteEvent} onProtectEvent={props.handleProtectEvent} onGoBack={() => setCurrentScreen('events')} onGoHome={() => setCurrentScreen('events')} />;
+        return (
+          <HistoricEventsScreen
+            events={props.events}
+            users={props.users}
+            votes={props.votes}
+            onShowEventResults={props.handleShowEventResults}
+            onShowPagella={props.handleShowPagella}
+            onDeleteEvent={props.handleDeleteEvent}
+            onProtectEvent={props.handleProtectEvent}
+            onGoBack={() => setCurrentScreen('events')}
+            onGoHome={() => setCurrentScreen('events')}
+          />
+        );
 
       case 'pagella':
         return props.currentEvent ? <PagellaScreen event={props.currentEvent} currentUser={props.currentUser} onGoBack={() => setCurrentScreen('historicEvents')} onGoHome={() => setCurrentScreen('events')} /> : null;

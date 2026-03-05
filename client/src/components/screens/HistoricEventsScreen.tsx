@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { BarChart3, StickyNote, ArrowLeft, Home, Lock } from '@/components/icons';
+import { useState, useEffect, useMemo } from 'react';
+import { BarChart3, StickyNote, ArrowLeft, Home, Lock, Star, X } from '@/components/icons';
 import { formatEventDate, formatEventName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 import ManageEventModal from '../modals/ManageEventModal';
 import { useLongPress } from '@/hooks/useLongPress';
-import { User, WineEvent } from '@shared/schema';
+import { User, WineEvent, Vote } from '@shared/schema';
 
 interface HistoricEventsScreenProps {
   events: WineEvent[];
   users: User[];
+  votes?: Vote[];
   onShowEventResults: (eventId: number) => void;
   onShowPagella: (eventId: number) => void;
   onDeleteEvent?: (eventId: number) => void;
@@ -18,13 +19,33 @@ interface HistoricEventsScreenProps {
   onGoHome: () => void;
 }
 
-export default function HistoricEventsScreen({ events, users, onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
+export default function HistoricEventsScreen({ events, users, votes = [], onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
   const completedEvents = [...events]
     .filter(event => event.status === 'completed')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<WineEvent | null>(null);
+  const [showGlobalRanking, setShowGlobalRanking] = useState(false);
   const [, setForceUpdate] = useState(0);
+
+  const globalRanking = useMemo(() => {
+    const ranking: Record<number, { name: string, score: number }> = {};
+    users.forEach(u => {
+      ranking[u.id] = { name: u.name, score: 0 };
+    });
+
+    const completedEventIds = new Set(completedEvents.map(e => e.id));
+    
+    votes.forEach(v => {
+      if (completedEventIds.has(v.eventId)) {
+        if (ranking[v.userId]) {
+          ranking[v.userId].score += (v.score || 0);
+        }
+      }
+    });
+
+    return Object.values(ranking).sort((a, b) => b.score - a.score);
+  }, [users, votes, completedEvents]);
 
   useEffect(() => {
     const handleStorageChange = () => setForceUpdate(prev => prev + 1);
@@ -107,10 +128,51 @@ export default function HistoricEventsScreen({ events, users, onShowEventResults
         </div>
       </div>
 
-      <div className="flex-shrink-0 text-center pb-8">
+      <div className="flex-shrink-0 text-center pb-8 relative">
         <p className="text-xs font-bold text-white/30 uppercase tracking-widest mb-1">Archivio</p>
         <h2 className="text-3xl font-bold text-white tracking-tight">Storico</h2>
+        
+        <button 
+          onClick={() => setShowGlobalRanking(true)}
+          className="absolute right-6 top-0 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-yellow-400 hover:bg-yellow-500/20 transition-all"
+        >
+          <Star className="w-6 h-6 fill-current" />
+        </button>
       </div>
+
+      {/* Global Ranking Modal/Overlay */}
+      {showGlobalRanking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowGlobalRanking(false)} />
+          <div className="relative w-full max-w-sm bg-[#1a0303] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden">
+            <div className="absolute top-4 right-4">
+              <button onClick={() => setShowGlobalRanking(false)} className="p-2 text-white/30 hover:text-white">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="text-center mb-8">
+              <Star className="w-12 h-12 text-yellow-400 fill-current mx-auto mb-3" />
+              <h3 className="text-2xl font-bold text-white">Classifica Generale</h3>
+              <p className="text-white/40 text-sm">Somma voti eventi conclusi</p>
+            </div>
+
+            <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
+              {globalRanking.map((entry, index) => (
+                <div key={entry.name} className="flex items-center justify-between bg-white/5 rounded-2xl p-4 border border-white/5">
+                  <div className="flex items-center gap-4">
+                    <span className="text-lg font-bold text-white/20 w-6">{index + 1}°</span>
+                    <span className="text-white font-medium">{entry.name}</span>
+                  </div>
+                  <div className="text-yellow-400 font-bold">
+                    {Math.round(entry.score)} pts
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Scrollable content */}
       <div
