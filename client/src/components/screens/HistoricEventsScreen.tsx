@@ -191,7 +191,10 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
                 <div key={entry.name} className="flex items-center justify-between bg-white/5 rounded-2xl p-4 border border-white/5">
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-bold text-white/20 w-6">{index + 1}°</span>
-                    <span className="text-white font-medium">{entry.name}</span>
+                    <div className="flex flex-col">
+                      <span className="text-white font-medium">{entry.name}</span>
+                      <span className="text-xs font-medium text-[#fbedaa]">{entry.eventCount} DIAGONALI</span>
+                    </div>
                   </div>
                   <div className="text-yellow-400 font-bold">
                     {entry.score.toFixed(1)} pts
