@@ -35,4 +35,8 @@ export class VoteStorage {
     const [vote] = await db.select().from(votes).where(and(eq(votes.userId, userId), eq(votes.wineId, wineId)));
     return vote || undefined;
   }
+
+  async getAllVotes(): Promise<Vote[]> {
+    return await db.select().from(votes);
+  }
 }

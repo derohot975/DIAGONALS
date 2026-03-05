@@ -47,6 +47,7 @@ export interface IStorage {
   getVotesByEventId(eventId: number): Promise<Vote[]>;
   getVotesByWineId(wineId: number): Promise<Vote[]>;
   getUserVoteForWine(userId: number, wineId: number): Promise<Vote | undefined>;
+  getAllVotes(): Promise<Vote[]>;
   
   // Event Report operations
   createEventReport(report: InsertEventReport): Promise<EventReport>;
@@ -109,6 +110,7 @@ export class DatabaseStorage implements IStorage {
   getVotesByEventId(id: number) { return this.votes.getVotesByEventId(id); }
   getVotesByWineId(id: number) { return this.votes.getVotesByWineId(id); }
   getUserVoteForWine(u: number, w: number) { return this.votes.getUserVoteForWine(u, w); }
+  getAllVotes() { return this.votes.getAllVotes(); }
 
   // Report
   createEventReport(r: InsertEventReport) { return this.reports.createEventReport(r); }

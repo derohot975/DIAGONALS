@@ -86,7 +86,7 @@ function App() {
     queryKey: ['/api/wines'], staleTime: 2 * 60 * 1000, refetchOnWindowFocus: false,
   });
   const { data: allVotes = [] } = useQuery<Vote[]>({
-    queryKey: ['/api/votes'], staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false,
+    queryKey: ['/api/votes/all'], staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false,
   });
 
   const { data: votes = [] } = useQuery<Vote[]>({

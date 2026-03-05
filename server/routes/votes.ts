@@ -10,6 +10,15 @@ const UNKNOWN_CONTRIBUTOR = 'Unknown';
 export const votesRouter = Router();
 
 // Vote routes
+votesRouter.get("/all", async (_req: Request, res: Response) => {
+  try {
+    const votes = await storage.getAllVotes();
+    res.json(votes);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch all votes" });
+  }
+});
+
 votesRouter.get("/", async (req: Request, res: Response) => {
   try {
     const eventId = req.query.eventId ? parseInt(req.query.eventId as string) : null;

@@ -30,7 +30,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
 
   const globalRanking = useMemo(() => {
     const ranking: Record<number, { name: string, score: number }> = {};
-    users.forEach(u => {
+    users.filter(u => !u.isAdmin).forEach(u => {
       ranking[u.id] = { name: u.name, score: 0 };
     });
 
@@ -134,9 +134,9 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
         
         <button 
           onClick={() => setShowGlobalRanking(true)}
-          className="absolute right-6 top-0 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-yellow-400 hover:bg-yellow-500/20 transition-all"
+          className="absolute right-6 top-0 p-2 text-yellow-400 transition-opacity hover:opacity-70"
         >
-          <Star className="w-6 h-6 fill-current" />
+          <Star className="w-7 h-7 fill-current" />
         </button>
       </div>
 
@@ -154,7 +154,6 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
             <div className="text-center mb-8">
               <Star className="w-12 h-12 text-yellow-400 fill-current mx-auto mb-3" />
               <h3 className="text-2xl font-bold text-white">Classifica Generale</h3>
-              <p className="text-white/40 text-sm">Somma voti eventi conclusi</p>
             </div>
 
             <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
