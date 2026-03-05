@@ -133,8 +133,12 @@ export function StepPin({ selectedAction, isProtected, pin, error, adminPin, onC
           {[0, 1, 2].map(i => (
             <div key={i} className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
               i < pin.length
-                ? `bg-${activeColor}-600 border-${activeColor}-600 shadow-lg`
-                : `border-${activeColor}-300 bg-white`
+                ? isDelete
+                  ? 'bg-red-600 border-red-600 shadow-lg'
+                  : 'bg-yellow-500 border-yellow-500 shadow-lg'
+                : isDelete
+                  ? 'border-red-300 bg-white'
+                  : 'border-yellow-400 bg-white'
             }`} />
           ))}
         </div>
