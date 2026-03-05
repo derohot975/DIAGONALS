@@ -190,7 +190,8 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
               <Star className="w-12 h-12 text-yellow-400 fill-current mx-auto mb-3" />
               <h3 className="text-2xl font-bold text-white">Classifica Generale</h3>
               <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider px-4">
-                Media dei voti su min. 3 Diagonali
+                Punteggio basato sulla media dei voti ricevuti<br/>
+                (Minimo 3 Diagonali completate)
               </p>
             </div>
 
