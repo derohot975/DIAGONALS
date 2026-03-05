@@ -5,12 +5,13 @@ import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
 import ManageEventModal from '../modals/ManageEventModal';
 import { useLongPress } from '@/hooks/useLongPress';
-import { User, WineEvent, Vote } from '@shared/schema';
+import { User, WineEvent, Vote, Wine } from '@shared/schema';
 
 interface HistoricEventsScreenProps {
   events: WineEvent[];
   users: User[];
   votes?: Vote[];
+  wines?: Wine[];
   onShowEventResults: (eventId: number) => void;
   onShowPagella: (eventId: number) => void;
   onDeleteEvent?: (eventId: number) => void;
@@ -19,7 +20,7 @@ interface HistoricEventsScreenProps {
   onGoHome: () => void;
 }
 
-export default function HistoricEventsScreen({ events, users, votes = [], onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
+export default function HistoricEventsScreen({ events, users, votes = [], wines = [], onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
   const completedEvents = [...events]
     .filter(event => event.status === 'completed')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -29,23 +30,53 @@ export default function HistoricEventsScreen({ events, users, votes = [], onShow
   const [, setForceUpdate] = useState(0);
 
   const globalRanking = useMemo(() => {
-    const ranking: Record<number, { name: string, score: number }> = {};
+    const totals: Record<number, { name: string, scoreSum: number, eventCount: number }> = {};
     users.filter(u => !u.isAdmin).forEach(u => {
-      ranking[u.id] = { name: u.name, score: 0 };
+      totals[u.id] = { name: u.name, scoreSum: 0, eventCount: 0 };
     });
 
     const completedEventIds = new Set(completedEvents.map(e => e.id));
-    
-    votes.forEach(v => {
-      if (completedEventIds.has(v.eventId)) {
-        if (ranking[v.userId]) {
-          ranking[v.userId].score += parseFloat(String(v.score)) || 0;
-        }
+
+    // Build a map: wineId -> userId (owner of the wine)
+    const wineOwner: Record<number, number> = {};
+    wines.forEach(w => {
+      if (completedEventIds.has(w.eventId) && w.userId != null) {
+        wineOwner[w.id] = w.userId;
       }
     });
 
-    return Object.values(ranking).sort((a, b) => b.score - a.score);
-  }, [users, votes, completedEvents]);
+    // Group votes by eventId, then by wineId to compute per-wine averages
+    const votesByEventWine: Record<string, number[]> = {};
+    votes.forEach(v => {
+      if (!completedEventIds.has(v.eventId)) return;
+      const key = `${v.eventId}:${v.wineId}`;
+      if (!votesByEventWine[key]) votesByEventWine[key] = [];
+      const s = parseFloat(String(v.score));
+      if (!isNaN(s)) votesByEventWine[key].push(s);
+    });
+
+    // For each wine in a completed event, compute avg and add to owner's total
+    const processedUserEvent = new Set<string>();
+    Object.entries(votesByEventWine).forEach(([key, scores]) => {
+      const [eventIdStr, wineIdStr] = key.split(':');
+      const wineId = parseInt(wineIdStr);
+      const eventId = parseInt(eventIdStr);
+      const ownerId = wineOwner[wineId];
+      if (ownerId == null || !totals[ownerId]) return;
+
+      const userEventKey = `${ownerId}:${eventId}`;
+      if (processedUserEvent.has(userEventKey)) return;
+      processedUserEvent.add(userEventKey);
+
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      totals[ownerId].scoreSum += avg;
+      totals[ownerId].eventCount += 1;
+    });
+
+    return Object.values(totals)
+      .sort((a, b) => b.scoreSum - a.scoreSum)
+      .map(e => ({ name: e.name, score: e.scoreSum, eventCount: e.eventCount }));
+  }, [users, votes, wines, completedEvents]);
 
   useEffect(() => {
     const handleStorageChange = () => setForceUpdate(prev => prev + 1);
