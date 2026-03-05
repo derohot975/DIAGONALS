@@ -74,8 +74,13 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
     });
 
     return Object.values(totals)
-      .sort((a, b) => b.scoreSum - a.scoreSum)
-      .map(e => ({ name: e.name, score: e.scoreSum, eventCount: e.eventCount }));
+      .filter(e => e.eventCount >= 3)
+      .map(e => ({ 
+        name: e.name, 
+        score: e.eventCount > 0 ? e.scoreSum / e.eventCount : 0, 
+        eventCount: e.eventCount 
+      }))
+      .sort((a, b) => b.score - a.score);
   }, [users, votes, wines, completedEvents]);
 
   useEffect(() => {
@@ -184,6 +189,9 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
             <div className="text-center mb-8">
               <Star className="w-12 h-12 text-yellow-400 fill-current mx-auto mb-3" />
               <h3 className="text-2xl font-bold text-white">Classifica Generale</h3>
+              <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider px-4">
+                Media dei voti su min. 3 Diagonali
+              </p>
             </div>
 
             <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
