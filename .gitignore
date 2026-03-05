@@ -98,3 +98,7 @@ server/public/
 
 # Vite cache
 vite.config.ts.*
+
+# Local backups
+Backup_Automatico/
+*.tar.gz
