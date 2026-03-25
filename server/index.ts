@@ -9,7 +9,7 @@ import { ensurePagellaTable } from "./db/pagella";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
 
-const KEEP_ALIVE_INTERVAL_MS = 3 * 60 * 1000; // 3 minuti (sincronizzato con UptimeRobot)
+const KEEP_ALIVE_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 ore (sufficiente per prevenire pausa Supabase: 7gg = 168h)
 
 function startDatabaseKeepAlive() {
   setInterval(async () => {
@@ -20,7 +20,7 @@ function startDatabaseKeepAlive() {
       log("Keep-alive: database ping fallito");
     }
   }, KEEP_ALIVE_INTERVAL_MS);
-  log("Keep-alive: avviato (intervallo 24h)");
+  log("Keep-alive: avviato (intervallo 12h)");
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
