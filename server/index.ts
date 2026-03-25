@@ -9,7 +9,7 @@ import { ensurePagellaTable } from "./db/pagella";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
 
-const KEEP_ALIVE_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 ore
+const KEEP_ALIVE_INTERVAL_MS = 5 * 60 * 1000; // 5 minuti (sincronizzato con UptimeRobot)
 
 function startDatabaseKeepAlive() {
   setInterval(async () => {
