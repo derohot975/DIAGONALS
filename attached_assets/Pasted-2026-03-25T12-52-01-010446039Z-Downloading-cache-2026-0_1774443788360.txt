@@ -1,0 +1,74 @@
+2026-03-25T12:52:01.010446039Z ==> Downloading cache...
+2026-03-25T12:52:01.056440019Z ==> Cloning from https://github.com/derohot975/DIAGONALS
+2026-03-25T12:52:01.735678699Z ==> Checking out commit 98caf9d68508ea10279e1b1dfdbecad843f57ff9 in branch main
+2026-03-25T12:52:07.032218484Z ==> Downloaded 169MB in 2s. Extraction took 3s.
+2026-03-25T12:52:19.082046396Z ==> Requesting Node.js version >=18
+2026-03-25T12:52:29.009292924Z ==> Using Node.js version 25.8.2 via /opt/render/project/src/package.json
+2026-03-25T12:52:29.03349851Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-03-25T12:52:29.149998605Z ==> Running build command 'npm ci && npm run build'...
+2026-03-25T12:52:35.503382462Z 
+2026-03-25T12:52:35.503412763Z added 451 packages, and audited 452 packages in 6s
+2026-03-25T12:52:35.503542195Z 
+2026-03-25T12:52:35.503640765Z 74 packages are looking for funding
+2026-03-25T12:52:35.503740067Z   run `npm fund` for details
+2026-03-25T12:52:35.534805499Z 
+2026-03-25T12:52:35.534828379Z 11 vulnerabilities (2 low, 6 moderate, 3 high)
+2026-03-25T12:52:35.534831509Z 
+2026-03-25T12:52:35.534834679Z To address issues that do not require attention, run:
+2026-03-25T12:52:35.534837359Z   npm audit fix
+2026-03-25T12:52:35.534840569Z 
+2026-03-25T12:52:35.534844959Z To address all issues (including breaking changes), run:
+2026-03-25T12:52:35.534850109Z   npm audit fix --force
+2026-03-25T12:52:35.534853789Z 
+2026-03-25T12:52:35.534858429Z Run `npm audit` for details.
+2026-03-25T12:52:35.72472193Z 
+2026-03-25T12:52:35.72473693Z > diagonale-wine-app@1.0.0 build
+2026-03-25T12:52:35.72474087Z > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2026-03-25T12:52:35.72474574Z 
+2026-03-25T12:52:35.939685243Z vite v5.4.21 building for production...
+2026-03-25T12:52:35.985366815Z transforming...
+2026-03-25T12:52:36.118094814Z [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+2026-03-25T12:52:38.658111772Z ✓ 1699 modules transformed.
+2026-03-25T12:52:38.801502658Z rendering chunks...
+2026-03-25T12:52:38.808140259Z computing gzip size...
+2026-03-25T12:52:38.818050703Z ../dist/public/index.html                       1.64 kB │ gzip:  0.63 kB
+2026-03-25T12:52:38.818067404Z ../dist/public/assets/diagologo-CdzmgzP4.png   90.59 kB
+2026-03-25T12:52:38.818109535Z ../dist/public/assets/index-A6ChmTUk.css       49.12 kB │ gzip:  9.59 kB
+2026-03-25T12:52:38.818165505Z ../dist/public/assets/index-BILr5a6S.js       329.17 kB │ gzip: 91.96 kB
+2026-03-25T12:52:38.818380299Z ✓ built in 2.86s
+2026-03-25T12:52:38.88631056Z 
+2026-03-25T12:52:38.88634667Z   dist/index.js  52.3kb
+2026-03-25T12:52:38.8863501Z 
+2026-03-25T12:52:38.88635339Z ⚡ Done in 16ms
+2026-03-25T12:52:41.808723188Z ==> Uploading build...
+2026-03-25T12:52:49.920095976Z ==> Uploaded in 5.4s. Compression took 2.7s
+2026-03-25T12:52:49.948617299Z ==> Build successful 🎉
+2026-03-25T12:52:55.39625403Z ==> Deploying...
+2026-03-25T12:53:11.876181524Z ==> Running 'npm run start'
+2026-03-25T12:53:13.073928322Z 
+2026-03-25T12:53:13.073954162Z > diagonale-wine-app@1.0.0 start
+2026-03-25T12:53:13.073959422Z > node dist/index.js
+2026-03-25T12:53:13.073961803Z 
+2026-03-25T12:53:20.97353626Z 🗄️  Database: PostgreSQL locale (sviluppo)
+2026-03-25T12:53:20.9735628Z 🔗 Connecting to PostgreSQL database...
+2026-03-25T12:53:20.97356648Z 📡 Attempting connection with SSL mode: require
+2026-03-25T12:53:21.368332583Z Database connection successful
+2026-03-25T12:53:21.37589985Z {
+2026-03-25T12:53:21.3759159Z   severity_local: 'NOTICE',
+2026-03-25T12:53:21.37592017Z   severity: 'NOTICE',
+2026-03-25T12:53:21.37592252Z   code: '42P07',
+2026-03-25T12:53:21.37592542Z   message: 'relation "event_pagella" already exists, skipping',
+2026-03-25T12:53:21.375927571Z   file: 'parse_utilcmd.c',
+2026-03-25T12:53:21.375929791Z   line: '207',
+2026-03-25T12:53:21.375932131Z   routine: 'transformCreateStmt'
+2026-03-25T12:53:21.37593434Z }
+2026-03-25T12:53:21.478164866Z 12:53:21 PM [express] Server running on port 10000
+2026-03-25T12:53:21.478308859Z 12:53:21 PM [express] Environment: production
+2026-03-25T12:53:21.564562699Z 12:53:21 PM [express] Keep-alive: avviato (intervallo 24h)
+2026-03-25T12:53:29.044766462Z ==> Your service is live 🎉
+2026-03-25T12:53:29.23855768Z ==> 
+2026-03-25T12:53:29.240852015Z ==> ///////////////////////////////////////////////////////////
+2026-03-25T12:53:29.243358876Z ==> 
+2026-03-25T12:53:29.246293697Z ==> Available at your primary URL https://diagonals.onrender.com
+2026-03-25T12:53:29.248569652Z ==> 
+2026-03-25T12:53:29.250763795Z ==> ///////////////////////////////////////////////////////////
