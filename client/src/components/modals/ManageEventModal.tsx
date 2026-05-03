@@ -17,7 +17,12 @@ type ModalStep = 'choose' | 'delete-confirm' | 'delete-pin' | 'delete-final' | '
 type ActionType = 'delete' | 'protect' | null;
 
 export default function ManageEventModal({
-  isOpen, event, onClose, onDelete, onProtect, isProtected = false
+  isOpen,
+  event,
+  onClose,
+  onDelete,
+  onProtect,
+  isProtected = false,
 }: ManageEventModalProps) {
   const [step, setStep] = useState<ModalStep>('choose');
   const [selectedAction, setSelectedAction] = useState<ActionType>(null);
@@ -38,7 +43,7 @@ export default function ManageEventModal({
 
   useEffect(() => {
     if (step === 'delete-final' && countdown > 0) {
-      const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+      const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [step, countdown]);
@@ -57,7 +62,10 @@ export default function ManageEventModal({
   const handleActionSelect = (action: ActionType) => {
     setSelectedAction(action);
     if (action === 'delete') {
-      if (isProtected) { setError('Questo evento è protetto e non può essere eliminato'); return; }
+      if (isProtected) {
+        setError('Questo evento è protetto e non può essere eliminato');
+        return;
+      }
       setStep('delete-confirm');
     } else if (action === 'protect') {
       setStep('protect-pin');
@@ -65,20 +73,34 @@ export default function ManageEventModal({
   };
 
   const handleDeleteConfirm = () => {
-    if (isProtected) { setError('Questo evento è protetto e non può essere eliminato'); return; }
+    if (isProtected) {
+      setError('Questo evento è protetto e non può essere eliminato');
+      return;
+    }
     setStep('delete-pin');
   };
 
   const handleNumberClick = (number: string) => {
-    if (pin.length < 3) { setPin(prev => prev + number); setError(''); }
+    if (pin.length < 3) {
+      setPin((prev) => prev + number);
+      setError('');
+    }
   };
 
-  const handleDeleteDigit = () => { setPin(prev => prev.slice(0, -1)); setError(''); };
+  const handleDeleteDigit = () => {
+    setPin((prev) => prev.slice(0, -1));
+    setError('');
+  };
 
   const handlePinConfirm = () => {
     if (pin === ADMIN_PIN) {
-      if (selectedAction === 'delete') { setStep('delete-final'); setError(''); }
-      else if (selectedAction === 'protect') { onProtect(event.id, !isProtected); handleClose(); }
+      if (selectedAction === 'delete') {
+        setStep('delete-final');
+        setError('');
+      } else if (selectedAction === 'protect') {
+        onProtect(event.id, !isProtected);
+        handleClose();
+      }
     } else {
       setError('PIN Admin non valido');
       setPin('');
@@ -86,19 +108,43 @@ export default function ManageEventModal({
   };
 
   const handleFinalDeleteConfirm = () => {
-    if (countdown === 0) { onDelete(event.id); handleClose(); }
+    if (countdown === 0) {
+      onDelete(event.id);
+      handleClose();
+    }
   };
 
-  const commonProps = { event, isProtected, selectedAction, pin, error, countdown, adminPin: ADMIN_PIN, onClose: handleClose };
+  const commonProps = {
+    event,
+    isProtected,
+    selectedAction,
+    pin,
+    error,
+    countdown,
+    adminPin: ADMIN_PIN,
+    onClose: handleClose,
+  };
 
   const renderStep = () => {
     switch (step) {
-      case 'choose': return <StepChoose {...commonProps} onActionSelect={handleActionSelect} />;
-      case 'delete-confirm': return <StepDeleteConfirm {...commonProps} onDeleteConfirm={handleDeleteConfirm} />;
+      case 'choose':
+        return <StepChoose {...commonProps} onActionSelect={handleActionSelect} />;
+      case 'delete-confirm':
+        return <StepDeleteConfirm {...commonProps} onDeleteConfirm={handleDeleteConfirm} />;
       case 'delete-pin':
-      case 'protect-pin': return <StepPin {...commonProps} onNumberClick={handleNumberClick} onDeleteDigit={handleDeleteDigit} onPinConfirm={handlePinConfirm} />;
-      case 'delete-final': return <StepDeleteFinal {...commonProps} onFinalDeleteConfirm={handleFinalDeleteConfirm} />;
-      default: return <StepChoose {...commonProps} onActionSelect={handleActionSelect} />;
+      case 'protect-pin':
+        return (
+          <StepPin
+            {...commonProps}
+            onNumberClick={handleNumberClick}
+            onDeleteDigit={handleDeleteDigit}
+            onPinConfirm={handlePinConfirm}
+          />
+        );
+      case 'delete-final':
+        return <StepDeleteFinal {...commonProps} onFinalDeleteConfirm={handleFinalDeleteConfirm} />;
+      default:
+        return <StepChoose {...commonProps} onActionSelect={handleActionSelect} />;
     }
   };
 
@@ -106,7 +152,12 @@ export default function ManageEventModal({
     <BaseModal
       open={isOpen}
       onOpenChange={handleClose}
-      title={<div className="flex items-center space-x-2"><Settings className="w-5 h-5" /><span>Gestisci Evento</span></div>}
+      title={
+        <div className="flex items-center space-x-2">
+          <Settings className="w-5 h-5" />
+          <span>Gestisci Evento</span>
+        </div>
+      }
       size="sm"
       headerClassName="bg-gradient-to-r from-gray-600 to-gray-700 text-white"
       className="bg-white border border-gray-200"

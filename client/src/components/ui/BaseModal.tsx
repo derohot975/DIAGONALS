@@ -3,12 +3,12 @@ import { X } from '@/components/icons';
 import { getZIndexClass } from '@/styles/tokens/zIndex';
 
 // 🛡️ Contract Lock - Modal Visibility Props (ONLY open allowed)
-export interface ModalVisibilityProps {
+interface ModalVisibilityProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export interface BaseModalProps extends ModalVisibilityProps {
+interface BaseModalProps extends ModalVisibilityProps {
   onOpenChange: (open: boolean) => void; // Required for contract lock
   title?: ReactNode;
   description?: ReactNode;
@@ -38,9 +38,8 @@ export default function BaseModal({
   headerClassName = '',
   contentClassName = '',
   showCloseButton = true,
-  'data-testid': testId
+  'data-testid': testId,
 }: BaseModalProps) {
-  
   // Size variants
   const getSizeStyles = () => {
     switch (size) {
@@ -83,7 +82,7 @@ export default function BaseModal({
       document.addEventListener('keydown', handleEscKey);
       // Body scroll lock
       document.body.style.overflow = 'hidden';
-      
+
       return () => {
         document.removeEventListener('keydown', handleEscKey);
         document.body.style.overflow = 'unset';
@@ -128,7 +127,7 @@ export default function BaseModal({
   if (!open) return null;
 
   return (
-    <div 
+    <div
       className={`fixed inset-0 bg-black/50 flex items-center justify-center ${getZIndexClass('MODAL_OVERLAY')} p-4`}
       onClick={handleBackdropClick}
       role="dialog"
@@ -138,45 +137,41 @@ export default function BaseModal({
       aria-labelledby={title ? 'modal-title' : undefined}
       aria-describedby={description ? 'modal-description' : undefined}
     >
-      <div 
+      <div
         className={`
           bg-white/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl w-full max-h-[85vh] overflow-hidden border border-white/20
           ${getSizeStyles()}
           ${className}
         `}
         onClick={(e) => e.stopPropagation()}
-        style={{ 
+        style={{
           position: 'relative',
           transform: 'none',
           touchAction: 'manipulation',
-          marginBottom: 'var(--bottom-nav-total, 56px)'
+          marginBottom: 'var(--bottom-nav-total, 56px)',
         }}
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className={`
+          <div
+            className={`
             ${showCloseButton ? 'flex items-center justify-between' : 'flex items-center justify-center'} p-4 border-b border-gray-200
             ${headerClassName}
-          `}>
-            <div className={showCloseButton ? "flex-1 min-w-0" : "text-center"}>
+          `}
+          >
+            <div className={showCloseButton ? 'flex-1 min-w-0' : 'text-center'}>
               {title && (
-                <h2 
-                  id="modal-title"
-                  className="text-xl font-bold truncate"
-                >
+                <h2 id="modal-title" className="text-xl font-bold truncate">
                   {title}
                 </h2>
               )}
               {description && (
-                <p 
-                  id="modal-description"
-                  className="mt-1 text-sm text-gray-600"
-                >
+                <p id="modal-description" className="mt-1 text-sm text-gray-600">
                   {description}
                 </p>
               )}
             </div>
-            
+
             {showCloseButton && dismissible && (
               <button
                 onClick={handleClose}
@@ -190,20 +185,18 @@ export default function BaseModal({
         )}
 
         {/* Content */}
-        <div className={`
+        <div
+          className={`
           overflow-y-auto flex-1
           ${title || showCloseButton ? 'p-4' : 'p-4'}
           ${contentClassName}
-        `}>
+        `}
+        >
           {children}
         </div>
 
         {/* Footer */}
-        {footer && (
-          <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">
-            {footer}
-          </div>
-        )}
+        {footer && <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">{footer}</div>}
       </div>
     </div>
   );

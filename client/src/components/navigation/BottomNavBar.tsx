@@ -4,7 +4,7 @@ import { FEATURES } from '@/config/features';
 import SearchLensButton from '@/components/search/SearchLensButton';
 import { getZIndexClass } from '@/styles/tokens/zIndex';
 
-export interface BottomNavButton {
+interface BottomNavButton {
   id: string;
   icon: ReactNode;
   onClick: () => void;
@@ -28,7 +28,7 @@ export default function BottomNavBar({
   onShowAdmin,
   centerButtons = [],
   layout = 'sides',
-  currentScreen
+  currentScreen,
 }: BottomNavBarProps) {
   const shouldShowHome = onGoHome && currentScreen !== 'events' && currentScreen !== 'home';
   const shouldShowAdmin = onShowAdmin && currentScreen !== 'admin';
@@ -38,15 +38,55 @@ export default function BottomNavBar({
     if (layout === 'center' && centerButtons.length > 0) {
       return [
         ...centerButtons,
-        ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin!, title: 'Admin', variant: 'admin' as const }] : [])
+        ...(shouldShowAdmin
+          ? [
+              {
+                id: 'admin',
+                icon: <Shield className="w-6 h-6" />,
+                onClick: onShowAdmin!,
+                title: 'Admin',
+                variant: 'admin' as const,
+              },
+            ]
+          : []),
       ];
     }
 
     return [
-      ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'secondary' as const }] : []),
+      ...(onGoBack
+        ? [
+            {
+              id: 'back',
+              icon: <ArrowLeft className="w-6 h-6" />,
+              onClick: onGoBack,
+              title: 'Indietro',
+              variant: 'secondary' as const,
+            },
+          ]
+        : []),
       ...centerButtons,
-      ...(shouldShowHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome!, title: 'Home', variant: 'primary' as const }] : []),
-      ...(shouldShowAdmin ? [{ id: 'admin', icon: <Shield className="w-6 h-6" />, onClick: onShowAdmin!, title: 'Admin', variant: 'admin' as const }] : [])
+      ...(shouldShowHome
+        ? [
+            {
+              id: 'home',
+              icon: <Home className="w-6 h-6" />,
+              onClick: onGoHome!,
+              title: 'Home',
+              variant: 'primary' as const,
+            },
+          ]
+        : []),
+      ...(shouldShowAdmin
+        ? [
+            {
+              id: 'admin',
+              icon: <Shield className="w-6 h-6" />,
+              onClick: onShowAdmin!,
+              title: 'Admin',
+              variant: 'admin' as const,
+            },
+          ]
+        : []),
     ];
   };
 
@@ -59,10 +99,7 @@ export default function BottomNavBar({
       data-testid="bottom-nav"
     >
       {/* Solid bar — 56px touch area + safe area inset covered by parent bg */}
-      <div
-        className="flex items-center justify-around px-2"
-        style={{ height: '56px' }}
-      >
+      <div className="flex items-center justify-around px-2" style={{ height: '56px' }}>
         {buttons.map((button) => (
           <button
             key={button.id}
@@ -72,11 +109,13 @@ export default function BottomNavBar({
               flex-1 h-full flex flex-col items-center justify-center gap-0.5
               transition-all duration-150 active:scale-90 active:opacity-60
               min-w-[48px] max-w-[80px]
-              ${button.variant === 'secondary'
-                ? 'text-white/40 hover:text-white/70'
-                : button.variant === 'admin'
-                ? 'text-amber-400/80 hover:text-amber-300'
-                : 'text-white/80 hover:text-white'}
+              ${
+                button.variant === 'secondary'
+                  ? 'text-white/40 hover:text-white/70'
+                  : button.variant === 'admin'
+                    ? 'text-amber-400/80 hover:text-amber-300'
+                    : 'text-white/80 hover:text-white'
+              }
             `}
           >
             {button.icon}

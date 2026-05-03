@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -23,7 +23,7 @@ export function useSession(
   const [sessionError, setSessionError] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
+
   // Ref to track heartbeat interval and prevent multiple instances
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isHeartbeatActiveRef = useRef<boolean>(false);
@@ -32,25 +32,26 @@ export function useSession(
   const loginMutation = useMutation({
     mutationFn: async (userId: number) => {
       // Get unique session setting from localStorage (default: false)
-      const uniqueSessionEnabled = localStorage.getItem('diagonale_unique_session_enabled') === 'true';
-      
+      const uniqueSessionEnabled =
+        localStorage.getItem('diagonale_unique_session_enabled') === 'true';
+
       const response = await fetch(`/api/users/${userId}/login`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'X-Unique-Session-Enabled': uniqueSessionEnabled.toString()
+          'X-Unique-Session-Enabled': uniqueSessionEnabled.toString(),
         },
         body: JSON.stringify({}),
-        credentials: 'include'
+        credentials: 'include',
       });
-      
+
       if (!response.ok) {
         const text = await response.text();
         const error = new Error(`${response.status}: ${text}`);
         (error as any).status = response.status;
         throw error;
       }
-      
+
       return response.json();
     },
     onSuccess: (data) => {
@@ -58,15 +59,17 @@ export function useSession(
       setSessionId(data.sessionId);
       setSessionError(null);
       setCurrentScreen('events');
-      
+
       // FORZA REFRESH CACHE WINES QUANDO CAMBIA UTENTE
       queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
-      
+
       toast({ title: 'Accesso effettuato con successo!' });
     },
     onError: (error: any) => {
       if (error.status === 409) {
-        setSessionError("Utente già connesso da un altro dispositivo. Disconnetti prima di continuare.");
+        setSessionError(
+          'Utente già connesso da un altro dispositivo. Disconnetti prima di continuare.'
+        );
       } else {
         setSessionError("Errore durante l'accesso. Riprova.");
       }
@@ -93,16 +96,16 @@ export function useSession(
   });
 
   // Cleanup heartbeat function
-  const cleanupHeartbeat = () => {
+  const cleanupHeartbeat = useCallback(() => {
     if (heartbeatIntervalRef.current) {
       clearInterval(heartbeatIntervalRef.current);
       heartbeatIntervalRef.current = null;
     }
     isHeartbeatActiveRef.current = false;
-  };
+  }, []);
 
   // Start heartbeat function with single instance protection
-  const startHeartbeat = () => {
+  const startHeartbeat = useCallback(() => {
     // Prevent multiple heartbeat instances
     if (isHeartbeatActiveRef.current || !currentUser || !sessionId) {
       return;
@@ -114,9 +117,9 @@ export function useSession(
     heartbeatIntervalRef.current = setInterval(async () => {
       try {
         const response = await apiRequest('POST', `/api/users/${currentUser.id}/heartbeat`, {
-          sessionId: sessionId
+          sessionId: sessionId,
         });
-        
+
         if (!response.ok) {
           // Session expired or invalid - only logout if truly expired (not on route change)
           setCurrentUser(null);
@@ -128,7 +131,7 @@ export function useSession(
         // Heartbeat failed silently
       }
     }, 60000); // Every minute
-  };
+  }, [cleanupHeartbeat, currentUser, sessionId, setCurrentScreen, setCurrentUser, toast]);
 
   // Heartbeat management effect - preserving exact same dependencies and behavior
   useEffect(() => {
@@ -137,11 +140,11 @@ export function useSession(
     } else {
       cleanupHeartbeat();
     }
-    
+
     return () => {
       cleanupHeartbeat();
     };
-  }, [currentUser, sessionId, toast]);
+  }, [cleanupHeartbeat, currentUser, sessionId, startHeartbeat]);
 
   // Event handlers
   const handleUserSelect = (user: User) => {

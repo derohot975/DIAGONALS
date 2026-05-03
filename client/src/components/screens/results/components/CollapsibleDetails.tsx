@@ -29,9 +29,11 @@ export default function CollapsibleDetails({ result, isExpanded }: CollapsibleDe
       {/* Voti individuali */}
       {result?.votes && result.votes.length > 0 && (
         <div className="mt-4 pt-4 border-t border-white/5">
-          <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-3">Voti individuali</p>
+          <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-3">
+            Voti individuali
+          </p>
           <div className="flex flex-wrap gap-2">
-            {result.votes.map(vote => (
+            {result.votes.map((vote) => (
               <span
                 key={vote.userId}
                 className="inline-flex items-center bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs"

@@ -9,31 +9,31 @@ export const useGuestAuth = () => {
 
   const enableGuestMode = () => {
     setGuestLoading(true);
-    
+
     // Simulate auth process
     setTimeout(() => {
       setIsGuestMode(true);
       setGuestLoading(false);
-      toast({ 
-        title: 'Modalità Guest attivata', 
-        description: 'Accesso in sola lettura ai dati.' 
+      toast({
+        title: 'Modalità Guest attivata',
+        description: 'Accesso in sola lettura ai dati.',
       });
     }, 500);
   };
 
   const disableGuestMode = () => {
     setIsGuestMode(false);
-    toast({ 
-      title: 'Modalità Guest disattivata', 
-      description: 'Torna al login normale.' 
+    toast({
+      title: 'Modalità Guest disattivata',
+      description: 'Torna al login normale.',
     });
   };
 
   const blockWriteOperation = (operation: string) => {
-    toast({ 
-      title: 'Funzione non disponibile', 
+    toast({
+      title: 'Funzione non disponibile',
       description: `${operation} non disponibile in modalità Guest.`,
-      variant: 'destructive'
+      variant: 'destructive',
     });
   };
 
@@ -42,6 +42,6 @@ export const useGuestAuth = () => {
     guestLoading,
     enableGuestMode,
     disableGuestMode,
-    blockWriteOperation
+    blockWriteOperation,
   };
 };

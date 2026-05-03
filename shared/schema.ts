@@ -1,63 +1,90 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, index } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  boolean,
+  timestamp,
+  decimal,
+  index,
+} from 'drizzle-orm/pg-core';
+import { createInsertSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  pin: text("pin").notNull(), // PIN a 4 cifre per autenticazione
-  isAdmin: boolean("is_admin").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  pin: text('pin').notNull(), // PIN a 4 cifre per autenticazione
+  isAdmin: boolean('is_admin').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const wineEvents = pgTable("wine_events", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  date: text("date").notNull(),
-  mode: text("mode").notNull(), // Modalità unica
-  status: text("status").default('registration').notNull(), // 'registration', 'voting', 'completed'
-  votingStatus: text("voting_status").notNull().default('not_started'), // 'not_started', 'active', 'completed'
-  createdBy: integer("created_by").references(() => users.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+export const wineEvents = pgTable('wine_events', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  date: text('date').notNull(),
+  mode: text('mode').notNull(), // Modalità unica
+  status: text('status').default('registration').notNull(), // 'registration', 'voting', 'completed'
+  votingStatus: text('voting_status').notNull().default('not_started'), // 'not_started', 'active', 'completed'
+  createdBy: integer('created_by')
+    .references(() => users.id)
+    .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const wines = pgTable("wines", {
-  id: serial("id").primaryKey(),
-  eventId: integer("event_id").references(() => wineEvents.id).notNull(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  type: text("type").notNull(), // 'Bianco', 'Rosso', 'Bollicina'
-  name: text("name").notNull(),
-  producer: text("producer").notNull(),
-  grape: text("grape").notNull(), // Vitigno
-  year: integer("year").notNull(),
-  origin: text("origin").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  alcohol: decimal("alcohol", { precision: 4, scale: 1 }), // Gradazione alcolica opzionale
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => {
-  return {
-    eventIdIdx: index("wines_event_id_idx").on(table.eventId),
-  };
+export const wines = pgTable(
+  'wines',
+  {
+    id: serial('id').primaryKey(),
+    eventId: integer('event_id')
+      .references(() => wineEvents.id)
+      .notNull(),
+    userId: integer('user_id')
+      .references(() => users.id)
+      .notNull(),
+    type: text('type').notNull(), // 'Bianco', 'Rosso', 'Bollicina'
+    name: text('name').notNull(),
+    producer: text('producer').notNull(),
+    grape: text('grape').notNull(), // Vitigno
+    year: integer('year').notNull(),
+    origin: text('origin').notNull(),
+    price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+    alcohol: decimal('alcohol', { precision: 4, scale: 1 }), // Gradazione alcolica opzionale
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      eventIdIdx: index('wines_event_id_idx').on(table.eventId),
+    };
+  }
+);
+
+export const votes = pgTable('votes', {
+  id: serial('id').primaryKey(),
+  eventId: integer('event_id')
+    .references(() => wineEvents.id)
+    .notNull(),
+  wineId: integer('wine_id')
+    .references(() => wines.id)
+    .notNull(),
+  userId: integer('user_id')
+    .references(() => users.id)
+    .notNull(),
+  score: decimal('score', { precision: 3, scale: 1 }).notNull(), // Supporta voti con .5 (es: 7.5)
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const votes = pgTable("votes", {
-  id: serial("id").primaryKey(),
-  eventId: integer("event_id").references(() => wineEvents.id).notNull(),
-  wineId: integer("wine_id").references(() => wines.id).notNull(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  score: decimal("score", { precision: 3, scale: 1 }).notNull(), // Supporta voti con .5 (es: 7.5)
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+export const eventReports = pgTable('event_reports', {
+  id: serial('id').primaryKey(),
+  eventId: integer('event_id')
+    .references(() => wineEvents.id)
+    .notNull(),
+  reportData: text('report_data').notNull(), // JSON stringified report
+  generatedAt: timestamp('generated_at').defaultNow().notNull(),
+  generatedBy: integer('generated_by')
+    .references(() => users.id)
+    .notNull(),
 });
-
-export const eventReports = pgTable("event_reports", {
-  id: serial("id").primaryKey(),
-  eventId: integer("event_id").references(() => wineEvents.id).notNull(),
-  reportData: text("report_data").notNull(), // JSON stringified report
-  generatedAt: timestamp("generated_at").defaultNow().notNull(),
-  generatedBy: integer("generated_by").references(() => users.id).notNull(),
-});
-
-
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
@@ -70,29 +97,34 @@ export const insertWineEventSchema = createInsertSchema(wineEvents).omit({
   createdAt: true,
 });
 
-export const insertWineSchema = createInsertSchema(wines).omit({
-  id: true,
-  createdAt: true,
-}).extend({
-  alcohol: z.union([z.string(), z.number()]).optional().transform((val) => {
-    if (val === null || val === undefined) return undefined;
-    return typeof val === 'number' ? val.toString() : val;
+export const insertWineSchema = createInsertSchema(wines)
+  .omit({
+    id: true,
+    createdAt: true,
   })
-});
+  .extend({
+    alcohol: z
+      .union([z.string(), z.number()])
+      .optional()
+      .transform((val) => {
+        if (val === null || val === undefined) return undefined;
+        return typeof val === 'number' ? val.toString() : val;
+      }),
+  });
 
-export const insertVoteSchema = createInsertSchema(votes).omit({
-  id: true,
-  createdAt: true,
-}).extend({
-  score: z.number().min(1).max(10)
-});
+export const insertVoteSchema = createInsertSchema(votes)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    score: z.number().min(1).max(10),
+  });
 
 export const insertEventReportSchema = createInsertSchema(eventReports).omit({
   id: true,
   generatedAt: true,
 });
-
-
 
 // Types
 export type User = typeof users.$inferSelect;

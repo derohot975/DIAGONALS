@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { BarChart3, StickyNote, ArrowLeft, Home, Lock, Star, X } from '@/components/icons';
+import { StickyNote, ArrowLeft, Home, Lock, Star, X } from '@/components/icons';
 import { formatEventDate, formatEventName } from '@/lib/utils';
 import diagoLogo from '@assets/diagologo.png';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -20,9 +20,20 @@ interface HistoricEventsScreenProps {
   onGoHome: () => void;
 }
 
-export default function HistoricEventsScreen({ events, users, votes = [], wines = [], onShowEventResults, onShowPagella, onDeleteEvent, onProtectEvent, onGoBack, onGoHome }: HistoricEventsScreenProps) {
+export default function HistoricEventsScreen({
+  events,
+  users,
+  votes = [],
+  wines = [],
+  onShowEventResults,
+  onShowPagella,
+  onDeleteEvent,
+  onProtectEvent,
+  onGoBack,
+  onGoHome,
+}: HistoricEventsScreenProps) {
   const completedEvents = [...events]
-    .filter(event => event.status === 'completed')
+    .filter((event) => event.status === 'completed')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<WineEvent | null>(null);
@@ -30,16 +41,18 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
   const [, setForceUpdate] = useState(0);
 
   const globalRanking = useMemo(() => {
-    const totals: Record<number, { name: string, scoreSum: number, eventCount: number }> = {};
-    users.filter(u => !u.isAdmin).forEach(u => {
-      totals[u.id] = { name: u.name, scoreSum: 0, eventCount: 0 };
-    });
+    const totals: Record<number, { name: string; scoreSum: number; eventCount: number }> = {};
+    users
+      .filter((u) => !u.isAdmin)
+      .forEach((u) => {
+        totals[u.id] = { name: u.name, scoreSum: 0, eventCount: 0 };
+      });
 
-    const completedEventIds = new Set(completedEvents.map(e => e.id));
+    const completedEventIds = new Set(completedEvents.map((e) => e.id));
 
     // Build a map: wineId -> userId (owner of the wine)
     const wineOwner: Record<number, number> = {};
-    wines.forEach(w => {
+    wines.forEach((w) => {
       if (completedEventIds.has(w.eventId) && w.userId != null) {
         wineOwner[w.id] = w.userId;
       }
@@ -47,7 +60,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
 
     // Group votes by eventId, then by wineId to compute per-wine averages
     const votesByEventWine: Record<string, number[]> = {};
-    votes.forEach(v => {
+    votes.forEach((v) => {
       if (!completedEventIds.has(v.eventId)) return;
       const key = `${v.eventId}:${v.wineId}`;
       if (!votesByEventWine[key]) votesByEventWine[key] = [];
@@ -75,11 +88,11 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
 
     return Object.values(totals)
       .sort((a, b) => b.scoreSum - a.scoreSum)
-      .map(e => ({ name: e.name, score: e.scoreSum, eventCount: e.eventCount }));
+      .map((e) => ({ name: e.name, score: e.scoreSum, eventCount: e.eventCount }));
   }, [users, votes, wines, completedEvents]);
 
   useEffect(() => {
-    const handleStorageChange = () => setForceUpdate(prev => prev + 1);
+    const handleStorageChange = () => setForceUpdate((prev) => prev + 1);
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
@@ -88,8 +101,10 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
     const key = 'diagonale_protected_events';
     const initKey = 'diagonale_protection_initialized';
     if (!localStorage.getItem(initKey)) {
-      const sortedForProtection = [...completedEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      localStorage.setItem(key, JSON.stringify(sortedForProtection.slice(0, 3).map(e => e.id)));
+      const sortedForProtection = [...completedEvents].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      localStorage.setItem(key, JSON.stringify(sortedForProtection.slice(0, 3).map((e) => e.id)));
       localStorage.setItem(initKey, 'true');
     }
     const protected_ = JSON.parse(localStorage.getItem(key) || '[]') as number[];
@@ -110,9 +125,14 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
 
   const EventItem = ({ event }: { event: WineEvent }) => {
     const { handlers, isLongPressing } = useLongPress({
-      onLongPress: () => { if (onDeleteEvent) { setEventToDelete(event); setDeleteModalOpen(true); } },
+      onLongPress: () => {
+        if (onDeleteEvent) {
+          setEventToDelete(event);
+          setDeleteModalOpen(true);
+        }
+      },
       onPress: () => onShowEventResults(event.id),
-      delay: 800
+      delay: 800,
     });
 
     return (
@@ -120,24 +140,40 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
         {...handlers}
         style={{ userSelect: 'none' }}
         className={`bg-white/5 backdrop-blur-xl rounded-3xl border p-6 transition-all duration-300 ${
-          isLongPressing ? 'scale-95 bg-red-500/10 border-red-500/20' : 'border-white/10 hover:bg-white/10'
+          isLongPressing
+            ? 'scale-95 bg-red-500/10 border-red-500/20'
+            : 'border-white/10 hover:bg-white/10'
         } ${isProtectedEvent(event) ? 'border-yellow-500/30' : ''}`}
       >
         <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0 mr-4">
-              <div className="flex items-center gap-2">
-                {isProtectedEvent(event) && <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />}
-                <h3 className="font-bold text-white text-base leading-tight truncate">{formatEventName(event.name)}</h3>
-              </div>
-              <p className="text-sm font-medium text-[#fbedaa] pl-[22px] mt-1">{formatEventDate(event.date)}</p>
+          <div className="flex-1 min-w-0 mr-4">
+            <div className="flex items-center gap-2">
+              {isProtectedEvent(event) && (
+                <Lock className="w-3.5 h-3.5 text-yellow-400/60 flex-shrink-0" />
+              )}
+              <h3 className="font-bold text-white text-base leading-tight truncate">
+                {formatEventName(event.name)}
+              </h3>
             </div>
+            <p className="text-sm font-medium text-[#fbedaa] pl-[22px] mt-1">
+              {formatEventDate(event.date)}
+            </p>
+          </div>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button
-              onClick={(e) => { e.stopPropagation(); onShowPagella(event.id); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onShowPagella(event.id);
+              }}
               onTouchStart={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => { e.stopPropagation(); onShowPagella(event.id); }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                onShowPagella(event.id);
+              }}
               onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => { e.stopPropagation(); }}
+              onMouseUp={(e) => {
+                e.stopPropagation();
+              }}
               className="p-3 bg-white/5 hover:bg-white/15 border border-white/10 text-white/60 hover:text-white rounded-2xl transition-all"
               title="Pagella"
             >
@@ -155,9 +191,13 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
       <div className="flex-shrink-0 relative flex justify-center pt-10 pb-6">
         <div className="relative">
           <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
-          <img src={diagoLogo} alt="DIAGO Logo" className="relative mx-auto w-24 h-auto logo-filter drop-shadow-2xl" />
+          <img
+            src={diagoLogo}
+            alt="DIAGO Logo"
+            className="relative mx-auto w-24 h-auto logo-filter drop-shadow-2xl"
+          />
         </div>
-        <button 
+        <button
           onClick={() => setShowGlobalRanking(true)}
           className="absolute right-6 top-10 p-2 text-yellow-400 transition-opacity hover:opacity-70"
         >
@@ -173,14 +213,20 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
       {/* Global Ranking Modal/Overlay */}
       {showGlobalRanking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 animate-in fade-in duration-200">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowGlobalRanking(false)} />
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            onClick={() => setShowGlobalRanking(false)}
+          />
           <div className="relative w-full max-w-sm bg-[#1a0303] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden">
             <div className="absolute top-4 right-4">
-              <button onClick={() => setShowGlobalRanking(false)} className="p-2 text-white/30 hover:text-white">
+              <button
+                onClick={() => setShowGlobalRanking(false)}
+                className="p-2 text-white/30 hover:text-white"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            
+
             <div className="text-center mb-8">
               <Star className="w-12 h-12 text-yellow-400 fill-current mx-auto mb-3" />
               <h3 className="text-2xl font-bold text-white">Classifica Generale</h3>
@@ -188,17 +234,20 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
 
             <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
               {globalRanking.map((entry, index) => (
-                <div key={entry.name} className="flex items-center justify-between bg-white/5 rounded-2xl p-4 border border-white/5">
+                <div
+                  key={entry.name}
+                  className="flex items-center justify-between bg-white/5 rounded-2xl p-4 border border-white/5"
+                >
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-bold text-white/40 w-6">{index + 1}°</span>
                     <div className="flex flex-col">
                       <span className="text-white font-medium">{entry.name}</span>
-                      <span className="text-[10px] font-medium text-[#fbedaa] leading-none mt-0.5">{entry.eventCount} DIAGONALI</span>
+                      <span className="text-[10px] font-medium text-[#fbedaa] leading-none mt-0.5">
+                        {entry.eventCount} DIAGONALI
+                      </span>
                     </div>
                   </div>
-                  <div className="text-yellow-400 font-bold">
-                    {entry.score.toFixed(1)} pts
-                  </div>
+                  <div className="text-yellow-400 font-bold">{entry.score.toFixed(1)} pts</div>
                 </div>
               ))}
             </div>
@@ -213,7 +262,7 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
       >
         <div className="max-w-md mx-auto space-y-4">
           {completedEvents.length > 0 ? (
-            completedEvents.map(event => <EventItem key={event.id} event={event} />)
+            completedEvents.map((event) => <EventItem key={event.id} event={event} />)
           ) : (
             <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-14 text-center animate-fade-in">
               <h2 className="text-xl font-bold text-white mb-2">Nessun evento completato</h2>
@@ -226,15 +275,30 @@ export default function HistoricEventsScreen({ events, users, votes = [], wines 
       <BottomNavBar
         layout="center"
         centerButtons={[
-          { id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' },
-          { id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' }
+          {
+            id: 'back',
+            icon: <ArrowLeft className="w-6 h-6" />,
+            onClick: onGoBack,
+            title: 'Indietro',
+            variant: 'glass',
+          },
+          {
+            id: 'home',
+            icon: <Home className="w-6 h-6" />,
+            onClick: onGoHome,
+            title: 'Home',
+            variant: 'glass',
+          },
         ]}
       />
 
       <ManageEventModal
         isOpen={deleteModalOpen}
         event={eventToDelete}
-        onClose={() => { setDeleteModalOpen(false); setEventToDelete(null); }}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setEventToDelete(null);
+        }}
         onDelete={handleDeleteConfirm}
         onProtect={handleProtectEvent}
         isProtected={eventToDelete ? isProtectedEvent(eventToDelete) : false}

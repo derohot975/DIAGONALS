@@ -19,16 +19,20 @@ export default function PagellaHeader({ canEdit, saveStatus }: PagellaHeaderProp
 
       {canEdit && saveStatus !== 'idle' && (
         <div className="mt-2">
-          <span className={`text-xs px-3 py-1 rounded-full font-medium ${
-            saveStatus === 'saving'
-              ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
+          <span
+            className={`text-xs px-3 py-1 rounded-full font-medium ${
+              saveStatus === 'saving'
+                ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
+                : saveStatus === 'saved'
+                  ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                  : 'bg-red-500/20 text-red-300 border border-red-500/30'
+            }`}
+          >
+            {saveStatus === 'saving'
+              ? '· Salvataggio...'
               : saveStatus === 'saved'
-              ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-              : 'bg-red-500/20 text-red-300 border border-red-500/30'
-          }`}>
-            {saveStatus === 'saving' ? '· Salvataggio...' :
-             saveStatus === 'saved' ? '· Salvato' :
-             '· Errore salvataggio'}
+                ? '· Salvato'
+                : '· Errore salvataggio'}
           </span>
         </div>
       )}

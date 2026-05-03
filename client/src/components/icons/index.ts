@@ -9,7 +9,7 @@ export {
   ChevronDown,
   ChevronUp,
   X,
-  
+
   // User & Auth
   LogIn,
   UserPlus,
@@ -17,7 +17,7 @@ export {
   Users,
   Key,
   Lock,
-  
+
   // Events & Calendar
   Calendar,
   Plus,
@@ -25,47 +25,38 @@ export {
   Edit3,
   Trash2,
   Settings,
-  
+
   // Wine & Voting
   Wine,
-  Wine as WineIcon,
   Star,
-  Award,
   Crown,
-  Trophy,
-  
+
   // Actions & Controls
   Play,
   Square,
-  Save,
   Download,
   Delete,
-  Check,
   CheckCircle,
-  
+
   // Visibility & Display
   Eye,
-  EyeOff,
-  
+
   // Charts & Analytics
   BarChart3,
-  
+
   // Mobile & Install
   Smartphone,
-  
+
   // Toggle & Controls
-  ToggleLeft,
-  ToggleRight,
-  
+
   // Input & Forms
-  Dot,
-  
+
   // Search & Discovery
   Search,
-  
+
   // Notes & Documentation
   StickyNote,
-  
+
   // Alerts & Warnings
   AlertTriangle,
 

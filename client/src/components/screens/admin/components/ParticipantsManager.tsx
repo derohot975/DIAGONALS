@@ -9,17 +9,22 @@ interface ParticipantsManagerProps {
   iconOnly?: boolean;
 }
 
-export default function ParticipantsManager({ eventId, iconOnly = false }: ParticipantsManagerProps) {
+export default function ParticipantsManager({
+  eventId,
+  iconOnly = false,
+}: ParticipantsManagerProps) {
   const [showParticipants, setShowParticipants] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch participants
-  const { data: participants = [], isLoading } = useQuery<Array<{
-    userId: number;
-    userName: string;
-    registeredAt: string;
-  }>>({
+  const { data: participants = [], isLoading } = useQuery<
+    Array<{
+      userId: number;
+      userName: string;
+      registeredAt: string;
+    }>
+  >({
     queryKey: ['/api/events', eventId, 'participants'],
     queryFn: async () => {
       const response = await fetch(`/api/events/${eventId}/participants`);
@@ -42,23 +47,23 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
       queryClient.invalidateQueries({ queryKey: ['/api/events', eventId, 'participants'] });
       queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ 
-        title: '✅ Partecipante rimosso', 
-        description: data.message 
+      toast({
+        title: '✅ Partecipante rimosso',
+        description: data.message,
       });
     },
     onError: () => {
-      toast({ 
-        title: '❌ Errore', 
-        description: 'Impossibile rimuovere il partecipante', 
-        variant: 'destructive' 
+      toast({
+        title: '❌ Errore',
+        description: 'Impossibile rimuovere il partecipante',
+        variant: 'destructive',
       });
     },
   });
 
   const handleRemoveParticipant = (userId: number, userName: string) => {
     const confirmMessage = `⚠️ ATTENZIONE ⚠️\n\nSei sicuro di voler rimuovere ${userName} dall'evento?\n\n• Il suo vino verrà eliminato definitivamente\n• Non potrà più partecipare alle votazioni\n• Questa azione non può essere annullata\n\nConfermi l'eliminazione?`;
-    
+
     if (confirm(confirmMessage)) {
       removeParticipantMutation.mutate(userId);
     }
@@ -95,10 +100,15 @@ export default function ParticipantsManager({ eventId, iconOnly = false }: Parti
           ) : (
             <div className="space-y-2">
               {participants.map((participant) => (
-                <div key={participant.userId} className="flex items-center justify-between bg-white rounded px-3 py-2">
+                <div
+                  key={participant.userId}
+                  className="flex items-center justify-between bg-white rounded px-3 py-2"
+                >
                   <span className="text-sm font-medium text-gray-800">{participant.userName}</span>
                   <button
-                    onClick={() => handleRemoveParticipant(participant.userId, participant.userName)}
+                    onClick={() =>
+                      handleRemoveParticipant(participant.userId, participant.userName)
+                    }
                     disabled={removeParticipantMutation.isPending}
                     className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >

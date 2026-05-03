@@ -15,7 +15,10 @@ interface VotingCompletionCheckerProps {
   onCompleteEvent: (eventId: number) => void;
 }
 
-export default function VotingCompletionChecker({ eventId, onCompleteEvent }: VotingCompletionCheckerProps) {
+export default function VotingCompletionChecker({
+  eventId,
+  onCompleteEvent,
+}: VotingCompletionCheckerProps) {
   const [showReport, setShowReport] = useState(false);
 
   const { data: status } = useQuery<CompletionStatus>({
@@ -91,7 +94,8 @@ export default function VotingCompletionChecker({ eventId, onCompleteEvent }: Vo
 
             <div className="px-5 py-4">
               <p className="text-white/50 text-sm mb-4">
-                L'evento non può essere concluso. I seguenti partecipanti non hanno ancora completato tutte le votazioni:
+                L'evento non può essere concluso. I seguenti partecipanti non hanno ancora
+                completato tutte le votazioni:
               </p>
 
               <div className="space-y-3 max-h-64 overflow-y-auto scrollbar-hide">
@@ -112,7 +116,8 @@ export default function VotingCompletionChecker({ eventId, onCompleteEvent }: Vo
 
               <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-center">
                 <p className="text-amber-400/80 text-xs font-medium">
-                  {missingCount} {missingCount === 1 ? 'voto mancante' : 'voti mancanti'} su {expectedVotes} totali
+                  {missingCount} {missingCount === 1 ? 'voto mancante' : 'voti mancanti'} su{' '}
+                  {expectedVotes} totali
                 </p>
               </div>
             </div>

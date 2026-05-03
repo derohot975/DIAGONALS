@@ -1,5 +1,5 @@
-import { db } from "../db";
-import { sql } from "drizzle-orm";
+import { db } from '../db';
+import { sql } from 'drizzle-orm';
 
 // Crea la tabella se non esiste (safe in produzione)
 export async function ensurePagellaTable() {
@@ -20,8 +20,15 @@ export async function getPagellaByEventId(eventId: number) {
     WHERE event_id = ${eventId}
     LIMIT 1;
   `);
-  
-  return (res as any)[0] ?? null;
+
+  type PagellaRow = {
+    content: string;
+    authorUserId: number | null;
+    updatedAt: string | Date | null;
+  };
+
+  const rows = res as unknown as PagellaRow[];
+  return rows[0] ?? null;
 }
 
 export async function upsertPagella(eventId: number, content: string, authorUserId: number | null) {

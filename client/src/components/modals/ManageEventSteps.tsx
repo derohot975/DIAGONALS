@@ -1,4 +1,4 @@
-import { Trash2, Delete, Settings } from '@/components/icons';
+import { Trash2, Delete } from '@/components/icons';
 import { WineEvent } from '@shared/schema';
 import { formatEventName, formatEventDate } from '@/lib/utils';
 
@@ -19,8 +19,13 @@ interface StepProps {
   onFinalDeleteConfirm: () => void;
 }
 
-export function StepChoose({ event, isProtected, error, onClose, onActionSelect }: Pick<StepProps,
-  'event' | 'isProtected' | 'error' | 'onClose' | 'onActionSelect'>) {
+export function StepChoose({
+  event,
+  isProtected,
+  error,
+  onClose,
+  onActionSelect,
+}: Pick<StepProps, 'event' | 'isProtected' | 'error' | 'onClose' | 'onActionSelect'>) {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -39,12 +44,16 @@ export function StepChoose({ event, isProtected, error, onClose, onActionSelect 
           }`}
         >
           <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isProtected ? 'bg-gray-200' : 'bg-red-100'}`}>
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${isProtected ? 'bg-gray-200' : 'bg-red-100'}`}
+            >
               <Trash2 className={`w-5 h-5 ${isProtected ? 'text-gray-400' : 'text-red-600'}`} />
             </div>
             <div>
               <p className="font-semibold">ELIMINA EVENTO</p>
-              <p className="text-sm opacity-75">{isProtected ? 'Evento protetto - Non eliminabile' : 'Rimuovi definitivamente'}</p>
+              <p className="text-sm opacity-75">
+                {isProtected ? 'Evento protetto - Non eliminabile' : 'Rimuovi definitivamente'}
+              </p>
             </div>
           </div>
         </button>
@@ -57,22 +66,37 @@ export function StepChoose({ event, isProtected, error, onClose, onActionSelect 
               <span className="text-lg">🛡️</span>
             </div>
             <div>
-              <p className="font-semibold">{isProtected ? 'RIMUOVI PROTEZIONE' : 'PROTEGGI EVENTO'}</p>
-              <p className="text-sm opacity-75">{isProtected ? 'Consenti eliminazione futura' : 'Impedisci eliminazione'}</p>
+              <p className="font-semibold">
+                {isProtected ? 'RIMUOVI PROTEZIONE' : 'PROTEGGI EVENTO'}
+              </p>
+              <p className="text-sm opacity-75">
+                {isProtected ? 'Consenti eliminazione futura' : 'Impedisci eliminazione'}
+              </p>
             </div>
           </div>
         </button>
       </div>
-      {error && <div className="bg-red-50 border border-red-200 rounded-lg p-3"><p className="text-red-800 text-sm font-medium">{error}</p></div>}
-      <button onClick={onClose} className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors">
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p className="text-red-800 text-sm font-medium">{error}</p>
+        </div>
+      )}
+      <button
+        onClick={onClose}
+        className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+      >
         Annulla
       </button>
     </div>
   );
 }
 
-export function StepDeleteConfirm({ event, isProtected, onClose, onDeleteConfirm }: Pick<StepProps,
-  'event' | 'isProtected' | 'onClose' | 'onDeleteConfirm'>) {
+export function StepDeleteConfirm({
+  event,
+  isProtected,
+  onClose,
+  onDeleteConfirm,
+}: Pick<StepProps, 'event' | 'isProtected' | 'onClose' | 'onDeleteConfirm'>) {
   return (
     <div className="space-y-6">
       <div className="flex justify-center">
@@ -93,13 +117,20 @@ export function StepDeleteConfirm({ event, isProtected, onClose, onDeleteConfirm
               <li>• Tutti i vini dell'evento verranno eliminati</li>
               <li>• Tutti i voti associati andranno persi</li>
               <li>• I report generati verranno cancellati</li>
-              <li>• <strong>Questa azione NON può essere annullata</strong></li>
+              <li>
+                • <strong>Questa azione NON può essere annullata</strong>
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <div className="flex space-x-3">
-        <button onClick={onClose} className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors">Annulla</button>
+        <button
+          onClick={onClose}
+          className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+        >
+          Annulla
+        </button>
         <button
           onClick={onDeleteConfirm}
           disabled={isProtected}
@@ -112,60 +143,109 @@ export function StepDeleteConfirm({ event, isProtected, onClose, onDeleteConfirm
   );
 }
 
-export function StepPin({ selectedAction, isProtected, pin, error, adminPin, onClose, onNumberClick, onDeleteDigit, onPinConfirm }: Pick<StepProps,
-  'selectedAction' | 'isProtected' | 'pin' | 'error' | 'adminPin' | 'onClose' | 'onNumberClick' | 'onDeleteDigit' | 'onPinConfirm'>) {
+export function StepPin({
+  selectedAction,
+  isProtected,
+  pin,
+  error,
+  adminPin,
+  onClose,
+  onNumberClick,
+  onDeleteDigit,
+  onPinConfirm,
+}: Pick<
+  StepProps,
+  | 'selectedAction'
+  | 'isProtected'
+  | 'pin'
+  | 'error'
+  | 'adminPin'
+  | 'onClose'
+  | 'onNumberClick'
+  | 'onDeleteDigit'
+  | 'onPinConfirm'
+>) {
   const isDelete = selectedAction === 'delete';
   const activeColor = isDelete ? 'red' : 'yellow';
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${isDelete ? 'bg-red-100' : 'bg-yellow-100'}`}>
-          {isDelete ? <Trash2 className="w-6 h-6 text-red-600" /> : <span className="text-lg">🛡️</span>}
+        <div
+          className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${isDelete ? 'bg-red-100' : 'bg-yellow-100'}`}
+        >
+          {isDelete ? (
+            <Trash2 className="w-6 h-6 text-red-600" />
+          ) : (
+            <span className="text-lg">🛡️</span>
+          )}
         </div>
         <h3 className="text-lg font-bold text-gray-900">Autenticazione Admin</h3>
         <p className="text-sm text-gray-600 mt-1">
-          {isDelete ? "Inserisci il PIN Admin per eliminare l'evento" : `Inserisci il PIN Admin per ${isProtected ? 'rimuovere la protezione' : "proteggere l'evento"}`}
+          {isDelete
+            ? "Inserisci il PIN Admin per eliminare l'evento"
+            : `Inserisci il PIN Admin per ${isProtected ? 'rimuovere la protezione' : "proteggere l'evento"}`}
         </p>
       </div>
       <div className="space-y-4">
         <div className="flex justify-center space-x-4">
-          {[0, 1, 2].map(i => (
-            <div key={i} className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
-              i < pin.length
-                ? isDelete
-                  ? 'bg-red-600 border-red-600 shadow-lg'
-                  : 'bg-yellow-500 border-yellow-500 shadow-lg'
-                : isDelete
-                  ? 'border-red-300 bg-white'
-                  : 'border-yellow-400 bg-white'
-            }`} />
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
+                i < pin.length
+                  ? isDelete
+                    ? 'bg-red-600 border-red-600 shadow-lg'
+                    : 'bg-yellow-500 border-yellow-500 shadow-lg'
+                  : isDelete
+                    ? 'border-red-300 bg-white'
+                    : 'border-yellow-400 bg-white'
+              }`}
+            />
           ))}
         </div>
         {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
       </div>
       <div className="grid grid-cols-3 gap-3">
-        {[1,2,3,4,5,6,7,8,9].map(n => (
-          <button key={n} onClick={() => onNumberClick(n.toString())}
-            className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 hover:bg-${activeColor}-50 border-${activeColor}-200 hover:border-${activeColor}-300 text-${activeColor}-700`}>
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+          <button
+            key={n}
+            onClick={() => onNumberClick(n.toString())}
+            className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 hover:bg-${activeColor}-50 border-${activeColor}-200 hover:border-${activeColor}-300 text-${activeColor}-700`}
+          >
             {n}
           </button>
         ))}
         <div />
-        <button onClick={() => onNumberClick('0')} className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 hover:bg-${activeColor}-50 border-${activeColor}-200 text-${activeColor}-700`}>0</button>
-        <button onClick={onDeleteDigit} className="h-12 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95">
+        <button
+          onClick={() => onNumberClick('0')}
+          className={`h-12 bg-white border-2 rounded-lg text-lg font-semibold transition-all duration-200 active:scale-95 hover:bg-${activeColor}-50 border-${activeColor}-200 text-${activeColor}-700`}
+        >
+          0
+        </button>
+        <button
+          onClick={onDeleteDigit}
+          className="h-12 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
+        >
           <Delete className="w-5 h-5" />
         </button>
       </div>
       <div className="flex space-x-3">
-        <button onClick={onClose} className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors">Annulla</button>
+        <button
+          onClick={onClose}
+          className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+        >
+          Annulla
+        </button>
         <button
           onClick={onPinConfirm}
           disabled={pin.length === 0}
           className={`flex-1 px-4 py-3 font-medium rounded-xl transition-colors ${
-            pin === adminPin ? 'bg-green-600 hover:bg-green-700 text-white'
-            : pin.length > 0 ? `bg-${activeColor}-600 hover:bg-${activeColor}-700 text-white`
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            pin === adminPin
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : pin.length > 0
+                ? `bg-${activeColor}-600 hover:bg-${activeColor}-700 text-white`
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
           Conferma PIN
@@ -175,8 +255,12 @@ export function StepPin({ selectedAction, isProtected, pin, error, adminPin, onC
   );
 }
 
-export function StepDeleteFinal({ event, countdown, onClose, onFinalDeleteConfirm }: Pick<StepProps,
-  'event' | 'countdown' | 'onClose' | 'onFinalDeleteConfirm'>) {
+export function StepDeleteFinal({
+  event,
+  countdown,
+  onClose,
+  onFinalDeleteConfirm,
+}: Pick<StepProps, 'event' | 'countdown' | 'onClose' | 'onFinalDeleteConfirm'>) {
   return (
     <div className="space-y-6">
       <div className="flex justify-center">
@@ -187,19 +271,30 @@ export function StepDeleteFinal({ event, countdown, onClose, onFinalDeleteConfir
       <div className="text-center space-y-3">
         <h3 className="text-xl font-bold text-red-600">ULTIMA CONFERMA</h3>
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-          <p className="text-sm font-semibold text-red-800 mb-2">Stai per eliminare definitivamente:</p>
+          <p className="text-sm font-semibold text-red-800 mb-2">
+            Stai per eliminare definitivamente:
+          </p>
           <p className="text-lg font-bold text-red-900">{formatEventName(event.name)}</p>
-          <p className="text-sm text-red-700 mt-2">Tutti i dati associati verranno persi per sempre</p>
+          <p className="text-sm text-red-700 mt-2">
+            Tutti i dati associati verranno persi per sempre
+          </p>
         </div>
       </div>
       <div className="text-center">
         <div className={`text-4xl font-bold ${countdown > 0 ? 'text-red-600' : 'text-green-600'}`}>
           {countdown > 0 ? countdown : '✓'}
         </div>
-        <p className="text-sm text-gray-600 mt-1">{countdown > 0 ? 'Attendi per confermare...' : 'Pronto per eliminare'}</p>
+        <p className="text-sm text-gray-600 mt-1">
+          {countdown > 0 ? 'Attendi per confermare...' : 'Pronto per eliminare'}
+        </p>
       </div>
       <div className="flex space-x-3">
-        <button onClick={onClose} className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors">Annulla</button>
+        <button
+          onClick={onClose}
+          className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+        >
+          Annulla
+        </button>
         <button
           onClick={onFinalDeleteConfirm}
           disabled={countdown > 0}

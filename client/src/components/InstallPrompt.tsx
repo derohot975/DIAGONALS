@@ -31,7 +31,7 @@ export default function InstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
+
       // Show prompt after a short delay
       setTimeout(() => {
         setShowInstallPrompt(true);
@@ -56,7 +56,7 @@ export default function InstallPrompt() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      
+
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
         setShowInstallPrompt(false);
@@ -86,15 +86,15 @@ export default function InstallPrompt() {
         >
           <X className="w-4 h-4" />
         </button>
-        
+
         <div className="flex items-start space-x-3">
           <div className="bg-white/20 p-2 rounded-xl flex-shrink-0">
             <Smartphone className="w-6 h-6" />
           </div>
-          
+
           <div className="flex-1">
             <h3 className="font-bold text-sm mb-1">Installa DIAGONALE</h3>
-            
+
             {isIOS ? (
               <div>
                 <p className="text-xs text-white/90 mb-2">

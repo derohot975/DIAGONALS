@@ -11,12 +11,12 @@ export const useAuth = () => {
   const handleLogin = async (name: string, pin: string) => {
     setAuthLoading(true);
     setAuthError(null);
-    
+
     try {
       // Use API authentication (only PIN required)
       const response = await apiRequest('POST', '/api/auth/login', { pin });
       const data = await response.json();
-      
+
       if (data.user) {
         toast({ title: 'Login effettuato', description: `Benvenuto ${data.user.name}!` });
         return data.user;
@@ -26,7 +26,9 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      const errorMessage = error.message?.includes('401') ? 'PIN non valido' : 'Errore di connessione';
+      const errorMessage = error.message?.includes('401')
+        ? 'PIN non valido'
+        : 'Errore di connessione';
       setAuthError(errorMessage);
       return null;
     } finally {
@@ -37,12 +39,12 @@ export const useAuth = () => {
   const handleRegister = async (name: string, pin: string): Promise<User | null> => {
     setAuthLoading(true);
     setAuthError(null);
-    
+
     try {
       // Use API registration
       const response = await apiRequest('POST', '/api/auth/register', { name, pin });
       const data = await response.json();
-      
+
       if (data.user) {
         toast({ title: 'Registrazione completata', description: `Benvenuto ${data.user.name}!` });
         return data.user;
@@ -52,7 +54,9 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Register error:', error);
-      const errorMessage = error.message?.includes('409') ? 'Nome utente o PIN già esistente' : 'Errore di connessione';
+      const errorMessage = error.message?.includes('409')
+        ? 'Nome utente o PIN già esistente'
+        : 'Errore di connessione';
       setAuthError(errorMessage);
       return null;
     } finally {
@@ -65,6 +69,6 @@ export const useAuth = () => {
     authError,
     setAuthError,
     handleLogin,
-    handleRegister
+    handleRegister,
   };
 };

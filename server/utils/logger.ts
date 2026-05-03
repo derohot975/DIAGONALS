@@ -3,19 +3,19 @@
  * Logging configurabile per ambiente con supporto file e console
  */
 
-export enum LogLevel {
+enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
   ERROR = 3,
 }
 
-export interface LogEntry {
+interface LogEntry {
   timestamp: string;
   level: LogLevel;
   message: string;
   context?: string;
-  data?: any;
+  data?: unknown;
   error?: Error;
   requestId?: string;
 }
@@ -34,10 +34,10 @@ class ServerLogger {
   }
 
   private createEntry(
-    level: LogLevel, 
-    message: string, 
-    context?: string, 
-    data?: any, 
+    level: LogLevel,
+    message: string,
+    context?: string,
+    data?: unknown,
     error?: Error,
     requestId?: string
   ): LogEntry {
@@ -80,36 +80,42 @@ class ServerLogger {
     }
   }
 
-  debug(message: string, context?: string, data?: any, requestId?: string): void {
+  debug(message: string, context?: string, data?: unknown, requestId?: string): void {
     const entry = this.createEntry(LogLevel.DEBUG, message, context, data, undefined, requestId);
     this.output(entry);
   }
 
-  info(message: string, context?: string, data?: any, requestId?: string): void {
+  info(message: string, context?: string, data?: unknown, requestId?: string): void {
     const entry = this.createEntry(LogLevel.INFO, message, context, data, undefined, requestId);
     this.output(entry);
   }
 
-  warn(message: string, context?: string, data?: any, requestId?: string): void {
+  warn(message: string, context?: string, data?: unknown, requestId?: string): void {
     const entry = this.createEntry(LogLevel.WARN, message, context, data, undefined, requestId);
     this.output(entry);
   }
 
-  error(message: string, context?: string, error?: Error, data?: any, requestId?: string): void {
+  error(
+    message: string,
+    context?: string,
+    error?: Error,
+    data?: unknown,
+    requestId?: string
+  ): void {
     const entry = this.createEntry(LogLevel.ERROR, message, context, data, error, requestId);
     this.output(entry);
   }
 
   // Metodi di convenienza per contesti specifici
-  db(message: string, data?: any, requestId?: string): void {
+  db(message: string, data?: unknown, requestId?: string): void {
     this.debug(message, 'DB', data, requestId);
   }
 
-  api(message: string, data?: any, requestId?: string): void {
+  api(message: string, data?: unknown, requestId?: string): void {
     this.info(message, 'API', data, requestId);
   }
 
-  auth(message: string, data?: any, requestId?: string): void {
+  auth(message: string, data?: unknown, requestId?: string): void {
     this.info(message, 'AUTH', data, requestId);
   }
 
@@ -120,7 +126,7 @@ class ServerLogger {
 }
 
 // Singleton logger instance
-export const logger = new ServerLogger();
+const logger = new ServerLogger();
 
 // Export default per compatibilità
 export default logger;

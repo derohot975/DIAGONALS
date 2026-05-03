@@ -20,9 +20,9 @@ class PerformanceTelemetry {
   constructor() {
     this.startTime = performance.now();
     this.metrics = {
-      appStart: this.startTime
+      appStart: this.startTime,
     };
-    
+
     console.log('📊 Performance: Telemetria avviata');
   }
 
@@ -51,7 +51,7 @@ class PerformanceTelemetry {
     this.metrics.ready = performance.now();
     const elapsed = this.metrics.ready - this.startTime;
     console.log(`✅ Performance: App pronta in ${elapsed.toFixed(2)}ms`);
-    
+
     // Log riassuntivo
     this.logSummary();
   }
@@ -94,23 +94,25 @@ class PerformanceTelemetry {
   private logSummary(): void {
     console.group('📊 Performance Summary');
     console.log(`App Start: 0ms (baseline)`);
-    
+
     if (this.metrics.firstPaintAppShell) {
       console.log(`App Shell: ${(this.metrics.firstPaintAppShell - this.startTime).toFixed(2)}ms`);
     }
-    
+
     if (this.metrics.firstDataReceived) {
       console.log(`First Data: ${(this.metrics.firstDataReceived - this.startTime).toFixed(2)}ms`);
     }
-    
+
     if (this.metrics.serviceWorkerReady) {
-      console.log(`Service Worker: ${(this.metrics.serviceWorkerReady - this.startTime).toFixed(2)}ms`);
+      console.log(
+        `Service Worker: ${(this.metrics.serviceWorkerReady - this.startTime).toFixed(2)}ms`
+      );
     }
-    
+
     if (this.metrics.ready) {
       console.log(`App Ready: ${(this.metrics.ready - this.startTime).toFixed(2)}ms`);
     }
-    
+
     console.groupEnd();
   }
 
@@ -137,7 +139,7 @@ if (typeof window !== 'undefined') {
         setTimeout(() => performanceTelemetry.logWebVitals(), 200);
       }
     };
-    
+
     scheduleWebVitals();
   });
 }

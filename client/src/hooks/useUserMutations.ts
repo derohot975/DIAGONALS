@@ -16,12 +16,18 @@ export const useUserMutations = () => {
       toast({ title: 'Utente creato con successo!' });
     },
     onError: () => {
-      toast({ title: 'Errore nella creazione dell\'utente', variant: 'destructive' });
+      toast({ title: "Errore nella creazione dell'utente", variant: 'destructive' });
     },
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: async ({ id, userData }: { id: number; userData: { name: string; isAdmin: boolean } }) => {
+    mutationFn: async ({
+      id,
+      userData,
+    }: {
+      id: number;
+      userData: { name: string; isAdmin: boolean };
+    }) => {
       const response = await apiRequest('PUT', `/api/users/${id}`, userData);
       return response.json();
     },
@@ -30,7 +36,7 @@ export const useUserMutations = () => {
       toast({ title: 'Utente aggiornato con successo!' });
     },
     onError: () => {
-      toast({ title: 'Errore nell\'aggiornamento dell\'utente', variant: 'destructive' });
+      toast({ title: "Errore nell'aggiornamento dell'utente", variant: 'destructive' });
     },
   });
 
@@ -44,7 +50,7 @@ export const useUserMutations = () => {
       toast({ title: 'Utente eliminato con successo!' });
     },
     onError: () => {
-      toast({ title: 'Errore nell\'eliminazione dell\'utente', variant: 'destructive' });
+      toast({ title: "Errore nell'eliminazione dell'utente", variant: 'destructive' });
     },
   });
 

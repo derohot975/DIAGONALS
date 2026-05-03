@@ -7,11 +7,18 @@ interface ProgressBarProps {
   onCompleteEvent: (eventId: number) => void;
 }
 
-export default function ProgressBar({ event, progress, onShowResults, onCompleteEvent }: ProgressBarProps) {
+export default function ProgressBar({
+  event,
+  progress,
+  onShowResults,
+  onCompleteEvent,
+}: ProgressBarProps) {
   return (
     <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-bold text-white/30 uppercase tracking-widest">Progresso voti</span>
+        <span className="text-xs font-bold text-white/30 uppercase tracking-widest">
+          Progresso voti
+        </span>
         <span className="text-sm font-black text-white">{progress}%</span>
       </div>
 

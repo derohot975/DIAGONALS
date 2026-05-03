@@ -8,7 +8,11 @@ interface ChangeAdminPinModalProps {
   onSuccess: (newPin: string) => void;
 }
 
-export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: ChangeAdminPinModalProps) {
+export default function ChangeAdminPinModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: ChangeAdminPinModalProps) {
   const [currentPin, setCurrentPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -19,9 +23,12 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
   const handleNumberClick = (number: string) => {
     const getCurrentInput = () => {
       switch (step) {
-        case 'current': return currentPin;
-        case 'new': return newPin;
-        case 'confirm': return confirmPin;
+        case 'current':
+          return currentPin;
+        case 'new':
+          return newPin;
+        case 'confirm':
+          return confirmPin;
       }
     };
 
@@ -46,13 +53,13 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
   const handleDelete = () => {
     switch (step) {
       case 'current':
-        setCurrentPin(prev => prev.slice(0, -1));
+        setCurrentPin((prev) => prev.slice(0, -1));
         break;
       case 'new':
-        setNewPin(prev => prev.slice(0, -1));
+        setNewPin((prev) => prev.slice(0, -1));
         break;
       case 'confirm':
-        setConfirmPin(prev => prev.slice(0, -1));
+        setConfirmPin((prev) => prev.slice(0, -1));
         break;
     }
     setError('');
@@ -100,17 +107,23 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
 
   const getCurrentValue = () => {
     switch (step) {
-      case 'current': return currentPin;
-      case 'new': return newPin;
-      case 'confirm': return confirmPin;
+      case 'current':
+        return currentPin;
+      case 'new':
+        return newPin;
+      case 'confirm':
+        return confirmPin;
     }
   };
 
   const getStepTitle = () => {
     switch (step) {
-      case 'current': return 'Inserisci PIN corrente';
-      case 'new': return 'Inserisci nuovo PIN';
-      case 'confirm': return 'Conferma nuovo PIN';
+      case 'current':
+        return 'Inserisci PIN corrente';
+      case 'new':
+        return 'Inserisci nuovo PIN';
+      case 'confirm':
+        return 'Conferma nuovo PIN';
     }
   };
 
@@ -150,25 +163,23 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
       {/* PIN Display */}
       <div className="mb-8">
         <div className="flex justify-center space-x-4 mb-4">
-          {[0, 1, 2].map(index => (
+          {[0, 1, 2].map((index) => (
             <div
               key={index}
               className={`w-6 h-6 rounded-full border-2 transition-all duration-300 ${
-                index < getCurrentValue().length 
-                  ? 'bg-[#300505] border-[#300505] shadow-lg' 
+                index < getCurrentValue().length
+                  ? 'bg-[#300505] border-[#300505] shadow-lg'
                   : 'border-[#300505]/30 bg-white'
               }`}
             />
           ))}
         </div>
-        {error && (
-          <p className="text-red-500 text-sm text-center font-medium">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
       </div>
 
       {/* Number Pad */}
       <div className="grid grid-cols-3 gap-3 mb-8">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(number => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
           <button
             key={number}
             onClick={() => handleNumberClick(number.toString())}
@@ -177,17 +188,17 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
             {number}
           </button>
         ))}
-        
+
         {/* Bottom row */}
         <div></div>
-        
+
         <button
           onClick={() => handleNumberClick('0')}
           className="h-16 bg-white hover:bg-[#300505] hover:text-white border border-[#300505]/20 hover:border-[#300505] rounded-xl text-xl font-semibold text-[#300505] transition-all duration-200 active:scale-95 shadow-sm"
         >
           0
         </button>
-        
+
         <button
           onClick={handleDelete}
           className="h-16 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-95"
@@ -204,8 +215,8 @@ export default function ChangeAdminPinModal({ isOpen, onClose, onSuccess }: Chan
           canConfirm()
             ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white active:scale-95 shadow-lg'
             : getCurrentValue().length > 0
-            ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#8d0303] hover:to-[#300505] text-white active:scale-95 shadow-lg'
-            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-[#300505] to-[#8d0303] hover:from-[#8d0303] hover:to-[#300505] text-white active:scale-95 shadow-lg'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
         }`}
       >
         {step === 'confirm' ? 'Salva PIN' : 'Conferma'}

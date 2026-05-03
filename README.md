@@ -5,6 +5,7 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 ## Funzionalità
 
 ### Funzionalità Principali
+
 - **Gestione Utenti**: Registrazione con ruoli amministratore
 - **Creazione Eventi**: Crea eventi di degustazione con diverse modalità
 - **Registrazione Vini**: I partecipanti possono registrare vini con nomi e prezzi
@@ -13,6 +14,7 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 - **Tracciamento Progressi**: Indicatori di progresso dei voti in tempo reale
 
 ### Caratteristiche Tecniche
+
 - **Design Mobile-First**: Ottimizzato per dispositivi mobili con effetti glass-morphism
 - **Interfaccia Italiana**: Localizzazione completa in italiano
 - **Aggiornamenti in Tempo Reale**: Tracciamento progressi e aggiornamenti voti live
@@ -22,6 +24,7 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 ## Stack Tecnologico
 
 ### Frontend
+
 - **React 18** con TypeScript
 - **Vite** per sviluppo veloce e build ottimizzate
 - **Tailwind CSS** con stile personalizzato a tema vino
@@ -30,6 +33,7 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 - **Wouter** per routing leggero
 
 ### Backend & Database
+
 - **Express.js** API server con TypeScript
 - **PostgreSQL** database con Drizzle ORM
 - **Autenticazione PIN** a 4 cifre per sicurezza
@@ -37,6 +41,7 @@ Una moderna applicazione web mobile-first per condurre degustazioni di vino alla
 ## Avvio Rapido
 
 ### Sviluppo
+
 ```bash
 # Installa dipendenze
 npm install
@@ -48,6 +53,7 @@ npm run dev
 L'applicazione sarà disponibile su `http://localhost:5000`
 
 ### Build di Produzione
+
 ```bash
 # Build completo per produzione
 npm run build
@@ -73,16 +79,20 @@ npm run build
 ### Sistema di Autenticazione
 
 **Autenticazione PIN**:
+
 - Login con PIN a 4 cifre numeriche
 - Ruoli utente: Regular e Admin
 - Gestione sessioni con localStorage
 
 **Funzionalità per Ruolo**:
+
 - **Regular**: Registrazione vini, votazioni, visualizzazione risultati
 - **Admin**: Tutte le funzionalità + gestione utenti ed eventi
+
 ## Configurazione Database
 
 ### Setup PostgreSQL
+
 1. **Database**: PostgreSQL 14+ (locale o cloud)
 2. **Schema**: Gestito automaticamente da Drizzle ORM
 3. **Tabelle principali**:
@@ -93,11 +103,13 @@ npm run build
    - `event_reports` (id, event_id, report_data, generated_at, generated_by)
 
 ### Variabili d'Ambiente
+
 - `DATABASE_URL`: URL connessione PostgreSQL
 - `NODE_ENV`: `development` o `production`
 - `LOG_LEVEL`: Livello logging (1-4)
 
 ### Personalizzazione
+
 - **Colori**: Modifica variabili CSS in `client/src/index.css`
 - **Stile**: Aggiorna configurazione Tailwind in `tailwind.config.ts`
 - **Branding**: Cambia nome applicazione e logo nei componenti
@@ -105,12 +117,14 @@ npm run build
 ## Linee Guida Sviluppo
 
 ### Struttura Codice
+
 - `/client` - Applicazione frontend React
 - `/server` - API backend Express
 - `/shared` - Tipi TypeScript e schemi condivisi
 - `/components` - Componenti React riutilizzabili organizzati per funzione
 
 ### Caratteristiche Principali
+
 - **Type Safety**: Supporto TypeScript completo su frontend e backend
 - **Validazione Dati**: Schemi Zod per controllo tipi runtime
 - **Gestione Errori**: Error boundaries e gestione errori API complete
@@ -119,11 +133,13 @@ npm run build
 ## Modalità Degustazione
 
 ### CIECA (Completamente alla Cieca)
+
 - I vini sono completamente anonimi durante la degustazione
 - Nomi e dettagli rivelati solo dopo la votazione
 - Focus sulla valutazione del gusto puro
 
 ### CIECONA (Semi-alla Cieca)
+
 - Alcune informazioni sui vini possono essere rivelate
 - Esperienza di degustazione migliorata con contesto aggiuntivo
 - Sistema di rivelazione flessibile per organizzatori
@@ -143,6 +159,7 @@ Questo progetto è concesso in licenza sotto la Licenza MIT.
 ## Supporto
 
 Per problemi o domande:
+
 1. Controlla la pagina GitHub Issues
 2. Crea un nuovo issue con descrizione dettagliata
 3. Includi i passi per riprodurre eventuali bug

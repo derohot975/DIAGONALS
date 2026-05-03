@@ -33,10 +33,10 @@ export async function registerServiceWorker(): Promise<boolean> {
 
   try {
     console.log('🚀 Service Worker: Avvio registrazione...');
-    
+
     const registration = await navigator.serviceWorker.register('/sw.js', {
       scope: '/',
-      updateViaCache: 'imports' // Cache strategy per aggiornamenti
+      updateViaCache: 'imports', // Cache strategy per aggiornamenti
     });
 
     // Log stato registrazione
@@ -69,40 +69,4 @@ export async function registerServiceWorker(): Promise<boolean> {
   }
 }
 
-/**
- * Deregistra il Service Worker (per debug/rollback)
- */
-export async function unregisterServiceWorker(): Promise<boolean> {
-  if (!('serviceWorker' in navigator)) {
-    return false;
-  }
-
-  try {
-    const registration = await navigator.serviceWorker.getRegistration();
-    if (registration) {
-      const result = await registration.unregister();
-      console.log('🗑️ Service Worker: Deregistrato con successo');
-      return result;
-    }
-    return false;
-  } catch (error) {
-    console.warn('❌ Service Worker: Errore durante deregistrazione', error);
-    return false;
-  }
-}
-
-/**
- * Controlla lo stato del Service Worker
- */
-export function getServiceWorkerStatus(): string {
-  if (!('serviceWorker' in navigator)) {
-    return 'non-supportato';
-  }
-
-  if (!navigator.serviceWorker.controller) {
-    return 'non-attivo';
-  }
-
-  return 'attivo';
-}
 // END DIAGONALE APP SHELL - Service Worker Registration

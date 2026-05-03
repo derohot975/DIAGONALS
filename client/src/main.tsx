@@ -1,9 +1,9 @@
-import { createRoot } from "react-dom/client";
-import { AppProvider } from "./providers/AppProvider";
-import App from "./App";
-import "./index.css";
+import { createRoot } from 'react-dom/client';
+import { AppProvider } from './providers/AppProvider';
+import App from './App';
+import './index.css';
 // BEGIN DIAGONALE APP SHELL - Service Worker Registration
-import { registerServiceWorker } from "./lib/serviceWorker";
+import { registerServiceWorker } from './lib/serviceWorker';
 // END DIAGONALE APP SHELL
 
 // BEGIN DIAGONALE SAFE-MODE iOS - iOS Detection and Shell Gating
@@ -17,15 +17,17 @@ const SW_ENABLED = import.meta.env.VITE_ENABLE_SW !== 'false' && !IS_IOS;
   IS_IOS,
   SHELL_ENABLED,
   INTRO_ENABLED,
-  SW_ENABLED
+  SW_ENABLED,
 };
 
-console.log(`📱 Safe Mode iOS: ${IS_IOS ? 'ATTIVO' : 'INATTIVO'} - Shell: ${SHELL_ENABLED}, Intro: ${INTRO_ENABLED}, SW: ${SW_ENABLED}`);
+console.log(
+  `📱 Safe Mode iOS: ${IS_IOS ? 'ATTIVO' : 'INATTIVO'} - Shell: ${SHELL_ENABLED}, Intro: ${INTRO_ENABLED}, SW: ${SW_ENABLED}`
+);
 // END DIAGONALE SAFE-MODE iOS
 
 // Force rebuild v2.1
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <AppProvider>
     <App />
   </AppProvider>
@@ -46,7 +48,7 @@ if (typeof window !== 'undefined' && SW_ENABLED) {
     };
 
     scheduleRegistration(() => {
-      registerServiceWorker().then(success => {
+      registerServiceWorker().then((success) => {
         if (success) {
           console.log('✅ Service Worker registrato con successo (deferred)');
         } else {

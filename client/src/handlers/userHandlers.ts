@@ -12,10 +12,6 @@ interface UserHandlerDependencies {
   createUserMutation: UseMutationResult<any, Error, UserMutationParams, unknown>;
 }
 
-export const addUser = (
-  deps: UserHandlerDependencies,
-  name: string,
-  isAdmin: boolean
-) => {
+export const addUser = (deps: UserHandlerDependencies, name: string, isAdmin: boolean) => {
   deps.createUserMutation.mutate({ name, isAdmin });
 };

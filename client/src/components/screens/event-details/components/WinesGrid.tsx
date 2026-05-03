@@ -13,7 +13,7 @@ export default function WinesGrid({
   eventWines,
   getUserVoteForWine,
   getWineContributor,
-  onVoteForWine
+  onVoteForWine,
 }: WinesGridProps) {
   if (eventWines.length === 0) {
     return (
@@ -27,7 +27,7 @@ export default function WinesGrid({
 
   return (
     <div className="grid grid-cols-1 gap-4 mb-6">
-      {eventWines.map(wine => {
+      {eventWines.map((wine) => {
         const userVote = getUserVoteForWine(wine.id);
         const contributor = getWineContributor(wine.userId);
 

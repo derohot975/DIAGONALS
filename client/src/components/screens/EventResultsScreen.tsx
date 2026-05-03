@@ -14,10 +14,15 @@ interface EventResultsScreenProps {
   onGoHome?: () => void;
 }
 
-export default function EventResultsScreen({ event, results, onGoBack, onGoHome }: EventResultsScreenProps) {
-  if (!event) return null;
-
+export default function EventResultsScreen({
+  event,
+  results,
+  onGoBack,
+  onGoHome,
+}: EventResultsScreenProps) {
   const { expandedWines, toggleExpandWine } = useResultsExpansion();
+
+  if (!event) return null;
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-b from-[#300505] to-[#1a0303]">
@@ -26,7 +31,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <div
         className="flex-1 overflow-y-auto px-6 scrollbar-hide"
         style={{
-          paddingBottom: 'calc(var(--bottom-nav-total, 3.5rem) + 1rem)'
+          paddingBottom: 'calc(var(--bottom-nav-total, 3.5rem) + 1rem)',
         }}
       >
         <div className="max-w-md mx-auto space-y-2">
@@ -43,10 +48,7 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
                   isExpanded={expandedWines.has(result.id)}
                   onToggleExpand={toggleExpandWine}
                 />
-                <CollapsibleDetails
-                  result={result}
-                  isExpanded={expandedWines.has(result.id)}
-                />
+                <CollapsibleDetails result={result} isExpanded={expandedWines.has(result.id)} />
               </div>
             ))
           )}
@@ -56,9 +58,35 @@ export default function EventResultsScreen({ event, results, onGoBack, onGoHome 
       <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onGoBack ? [{ id: 'back', icon: <ArrowLeft className="w-6 h-6" />, onClick: onGoBack, title: 'Indietro', variant: 'glass' as const }] : []),
-          { id: 'export', icon: <Download className="w-6 h-6" />, onClick: () => handleExport(event, results), title: 'Condividi', variant: 'glass' as const },
-          ...(onGoHome ? [{ id: 'home', icon: <Home className="w-6 h-6" />, onClick: onGoHome, title: 'Home', variant: 'glass' as const }] : []),
+          ...(onGoBack
+            ? [
+                {
+                  id: 'back',
+                  icon: <ArrowLeft className="w-6 h-6" />,
+                  onClick: onGoBack,
+                  title: 'Indietro',
+                  variant: 'glass' as const,
+                },
+              ]
+            : []),
+          {
+            id: 'export',
+            icon: <Download className="w-6 h-6" />,
+            onClick: () => handleExport(event, results),
+            title: 'Condividi',
+            variant: 'glass' as const,
+          },
+          ...(onGoHome
+            ? [
+                {
+                  id: 'home',
+                  icon: <Home className="w-6 h-6" />,
+                  onClick: onGoHome,
+                  title: 'Home',
+                  variant: 'glass' as const,
+                },
+              ]
+            : []),
         ]}
       />
     </div>

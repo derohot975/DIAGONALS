@@ -8,13 +8,19 @@ interface CreateEventModalProps {
   onCreateEvent: (name: string, date: string, mode: string) => void;
 }
 
-export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: CreateEventModalProps) {
+export default function CreateEventModal({
+  isOpen,
+  onClose,
+  onCreateEvent,
+}: CreateEventModalProps) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
     document.addEventListener('keydown', handleEsc);
     document.body.style.overflow = 'hidden';
     return () => {
@@ -38,7 +44,9 @@ export default function CreateEventModal({ isOpen, onClose, onCreateEvent }: Cre
   return (
     <div
       className={`fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center ${getZIndexClass('MODAL_OVERLAY')} p-4`}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       style={{ touchAction: 'none' }}
     >
       <div

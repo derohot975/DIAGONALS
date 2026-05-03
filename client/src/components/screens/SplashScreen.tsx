@@ -19,10 +19,10 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       <div className="flex-1 flex items-center justify-center">
         <div className="relative">
           <div className="animate-fade-in">
-            <img 
-              src="/diagologo.png" 
-              alt="DIAGONALE" 
-              className="w-48 h-auto mx-auto drop-shadow-2xl logo-bounce" 
+            <img
+              src="/diagologo.png"
+              alt="DIAGONALE"
+              className="w-48 h-auto mx-auto drop-shadow-2xl logo-bounce"
             />
           </div>
           {/* Spinner discreto per indicare caricamento dati in background */}
@@ -31,7 +31,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           </div>
         </div>
       </div>
-      
+
       {/* Firma in fondo */}
       <div className="pb-24 text-center">
         <p className="text-white text-base font-medium drop-shadow-lg">By DERO</p>

@@ -32,7 +32,13 @@ class Logger {
     return level >= this.level;
   }
 
-  private createEntry(level: LogLevel, message: string, context?: string, data?: any, error?: Error): LogEntry {
+  private createEntry(
+    level: LogLevel,
+    message: string,
+    context?: string,
+    data?: any,
+    error?: Error
+  ): LogEntry {
     return {
       timestamp: new Date().toISOString(),
       level,

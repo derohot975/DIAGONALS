@@ -3,7 +3,17 @@
 
 import { User } from '@shared/schema';
 
-type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+type Screen =
+  | 'auth'
+  | 'home'
+  | 'admin'
+  | 'events'
+  | 'adminEvents'
+  | 'eventDetails'
+  | 'eventResults'
+  | 'voting'
+  | 'historicEvents'
+  | 'pagella';
 
 interface UIHandlerDependencies {
   setCurrentScreen: (screen: Screen) => void;

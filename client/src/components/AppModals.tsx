@@ -1,4 +1,4 @@
-import { User, WineEvent, Wine } from '@shared/schema';
+import { User } from '@shared/schema';
 import { AppState, AppStateActions } from '@/hooks/useAppState';
 import AddUserModal from './modals/AddUserModal';
 import EditUserModal from './modals/EditUserModal';
@@ -20,8 +20,15 @@ interface AppModalsProps {
   onCreateEvent: (name: string, date: string, mode: string) => void;
   onUpdateEvent: (id: number, name: string, date: string, mode: string) => void;
   onRegisterWine: (wineData: {
-    type: string; name: string; producer: string; grape: string;
-    year: number; origin: string; price: number; alcohol?: number; eventId: number;
+    type: string;
+    name: string;
+    producer: string;
+    grape: string;
+    year: number;
+    origin: string;
+    price: number;
+    alcohol?: number;
+    eventId: number;
   }) => void;
   onAdminPinSuccess: () => void;
   onAdminPinClose: () => void;
@@ -29,9 +36,18 @@ interface AppModalsProps {
 }
 
 export default function AppModals({
-  appState, currentUser, currentScreen, enableAppShell,
-  onAddUser, onUpdateUser, onCreateEvent, onUpdateEvent,
-  onRegisterWine, onAdminPinSuccess, onAdminPinClose, onChangeAdminPin
+  appState,
+  currentUser,
+  currentScreen,
+  enableAppShell,
+  onAddUser,
+  onUpdateUser,
+  onCreateEvent,
+  onUpdateEvent,
+  onRegisterWine,
+  onAdminPinSuccess,
+  onAdminPinClose,
+  onChangeAdminPin,
 }: AppModalsProps) {
   return (
     <>
@@ -43,7 +59,10 @@ export default function AppModals({
 
       <EditUserModal
         isOpen={appState.showEditUserModal}
-        onClose={() => { appState.setShowEditUserModal(false); appState.setEditingUser(null); }}
+        onClose={() => {
+          appState.setShowEditUserModal(false);
+          appState.setEditingUser(null);
+        }}
         user={appState.editingUser}
         onUpdateUser={onUpdateUser}
       />
@@ -56,14 +75,20 @@ export default function AppModals({
 
       <EditEventModal
         isOpen={appState.showEditEventModal}
-        onClose={() => { appState.setShowEditEventModal(false); appState.setEditingEvent(null); }}
+        onClose={() => {
+          appState.setShowEditEventModal(false);
+          appState.setEditingEvent(null);
+        }}
         onUpdateEvent={onUpdateEvent}
         event={appState.editingEvent}
       />
 
       <WineRegistrationModal
         isOpen={appState.showWineRegistrationModal}
-        onClose={() => { appState.setShowWineRegistrationModal(false); appState.setEditingWine(null); }}
+        onClose={() => {
+          appState.setShowWineRegistrationModal(false);
+          appState.setEditingWine(null);
+        }}
         currentUser={currentUser}
         onRegisterWine={onRegisterWine}
         wine={appState.editingWine}

@@ -8,20 +8,20 @@ const distDir = './dist/public';
 // File da copiare per PWA
 const pwaFiles = [
   'icon-96x96.png',
-  'icon-144x144.png', 
+  'icon-144x144.png',
   'icon-192x192.png',
   'icon-512x512.png',
   'apple-touch-icon.png',
   'manifest.json',
-  'sw.js'
+  'sw.js',
 ];
 
 console.log('🔧 Copiando file PWA nella build...');
 
-pwaFiles.forEach(file => {
+pwaFiles.forEach((file) => {
   const src = join(publicDir, file);
   const dest = join(distDir, file);
-  
+
   if (existsSync(src)) {
     try {
       copyFileSync(src, dest);

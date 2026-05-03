@@ -46,9 +46,7 @@ export default function WineCard({ wine, userVote, contributor, onScore }: WineC
           onScore={onScore}
         />
 
-        <div className="text-center text-xs text-white/25 mt-1">
-          Voti da 1 a 10 · step 0.5
-        </div>
+        <div className="text-center text-xs text-white/25 mt-1">Voti da 1 a 10 · step 0.5</div>
       </div>
     </div>
   );

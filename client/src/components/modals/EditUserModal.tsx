@@ -58,9 +58,7 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdateUser }: E
     >
       <form id="edit-user-form" onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Nome Utente
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Nome Utente</label>
           <input
             type="text"
             value={name}

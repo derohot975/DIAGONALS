@@ -12,18 +12,16 @@ const ICON_URLS = [
   '/icon-144x144.png?v=10',
   '/icon-192x192.png?v=10',
   '/icon-512x512.png?v=10',
-  '/manifest.json?v=10'
+  '/manifest.json?v=10',
 ];
 
 // Risorse critiche per App Shell (precache)
 const STATIC_URLS = [
   '/',
-  '/diagologo.png'
+  '/diagologo.png',
   // Nota: CSS e JS vengono gestiti dinamicamente da Vite
 ];
 
-// TTL per cache (in millisecondi)
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 ore
 // END DIAGONALE APP SHELL
 
 // BEGIN DIAGONALE APP SHELL - Enhanced install with static resources
@@ -33,24 +31,26 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
       // Cache icone PWA
-      caches.open(ICON_CACHE)
-        .then(cache => cache.addAll(ICON_URLS))
+      caches
+        .open(ICON_CACHE)
+        .then((cache) => cache.addAll(ICON_URLS))
         .then(() => console.log('✅ SW: Icone PWA cached')),
       // Cache risorse statiche per App Shell
-      caches.open(STATIC_CACHE)
-        .then(cache => cache.addAll(STATIC_URLS))
+      caches
+        .open(STATIC_CACHE)
+        .then((cache) => cache.addAll(STATIC_URLS))
         .then(() => console.log('✅ SW: Risorse statiche cached'))
-        .catch(err => console.warn('⚠️ SW: Errore cache statiche (non bloccante)', err))
+        .catch((err) => console.warn('⚠️ SW: Errore cache statiche (non bloccante)', err)),
     ])
-    .then(() => {
-      console.log('✅ SW: Installazione completata');
-      self.skipWaiting();
-    })
-    .catch(err => {
-      console.error('❌ SW: Errore installazione', err);
-      // Non bloccare l'installazione per errori non critici
-      self.skipWaiting();
-    })
+      .then(() => {
+        console.log('✅ SW: Installazione completata');
+        self.skipWaiting();
+      })
+      .catch((err) => {
+        console.error('❌ SW: Errore installazione', err);
+        // Non bloccare l'installazione per errori non critici
+        self.skipWaiting();
+      })
   );
 });
 // END DIAGONALE APP SHELL
@@ -60,24 +60,26 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   console.log('🔄 SW: Attivazione iniziata');
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      const validCaches = [CACHE_NAME, ICON_CACHE, STATIC_CACHE];
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (!validCaches.includes(cacheName)) {
-            console.log('🗑️ SW: Eliminazione cache obsoleta:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-    .then(() => {
-      console.log('✅ SW: Attivazione completata, controllo client');
-      return self.clients.claim();
-    })
-    .then(() => {
-      console.log('✅ SW: Client sotto controllo');
-    })
+    caches
+      .keys()
+      .then((cacheNames) => {
+        const validCaches = [CACHE_NAME, ICON_CACHE, STATIC_CACHE];
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (!validCaches.includes(cacheName)) {
+              console.log('🗑️ SW: Eliminazione cache obsoleta:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('✅ SW: Attivazione completata, controllo client');
+        return self.clients.claim();
+      })
+      .then(() => {
+        console.log('✅ SW: Client sotto controllo');
+      })
   );
 });
 // END DIAGONALE APP SHELL
@@ -87,27 +89,36 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const { pathname } = url;
-  
+
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
   // Cache first per icone PWA
-  if (pathname.includes('icon-') || pathname.includes('apple-touch-icon') || pathname.includes('manifest.json')) {
+  if (
+    pathname.includes('icon-') ||
+    pathname.includes('apple-touch-icon') ||
+    pathname.includes('manifest.json')
+  ) {
     event.respondWith(
-      caches.open(ICON_CACHE)
-        .then(cache => cache.match(event.request))
-        .then(response => response || fetch(event.request))
+      caches
+        .open(ICON_CACHE)
+        .then((cache) => cache.match(event.request))
+        .then((response) => response || fetch(event.request))
     );
     return;
   }
 
   // Stale-while-revalidate per risorse statiche (HTML, CSS, JS, immagini)
-  if (pathname === '/' || pathname.endsWith('.css') || pathname.endsWith('.js') || pathname.endsWith('.png') || pathname.endsWith('.jpg')) {
-    event.respondWith(
-      staleWhileRevalidate(event.request, STATIC_CACHE)
-    );
+  if (
+    pathname === '/' ||
+    pathname.endsWith('.css') ||
+    pathname.endsWith('.js') ||
+    pathname.endsWith('.png') ||
+    pathname.endsWith('.jpg')
+  ) {
+    event.respondWith(staleWhileRevalidate(event.request, STATIC_CACHE));
     return;
   }
 
@@ -125,17 +136,19 @@ self.addEventListener('fetch', (event) => {
 async function staleWhileRevalidate(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cachedResponse = await cache.match(request);
-  
+
   // Fetch in background per aggiornare cache
-  const fetchPromise = fetch(request).then(response => {
-    if (response.ok) {
-      cache.put(request, response.clone());
-    }
-    return response;
-  }).catch(err => {
-    console.warn('🌐 SW: Errore fetch (usando cache)', err);
-    return cachedResponse;
-  });
+  const fetchPromise = fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch((err) => {
+      console.warn('🌐 SW: Errore fetch (usando cache)', err);
+      return cachedResponse;
+    });
 
   // Ritorna cache se disponibile, altrimenti aspetta fetch
   return cachedResponse || fetchPromise;

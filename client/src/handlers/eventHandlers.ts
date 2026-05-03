@@ -1,9 +1,17 @@
 // Event-related handlers - functions that manage event operations
 // Batch 2: Navigation handlers with eventId and wine registration
 
-import { User } from '@shared/schema';
-
-type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'voting' | 'historicEvents' | 'pagella';
+type Screen =
+  | 'auth'
+  | 'home'
+  | 'admin'
+  | 'events'
+  | 'adminEvents'
+  | 'eventDetails'
+  | 'eventResults'
+  | 'voting'
+  | 'historicEvents'
+  | 'pagella';
 
 interface EventHandlerDependencies {
   setSelectedEventId: (id: number | null) => void;

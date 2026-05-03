@@ -25,7 +25,7 @@ export function useAppEffects(config: AppEffectsConfig): void {
     usersLoading,
     eventsLoading,
     showSplash,
-    currentScreen
+    currentScreen,
   } = config;
 
   // Force reset to auth when app reloads
@@ -37,15 +37,15 @@ export function useAppEffects(config: AppEffectsConfig): void {
   // Validate currentUser still exists in database
   useEffect(() => {
     if (currentUser && users.length > 0) {
-      const userExists = users.find(u => u.id === currentUser.id);
+      const userExists = users.find((u) => u.id === currentUser.id);
       if (!userExists) {
         // User validation: clearing localStorage for non-existent user
         setCurrentUser(null);
         setCurrentScreen('auth');
-        toast({ 
-          title: 'Utente non trovato', 
+        toast({
+          title: 'Utente non trovato',
           description: 'Riseleziona il tuo utente dalla lista.',
-          variant: 'destructive' 
+          variant: 'destructive',
         });
       }
     }

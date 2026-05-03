@@ -1,5 +1,5 @@
-import { Wine, Vote, User } from "@shared/schema";
-import WineListItem from "./WineListItem";
+import { Wine, Vote, User } from '@shared/schema';
+import WineListItem from './WineListItem';
 
 interface WineListProps {
   wines: Wine[];
@@ -10,10 +10,12 @@ interface WineListProps {
 }
 
 export default function WineList({ wines, users, votes, currentUser, onWineClick }: WineListProps) {
-  const getWineContributor = (userId: number) => users.find(u => u.id === userId)?.name || 'Sconosciuto';
-  const getUserVoteForWine = (wineId: number) => votes.find(v => v.wineId === wineId && v.userId === currentUser.id);
+  const getWineContributor = (userId: number) =>
+    users.find((u) => u.id === userId)?.name || 'Sconosciuto';
+  const getUserVoteForWine = (wineId: number) =>
+    votes.find((v) => v.wineId === wineId && v.userId === currentUser.id);
 
-  const TYPE_ORDER: Record<string, number> = { 'Bollicina': 1, 'Bianco': 2, 'Rosso': 3, 'Altro': 4 };
+  const TYPE_ORDER: Record<string, number> = { Bollicina: 1, Bianco: 2, Rosso: 3, Altro: 4 };
   const sortedWines = [...wines].sort((a, b) => {
     const aO = TYPE_ORDER[a.type as string] || 5;
     const bO = TYPE_ORDER[b.type as string] || 5;
@@ -26,10 +28,13 @@ export default function WineList({ wines, users, votes, currentUser, onWineClick
   return (
     <div
       className="overflow-y-auto px-6 scrollbar-hide"
-      style={{ height: 'calc(100dvh - 220px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))' }}
+      style={{
+        height:
+          'calc(100dvh - 220px - var(--bottom-nav-total, 56px) - env(safe-area-inset-top, 0px))',
+      }}
     >
       <div className="max-w-md mx-auto space-y-3">
-        {sortedWines.map(wine => (
+        {sortedWines.map((wine) => (
           <WineListItem
             key={wine.id}
             wine={wine}

@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Rock+Salt&family=Shadows+Into+Light&display=swap");
-@import "./styles/icons.css";
+@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&family=Shadows+Into+Light&display=swap');
+@import './styles/icons.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,16 +25,16 @@
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
-  
+
   /* iOS Safe Height - Dynamic Viewport Height with safe areas */
   --app-h: 100dvh;
-  
+
   /* Wine-specific colors - bordeaux scuro/rosso specifici */
   --wine-primary: #300505;
   --wine-secondary: #8d0303;
   --wine-accent: hsl(0, 84.2%, 60.2%);
   --wine-gold: hsl(43, 96%, 56%);
-  
+
   /* Bottom navigation height tokens — solid bar 56px */
   --bottom-nav-height: 3.5rem; /* 56px: standard mobile tab bar */
   --bottom-nav-total: calc(3.5rem + env(safe-area-inset-bottom));
@@ -71,7 +71,11 @@
 
   body {
     @apply font-sans antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
     background: linear-gradient(to bottom, #300505 0%, #1a0303 100%) !important;
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height per mobile */
@@ -111,12 +115,15 @@
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; /* Abilita inerzia su iOS */
-    overscroll-behavior-y: contain;  /* Isola lo scroll verticale */
+    overscroll-behavior-y: contain; /* Isola lo scroll verticale */
     touch-action: pan-y; /* Consente solo pan verticale */
   }
 
   /* Prevenzione zoom su input e bottoni */
-  input, button, textarea, select {
+  input,
+  button,
+  textarea,
+  select {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -126,7 +133,7 @@
     transform: translateZ(0);
     will-change: transform;
   }
-  
+
   /* PWA: schermo intero su mobile */
   @media (display-mode: standalone) {
     body {
@@ -194,7 +201,6 @@
 }
 
 @layer utilities {
-
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
   }
@@ -214,7 +220,6 @@
     transform: scale(1.05);
     drop-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
   }
-
 }
 
 @keyframes fadeIn {
@@ -229,13 +234,13 @@
 }
 
 @keyframes slide-up {
-  from { 
-    opacity: 0; 
-    transform: translateY(100px) scale(0.95); 
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.95);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0) scale(1); 
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -275,11 +280,19 @@
 
 /* Event name standard font */
 .event-name-standard {
-  font-family: 'Myriad Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial Narrow', sans-serif;
+  font-family:
+    'Myriad Pro',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Helvetica Neue',
+    'Arial Narrow',
+    sans-serif;
   font-weight: 700;
   font-stretch: condensed;
   letter-spacing: -0.2px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -289,7 +302,7 @@
   font-family: 'Shadows Into Light', cursive;
   font-weight: 700;
   letter-spacing: 0.5px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   line-height: 1.2;
 }
 

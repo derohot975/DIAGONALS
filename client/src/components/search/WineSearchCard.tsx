@@ -19,16 +19,18 @@ export interface WineSearchResult {
 // 🎯 Utility per highlight del testo
 const highlightText = (text: string, query: string): React.ReactNode => {
   if (!query || query.length < 2) return text;
-  
+
   const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   const parts = text.split(regex);
-  
-  return parts.map((part, index) => 
+
+  return parts.map((part, index) =>
     regex.test(part) ? (
       <mark key={index} className="bg-yellow-100 text-yellow-800 px-1 rounded">
         {part}
       </mark>
-    ) : part
+    ) : (
+      part
+    )
   );
 };
 
@@ -45,7 +47,7 @@ export default function WineSearchCard({ wine, query = '', onClick }: WineSearch
   };
 
   return (
-    <div 
+    <div
       className="bg-white/95 rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 cursor-pointer w-full max-w-none"
       onClick={handleClick}
     >
@@ -72,7 +74,7 @@ export default function WineSearchCard({ wine, query = '', onClick }: WineSearch
           <span className="font-medium">Portato da:</span>
           <span className="ml-1 font-semibold text-[#300505]">{wine.userName}</span>
         </div>
-        
+
         {/* Evento principale (più recente) */}
         <div className="flex items-center text-sm text-gray-600">
           <span className="font-medium">Ultimo evento:</span>
@@ -80,7 +82,7 @@ export default function WineSearchCard({ wine, query = '', onClick }: WineSearch
           <span className="mx-2">•</span>
           <span>{new Date(wine.eventDate).toLocaleDateString('it-IT')}</span>
         </div>
-        
+
         {/* Eventi aggiuntivi */}
         {wine.additionalEvents && wine.additionalEvents.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-100">

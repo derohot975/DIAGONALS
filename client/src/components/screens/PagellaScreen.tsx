@@ -13,14 +13,24 @@ interface PagellaScreenProps {
   onGoHome: () => void;
 }
 
-export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }: PagellaScreenProps) {
-  if (!event) return null;
+interface PagellaScreenContentProps {
+  event: WineEvent;
+  currentUser: User | null;
+  onGoBack: () => void;
+  onGoHome: () => void;
+}
 
+function PagellaScreenContent({
+  event,
+  currentUser,
+  onGoBack,
+  onGoHome,
+}: PagellaScreenContentProps) {
   const { canEdit } = usePagellaPermissions(currentUser);
   const { content, loading, saveStatus, handleContentChange } = usePagellaLogic({
     event,
     currentUser,
-    canEdit
+    canEdit,
   });
 
   if (loading) {
@@ -37,30 +47,52 @@ export default function PagellaScreen({ event, currentUser, onGoBack, onGoHome }
   return (
     <div className="flex-1 flex flex-col">
       <PagellaHeader canEdit={canEdit} saveStatus={saveStatus} />
-      <PagellaEditor 
-        content={content} 
-        canEdit={canEdit} 
-        onContentChange={handleContentChange} 
-      />
-      <BottomNavBar 
+      <PagellaEditor content={content} canEdit={canEdit} onContentChange={handleContentChange} />
+      <BottomNavBar
         layout="center"
         centerButtons={[
-          ...(onGoBack ? [{
-            id: 'back',
-            icon: <ArrowLeft className="w-6 h-6" />,
-            onClick: onGoBack,
-            title: 'Indietro',
-            variant: 'glass' as const
-          }] : []),
-          ...(onGoHome ? [{
-            id: 'home',
-            icon: <Home className="w-6 h-6" />,
-            onClick: onGoHome,
-            title: 'Home',
-            variant: 'glass' as const
-          }] : [])
+          ...(onGoBack
+            ? [
+                {
+                  id: 'back',
+                  icon: <ArrowLeft className="w-6 h-6" />,
+                  onClick: onGoBack,
+                  title: 'Indietro',
+                  variant: 'glass' as const,
+                },
+              ]
+            : []),
+          ...(onGoHome
+            ? [
+                {
+                  id: 'home',
+                  icon: <Home className="w-6 h-6" />,
+                  onClick: onGoHome,
+                  title: 'Home',
+                  variant: 'glass' as const,
+                },
+              ]
+            : []),
         ]}
       />
     </div>
+  );
+}
+
+export default function PagellaScreen({
+  event,
+  currentUser,
+  onGoBack,
+  onGoHome,
+}: PagellaScreenProps) {
+  if (!event) return null;
+
+  return (
+    <PagellaScreenContent
+      event={event}
+      currentUser={currentUser}
+      onGoBack={onGoBack}
+      onGoHome={onGoHome}
+    />
   );
 }

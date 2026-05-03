@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
-import { User } from '@shared/schema';
 
-export type Screen = 'auth' | 'home' | 'admin' | 'events' | 'adminEvents' | 'eventDetails' | 'eventResults' | 'eventReport' | 'voting' | 'historicEvents' | 'pagella';
+export type Screen =
+  | 'auth'
+  | 'home'
+  | 'admin'
+  | 'events'
+  | 'adminEvents'
+  | 'eventDetails'
+  | 'eventResults'
+  | 'eventReport'
+  | 'voting'
+  | 'historicEvents'
+  | 'pagella';
 
-interface UserSession {
-  user: User | null;
-  isAuthenticated: boolean;
-}
-
-export interface AppRouter {
+interface AppRouter {
   currentScreen: Screen;
   setCurrentScreen: (screen: Screen) => void;
   showSplash: boolean;

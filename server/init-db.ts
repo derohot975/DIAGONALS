@@ -1,13 +1,14 @@
-import { db } from "./db";
-import { users } from "../shared/schema";
+import { db } from './db';
+import { users } from '../shared/schema';
+import logger from './utils/logger';
 
 export async function initializeDatabase() {
   try {
     // Solo test connessione database
-    const result = await db.select().from(users).limit(1);
-    console.log("Database connection successful");
-  } catch (error) {
-    console.error("Error initializing database:", error);
-    console.log("Database not configured, using in-memory storage");
+    await db.select().from(users).limit(1);
+    logger.info('Database connection successful', 'DB');
+  } catch (error: unknown) {
+    logger.error('Error initializing database', 'DB', error instanceof Error ? error : undefined);
+    logger.warn('Database connection test failed', 'DB');
   }
 }

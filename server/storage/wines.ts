@@ -1,6 +1,17 @@
-import { Wine, InsertWine, wines, wineEvents, users } from "@shared/schema";
-import { db } from "../db";
-import { eq, and, sql } from "drizzle-orm";
+import { Wine, InsertWine, wines, wineEvents, users } from '@shared/schema';
+import { db } from '../db';
+import { eq, and, sql } from 'drizzle-orm';
+
+export interface CompletedWineSearchRow {
+  id: number;
+  name: string;
+  producer: string;
+  type: string;
+  year: number;
+  userName: string;
+  eventName: string;
+  eventDate: string;
+}
 
 export class WineStorage {
   async getWine(id: number): Promise<Wine | undefined> {
@@ -35,15 +46,34 @@ export class WineStorage {
     return result.length > 0;
   }
 
-  async searchWinesInCompletedEvents(query: string, limit: number, offset: number): Promise<any[]> {
+  async searchWinesInCompletedEvents(
+    query: string,
+    limit: number,
+    offset: number
+  ): Promise<CompletedWineSearchRow[]> {
     const searchTerm = `%${query.toLowerCase()}%`;
-    return await db.select({
-      id: wines.id, name: wines.name, producer: wines.producer, type: wines.type,
-      year: wines.year, userName: users.name, eventName: wineEvents.name, eventDate: wineEvents.date,
-    }).from(wines)
+    return await db
+      .select({
+        id: wines.id,
+        name: wines.name,
+        producer: wines.producer,
+        type: wines.type,
+        year: wines.year,
+        userName: users.name,
+        eventName: wineEvents.name,
+        eventDate: wineEvents.date,
+      })
+      .from(wines)
       .innerJoin(wineEvents, eq(wines.eventId, wineEvents.id))
       .innerJoin(users, eq(wines.userId, users.id))
-      .where(and(eq(wineEvents.status, 'completed'), sql`(LOWER(${wines.name}) LIKE ${searchTerm} OR LOWER(${wines.producer}) LIKE ${searchTerm})`))
-      .orderBy(sql`${wineEvents.date} DESC`).limit(limit).offset(offset);
+      .where(
+        and(
+          eq(wineEvents.status, 'completed'),
+          sql`(LOWER(${wines.name}) LIKE ${searchTerm} OR LOWER(${wines.producer}) LIKE ${searchTerm})`
+        )
+      )
+      .orderBy(sql`${wineEvents.date} DESC`)
+      .limit(limit)
+      .offset(offset);
   }
 }

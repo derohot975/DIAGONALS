@@ -11,7 +11,7 @@ const SearchOverlayContext = createContext<SearchOverlayContextType | undefined>
 export function SearchOverlayProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const openRef = useRef(open);
-  
+
   // Sync ref for debugging
   openRef.current = open;
 
@@ -29,11 +29,7 @@ export function SearchOverlayProvider({ children }: { children: React.ReactNode 
     closeOverlay,
   };
 
-  return (
-    <SearchOverlayContext.Provider value={value}>
-      {children}
-    </SearchOverlayContext.Provider>
-  );
+  return <SearchOverlayContext.Provider value={value}>{children}</SearchOverlayContext.Provider>;
 }
 
 export function useSearchOverlay() {

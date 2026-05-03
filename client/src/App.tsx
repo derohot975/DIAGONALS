@@ -23,15 +23,31 @@ import { User, WineEvent, Wine, Vote, WineResultDetailed } from '@shared/schema'
 import { Screen } from './hooks/useAppRouter';
 
 const safeMode = (window as any).__DIAGONALE_SAFE_MODE__ || {};
-const ENABLE_APP_SHELL = safeMode.SHELL_ENABLED ?? (import.meta.env.VITE_ENABLE_APP_SHELL !== 'false');
-const ENABLE_APP_SHELL_ON_INTRO = safeMode.INTRO_ENABLED ?? (import.meta.env.VITE_ENABLE_APP_SHELL_ON_INTRO === 'true');
-const DATA_HEAVY_SCREENS: Screen[] = ['events', 'adminEvents', 'eventDetails', 'eventResults', 'voting', 'historicEvents', 'pagella', 'admin'];
+const ENABLE_APP_SHELL =
+  safeMode.SHELL_ENABLED ?? import.meta.env.VITE_ENABLE_APP_SHELL !== 'false';
+const ENABLE_APP_SHELL_ON_INTRO =
+  safeMode.INTRO_ENABLED ?? import.meta.env.VITE_ENABLE_APP_SHELL_ON_INTRO === 'true';
+const DATA_HEAVY_SCREENS: Screen[] = [
+  'events',
+  'adminEvents',
+  'eventDetails',
+  'eventResults',
+  'voting',
+  'historicEvents',
+  'pagella',
+  'admin',
+];
 
 const shouldShowSkeleton = (screen: Screen): boolean =>
   ENABLE_APP_SHELL_ON_INTRO || screen !== 'auth' ? DATA_HEAVY_SCREENS.includes(screen) : false;
 
-interface UserSession { user: User | null; isAuthenticated: boolean; }
-interface AdminSession { isAdmin: boolean; }
+interface UserSession {
+  user: User | null;
+  isAuthenticated: boolean;
+}
+interface AdminSession {
+  isAdmin: boolean;
+}
 
 function App() {
   const [userSession, setUserSession] = useState<UserSession>(() => {
@@ -39,21 +55,28 @@ function App() {
     if (saved) {
       try {
         const p = JSON.parse(saved);
-        if (p.userId && p.ts && Date.now() - p.ts < 86400000) return { user: null, isAuthenticated: true };
+        if (p.userId && p.ts && Date.now() - p.ts < 86400000)
+          return { user: null, isAuthenticated: true };
         sessionStorage.removeItem('dg_user_session');
-      } catch { sessionStorage.removeItem('dg_user_session'); }
+      } catch {
+        sessionStorage.removeItem('dg_user_session');
+      }
     }
     return { user: null, isAuthenticated: false };
   });
 
-  const [adminSession, setAdminSession] = useState<AdminSession>(() => ({
-    isAdmin: sessionStorage.getItem('dg_admin_session') === 'true'
+  const [, setAdminSession] = useState<AdminSession>(() => ({
+    isAdmin: sessionStorage.getItem('dg_admin_session') === 'true',
   }));
 
   const currentUser = userSession.user;
   const setCurrentUser = (user: User | null) => {
     setUserSession({ user, isAuthenticated: !!user });
-    if (user) sessionStorage.setItem('dg_user_session', JSON.stringify({ userId: user.id, ts: Date.now() }));
+    if (user)
+      sessionStorage.setItem(
+        'dg_user_session',
+        JSON.stringify({ userId: user.id, ts: Date.now() })
+      );
     else sessionStorage.removeItem('dg_user_session');
   };
 
@@ -62,55 +85,79 @@ function App() {
   const navigation = useAppNavigation(router.setCurrentScreen, appState);
   const queryClient = useQueryClient();
 
-  const { sessionError, loginMutation, logoutMutation, handleUserSelect, handleLogout: sessionHandleLogout } =
-    useSession(currentUser, setCurrentUser, router.setCurrentScreen);
+  useSession(currentUser, setCurrentUser, router.setCurrentScreen);
 
-  const { authLoading, authError, setAuthError, handleLogin, handleRegister } = useAuth();
+  const { authLoading, authError, handleLogin, handleRegister } = useAuth();
   const { createUserMutation, updateUserMutation, deleteUserMutation } = useUserMutations();
   const { createWineMutation, updateWineMutation, voteMutation } = useWineMutations();
   const {
-    createEventMutation, updateEventMutation, deleteEventMutation, updateEventStatusMutation,
-    setCurrentWineMutation, nextWineMutation, stopVotingMutation, completeEventMutation, viewReportMutation,
+    createEventMutation,
+    updateEventMutation,
+    deleteEventMutation,
+    updateEventStatusMutation,
+    setCurrentWineMutation,
+    nextWineMutation,
+    stopVotingMutation,
+    completeEventMutation,
+    viewReportMutation,
   } = useEventMutations({
     currentUser,
     selectedEventId: appState.selectedEventId,
     setReportData: appState.setReportData,
-    setShowReportModal: appState.setShowReportModal
+    setShowReportModal: appState.setShowReportModal,
   });
 
-  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({ queryKey: ['/api/users'] });
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
+    queryKey: ['/api/users'],
+  });
   const { data: events = [], isLoading: eventsLoading } = useQuery<WineEvent[]>({
-    queryKey: ['/api/events'], staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false,
+    queryKey: ['/api/events'],
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
   const { data: wines = [] } = useQuery<Wine[]>({
-    queryKey: ['/api/wines'], staleTime: 2 * 60 * 1000, refetchOnWindowFocus: false,
+    queryKey: ['/api/wines'],
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
   const { data: allVotes = [] } = useQuery<Vote[]>({
-    queryKey: ['/api/votes/all'], staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false,
+    queryKey: ['/api/votes/all'],
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
-  const { data: votes = [] } = useQuery<Vote[]>({
-    queryKey: ['/api/votes?eventId=' + appState.selectedEventId], enabled: !!appState.selectedEventId,
-  });
   const { data: results = [] } = useQuery<WineResultDetailed[]>({
     queryKey: ['/api/events/' + appState.selectedEventId + '/results'],
     enabled: !!appState.selectedEventId && router.currentScreen === 'eventResults',
   });
 
   const handlers = useAppHandlers({
-    currentUser, appState, wines, events,
+    currentUser,
+    appState,
+    wines,
+    events,
     setCurrentScreen: router.setCurrentScreen,
     setAdminSession: (isAdmin) => {
       setAdminSession({ isAdmin });
       if (!isAdmin) sessionStorage.removeItem('dg_admin_session');
     },
     mutations: {
-      createUserMutation, updateUserMutation, deleteUserMutation,
-      createWineMutation, updateWineMutation, voteMutation,
-      createEventMutation, updateEventMutation, deleteEventMutation,
-      updateEventStatusMutation, setCurrentWineMutation, nextWineMutation,
-      stopVotingMutation, completeEventMutation, viewReportMutation,
-    }
+      createUserMutation,
+      updateUserMutation,
+      deleteUserMutation,
+      createWineMutation,
+      updateWineMutation,
+      voteMutation,
+      createEventMutation,
+      updateEventMutation,
+      deleteEventMutation,
+      updateEventStatusMutation,
+      setCurrentWineMutation,
+      nextWineMutation,
+      stopVotingMutation,
+      completeEventMutation,
+      viewReportMutation,
+    },
   });
 
   if (process.env.NODE_ENV === 'development') {
@@ -121,16 +168,22 @@ function App() {
     };
   }
 
-  const handleLogout = () => { sessionHandleLogout(); setAuthError(null); };
-
   const onLogin = async (name: string, pin: string) => {
     const user = await handleLogin(name, pin);
-    if (user) { setCurrentUser(user); router.setCurrentScreen('events'); queryClient.invalidateQueries({ queryKey: ['/api/users'] }); }
+    if (user) {
+      setCurrentUser(user);
+      router.setCurrentScreen('events');
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    }
   };
 
   const onRegister = async (name: string, pin: string) => {
     const user = await handleRegister(name, pin);
-    if (user) { setCurrentUser(user); router.setCurrentScreen('events'); queryClient.invalidateQueries({ queryKey: ['/api/users'] }); }
+    if (user) {
+      setCurrentUser(user);
+      router.setCurrentScreen('events');
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    }
   };
 
   const handleAddUser = (name: string, isAdmin: boolean) => {
@@ -153,7 +206,7 @@ function App() {
   }
 
   const currentEvent = appState.selectedEventId
-    ? events.find((e: WineEvent) => e.id === appState.selectedEventId) ?? null
+    ? (events.find((e: WineEvent) => e.id === appState.selectedEventId) ?? null)
     : null;
 
   return (

@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+playwright-report
+test-results
+attached_assets
+Backup_Automatico
+DNA
+.local
+.windsurf

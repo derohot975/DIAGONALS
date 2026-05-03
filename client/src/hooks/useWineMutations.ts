@@ -7,26 +7,26 @@ export const useWineMutations = () => {
   const queryClient = useQueryClient();
 
   const createWineMutation = useMutation({
-    mutationFn: async (wineData: { 
-      type: string; 
-      name: string; 
-      producer: string; 
+    mutationFn: async (wineData: {
+      type: string;
+      name: string;
+      producer: string;
       grape: string;
-      year: number; 
-      origin: string; 
-      price: string; 
+      year: number;
+      origin: string;
+      price: string;
       alcohol?: number;
-      eventId: number; 
-      userId: number 
+      eventId: number;
+      userId: number;
     }) => {
       const response = await apiRequest('POST', '/api/wines', wineData);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
-      toast({ 
-        title: '🍷 Vino registrato con successo!', 
-        description: 'Partecipazione all\'evento confermata! Ora puoi partecipare alla DIAGONALE.'
+      toast({
+        title: '🍷 Vino registrato con successo!',
+        description: "Partecipazione all'evento confermata! Ora puoi partecipare alla DIAGONALE.",
       });
     },
     onError: () => {
@@ -35,27 +35,30 @@ export const useWineMutations = () => {
   });
 
   const updateWineMutation = useMutation({
-    mutationFn: async ({ id, wineData }: { 
-      id: number; 
-      wineData: { 
-        type: string; 
-        name: string; 
-        producer: string; 
+    mutationFn: async ({
+      id,
+      wineData,
+    }: {
+      id: number;
+      wineData: {
+        type: string;
+        name: string;
+        producer: string;
         grape: string;
-        year: number; 
-        origin: string; 
+        year: number;
+        origin: string;
         price: string;
         alcohol: number;
-      }
+      };
     }) => {
       const response = await apiRequest('PUT', `/api/wines/${id}`, wineData);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/wines'] });
-      toast({ 
-        title: '✏️ Vino modificato con successo!', 
-        description: 'Le informazioni del tuo vino sono state aggiornate.'
+      toast({
+        title: '✏️ Vino modificato con successo!',
+        description: 'Le informazioni del tuo vino sono state aggiornate.',
       });
     },
     onError: () => {
@@ -64,7 +67,13 @@ export const useWineMutations = () => {
   });
 
   const voteMutation = useMutation({
-    mutationFn: async (voteData: { eventId: number; wineId: number; userId: number; score: number; hasLode: boolean }) => {
+    mutationFn: async (voteData: {
+      eventId: number;
+      wineId: number;
+      userId: number;
+      score: number;
+      hasLode: boolean;
+    }) => {
       const response = await apiRequest('POST', '/api/votes', voteData);
       return response.json();
     },
@@ -80,6 +89,6 @@ export const useWineMutations = () => {
   return {
     createWineMutation,
     updateWineMutation,
-    voteMutation
+    voteMutation,
   };
 };

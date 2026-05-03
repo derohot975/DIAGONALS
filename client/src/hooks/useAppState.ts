@@ -11,16 +11,16 @@ export interface AppState {
   showReportModal: boolean;
   showAdminPinModal: boolean;
   showChangeAdminPinModal: boolean;
-  
+
   // Editing states
   editingUser: User | null;
   editingEvent: WineEvent | null;
   editingWine: Wine | null;
   reportData: EventReportData | null;
-  
+
   // Admin PIN protection
   pendingAdminAction: string | null;
-  
+
   // Selected data
   selectedEventId: number | null;
 }
@@ -34,12 +34,12 @@ export interface AppStateActions {
   setShowReportModal: (show: boolean) => void;
   setShowAdminPinModal: (show: boolean) => void;
   setShowChangeAdminPinModal: (show: boolean) => void;
-  
+
   setEditingUser: (user: User | null) => void;
   setEditingEvent: (event: WineEvent | null) => void;
   setEditingWine: (wine: Wine | null) => void;
   setReportData: (data: EventReportData | null) => void;
-  
+
   setPendingAdminAction: (action: string | null) => void;
   setSelectedEventId: (id: number | null) => void;
 }
@@ -54,16 +54,16 @@ export function useAppState(): AppState & AppStateActions {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showAdminPinModal, setShowAdminPinModal] = useState(false);
   const [showChangeAdminPinModal, setShowChangeAdminPinModal] = useState(false);
-  
+
   // Editing states
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editingEvent, setEditingEvent] = useState<WineEvent | null>(null);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [reportData, setReportData] = useState<EventReportData | null>(null);
-  
+
   // Admin PIN protection
   const [pendingAdminAction, setPendingAdminAction] = useState<string | null>(null);
-  
+
   // Selected data
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
@@ -83,7 +83,7 @@ export function useAppState(): AppState & AppStateActions {
     reportData,
     pendingAdminAction,
     selectedEventId,
-    
+
     // Actions
     setShowAddUserModal,
     setShowEditUserModal,

@@ -1,21 +1,22 @@
 import { WineEvent, WineResultDetailed } from '@shared/schema';
 import { formatEventName } from '@/lib/utils';
 
-export const formatResults = (event: WineEvent, results: WineResultDetailed[]) => {
+const formatResults = (event: WineEvent, results: WineResultDetailed[]) => {
   let text = `🏆 CLASSIFICA FINALE\n`;
   text += `🍷 ${formatEventName(event.name)}\n`;
   text += `📅 ${event.date}\n\n`;
-  
+
   results.forEach((result, index) => {
     const position = index + 1;
-    const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `${position}.`;
+    const medal =
+      position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `${position}.`;
     text += `${medal} ${result?.name || 'Vino senza nome'}\n`;
     text += `   ⭐ ${(result?.averageScore || 0).toFixed(1)} punti\n`;
     text += `   💰 ${result?.price || '0'}€\n`;
     text += `   👤 Portato da: ${result?.contributor || 'Sconosciuto'}\n`;
     text += `   🗳️ ${result?.totalVotes || 0} voti\n\n`;
   });
-  
+
   text += `📱 Generato dall'app DIAGONALE`;
   return text;
 };

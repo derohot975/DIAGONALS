@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Search, Wine } from '@/components/icons';
-import BaseModal, { ModalVisibilityProps } from '@/components/ui/BaseModal';
+import BaseModal from '@/components/ui/BaseModal';
 import WineSearchCard, { WineSearchResult } from './WineSearchCard';
 import { validateZIndexOrder } from '@/styles/tokens/zIndex';
 
@@ -28,7 +28,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
     if (open) {
       // Blocca scroll del body
       document.body.style.overflow = 'hidden';
-      
+
       // Focus immediato sull'input con fallback
       const focusInput = () => {
         const input = document.querySelector('input[placeholder*="Nome vino"]') as HTMLInputElement;
@@ -36,7 +36,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
           input.focus();
         }
       };
-      
+
       // Prova focus immediato e fallback con requestAnimationFrame
       focusInput();
       requestAnimationFrame(focusInput);
@@ -81,10 +81,13 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
 
-      const response = await fetch(`/api/wines/search?q=${encodeURIComponent(searchQuery)}&limit=20`, {
-        signal: controller.signal
-      });
-      
+      const response = await fetch(
+        `/api/wines/search?q=${encodeURIComponent(searchQuery)}&limit=20`,
+        {
+          signal: controller.signal,
+        }
+      );
+
       clearTimeout(timeoutId);
 
       if (!response.ok) {
@@ -92,7 +95,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
       }
 
       const data = await response.json();
-      
+
       // Performance monitoring
       const duration = Date.now() - startTime;
       if (process.env.NODE_ENV === 'development' && duration > 700) {
@@ -163,7 +166,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
           <p className="text-gray-500 text-lg">Cerca per nome o produttore</p>
           <p className="text-gray-400 text-sm mt-1">Minimo 2 caratteri</p>
           <div className="mt-4 text-xs text-gray-400">
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600">Ctrl</kbd> + 
+            <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600">Ctrl</kbd> +
             <kbd className="px-2 py-1 bg-gray-100 rounded text-gray-600 ml-1">K</kbd>
             <span className="ml-2">per aprire rapidamente</span>
           </div>
@@ -235,10 +238,15 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
     return (
       <div className="space-y-3">
         {results.map((wine) => (
-          <WineSearchCard key={wine.id} wine={wine} query={query} onClick={() => {
-            // TODO: Future navigation
-            console.log('Wine selected:', wine);
-          }} />
+          <WineSearchCard
+            key={wine.id}
+            wine={wine}
+            query={query}
+            onClick={() => {
+              // TODO: Future navigation
+              console.log('Wine selected:', wine);
+            }}
+          />
         ))}
       </div>
     );
@@ -273,10 +281,7 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
         </div>
 
         {/* Results Container */}
-        <div 
-          className="max-h-96 overflow-y-auto scrollable-area"
-          style={{ minHeight: '200px' }}
-        >
+        <div className="max-h-96 overflow-y-auto scrollable-area" style={{ minHeight: '200px' }}>
           {renderContent()}
         </div>
       </div>

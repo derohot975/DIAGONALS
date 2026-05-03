@@ -10,11 +10,5 @@ export default function GlobalWineSearchOverlay() {
   const { open, closeOverlay } = useSearchOverlay();
 
   // Always render via Portal to avoid stacking context issues
-  return createPortal(
-    <WineSearchOverlay 
-      open={open} 
-      onOpenChange={closeOverlay} 
-    />,
-    document.body
-  );
+  return createPortal(<WineSearchOverlay open={open} onOpenChange={closeOverlay} />, document.body);
 }

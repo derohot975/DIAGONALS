@@ -1,28 +1,28 @@
 /* Stili globali per icone Iconify */
 
 /* Stili base per tutte le icone */
-[class*="iconify"], 
-[class*="icon-"],
+[class*='iconify'],
+[class*='icon-'],
 svg[data-icon] {
   /* Dimensioni standard */
   width: 24px;
   height: 24px;
-  
+
   /* Stile stroke per icone outline */
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  
+
   /* Colore tramite currentColor per ereditare dal parent */
   color: currentColor;
   fill: currentColor;
-  
+
   /* Transizioni smooth per hover/focus */
   transition: all 0.2s ease-in-out;
-  
+
   /* Allineamento verticale */
   vertical-align: middle;
-  
+
   /* Flessibilità per layout */
   flex-shrink: 0;
 }
@@ -133,7 +133,8 @@ svg[data-icon] {
 }
 
 @keyframes icon-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -142,7 +143,8 @@ svg[data-icon] {
 }
 
 @keyframes icon-bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-25%);
     animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
   }
