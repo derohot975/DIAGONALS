@@ -10,7 +10,7 @@ import { db } from './db';
 import { sql } from 'drizzle-orm';
 import logger from './utils/logger';
 
-const KEEP_ALIVE_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 ore
+const KEEP_ALIVE_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 ore (sufficiente per prevenire pausa Supabase: 7gg = 168h)
 const MAX_LOG_LINE_LENGTH = 160;
 
 function summarizeResponseBody(body: unknown): string {
@@ -32,7 +32,7 @@ function startDatabaseKeepAlive() {
       log('Keep-alive: database ping fallito');
     }
   }, KEEP_ALIVE_INTERVAL_MS);
-  log('Keep-alive: avviato (intervallo 24h)');
+  log('Keep-alive: avviato (intervallo 12h)');
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
