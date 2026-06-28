@@ -31,7 +31,7 @@ CI (`render-deploy.yml`) esegue: `npm ci` → check → lint → guard:lens → 
 
 ## Altri script
 - `db:push` — push schema Drizzle.
-- `scripts/generate-icons.js` / `update-pwa-icons.js` — icone PWA (dipendenza opzionale `canvas`).
+- `scripts/generate-icons.js` — genera favicon (tab) e icone home/PWA da due sorgenti `.webp` in `client/public/` (cartella servita da Vite, root=client), ottimizzate con `pngquant` (dipendenze: `canvas`, `sips` nativo, `pngquant`). `post-build.js` ricopia gli asset PWA da `client/public/` a `dist/public/`.
 - `scripts/post-build.js` — task post-build.
 
 ## Keepalive Supabase

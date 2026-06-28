@@ -2,7 +2,8 @@
 import { copyFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const publicDir = './public';
+// Sorgente PWA = client/public (cartella servita da Vite, root=client). Unica fonte coerente.
+const publicDir = './client/public';
 const distDir = './dist/public';
 
 // File da copiare per PWA
