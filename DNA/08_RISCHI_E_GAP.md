@@ -15,7 +15,7 @@
 - **Render Free:** un solo servizio, sleep dopo inattività.
 
 ## Backlog incrementale (non obiettivo immediato)
-- Estendere E2E oltre il search overlay (voting flow, admin flow, completamento evento).
+- Estendere E2E ai flussi di scrittura (voto completo, completamento evento) con mock dedicati; coperti finora boot/auth/lista eventi/admin/search/visual.
 - Authorization pagella role-based.
 - Smoke test API in CI; osservabilità (metriche health, error rate).
 - Validazione env centralizzata al bootstrap.

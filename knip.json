@@ -1,21 +1,5 @@
 {
   "entry": ["scripts/**/*.js"],
   "project": ["client/**/*.ts", "client/**/*.tsx", "server/**/*.ts", "shared/**/*.ts"],
-  "ignore": [
-    "client/src/components/modals/EventReportModal.tsx",
-    "client/src/components/optimized/EventCard.tsx",
-    "client/src/components/optimized/LoadingSpinner.tsx",
-    "client/src/components/screens/admin/components/ParticipantsManager.tsx",
-    "client/src/components/screens/admin/hooks/useAdminEventManagement.ts",
-    "client/src/components/screens/event-details/components/NavButtons.tsx",
-    "client/src/components/screens/pagella/components/PagellaNavigation.tsx",
-    "client/src/components/screens/results/components/ShareButtonBar.tsx",
-    "client/src/components/screens/results/hooks/useResultsStats.ts",
-    "client/src/components/screens/vote/components/VotingHeaderBar.tsx",
-    "client/src/hooks/use-mobile.tsx",
-    "client/src/hooks/useAppEffects.ts",
-    "client/src/hooks/useGuestAuth.ts",
-    "client/src/hooks/useLocalStorage.ts",
-    "client/src/lib/logger.ts"
-  ]
+  "ignore": []
 }

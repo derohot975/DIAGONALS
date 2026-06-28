@@ -21,9 +21,10 @@ CI (`render-deploy.yml`) esegue: `npm ci` → check → lint → guard:lens → 
 - Entrambi in `test:all` e in CI. Violarli rompe la pipeline.
 
 ## E2E
-- Config `playwright.config.ts`, spec in `e2e/`. Webserver auto-start.
-- Output `playwright-report/` e `test-results/` sono **gitignored** (non versionare).
-- Coverage attuale: base (search overlay). Estensione = backlog (`08`).
+- Config `playwright.config.ts` (porta 5001, multi-browser + mobile), spec in `e2e/`. Webserver auto-start.
+- Isolamento: i test usano mock di rete (`e2e/helpers/mockApi.ts`) e sessione finta (`e2e/helpers/session.ts`) — **nessuna scrittura sul DB reale**.
+- Coverage: boot/navigazione, auth (keypad PIN), flussi post-login (lista eventi, admin), search lens, resa mobile/desktop, regressione visiva (snapshot baseline versionati).
+- Output `playwright-report/` e `test-results/` sono **gitignored** (non versionare); gli snapshot di riferimento sì.
 
 ## Backup
 - `npm run backup` / `backup:list` / `backup:restore` — `scripts/backup-system.js`, archivi `.tar.gz`, rotazione ultimi 3, verifica integrità (`tar -tzf`).

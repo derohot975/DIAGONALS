@@ -238,8 +238,8 @@ export default function WineSearchOverlay({ open, onOpenChange }: WineSearchOver
             wine={wine}
             query={query}
             onClick={() => {
-              // TODO: Future navigation
-              console.log('Wine selected:', wine);
+              // TODO: Future navigation al dettaglio vino
+              if (import.meta.env.DEV) console.log('Wine selected:', wine);
             }}
           />
         ))}
