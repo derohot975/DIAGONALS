@@ -1,0 +1,49 @@
+name: Supabase Keepalive
+
+# Tiene attivo il progetto Supabase (piano Free) evitando la pausa per inattivita'.
+# Supabase Free sospende il progetto dopo ~7 giorni senza attivita': un ping ogni 2 giorni basta.
+# Questo scheduler e' ESTERNO all'app: funziona anche quando il servizio Render dorme.
+#
+# Catena: GitHub Actions (cron) -> REST Supabase (lettura minima con anon key) -> istanza resta attiva.
+# Per disattivare: elimina questo file oppure disabilita il workflow dalla tab Actions del repo.
+
+on:
+  schedule:
+    # Ogni 2 giorni alle 06:17 UTC (orario non tondo per non concentrarsi sui picchi GitHub).
+    - cron: '17 6 */2 * *'
+  # Permette il ping manuale dalla tab Actions per test/verifica.
+  workflow_dispatch:
+
+# Evita run concorrenti se uno schedule si sovrappone a un trigger manuale.
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping Supabase REST (lettura minima)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::Secret SUPABASE_URL o SUPABASE_ANON_KEY mancanti."
+            exit 1
+          fi
+          # Lettura minima: 1 colonna, 1 riga. Nessuna scrittura, payload trascurabile.
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 30 --retry 2 --retry-delay 5 \
+            "${SUPABASE_URL}/rest/v1/users?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+          echo "Risposta REST: HTTP ${HTTP_CODE}"
+          if [ "${HTTP_CODE}" = "200" ]; then
+            echo "Keepalive OK: progetto Supabase attivo."
+          else
+            echo "::error::Keepalive fallito (HTTP ${HTTP_CODE}). Il progetto potrebbe essere in pausa."
+            exit 1
+          fi

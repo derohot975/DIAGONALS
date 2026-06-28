@@ -12,6 +12,10 @@ build/
 .env*
 !.env.example
 
+# App Control / MCP / agent local config
+.agent/
+.mcp.json
+
 # IDE
 .vscode/
 .idea/
@@ -101,4 +105,9 @@ vite.config.ts.*
 
 # Local backups
 Backup_Automatico/
+BACKUP/
 *.tar.gz
+
+# Test output (Playwright)
+playwright-report/
+test-results/
