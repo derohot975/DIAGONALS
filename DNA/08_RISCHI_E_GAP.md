@@ -7,7 +7,7 @@
 4. **Sessione non persistente** — `sessionStorage`, persa al reload. Valutare localStorage con expiry.
 5. **Rate limiting health in-memory** — perde stato al restart; non distribuito.
 6. **Keepalive interno inefficace da solo** — il `setInterval` 12h in `server/index.ts` non gira con Render in sleep. La protezione reale è il workflow esterno (`06`). Valutare se rimuovere il keepalive interno (ora ridondante/fuorviante).
-7. **Advisory moderate** su catena `vite/esbuild` — non bloccanti (`audit-level=high`); upgrade richiede valutazione breaking changes.
+7. **Advisory residue (5)** su catena `vite/esbuild` (solo build-tool, non runtime) — risolverle richiede `vite@8` (breaking). Le altre vulnerabilità sono state già sistemate con `npm audit fix`.
 
 ## Limiti Free tier — stato
 - **DB Supabase:** ~11 MB / ~500 MB → ~2%, margine ampio. Nessuna tabella in crescita anomala.

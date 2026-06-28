@@ -10,7 +10,7 @@ Riferimenti operativi reali. Nessun segreto qui: i valori sensibili stanno in `.
 ## Database — Supabase (piano Free)
 - PostgreSQL su Supabase, progetto ref **`lmggvdulobhxlgdpbpom`** (`https://lmggvdulobhxlgdpbpom.supabase.co`).
 - Connessione: driver `postgres` + Drizzle. URL via `DATABASE_URL` (alias `SUPABASE_DB_URL` / `SUPABASE_DATABASE_URL`).
-- Accesso backend diretto (non PostgREST). RLS disattivata sulle tabelle (coerente con accesso service-level dal server).
+- Accesso backend diretto (non PostgREST) col ruolo `postgres` (bypassa RLS). **RLS ATTIVA** su tutte le tabelle (migrazione `migrations/0001_enable_rls_lockdown.sql`): anon/PostgREST sono bloccati, solo il backend accede ai dati.
 - **Pausa Free dopo ~7 giorni di inattività** → mitigata dal keepalive esterno (sotto).
 
 ## Deploy — Render (piano Free)
@@ -28,8 +28,8 @@ Riferimenti operativi reali. Nessun segreto qui: i valori sensibili stanno in `.
 
 ## Keepalive Supabase (la catena che tiene vivo il DB)
 - Workflow **`.github/workflows/supabase-keepalive.yml`** — scheduler **esterno**, indipendente dallo sleep di Render.
-- Cron `17 6 */2 * *` → ping ogni **2 giorni**. Lettura minima REST: `GET /rest/v1/users?select=id&limit=1` con anon key (privilegio minimo, mai service key). Nessuna scrittura.
-- Secret repo usati: `SUPABASE_URL`, `SUPABASE_ANON_KEY` (configurati).
+- Cron `17 6 */2 * *` → ping ogni **2 giorni** su `https://diagonals.onrender.com/api/health` (l'app interroga il DB col ruolo proprietario, bypassa RLS). Nessun segreto necessario, nessuna scrittura.
+- NB: dopo l'attivazione RLS l'anon non legge più via PostgREST → il keepalive NON usa più `/rest/v1`.
 - **Verifica:** GitHub → Actions → "Supabase Keepalive" → run schedulato o `Run workflow` manuale; atteso `HTTP 200` + `Keepalive OK`.
 - **Disattivazione:** elimina il file o disabilita il workflow dalla tab Actions.
 - **Rischio residuo:** GitHub disabilita i cron dopo 60gg di repo fermo; mitigato dai deploy regolari + run manuale.
